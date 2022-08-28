@@ -1,0 +1,38 @@
+<mat-vertical-stepper>
+  <mat-step [completed]="false">
+    <ng-template matStepLabel>{{'SESSION_PLANIFICATION' | translate}}</ng-template>
+    <app-planning-training-session
+      (trainingSessionEmitter)="trainingSessionEmitterEventHandler($event)" [idTrainingSession]="idTrainingSession"
+      [idTraining]="idTraining"
+      [isUpdateMode]="isUpdateMode"
+      [hasUpdatePermission]="hasUpdateTrainingSessionPermission"
+      [hasAddPermission]="hasAddTrainingSessionPermission"
+      [trainingSession]="trainingSession"></app-planning-training-session>
+  </mat-step>
+  <mat-step [completed]="false">
+    <ng-template matStepLabel>{{'EMPLOYEE_SELECTION' | translate}}</ng-template>
+    <app-selecting-employee-for-training-session [idTrainingSession]="idTrainingSession"
+                                                 [idTraining]="idTraining"
+                                                 [isUpdateMode]="isUpdateMode"
+                                                 [hasUpdatePermission]="hasUpdateTrainingSessionPermission"
+                                                 [hasAddPermission]="hasAddTrainingSessionPermission"
+                                                 [trainingSession]="trainingSession">
+
+    </app-selecting-employee-for-training-session>
+  </mat-step>
+  <mat-step [completed]="false">
+    <ng-template matStepLabel>{{'SEANCES_PLANIFICATION' | translate}}</ng-template>
+    <app-planning-training-session-seance
+      [idTrainingSession]="idTrainingSession"
+      [idTraining]="idTraining"
+      [isUpdateMode]="isUpdateMode"
+      [hasUpdatePermission]="hasUpdateTrainingSessionPermission"
+      [hasAddPermission]="hasAddTrainingSessionPermission"
+      [trainingSession]="trainingSession"></app-planning-training-session-seance>
+  </mat-step>
+  <mat-step [completed]="false">
+    <ng-template matStepLabel>{{'SUMMARY' | translate}}</ng-template>
+    <app-training-session-abstract [isUpdateMode]="isUpdateMode" [trainingSession]="trainingSession">
+    </app-training-session-abstract>
+  </mat-step>
+</mat-vertical-stepper>

@@ -1,0 +1,198 @@
+<div class="card h-100">
+  <div class="card-header" style="background-color: #f0f3f5">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_OFFICE': 'ADD_OFFICE') |translate}}</h3>
+    </div>
+  </div>
+  <hr color="#d9d9d9" class="mt-0">
+  <div class="card-body">
+  <form class="form-horizontal" [formGroup]="officeFormGroup">
+      <div class="form-group row">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+          <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'OFFICE_NAME'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" formControlName="OfficeName" type="text"
+                     [attr.disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode) ? '' : null"
+                     [ngClass]="{ 'has-error': (officeFormGroup.controls.OfficeName.touched || officeFormGroup.controls.OfficeName.dirty) && !officeFormGroup.controls.OfficeName.valid }">
+              <app-control-messages [control]="officeFormGroup.controls.OfficeName"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'RESPONSIBLE'|translate}}<span
+                class="required">*</span></label>
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12" *ngIf="!officeFormGroup.controls.IdOfficeManager.value">
+                  <app-employee-dropdown [form]="officeFormGroup" [idEmployeeColName]="'IdOfficeManager'" [disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode)">
+                  </app-employee-dropdown>
+                  <app-control-messages [control]="officeFormGroup.controls.IdOfficeManager"
+                                        class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+
+                <div class="col-lg-10 col-md-10 col-sm-10 col-10" *ngIf="officeFormGroup.controls.IdOfficeManager.value">
+                  <app-employee-dropdown [form]="officeFormGroup" [idEmployeeColName]="'IdOfficeManager'" [disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode)">
+                  </app-employee-dropdown>
+                  <app-control-messages [control]="officeFormGroup.controls.IdOfficeManager"
+                                        class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-2" style="float: right;">
+                  <a class="noPadding btn-Add k-button" *ngIf="officeFormGroup.controls.IdOfficeManager.value"
+                     style="border: none; margin-top: 5px" title="{{'EMPLOYEE_S_CARD'|translate}}"
+                     [routerLink]="['/main/payroll/employee/edit/', officeFormGroup.controls.IdOfficeManager.value]"
+                     target="_blank">
+                    <i class="fa fa-eye" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <p-accordion [multiple]="true" class="w-100">
+            <p-accordionTab header="{{'COLLAPSE_CORDINATION_TITLE'| translate}}"
+                            (selectedChange)="openCordinationDetailsCollapse = !openCordinationDetailsCollapse"
+                            [selected]="openCordinationDetailsCollapse">
+              <div class="form-group row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'EMAIL'|translate}}</label>
+                  <div class="input-group">
+                    <input #emailInput class="form-control" type="email" formControlName="Email"
+                    [attr.disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode) ? '' : null"
+                           (mouseout)="onEmailMouseOut()" [value]="officeFormGroup.value.Email">
+                    <div class="input-group-append">
+                      <span class="input-group-text" style="background-color: white;">
+                        <i class="fa fa-envelope"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="officeFormGroup.controls.Email"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'PHONE'|translate}}</label>
+                  <div class="input-group">
+                    <input ng2TelInput type="text" class="form-control w-100" formControlName="PhoneNumber"
+                           oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" [ng2TelInputOptions]="{initialCountry:loadPhoneCountryFlag(),
+                           preferredCountries:[defaultPhoneCountryTn,defaultPhoneCountryFr,defaultPhoneCountryGb]}"
+                           [attr.disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode) ? '' : null" (hasError)="isValidPhone($event)" (countryChange)="onCountryPhoneChange($event)"
+                           [ngClass]="{'has-error':phoneHasError}" />
+                    <span class="wrong-pattern mt-2" *ngIf="phoneHasError">{{"WRONG_PATERN"|translate}}</span>
+                  </div>
+                  <app-control-messages [control]="officeFormGroup.controls.PhoneNumber"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'FAX'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="number" formControlName="Fax" [value]="officeFormGroup.value.Fax"
+                    [attr.disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode) ? '' : null" [ngClass]="{ 'has-error': (officeFormGroup.controls.Fax.touched || officeFormGroup.controls.Fax.dirty) &&
+                                !officeFormGroup.controls.Fax.valid }">
+                    <div class="input-group-append">
+                      <span class="input-group-text" style="background-color: white;">
+                        <i class="fa fa-fax"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="officeFormGroup.controls.Fax"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'LINKEDIN'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" formControlName="LinkedIn"
+                    [attr.disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode) ? '' : null" [value]="officeFormGroup.value.LinkedIn"
+                           [ngClass]="{ 'has-error': (officeFormGroup.controls.LinkedIn.touched || officeFormGroup.controls.LinkedIn.dirty) &&
+                                !officeFormGroup.controls.LinkedIn.valid }">
+                    <div class="input-group-append">
+                      <span class="input-group-text" style="background-color: white;">
+                        <i class="fa fa-linkedin"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="officeFormGroup.controls.LinkedIn"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'FACEBOOK'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="email" formControlName="Facebook"
+                           [value]="officeFormGroup.value.Facebook" [attr.disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode) ? '' : null"
+                           [ngClass]="{ 'has-error': (officeFormGroup.controls.Facebook.touched || officeFormGroup.controls.Facebook.dirty) &&
+                                !officeFormGroup.controls.Facebook.valid }">
+                    <div class="input-group-append">
+                      <span class="input-group-text" style="background-color: white;">
+                        <i class="fa fa-facebook"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="officeFormGroup.controls.Facebook"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'TWITTER'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" formControlName="Twitter"
+                           [value]="officeFormGroup.value.Twitter" [attr.disabled]="!(hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode) ? '' : null"
+                           [ngClass]="{ 'has-error': (officeFormGroup.controls.Twitter.touched || officeFormGroup.controls.Twitter.dirty) &&
+                                !officeFormGroup.controls.Twitter.valid }">
+                    <div class="input-group-append">
+                      <span class="input-group-text" style="background-color: white;">
+                        <i class="fa fa-twitter"></i>
+                      </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="officeFormGroup.controls.Twitter"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </p-accordionTab>
+
+            <!-- Collapse schedules -->
+            <!-- Collapse ADDRESS details -->
+            <p-accordionTab header="{{'COLLAPSE_ADRESS_TITLE'| translate}}"
+                            (selectedChange)="openAddressDetailsCollapse = !openAddressDetailsCollapse"
+                            [selected]="openAddressDetailsCollapse" (click)="openAddressDetailCollapse()">
+              <app-tiers-address [tiersFormGroup]="officeFormGroup" [tiersAddressToUpdate]="officeAddress" [isCountryAndCityRequired]="true"
+              [hasUpdateAdressPermission]="hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode" [isOffice]="true"
+              [collapseOnOpenAction]="collapseAddressOpened"></app-tiers-address>
+            </p-accordionTab>
+
+            <!-- Collapse CONTACTS details -->
+            <p-accordionTab  header="{{'CONTACTS'| translate}}"
+                            (selectedChange)="openContactsCollapse = !openContactsCollapse"
+                            [selected]="openContactsCollapse" (click)="openContactDetailCollapse()">
+              <app-tiers-contact [tiersFormGroup]="officeFormGroup" [tiersContactToUpdate]="officeContact"
+                                 [hasUpdateContactPermission]="hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode" [isOffice]="true"
+                                 [collapseOnOpenAction]="collapseContactOpened" (phoneHasErrorEvent)="isContactPhoneHasError($event)">
+              </app-tiers-contact>
+            </p-accordionTab>
+
+          </p-accordion>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Begin card Footer -->
+  <div  class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="backToList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="submit" *ngIf="hasUpdateOfficePermission && isUpdateMode || hasAddOfficePermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End card Footer -->
+</div>

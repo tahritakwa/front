@@ -1,0 +1,4 @@
+export enum DetailOfStatus{
+    DETAIL_OF_IN_PROGRESS = 'DOF_IN_PROGRESS',
+    DETAIL_OF_CREATED = 'DOF_CREATED'
+}

@@ -1,0 +1,346 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(tiersType === 1 ? 'CUSTOMER_RECEIVABLES' : 'SUPPLIER_RECEIVABLES')|translate}}
+      </h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- Search Bar Start -->
+    <div class="row form-group" style="margin-bottom: 20px;" [formGroup]="searchFormGroup">
+      <!--Customer list-->
+      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="tiersType === 1">
+          {{'CUSTOMER'|translate}}
+        </label>
+        <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="tiersType === 2">
+          {{'SUPPLIER'|translate}}
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <app-supplier-dropdown [type]="tiersType" [itemForm]="searchFormGroup" [placeholder]="(tiersType===1) ? placeholderCustomer: placeholderSupplier" [hideAddBtn]="true">
+          </app-supplier-dropdown>
+        </div>
+      </div>
+      <!-- begin start date -->
+      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <label class="col-lg-auto col-md-12 col-sm-12">
+          {{'STARTDATE'|translate}}
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <kendo-datepicker [format]="dateFormat" formControlName="StartDate" class="form-control"
+            (blur)="changeStartDate()">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+      </div>
+      <!-- end start date -->
+      <!-- begin end-date -->
+      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <label class="col-lg-auto col-md-12 col-sm-12">
+          {{'ENDDATE'|translate}}
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <kendo-datepicker [format]="dateFormat" formControlName="EndDate" class="form-control"
+            (blur)="changeEndDate()">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+      </div>
+      <!-- end end-date -->
+    </div>
+
+
+    <!-- Search Bar End -->
+    <!-- checkBox Start-->
+    <div class="row" style="margin-top: 30px; margin-left: 0px;">
+      <div class="col-auto" *ngIf="tiersType == 1">
+        <input class="input-checkbox100" id="ckb44" type="checkbox" checked="deliveryFormNotBilled"
+          tooltip="{{'SEARCH' | translate}}" (click)="deliveryFormNotBilled = !deliveryFormNotBilled; doSearch()">
+        <label class="label-checkbox100 " for="ckb44">
+          {{'BL_NOT_BILLED'|translate}}&nbsp;
+        </label>
+      </div>
+
+      <div class="col-auto">
+        <input class="input-checkbox100" id="ckb1" type="checkbox" checked="unpaidFinancialCommitment"
+          (click)="unpaidFinancialCommitment = !unpaidFinancialCommitment; doSearch()">
+        <label class="label-checkbox100 " for="ckb1">
+          {{'UPAID_FINANCIAL_COMMITMENT'|translate}}&nbsp;
+        </label>
+      </div>
+    </div>
+    <!-- checkBox End-->
+
+    <div class="d-flex flex-row-reverse">
+      <div class="col-auto">
+        <!-- Begin Search button -->
+        <button class="btn btn-sm mb-1 btn-search" type="button" (click)="doSearch()">
+          <i class="fa fa-search fa"></i>
+          <span>&nbsp; {{'SEARCH'|translate}}</span>
+        </button>
+        <!-- End Search button -->
+      </div>
+    </div>
+
+    <!-- Kendo Grid Start -->
+
+    <kendo-grid [data]="gridSettings.gridData" [pageable]="pagerSettings" [pageSize]="gridSettings.state.take"
+      [skip]="gridSettings.state.skip" #grid (dataStateChange)="dataStateChange($event)"
+      (detailCollapse)="onCollapseDetail($event)">
+      <!-- kendoGridToolbarTemplate Start-->
+      <ng-template kendoGridToolbarTemplate>
+        <div class="row" style="float :right; margin-right: 4px;">
+          <app-btn-grid [advencedAdd]='false' [add]='false' [export]='true'
+            style="margin-top: -5%;    display: inline-flex;"></app-btn-grid>
+        </div>
+      </ng-template>
+      <!-- kendoGridToolbarTemplate End-->
+      <!-- Code tiers Start -->
+      <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate" [width]="200">
+        <ng-template kendoGridHeaderTemplate>
+          <span [tooltip]="getTiersCode()|translate"
+            theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate>
+          <div style=" font-weight:bold;color: #4c9aae; font-size: 16px; padding-top: 7px;
+          padding-bottom: 7px;"> {{'TOTAL'| translate}}</div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Code tiers End -->
+      <!-- tiers Name Start -->
+      <kendo-grid-column [field]="columnsConfig[1].field" [title]="getTiersTitle() | translate" [width]="200">
+        <ng-template kendoGridHeaderTemplate>
+          <span [tooltip]="getTiersTitle() | translate" theme="light">{{getTiersTitle()|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- tiers Name End -->
+
+      <!-- Total Amount with currency Start -->
+      <kendo-grid-column [headerStyle]="{'text-align': 'right'}" [field]="columnsConfig[2].field"
+        [title]="columnsConfig[2].title | translate" [width]="200"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'>
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+            theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == 1">
+          <span [ngStyle]=" dataItem.TotalAmountWithCurrency < 0 ? {'color': 'rgb(239, 57, 73)',
+          'font-weight': 'bold'} :{'color': 'black'} ">
+
+            {{dataItem.TotalAmountWithCurrency.toLocaleString(language, {
+            minimumFractionDigits: dataItem.CurrencyPrecision,
+            style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+            })}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == 2">
+          <span [ngStyle]=" dataItem.TotalAmountWithCurrencyKs < 0? {'color': 'rgb(239, 57, 73)',
+        'font-weight': 'bold'} :{'color': 'black'} ">
+            {{dataItem.TotalAmountWithCurrency.toLocaleString(language, {
+            minimumFractionDigits: dataItem.CurrencyPrecision,
+            style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+            })}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate>
+          <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="tiersType == 1 && userCurrency">
+            {{SumOfTotalAmount.toLocaleString(language, {
+            minimumFractionDigits: userCurrency.Precision,
+            style: 'currency',
+            currency: userCurrency.Code,
+            currencyDisplay: 'code'
+            })}}
+          </div>
+          <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="tiersType == 2 && userCurrency">
+            {{SumOfTotalAmount.toLocaleString(language, {
+            minimumFractionDigits: userCurrency.Precision,
+            style: 'currency',
+            currency: userCurrency.Code,
+            currencyDisplay: 'code'
+            })}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Total Amount with currency End -->
+      <!-- Overdue payment total amount -->
+      <kendo-grid-column *ngIf="unpaidFinancialCommitment" [headerStyle]="{'text-align': 'right'}"
+        [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate" [width]="200"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'>
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+            theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == 1" let-rowIndex="rowIndex">
+          <span [ngStyle]=" dataItem.TotalOverduePaymentAmountWithCurrency < 0 ? {'color': 'rgb(239, 57, 73)',
+          'font-weight': 'bold'} :{'color': 'black'} ">
+            {{dataItem.TotalOverduePaymentAmountWithCurrency.toLocaleString(language, {
+            minimumFractionDigits: dataItem.CurrencyPrecision,
+            style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+            })}}
+          </span>
+          <i class="fa fa-info-circle fa-lg" style="color:#4c9aae;cursor: pointer;" aria-hidden="true"
+            *ngIf="dataItem.TotalOverduePaymentAmountWithCurrency > 0"
+            (click)="showOverDuePaymentFinancialCommitmentPaymentDetails(dataItem,rowIndex)"></i>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == 2">
+          <span [ngStyle]=" dataItem.TotalOverduePaymentAmountWithCurrency < 0? {'color': 'rgb(239, 57, 73)',
+        'font-weight': 'bold'} :{'color': 'black'} ">
+            {{dataItem.TotalOverduePaymentAmountWithCurrency.toLocaleString(language, {
+            minimumFractionDigits: dataItem.CurrencyPrecision,
+            style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+            })}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate>
+          <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="tiersType == 1 && userCurrency">
+            {{SumOfTotalOverduePaymentAmount.toLocaleString(language, {
+            minimumFractionDigits: userCurrency.Precision,
+            style: 'currency',
+            currency: userCurrency.Code,
+            currencyDisplay: 'code'
+            })}}
+          </div>
+          <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="tiersType == 2 && userCurrency">
+            {{SumOfTotalOverduePaymentAmount.toLocaleString(language, {
+            minimumFractionDigits: userCurrency.Precision,
+            style: 'currency',
+            currency: userCurrency.Code,
+            currencyDisplay: 'code'
+            })}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- End overdue payment total amount -->
+      <!-- TurnOver start -->
+      <kendo-grid-column *ngIf="unpaidFinancialCommitment || deliveryFormNotBilled"
+        [headerStyle]="{'text-align': 'right'}" [field]="columnsConfig[4].field"
+        [title]="columnsConfig[4].title | translate" [width]="200"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'>
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+            theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == 1">
+          <span [ngStyle]="{'color': 'black'} ">
+            {{dataItem.TotalTurnoverWithCurrency.toLocaleString(language, {
+            minimumFractionDigits: dataItem.CurrencyPrecision,
+            style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+            })}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == 2">
+          <span [ngStyle]="{'color': 'black'} ">
+            {{dataItem.TotalTurnoverWithCurrency.toLocaleString(language, {
+            minimumFractionDigits: dataItem.CurrencyPrecision,
+            style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+            })}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate>
+          <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="tiersType == 1 && userCurrency">
+            {{SumOfTurnOver.toLocaleString(language, {
+            minimumFractionDigits: userCurrency.Precision,
+            style: 'currency',
+            currency: userCurrency.Code,
+            currencyDisplay: 'code'
+            })}}
+          </div>
+          <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="tiersType == 2 && userCurrency">
+            {{SumOfTurnOver.toLocaleString(language, {
+            minimumFractionDigits: userCurrency.Precision,
+            style: 'currency',
+            currency: userCurrency.Code,
+            currencyDisplay: 'code'
+            })}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- TurnOver End -->
+
+      <!--detail over due payment start-->
+      <ng-template kendoGridDetailTemplate let-rowIndex="rowIndex" let-dataItem="dataItem"
+        *ngIf="unpaidFinancialCommitment">
+        <b> {{'UNPAID_FINANCIAL_COMMITMENT'|translate}} </b> {{deadlineDate| date: dateFormat}}
+        <kendo-grid [data]="dataItem.outstandingDocument" [pageSize]="OverduePaymentstate.take"
+          [pageable]="pagerSettings" [skip]="OverduePaymentstate.skip" [sortable]="true"
+          [sort]="OverduePaymentstate.sort" [reorderable]="true"
+          (dataStateChange)="OverDuedataStateChange($event,dataItem)">
+          <!--Code start-->
+          <kendo-grid-column [field]="financialcolumnsConfig[0].field" [width]="200"
+            [title]="financialcolumnsConfig[0].title | translate" [filterable]="false">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span style="font-size: 0.9em;">&nbsp;{{dataItem.Code}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Code end-->
+          <!--DocumentDate start-->
+          <kendo-grid-column [field]="financialcolumnsConfig[1].field"
+            [title]="financialcolumnsConfig[1].title | translate" [filterable]="false" [width]="190">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div *ngIf="dataItem.CommitmentDate">
+                {{dataItem.CommitmentDate| date: dateFormat}}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <!--DocumentDate end-->
+          <!--TtcpriceWithCurrency start-->
+          <kendo-grid-column [field]="financialcolumnsConfig[2].field"
+            [title]="financialcolumnsConfig[2].title | translate" [filterable]="false" [width]="250" [style]='{"font-family": "Arial, Helvetica, serif",
+                  "color": "#505253",
+                  "padding-right": "5%"}'>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == tiersTypeEnum.Customer">
+              <span>
+                {{dataItem.AmountWithCurrency.toLocaleString(language, {
+                minimumFractionDigits: dataItem.CurrencyPrecision,
+                style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+                })}}
+              </span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == tiersTypeEnum.Supplier">
+              <span>
+                {{dataItem.AmountWithCurrency.toLocaleString(language, {
+                minimumFractionDigits: dataItem.CurrencyPrecision,
+                style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+                })}}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--TtcpriceWithCurrency end-->
+          <!--UnpaidAmountWithCurrency start-->
+          <kendo-grid-column [field]="financialcolumnsConfig[3].field"
+            [title]="financialcolumnsConfig[3].title | translate" [filterable]="false" [width]="250" [style]='{"font-family": "Arial, Helvetica, serif",
+                    "color": "#505253",
+                    "padding-right": "5%"}'>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == tiersTypeEnum.Customer">
+              <span>
+                {{dataItem.RemainingAmountWithCurrency.toLocaleString(language, {
+                minimumFractionDigits: dataItem.CurrencyPrecision,
+                style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+                })}}
+              </span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType == tiersTypeEnum.Supplier">
+              <span>
+                {{dataItem.RemainingAmountWithCurrency.toLocaleString(language, {
+                minimumFractionDigits: dataItem.CurrencyPrecision,
+                style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+                })}}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--UnpaidgAmountWithCurrency end-->
+        </kendo-grid>
+      </ng-template>
+      <!--detail over due payment end-->
+      <!--grid pdf & excel-->
+      <app-grid-export [gridSettings]="gridSettings" fileName="{{'CUSTOMER_OUTSTANDING_INVOICES_LIST'|translate}}"
+        pdf="true" excel="true" [service]="customerOutstandingService" [predicate]="predicateForExport"
+        [api]="apiForExport">
+      </app-grid-export>
+      <!--end grid pdf & excel-->
+    </kendo-grid>
+    <!-- Kendo Grid End -->
+  </div>
+</div>

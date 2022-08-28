@@ -1,0 +1,443 @@
+<app-spinner *ngIf="showSpinner()" class="spinner"></app-spinner>
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ACCOUNTING_CONFIGURATION'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="configForm">
+      <div class="row">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+          <div class="row" *ngIf="isFinancialAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'FINANCIAL_ACCOUNTS'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isFinancialAccount">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'COFFER_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'cofferIdAccountingAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'INTERMEDIATE_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'intermediateIdAccountingAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="isFinancialAccount">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'BANK_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'bankIdAccountingAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+          <div class="row" *ngIf="isFinancialAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'BALANCE_SHEET_ACCOUNTS'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isFinancialAccount">
+            <div class="col-lg-4 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'RESULT_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'resultAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+          <div class="row" *ngIf="isTiersAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'TIERS_ACCOUNTS'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isTiersAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'CUSTOMER_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'customerAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'SUPPLIER_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'supplierAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+              </app-accounts-dropdown-component>
+
+            </div>
+          </div>
+
+          <div class="row" *ngIf="isPaymentsAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'PAYMENTS_ACCOUNTS'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isPaymentsAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'SALES_ACCOUNT_WITHOUT_TAX'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'htaxSalesAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'SALES_ACCOUNT_WITH_TAX'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'taxSalesAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+
+          <div class="form-group row" *ngIf="isPaymentsAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'PURCHASE_ACCOUNT_WITHOUT_TAX'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'htaxPurchasesAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'PURCHASE_ACCOUNT_WITH_TAX'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'taxPurchasesAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+
+          <div class="form-group row" *ngIf="isPaymentsAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'FODEC_PURCHASE_ACCOUNTS'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'fodecPurchasesAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'FODEC_SALES_ACCOUNTS'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'fodecSalesAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+          <div class="row" *ngIf="isPaymentsAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'TAX_STAMP'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isPaymentsAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'PURCHASE_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'taxStampIdAccountingAccountPurchase'" [group]="configForm"
+                                               [listAccount]="accounts"
+                                               (Selected)="receiveTaxStampPurchaseAccounts($event)">
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'SALES_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'taxStampIdAccountingAccountSales'" [group]="configForm"
+                                               (Selected)="receiveTaxStampSalesAccounts($event)"
+                                               [listAccount]="accounts">
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+          <div class="row" *ngIf="isPaymentsAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'DISCOUNT'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isPaymentsAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'PURCHASE_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'discountIdAccountingAccountPurchase'" [group]="configForm"
+                                               [listAccount]="accounts"
+                                               (Selected)="receiveDiscountPurchaseAccounts($event)">
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'SALES_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'discountIdAccountingAccountSales'" [group]="configForm"
+                                               (Selected)="receiveDiscountSalesAccounts($event)"
+                                               [listAccount]="accounts">
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+          <div class="row" *ngIf="isPaymentsAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'WITH_HOLDING_TAX'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isPaymentsAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <app-accounts-dropdown-component [fieldName]="'withHoldingTaxIdAccountingAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="isAmortizationAccount">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'AMORTIZATION_ACCOUNT'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isAmortizationAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'TANGIBLE_IMMOBILIZATION_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'tangibleImmobilizationAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'TANGIBLE_AMORTIZATION_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'tangibleAmortizationAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isAmortizationAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'INTANGIBLE_IMMOBILIZATION_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'intangibleImmobilizationAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'INTANGIBLE_AMORTIZATION_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'intangibleAmortizationAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isAmortizationAccount">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'DOTATION_AMORTIZATION_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+              <app-accounts-dropdown-component [fieldName]="'dotationAmortizationAccount'" [group]="configForm"
+                                               [chartsAccountsList]="chartAccountList">
+              </app-accounts-dropdown-component>
+            </div>
+          </div>
+
+
+          <div class="row" *ngIf="isJournals">
+            <div class="col-sm-5 mb-4">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">
+                {{'ACCOUNTING_JOURNAL_SETTINGS'|translate}}
+              </h5>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isJournals">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ACCOUNTING_SALES_JOURNAL'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-sm-12 col-md-12 col-lg-12" style="padding-right: 0; padding-left: 0">
+                <kendo-combobox formControlName="journalSalesId" [data]="journalSales" [textField]="'label'"
+                                [valueField]="'id'" class="form-control" [valuePrimitive]="true" [filterable]="true"
+                                (filterChange)="handleFilterChange($event, 'journalSales')">
+                  <ng-template kendoDropDownListFooterTemplate>
+                    <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.SettingsAccountingPermissions.ADD_JOURNALS)"
+                                          [addNew]="addNewJournal.bind(this)"></app-drop-down-footer>
+                  </ng-template>
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="configForm.controls.journalSalesId"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ACCOUNTING_PURCHASES_JOURNAL'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-sm-12 col-md-12 col-lg-12" style="padding-right: 0; padding-left: 0">
+                <kendo-combobox formControlName="journalPurchasesId" [data]="journalPurchases" [textField]="'label'"
+                                [valueField]="'id'" class="form-control" [valuePrimitive]="true" [filterable]="true"
+                                (filterChange)="handleFilterChange($event, 'journalPurchases')">
+                  <ng-template kendoDropDownListFooterTemplate>
+                    <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.SettingsAccountingPermissions.ADD_JOURNALS)"
+                                          [addNew]="addNewJournal.bind(this)"></app-drop-down-footer>
+                  </ng-template>
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="configForm.controls.journalPurchasesId"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isJournals">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ACCOUNTING_COFFER_JOURNAL'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-sm-12 col-md-12 col-lg-12" style="padding-right: 0; padding-left: 0">
+                <kendo-combobox formControlName="journalCofferId" [data]="journalCoffer" [textField]="'label'"
+                                [valueField]="'id'" class="form-control" [valuePrimitive]="true" [filterable]="true"
+                                (filterChange)="handleFilterChange($event, 'journalCoffer')">
+                  <ng-template kendoDropDownListFooterTemplate>
+                    <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.SettingsAccountingPermissions.ADD_JOURNALS)"
+                                          [addNew]="addNewJournal.bind(this)"></app-drop-down-footer>
+                  </ng-template>
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="configForm.controls.journalCofferId"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ACCOUNTING_BANK_JOURNAL'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-sm-12 col-md-12 col-lg-12" style="padding-right: 0; padding-left: 0">
+                <kendo-combobox formControlName="journalBankId" [data]="journalBank" [textField]="'label'"
+                                [valueField]="'id'" class="form-control" [valuePrimitive]="true" [filterable]="true"
+                                (filterChange)="handleFilterChange($event, 'journalBank')">
+                  <ng-template kendoDropDownListFooterTemplate>
+                    <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.SettingsAccountingPermissions.ADD_JOURNALS)"
+                                          [addNew]="addNewJournal.bind(this)"></app-drop-down-footer>
+                  </ng-template>
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="configForm.controls.journalBankId"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" *ngIf="isJournals">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ACCOUNTING_JOURNAL_A_NEW'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-sm-12 col-md-12 col-lg-12" style="padding-right: 0; padding-left: 0">
+                <kendo-combobox formControlName="journalANewId" [data]="journalFiltredList" [textField]="'label'"
+                                [valueField]="'id'" class="form-control" [valuePrimitive]="true" [filterable]="true"
+                                (filterChange)="handleFilterChange($event, 'journalFiltredList')">
+                  <ng-template kendoDropDownListFooterTemplate>
+                    <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.SettingsAccountingPermissions.ADD_JOURNALS)"
+                                          [addNew]="addNewJournal.bind(this)"></app-drop-down-footer>
+                  </ng-template>
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="configForm.controls.journalANewId"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </form>
+    <form class="form-horizontal" [formGroup]="configChartAccountForm">
+      <div class="row" *ngIf="isFinancialAccount">
+        <div class="col-sm-5 mb-4">
+          <h5 class="card-title mb-0" style="color: #4c9aae;">
+            {{'CHART_ACCOUNT_TO_BALANCED'|translate}}
+          </h5>
+        </div>
+      </div>
+      <div class="form-group row" *ngIf="isFinancialAccount">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+
+          <div class="col-sm-12 col-md-12 col-lg-12" style="padding-right: 0; padding-left: 0">
+            <kendo-multiselect [data]="chartAccountToBalanced" formControlName="chartAccountsToBalanced"
+                               [textField]="'label'" [valueField]="'id'" [valuePrimitive]="true" [filterable]="true"
+                               (filterChange)="handleChartAccountFilter($event, 'chartAccountToBalanced')">
+              <!--content template-->
+              <ng-template kendoComboBoxItemTemplate let-dataItem>
+                <div class="container">
+                  <div class="row">
+                    <b>{{dataItem.label}}</b>
+                  </div>
+                  <div class="row">
+                    <span class="small">{{dataItem.code}}</span>
+                  </div>
+                </div>
+              </ng-template>
+              <!--end content template-->
+            </kendo-multiselect>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer" *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ACCOUNTING_SETTINGS)
+  && this.showSaveOperation()">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer mx-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

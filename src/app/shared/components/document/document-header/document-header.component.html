@@ -1,0 +1,89 @@
+<div *ngIf='documentForm.controls["Id"].value>0' class="d-flex align-items-center">
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value === statusCode.Provisional'>
+    <span class="badge badge-warning" style="color: white !important">{{'PROVISOIRE'|translate}}</span>
+  </h4>
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value === statusCode.Printed'>
+    <span class="badge" [ngStyle]="{'color': '#ffffff', 'background-color': '#4608a0'}">{{'PRINTED'|translate}}</span>
+  </h4>
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value == statusCode.Valid'>
+    <span class="badge badge-success">{{'VALID'|translate}}</span>
+  </h4>
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value === statusCode.EditedAfterValidation'>
+    <span class="badge badge-danger">{{'EDITED_AFTER_VALIDATION'|translate}}</span>
+  </h4>
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value == 3'>
+    <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+      *ngIf='(documentForm.controls["DocumentTypeCode"].value === documentEnumerator.SalesOrder
+                            || documentForm.controls["DocumentTypeCode"].value === documentEnumerator.PurchaseFinalOrder)'>
+      {{'TOTALLY_DELIVERED'|translate}}
+    </span>
+
+    <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+      *ngIf='(documentForm.controls["DocumentTypeCode"].value === documentEnumerator.PurchaseOrder)'>
+      {{'TOTALLY_ORDRED'|translate}}
+    </span>
+
+    <span class="badge" style="color: #ffffff; background-color: #816fa5;" *ngIf='(documentForm.controls["DocumentTypeCode"].value === documentEnumerator.PurchaseDelivery
+                            ||documentForm.controls["DocumentTypeCode"].value === documentEnumerator.SalesDelivery ||
+          documentForm.controls["DocumentTypeCode"].value === documentEnumerator.BS)'>
+      {{'CHARGED'|translate}}
+
+    </span>
+    <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+      *ngIf='(documentForm.controls["DocumentTypeCode"].value === documentEnumerator.SalesQuotations)'>
+      {{'ODREDER'|translate}}
+    </span>
+
+    <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+      *ngIf='documentType == documentEnumerator.PurchaseInvoices ||documentForm.controls["DocumentTypeCode"].value === "I-SA"'>
+      {{'STATUS_INVOICE_FROM_ASSET'|translate}}
+    </span>
+  </h4>
+
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value ==4'>
+    <span class="badge badge-danger">{{'CANCELED'|translate}}</span>
+  </h4>
+
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value == statusCode.TotallySatisfied'>
+    <span class="badge" style="color: #ffffff; background-color: #816fa5;">{{'TOTALLY_PAID'|translate}}</span>
+  </h4>
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value == statusCode.PartiallySatisfied'>
+    <span *ngIf='(documentForm.controls["DocumentTypeCode"].value !== documentEnumerator.PurchaseOrder) &&
+       (documentForm.controls["DocumentTypeCode"].value !== documentEnumerator.PurchaseFinalOrder)'
+      class="badge badge-primary" style="color: #ffffff;">{{'PARTIALLY_PAID'|translate}}</span>
+
+    <span class="badge badge-primary" style="color: #ffffff;"
+      *ngIf='(documentForm.controls["DocumentTypeCode"].value === documentEnumerator.PurchaseOrder)'>
+      {{'PARTIALLY_ORDRED'|translate}}
+    </span>
+
+    <span class="badge badge-primary" style="color: #ffffff;"
+      *ngIf='(documentForm.controls["DocumentTypeCode"].value === documentEnumerator.PurchaseFinalOrder)'>
+      {{'PARTIALLY_DELIVERED'|translate}}
+    </span>
+  </h4>
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value == statusCode.DRAFT'>
+    <span class="badge badge-primary" style="color: #ffffff;"
+      *ngIf='documentForm.controls["DocumentTypeCode"].value!=documentEnumerator.SalesInvoices && 
+      (documentForm.controls["DocumentTypeCode"].value !== documentEnumerator.PurchaseDelivery)'>{{'DRAFT_B2B'|translate}}</span>
+    <span class="badge badge-info" style="color: white !important"
+      *ngIf='documentForm.controls["DocumentTypeCode"].value==documentEnumerator.SalesInvoices ||  (documentForm.controls["DocumentTypeCode"].value == documentEnumerator.PurchaseDelivery)'>{{'DRAFT'|translate}}</span>
+  </h4>
+
+  <h4 class="statusAlignment" *ngIf='documentForm.controls["IdDocumentStatus"].value == statusCode.Balanced && displayOnlyBalanced()'>
+    <span class="badge" style="color: #ffffff; background-color: #816fa5;">{{'BALANCED'|translate}}</span>
+  </h4>
+  <br>
+</div>
+<div *ngIf='documentForm.controls["Id"].value==0 ' class="d-flex align-items-center">
+  <h4 class="statusAlignment">
+    <span class="badge badge-info" style="color: white !important">{{'DRAFT'|translate}}</span>
+  </h4>
+</div>

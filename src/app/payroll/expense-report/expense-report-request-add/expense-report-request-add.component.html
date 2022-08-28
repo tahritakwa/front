@@ -1,0 +1,228 @@
+<div class="card">
+  <!--Begin Card eader-->
+  <div class="card-header">
+    <div class="row">
+      <div class="col-lg-8 col-md-8 col-sm-12">
+        <h3 class="card-title mb-0">{{'EXPENSE_REPORT_REQUEST' |translate }}</h3>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-12" style="text-align:right">
+        <h4 class="statusAlignment" *ngIf="ObjectToUpdate && ObjectToUpdate.Status=== statusCode.Waiting">
+          <span class="badge badge-warning">{{'WAITING'|translate}}</span>
+        </h4>
+        <h4 class="statusAlignment" *ngIf="ObjectToUpdate && ObjectToUpdate.Status === statusCode.Refused">
+          <span class="badge badge-danger">{{'REFUSED'|translate}}</span>
+        </h4>
+        <h4 class="statusAlignment" *ngIf="ObjectToUpdate && ObjectToUpdate.Status === statusCode.Accepted">
+          <span class="badge badge-success">{{'ACCEPTED'|translate}}</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <form class="form-horizontal" [formGroup]="expenseReportFormGroup">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <!--Employee-->
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'EMPLOYEE'|translate}}<span class="required">*</span></label>
+            <div *ngIf="hasValidateExpenseReportPermission; then thenAllEmployeeBlock else elseHierrarchyEmployee"></div>
+            <ng-template #thenAllEmployeeBlock>
+              <app-employee-dropdown [form]="expenseReportFormGroup" (Selected)="changeEmployeeDropdownValue($event)">
+              </app-employee-dropdown>
+            </ng-template>
+            <ng-template #elseHierrarchyEmployee>
+              <app-employee-dropdown [form]="expenseReportFormGroup" [hierarchy]="!allEmployee"
+                                     [withTheSuperior]="!allEmployee" (Selected)="changeEmployeeDropdownValue($event)">
+              </app-employee-dropdown>
+            </ng-template>
+            <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!--PURPOSE-->
+          <div class="col-lg-8 col-md-8 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'PURPOSE'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Purpose" name="Purpose" [ngClass]="{ 'has-error': (expenseReportFormGroup.controls.Purpose.touched || expenseReportFormGroup.controls.Purpose.dirty)
+                && !expenseReportFormGroup.controls.Purpose.valid }">
+            <app-control-messages [control]="expenseReportFormGroup.controls.Purpose"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <button *ngIf="(!isUpdateMode || (isUpdateMode && canUpdate)) && !isTraitedExpenseReport"
+                    class="noPadding btn-Add k-button float-left" type="button" dir="ltr" style="border: none"
+                    (click)="addExpense();">
+              <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+              <span>&nbsp;{{'ADD'|translate}}</span>
+            </button>
+          </div>
+          <div class="col-lg-8 col-md-8 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12 text-right">
+              <b>
+                {{'TOTAL_EXPENSE_REPORT'|translate}} :
+                {{ExpenseReportTotalAmount}}
+                {{companyCurrency}}
+              </b>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <hr>
+      </div>
+      <div id="expensesCarousel" class="col-lg-12 col-sm-12 col-md-12 mr-5 carousel" data-ride="carousel">
+        <ol class="carousel-indicators carousel-indicators-numbers" style="margin-bottom: 5px;">
+          <li data-target="#expensesCarousel"
+              *ngFor="let expenseReportDetails of ExpenseReportDetails.controls; let i=index" [attr.data-slide-to]="i"
+              [ngClass]="{'active': carouselIndex === i+1}" (click)="carouselIndex=i+1"
+              title="{{'EXPENSE_REPORT' | translate}}"> {{i+1}}
+          </li>
+        </ol>
+        <div class="carousel-inner">
+          <div formArrayName="ExpenseReportDetails"
+               *ngFor="let expenseReportDetails of ExpenseReportDetails.controls; let i=index">
+            <div class="carousel-item " [ngClass]="{'active': carouselIndex === i+1}">
+              <div>
+                <div class="row float-right px-2">
+                  <button class="noPadding btn-Add k-button pull-rigth" type="button" style="border: none;"
+                          (click)="deleteExpense(i)" *ngIf="!isTraitedExpenseReport && ExpenseReportNumber>1">
+                    <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                  </button>
+                </div>
+                <!-- BEGIN CAROUSEL SLIDE-->
+                <h6 class="card-title mb-0" style="color: #4c9aae;">
+                  {{ 'EXPENSE_REPORT' |translate}}
+                </h6>
+                <br>
+                <div [formGroupName]="i">
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                      <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'TYPE'|translate}}<span
+                            class="required">*</span></label>
+                          <app-expense-report-details-type-dropdown [group]="expenseReportDetails">
+                          </app-expense-report-details-type-dropdown>
+                          <app-control-messages [control]="expenseReportDetails.controls.IdExpenseReportDetailsType"
+                                                class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-8 col-md-6 col-sm-12" style="margin-bottom:15px">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}<span
+                            class="required">*</span></label>
+                          <input class="form-control" type="text" formControlName="Description" [ngClass]="{ 'has-error': (expenseReportDetails.controls.Description.touched || expenseReportDetails.controls.Description.dirty)
+                               && !expenseReportDetails.controls.Description.valid }">
+                          <app-control-messages [control]="expenseReportDetails.controls.Description"
+                                                class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'DATE'|translate}}<span
+                            class="required">*</span></label>
+                          <kendo-datepicker formControlName="Date" [format]="formatDate" class="form-control"
+                                            (valueChange)="calculateExpenseReportTotal()" [max]="max" [min]="min">
+                            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                            </kendo-datepicker-messages>
+                          </kendo-datepicker>
+                          <app-control-messages [control]="expenseReportDetails.controls.Date"
+                                                class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'AMOUNT'|translate}}<span
+                            class="required">*</span></label>
+                          <input class="form-control" type="number" min="1" formControlName="Amount" [ngClass]="{ 'has-error': (expenseReportDetails.controls.Amount.touched || expenseReportDetails.controls.Amount.dirty)
+                               && !expenseReportDetails.controls.Amount.valid }"
+                                 (change)="calculateExpenseReportTotal()">
+                          <app-control-messages [control]="expenseReportDetails.controls.Amount"
+                                                class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'CURRENCY'|translate}}<span
+                            class="required">*</span></label>
+                          <app-currency-dropdown
+                            (Selected)="checkPrecisionAndcalculateExpenseReportTotal($event,expenseReportDetails)"
+                            [group]="expenseReportDetails" class="error-msg messages text-left text-danger">
+                          </app-currency-dropdown>
+                          <app-control-messages [control]="expenseReportDetails.controls.IdCurrency"
+                                                class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'VOUCHERS'|translate}}<span
+                        class="required">*</span></label>
+                    <div class="col-lg-12 col-sm-12 col-md-12" *ngIf="(FilesInfos.length > 0)">
+                      <app-upload-file [service]="expenseReportService" [canUpdateFile]="isTraitedExpenseReport"
+                                       [fileToUpload]="FilesInfos[i]"></app-upload-file>
+                    </div>
+                  </div>
+                  <br>
+                </div>
+                <!-- END CAROUSEL SLIDE -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <hr>
+        <!-- Comment Section Start -->
+        <div *ngIf="isUpdateMode" style="margin-top: 30px">
+          <h3 class="card-title mb-0"><b>{{'COMMENT'|translate}}</b></h3>
+          <div class="col-lg-12 col-md-12 col-sm-12" [ngStyle]="{'max-height': '400px', 'overflow-y': 'auto'}">
+            <app-comment [comments-data]="commentsData" (deletedComment)="deletecomment($event)"
+              (editedComment)="editcomment($event)"></app-comment>
+          </div>
+          <hr />
+          <div class="row">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <textarea rows="2" class="k-input" placeholder="{{'TYPE_MESSAGE'|translate}}"
+                      formControlName="Message"></textarea>
+            <button type="button" class="k-button k-flat k-button-icon k-button-send" (click)="addComment()" [disabled]="validCommentary()">
+              <i class="fa fa-send-o"></i>
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </div><!-- Comment Section End -->
+      </div>
+    </div>
+    <!--End add form-->
+  </form>
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="/main/payroll/expenseReport">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i>
+                {{ "BACK_TO_LIST" | translate }}
+              </span>
+            </a>
+            <button *ngIf="!isUpdateMode && hasAddExpenseReportPermission" class="btn btn-sm btn-save mx-1" type="button"
+              (click)="onAddExpenseReportRequestClick()">
+              <i class="fa fa-floppy-o"></i> {{ 'SAVE' |translate }}
+            </button>
+            <button *ngIf="isUpdateMode && canUpdate && !RequestAlreadyValidate && hasUpdateExpenseReportPermission" class="btn btn-sm btn-save mx-1" type="button"
+                    (click)="onAddExpenseReportRequestClick()">
+              <i class="fa fa-floppy-o"></i> {{ 'UPDATE' |translate }}
+            </button>
+            <span *ngIf="!RequestAlreadyValidate && hasValidateExpenseReportPermission">
+              <button class="btn btn-sm btn-success mx-1" (click)="setRequestState(statusCode.Accepted)">
+                <i class="fa fa-check-square-o"></i> {{ 'VALIDATE' |translate }}
+              </button>
+              <button class="btn btn-sm mx-1" style="color: #fff; background-color: #73818f;" *ngIf="hasRefuseExpenseReportPermission"
+                      (click)="setRequestState(statusCode.Refused)">
+                <i class="fa fa-times"></i> {{'REFUSE'|translate}}
+              </button>
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

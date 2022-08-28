@@ -1,0 +1,71 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_DOCUMENT_REPORT_TO_VALIDATE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- details expense -->
+    <div>
+      <p-accordion>
+        <span *ngFor="let leave of listOfDocuments">
+        <p-accordionTab [selected]="true" header={{leave.IdEmployeeNavigation.FullName}} style="color: #4c9aae;">
+
+        <div class="row my-3">
+            <!-- first part-->
+          <div class="col-2 ml-3"><img (click)="fileInput.click()" [src]="UserPicture || '../../../../assets/image/placeholder-logo.png'" border="0" id="blah"
+                                       style="width: 100%;"/>
+          </div>
+          <!-- end first part-->
+          <!-- second part-->
+          <div class="col mx-3">
+       <span class="text">{{'FULLNAME'|translate}} :</span> {{leave.IdEmployeeNavigation.FullName}} <br/>
+       <li> <span class="text">{{'DEADLINE'|translate}} :</span> {{leave.DeadLine | date: dateFormat}} <br/></li>
+       <span class="text">{{'TYPE'|translate}} :</span> {{leave.IdDocumentRequestTypeNavigation.Label}} <br/>
+
+
+          </div>
+          <!-- end second part-->
+          <!-- third part-->
+          <div class="col mx-6">
+            <ul>
+              <li> <span class="text">{{'LABEL'|translate}} :</span> {{leave.Label}} <br/></li>
+              <span class="text">{{'SUBMISSION_DATE'|translate}} :</span> {{leave.SubmissionDate | date: dateFormat}}
+              <br/>
+
+                <li> <span class="text">{{'DESCRIPTION'|translate}} :</span> {{leave.Description}} <br/></li>
+            </ul>
+            </div>
+          <!-- end third part-->
+          <!-- button part-->
+          <div class="col">
+            <button (click)="deleteUserFromListUsersId(leave.Id)"
+                    class="noPadding btn-Add k-button  pull-right" dir="ltr"
+                    style="border: none!important;" type="button">
+                            <i class="fa fa-close fa-lg AddIcon"></i>
+                          </button>
+            </div>
+          <!--end button part-->
+      </div>
+
+          <!---->
+      </p-accordionTab>
+      </span>
+      </p-accordion>
+    </div>
+
+    <!-- End details users-->
+  </div>
+  <!--Begin Card footer Start-->
+  <div class="card-footer">
+    <div align="left" class="col-lg-4 col-md-12">
+      <button [routerLink]="['/main/payroll/document']" class="btn btn-sm btn-primary">
+        <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+      </button>
+      <button (click)="validateMassiveDocuments(listOfDocuments)" class="btn btn-sm btn-danger" type="submit">
+        {{'VALIDATE'|translate}}
+      </button>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

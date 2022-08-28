@@ -1,0 +1,133 @@
+<button class="close" mat-button style="top: 3px; right: 10px;" (click)="onClose()"><i class="fa fa-times"
+                                                                                       aria-hidden="true"></i></button>
+<span *ngIf="newDiscussion">
+  <h3 mat-dialog-title>{{ 'CREATE_CHAT_GROUP' | translate }}</h3>
+</span>
+<span *ngIf="!newDiscussion">
+  <h3 mat-dialog-title>{{ 'ADD_NEW_MEMBERS' | translate }}</h3>
+</span>
+<!-- Start Search Box-->
+<div class="row searchBox">
+  <div class="col-12 searchBox-inner">
+    <div class="form-group has-feedback">
+      <input mdInput #filterName id="searchText" type="text" class="form-control search-chat-button" autocomplete="off"
+             placeholder="{{ 'SEARCH' | translate }}" (keyup)="searchUser($event.target.value)">
+    </div>
+  </div>
+</div>
+<!-- End Search Box-->
+
+<mat-dialog-content class="mat-typography" [ngStyle]="{'height': groupMembers.length>4?'20%':'',
+ 'background-color': groupMembers.length > 0 ? 'aliceblue':'white', 'width': '107%'}" >
+  <div *ngIf="groupMembers && groupMembers.length > 0" style="background-color: aliceblue">
+    <ul class="ul-chat-group">
+      <li>
+      </li>
+      <div *ngIf="!newDiscussion">
+        <li *ngFor="let membre of groupMembers">
+          <p (click)="removeMember(membre)" *ngIf="!oldMembers.includes(membre)"
+             class="btn btn-labeled member-selected font-size-10">
+            <span class="btn-label"><i class="fa fa-times"></i></span>
+            {{membre.FullName}}
+            <br/>
+          </p>
+          <p *ngIf="oldMembers.includes(membre)" class="btn btn-labeled old-member-selected font-size-10">
+            <span class="btn-label"><i class="fa fa-check"></i></span>
+            {{ membre.FullName}}
+            <br/>
+          </p>
+        </li>
+      </div>
+      <div *ngIf="newDiscussion">
+        <div *ngIf="oldMembers === undefined && groupMembers.length > 0">
+          <li *ngFor="let membre of groupMembers">
+            <p (click)="removeMember(membre)" class="btn btn-labeled member-selected font-size-10">
+              <span class="btn-label"><i class="fa fa-times"></i></span>
+              {{membre.FullName}}
+              <br/>
+            </p>
+          </li>
+        </div>
+        <div *ngIf="oldMembers!==undefined">
+          <li *ngFor="let membre of groupMembers">
+            <p (click)="removeMember(membre)" *ngIf="membre.Id !== oldMembers.Id"
+               class="btn btn-labeled member-selected font-size-10">
+              <span class="btn-label"><i class="fa fa-times"></i></span>
+              {{membre.FullName}}
+              <br/>
+            </p>
+            <p *ngIf="membre.Id === oldMembers.Id" class="btn btn-labeled old-member-selected font-size-10">
+              <span class="btn-label"><i class="fa fa-check"></i></span>
+              {{ membre.FullName}}
+              <br/>
+            </p>
+          </li>
+        </div>
+      </div>
+    </ul>
+  </div>
+</mat-dialog-content>
+<mat-dialog-content class="mat-typography" [ngStyle]="{'height': groupMembers.length>0?'53%':'', 'width': '107%'}" >
+  <!--Start Section all user Online -->
+  <!--Start Chat list item-->
+
+  <div style="overflow-x: hidden" class="row chat-list-item my-custom-component" (click)="addToGroup(user)"
+       *ngFor="let user of usersList">
+    <!-- Start Avatar Item of connected users-->
+
+    <div class="col-xs-3 chat-list-item-avatar" *ngIf="usersConnectedList.includes(user)">
+
+      <div class="avatar-icon">
+        <img
+          src="https://st2.depositphotos.com/3369547/11481/v/950/depositphotos_114817672-stock-illustration-avatar-man-icon-businesspeople-design.jpg"/>
+        <span class="avatar-status chat-group-modal"></span>
+      </div>
+
+    </div>
+    <!-- End Avatar Item-->
+    <!-- Start Avatar Item of connected users-->
+
+    <div class="col-xs-3 chat-list-item-avatar" *ngIf="usersUnConnectedList.includes(user)">
+      <div class="avatar-icon">
+
+        <img
+          src="https://st2.depositphotos.com/3369547/11481/v/950/depositphotos_114817672-stock-illustration-avatar-man-icon-businesspeople-design.jpg"/>
+        <span class="avatar-status offline chat-group-modal"></span>
+      </div>
+    </div>
+    <!-- End Avatar Item-->
+    <!--Start Chat list item main-->
+
+    <div class="col-xs-9 chat-list-item-main">
+      <div class="row">
+        <div class="col-xs-8 chat-list-item-name">
+
+          <span class="name-meta">
+            {{user.FullName}}
+          </span>
+          <br>
+          <span class="status-meta " *ngIf="usersConnectedList.includes(user)">{{'Online'|translate}}</span>
+          <span class="status-meta " *ngIf="usersUnConnectedList.includes(user)">{{'Offline'|translate}}</span>
+        </div>
+        <div class="col-xs-4  chat-list-item-time">
+          <span class="time-meta ">
+          </span>
+        </div>
+      </div>
+    </div>
+    <!--End Chat list item main-->
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="groupMembers && groupMembers.length > 0" align="end" [ngStyle]="{'height': groupMembers.length>0?'5%':''}" >
+  <button class="btn btn-danger" (click)="clearGroupMembers()">{{ 'CLEAN' | translate }}</button>
+  <button *ngIf="newDiscussion" class="btn btn-success"
+          [mat-dialog-close]="[data.groupMembersList,data.discussionName]"
+          (click)="closeDialogWithData()">
+    {{ 'CREATE' | translate }}
+  </button>
+  <button *ngIf="!newDiscussion" class="btn btn-success"
+          [mat-dialog-close]="[data.groupMembersList,data.discussionName]"
+          (click)="closeDialogWithData()">
+    {{ 'UPDATE' | translate }}
+  </button>
+</mat-dialog-actions>

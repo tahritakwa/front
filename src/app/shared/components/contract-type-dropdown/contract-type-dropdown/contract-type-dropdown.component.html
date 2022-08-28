@@ -1,0 +1,24 @@
+<div *ngIf='group' [formGroup]="group">
+  <kendo-combobox (filterChange)="handleFilter($event)" (valueChange)="onSelect($event)" [allowCustom]="allowCustom"
+                  [data]="contractTypeFiltredDataSource" [disabled]="disabled" [filterable]="true" [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin" formControlName="IdContractType" name="IdContractType"
+                  textField="Code"
+                  valueField="Id">
+    <!--footer template-->
+    <ng-container *ngIf="hasAddPermission">
+      <ng-template kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+    </ng-container>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>
+<div *ngIf='!group'>
+  <kendo-combobox (filterChange)="handleFilter($event)" (valueChange)="onSelect($event)" [(ngModel)]='selectedContractType'
+                  [allowCustom]="allowCustom" [data]="contractTypeFiltredDataSource" [disabled]="disabled" [filterable]="true"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true" class="form-control" name="IdContractType"
+                  textField="Code">
+
+  </kendo-combobox>
+</div>

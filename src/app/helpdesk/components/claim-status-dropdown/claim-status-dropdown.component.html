@@ -1,0 +1,29 @@
+<div [formGroup]="parent" *ngIf='parent'>
+  <label class="col-lg-12 col-md-12 col-sm-12" *ngIf='!FromComponent'>{{'CLAIM'|translate}}</label>
+  <kendo-combobox [formControlName]="ClaimStatusName" [data]="claimStatusFiltredDataSource"
+    [textField]="'TranslationCode'" [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true"
+    class="form-control" [filterable]="true" (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)"
+    [placeholder]="placeholder">
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<div *ngIf='!parent'>
+  <kendo-combobox [data]="claimStatusFiltredDataSource" [textField]="'TranslationCode'" [valueField]="'Id'"
+    [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)" [(ngModel)]="ClaimStatusSelected"
+    [placeholder]="placeholder" [disabled]='disabled'>
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

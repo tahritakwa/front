@@ -1,0 +1,15 @@
+.disabledDiv {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.hover-btn:hover,
+.hover-btn:active,
+.hover-btn:focus {
+  color: white;
+  background-color: #336699!important;
+}
+
+.aligned-icon {
+  margin-left:-1px;
+}

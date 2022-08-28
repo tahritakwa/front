@@ -1,0 +1,7 @@
+<kendo-grid [data]="gridSettings.gridData" [pageable]="pagerSettings" [skip]="gridSettings.state.skip" [pageSize]="gridSettings.state.take"
+            [filter]="gridSettings.state.filter"
+            (pageChange)="onPageChange($event)" (dataStateChange)="dataStateChange($event)">
+  <kendo-grid-span-column>
+  </kendo-grid-span-column>
+</kendo-grid>
+

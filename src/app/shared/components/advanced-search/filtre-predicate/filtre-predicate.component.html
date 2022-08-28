@@ -1,0 +1,461 @@
+<div class="row mt-2">
+  <div class="col-lg-4 col-md-4 col-sm-4 p-0">
+    <label class="col-lg-12 col-md-12 col-sm-12 mt-1 px-1">{{label|translate}}</label>
+  </div>
+  <div class="col-lg-1 p-0 col-md-1 col-sm-1">
+    <button mat-icon-button [matMenuTriggerFor]="operationsMenu" style="color:#20a8d8;">
+      <i class="fa fa-filter fa-lg"></i>
+    </button>
+    <mat-menu xPosition="after" [overlapTrigger]="false" #operationsMenu="matMenu">
+      <button *ngFor="let filtreOperation of filtreOperations ; let i=index;"
+              (click)="handleFiltreOperatorChange(filtreOperation.value)"
+              [disabled]="selectedOperator === filtreOperation.value" mat-menu-item>{{filtreOperation.name |
+        translate}}</button>
+    </mat-menu>
+  </div>
+  <div class="col-lg-7 col-md-7 col-sm-7">
+    <div *ngIf="type === inputTypeText">
+      <input #inputText type="text" [(ngModel)]="filtreValue" class="col-lg-12 col-md-12 col-sm-12 form-control"
+             placeholder="{{filtreValuePlaceHolder}}" (mouseout)="handleFiltreForResetValue()"
+             (focusout)="handleFiltreValueChange()"/>
+    </div>
+    <div *ngIf="type === inputTypeTextProduction">
+      <input #inputText type="text" [(ngModel)]="filtreValue" class="col-lg-12 col-md-12 col-sm-12 form-control"
+             placeholder="{{filtreValuePlaceHolder}}" (mouseout)="handleFiltreForResetValue()"
+             (focusout)="handleFiltreValueChange()"/>
+    </div>
+    <div *ngIf="type === paymentSlipStatusComponent">
+      <app-payment-slip-status-dropdown [form]="formGroupFilter" (Selected)="getPaymentSlipStatus($event)">
+      </app-payment-slip-status-dropdown>
+    </div>
+    <div *ngIf="type === documentStatusComponentType ">
+      <app-document-status [form]="formGroupFilter" [documentType]="documentType" (Selected)="getDocumentStatus($event)"
+                           [isMovementDoc]="isMovementDoc">
+      </app-document-status>
+    </div>
+    <div *ngIf="type === purchaseRequestDropdownComponentType ">
+      <app-purchase-request-status-dropdown (Selected)="getDocumentStatus($event)">
+      </app-purchase-request-status-dropdown>
+    </div>
+    <div *ngIf="type === itemDropdownComponentType ">
+      <app-item-dropdown [itemForm]="formGroupFilter" [parentViewContainerRef]="viewRef" [hideSearch]="true"
+                         (Selected)="getSelectedItem($event)"></app-item-dropdown>
+    </div>
+    <div *ngIf="type === supplierComponentType ">
+      <app-supplier-dropdown [type]=2 [itemForm]="formGroupFilter" [forSearch]=true
+                             (Selected)="getSelectedTiers($event)" [existDocument]="true"></app-supplier-dropdown>
+    </div>
+    <div *ngIf="type === customerComponentType">
+      <app-supplier-dropdown [type]=1 [placeholder]="'CHOOSE_CUSTOMER_PLACEHOLDER' | translate"
+                             [itemForm]="formGroupFilter" [forSearch]=true
+                             (Selected)="getSelectedTiers($event)" [existDocument]="true"></app-supplier-dropdown>
+    </div>
+    <div *ngIf="type === invoiceTypeDropdownComponentType ">
+      <div [formGroup]="formGroupFilter">
+        <kendo-combobox class="w-100" [data]="invoicingDataSource" class="form-control HistoryCommandMargin" name="invoicingType" textField="name"
+          formControlName="invoicingType" valueField="value" [valuePrimitive]="true" (valueChange)="getSelectedInvoiceType($event)">
+          <!--No data template-->
+          <ng-template kendoDropDownListNoDataTemplate>
+            <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+          </ng-template>
+          <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+          <!--end No data template-->
+        </kendo-combobox>
+      </div>
+    </div>
+    <div *ngIf="type===warehouseTypeDropdownComponentType">
+      <app-depot-dropdown [parent]="formGroupFilter" [warehouseForInventoryDocument]="true"
+                          (Selected)="getWarehouseSelect($event)" [FromComponent]='true' [WarehouseName]="'IdWarehouse'"
+                          [placeholder]="'WAREHOUSE'| translate">
+      </app-depot-dropdown>
+    </div>
+    <div *ngIf="type===storageSourceDropdownComponentType">
+      <app-shelf-dropdown [parent]="formGroupFilter" [shelfName]="'IdShelfSource'"
+                          (Selected)="getStorageSelect($event)"></app-shelf-dropdown>
+    </div>
+    <div *ngIf="type===storageDestinationDropdownComponentType">
+      <app-shelf-dropdown [parent]="formGroupFilter" [shelfName]="'IdShelfDestination'"
+                          (Selected)="getStorageSelect($event)"></app-shelf-dropdown>
+    </div>
+    <div *ngIf="type === numerictexbox_type ">
+      <kendo-numerictextbox class="w-100" [format]="'n3'" (focusout)="handleFiltreValueChange()"
+                            [(ngModel)]="filtreValue">
+      </kendo-numerictextbox>
+    </div>
+    <div *ngIf="type===claimTypeDropDown">
+      <app-claim-type-dropdown [ClaimTypeName]="'ClaimType'" [FromComponent]='true'
+                               [placeholder]="'CHOOSE_TYPE_FOR_CLAIM' | translate"
+                               [ExternalDataSource]='claimTypeDropdownSource'
+                               (Selected)="onClaimTypeFilterChange($event)"
+                               class="error-msg messages text-left text-danger">
+      </app-claim-type-dropdown>
+    </div>
+    <div *ngIf="type===taxeGroupTiersComponent">
+      <app-taxe-group-tiers (Selected)="getSelectedTaxeGroup()" [group]="formGroupFilter"
+                            class="error-msg messages text-left text-danger">
+      </app-taxe-group-tiers>
+    </div>
+    <div *ngIf="type===countryDropdownComponent">
+      <app-country-dropdown (Selected)="getSelectedCountry()" [group]="formGroupFilter"
+                            class="error-msg messages text-left text-danger">
+      </app-country-dropdown>
+    </div>
+    <div *ngIf="type===tierCategoryDropdownComponent">
+      <app-tier-category-dropdown (Selected)="getSelectedCategory()" [group]="formGroupFilter"
+                                  class="error-msg messages text-left text-danger">
+      </app-tier-category-dropdown>
+    </div>
+    <div *ngIf="type===cityDropdownComponent">
+      <app-city-dropdown (selected)="getSelectedCity()" [isFromFilter]="true" [group]="formGroupFilter"
+                         [countryId]='parentID' class="error-msg messages text-left text-danger">
+      </app-city-dropdown>
+    </div>
+    <div *ngIf="type===currencyDropdownComponent">
+      <app-currency-dropdown (Selected)="getSelectedCurrency()" [group]="formGroupFilter"
+                             class="error-msg messages text-left text-danger">
+      </app-currency-dropdown>
+    </div>
+    <div *ngIf="type=== bankDropdown">
+      <app-bank-dropdown [group]="formGroupFilter" (Selected)="getSelectedBank($event)">
+      </app-bank-dropdown>
+    </div>
+    <div *ngIf="type===natureDropdownComponent">
+      <app-nature-dropdown (TypeSelected)="getSelectedNature($event)" [itemForm]="formGroupFilter">
+      </app-nature-dropdown>
+    </div>
+    <div *ngIf="type===registrationNumberOfVehicleDropdownComponentType">
+      <app-registration-number-of-vehicle-dropdwon [group]="formGroupFilter"
+                                                   (valueSelected)="vehicleRegistrationNumberValueChange($event)">
+      </app-registration-number-of-vehicle-dropdwon>
+    </div>
+    <div *ngIf="type===interventionStateDropdownComponentType">
+      <app-intervention-state-dropdown [group]="formGroupFilter"
+                                       (valueSelected)="interventionOrderValueChanged($event)">
+      </app-intervention-state-dropdown>
+    </div>
+    <div *ngIf="type===repairOrderStateDropdownComponentType">
+      <app-repair-order-status-dropdown [group]="formGroupFilter"
+                                        (valueSelected)="repairOrderValueChanged($event)">
+      </app-repair-order-status-dropdown>
+    </div>
+    <div *ngIf="type===garageDropdownComponentType">
+      <app-garage-dropdown [group]="formGroupFilter"
+                           (Selected)="garageValueChanged($event)">
+      </app-garage-dropdown>
+    </div>
+    <div *ngIf="type===interventionLoanVehicleStatusDropdownComponentType">
+      <app-intervention-loan-vehicle-status-dropdown [group]="formGroupFilter"
+                                                     (valueSelected)="interventionLoanVehicleStatusValueChanged($event)">
+      </app-intervention-loan-vehicle-status-dropdown>
+    </div>
+    <div *ngIf="type===vehicleModelDropdownComponentType">
+      <app-vehicle-model-dropdown [form]="formGroupFilter" (selectedValue)="vehicleModelValueChanged($event)">
+      </app-vehicle-model-dropdown>
+    </div>
+    <div *ngIf="type===fundsTransferTypeDropdownComponent">
+      <app-funds-transfer-type-dropdown [group]="formGroupFilter" (sendType)="getTransferTypeData($event)">
+      </app-funds-transfer-type-dropdown>
+    </div>
+    <div *ngIf="type===fundsTransferStateDropdownComponent">
+      <app-funds-transfer-state-dropdown [group]="formGroupFilter" (valueSelected)="getTransferStateData($event)">
+      </app-funds-transfer-state-dropdown>
+    </div>
+    <div *ngIf="type===cashRegisterSourceDropdownComponent">
+      <app-cash-register-source-dropdown [group]="formGroupFilter" (sendSourceCash)="getSourceCashData($event)">
+      </app-cash-register-source-dropdown>
+    </div>
+    <div *ngIf="type===cashRegisterDestinationDropdownComponent">
+      <app-cash-register-destination-dropdown [group]="formGroupFilter"
+                                              (sendDestinationCash)="getDestinationCashData($event)">
+      </app-cash-register-destination-dropdown>
+    </div>
+    <div *ngIf="type===inputTypeDate || type===inputTypeDayDate" class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate class="w-100" *ngIf="!isBetweenFiltreType" [(ngModel)]="filtreValue"
+                          (valueChange)="handleDateFiltreValueChange($event)">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate class="w-100" *ngIf="isBetweenFiltreType" [(ngModel)]="filtreGteValue"
+                          [max]="getFilterLTEValueDate()" (valueChange)="handleFiltreValueChange(true)">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-center">
+        <span id="andOperator" *ngIf="isBetweenFiltreType">{{'AND_CAMELCASE'|translate}}</span>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate class="w-100 mt-3" [min]="getFilterGTEValueDate()" *ngIf="isBetweenFiltreType"
+                          [(ngModel)]="filtreLteValue" (valueChange)="handleFiltreValueChange(true)">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+    </div>
+    <div *ngIf="type===inputTypeDateACC">
+      <kendo-datepicker #inputDate [format]="formatDateAcc" class="form-control"
+                        (valueChange)="handleDateFilterAcc($event)" [(ngModel)]="filtreGteValue"
+                        [min]="currentFiscalYearStartDate" [max]="currentFiscalYearEndDate">
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+    </div>
+    <div *ngIf="type === monthType">
+      <kendo-datepicker #inputDate class="form-control" [(ngModel)]="filtreValue" [bottomView]="'year'"
+                        [topView]="'decade'"
+                        [format]="monthFormat" (valueChange)="selectedMonth()">
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+
+    </div>
+    <div *ngIf="type === paymentStatusComponent">
+      <app-payment-status-dropdown [group]="formGroupFilter" (selectedValue)="getSelectedPaymentStatus($event)">
+      </app-payment-status-dropdown>
+    </div>
+
+    <div *ngIf="type===inputTypeMonthDate || type===inputTypeRefundStartDate" class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate class="w-100" *ngIf="!isBetweenFiltreType" [(ngModel)]="filtreValue"
+                          [bottomView]="'year'" [topView]="'decade'" (valueChange)="handleDateFiltreValueChange($event)"
+                          [format]="monthFormat">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate style="width: inherit;" *ngIf="isBetweenFiltreType" [(ngModel)]="filtreGteValue"
+                          [max]="getFilterLTEValueDate()" [bottomView]="'year'" [topView]="'decade'"
+                          (valueChange)="handleFiltreValueChange(true)" onkeydown="return false;"
+                          [format]="monthFormat">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-center">
+        <span id="andOperator" *ngIf="isBetweenFiltreType">{{'AND_CAMELCASE'|translate}}</span>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate class="w-100 mt-3" [min]="getFilterGTEValueDate()" *ngIf="isBetweenFiltreType"
+                          [(ngModel)]="filtreLteValue" [bottomView]="'year'" [topView]="'decade'"
+                          (valueChange)="handleFiltreValueChange(true)" [format]="monthFormat">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+    </div>
+
+
+    <div *ngIf="type === documentTypeDropdownComponentType">
+      <app-document-type-dropdown [form]="formGroupFilter" [allowCustom]="false"
+                                  (selected)="getSelectedDocumentCode($event)">
+      </app-document-type-dropdown>
+    </div>
+    <div *ngIf="type === tiersComponentType ">
+      <app-supplier-dropdown [itemForm]="formGroupFilter" [forSearch]=true (Selected)="getSelectedTiers($event)">
+      </app-supplier-dropdown>
+    </div>
+
+    <div *ngIf="type === sessionStateComponent">
+      <app-session-state-dropdown [group]="formGroupFilter" [stateList]="sessionStateComponent"
+                                  (selectedValue)="getSelectedSessionState($event)">
+      </app-session-state-dropdown>
+    </div>
+
+    <div *ngIf="type === transferOderStateComponent">
+      <app-session-state-dropdown [group]="formGroupFilter" [stateList]="transferOderStateComponent"
+                                  (selectedValue)="getSelectedSessionState($event)">
+      </app-session-state-dropdown>
+    </div>
+
+    <div *ngIf="type === loanStateComponent">
+      <app-session-state-dropdown [group]="formGroupFilter" [stateList]="loanStateComponent"
+                                  (selectedValue)="getSelectedSessionState($event)">
+      </app-session-state-dropdown>
+    </div>
+    <div *ngIf="type === projectTypeDropdownComponent">
+      <app-project-type-dropdown [group]="formGroupFilter" (Selected)="getSelectedProject()">
+      </app-project-type-dropdown>
+    </div>
+    <div *ngIf="type === billingSessionDropdownComponent || type === contractStateDropdown">
+      <app-status-dropdown [form]="formGroupFilter" [isBillingSession]="billingSessionDropdownComponent ? true : false"
+                           (selectedValue)="getSelectedState()" [isContract]="contractStateDropdown ? true : false">
+      </app-status-dropdown>
+    </div>
+    <div *ngIf="type === statusTeamCode">
+      <app-status-dropdown [form]="formGroupFilter" [activeTeamEnum]="true" (selectedValue)="getSelectedStatusTeam()">
+      </app-status-dropdown>
+    </div>
+
+    <div *ngIf="type === inputTypeYearDate || type === inputTypeYearSourceDeduction" class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate class="w-100" *ngIf="!isBetweenFiltreType" [(ngModel)]="filtreValue"
+                          [bottomView]="'decade'" (valueChange)="handleDateFiltreValueChange($event)"
+                          [format]="yearFormat">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate style="width: inherit;" *ngIf="isBetweenFiltreType" [(ngModel)]="filtreGteValue"
+                          [max]="getFilterLTEValueDate()" (valueChange)="handleFiltreValueChange(true)"
+                          [bottomView]="'decade'"
+                          onkeydown="return false;" [format]="yearFormat">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 d-flex justify-content-center">
+        <span id="andOperator" *ngIf="isBetweenFiltreType">{{'AND_CAMELCASE'|translate}}</span>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker #inputDate class="w-100 mt-3" [min]="getFilterGTEValueDate()" *ngIf="isBetweenFiltreType"
+                          [(ngModel)]="filtreLteValue" [bottomView]="'decade'"
+                          (valueChange)="handleFiltreValueChange(true)"
+                          [format]="yearFormat">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+    </div>
+
+    <div *ngIf="type === trimesterComponent">
+      <app-trimester-multi-select (selected)="selectedTrimester($event)"></app-trimester-multi-select>
+    </div>
+    <div *ngIf="type === cnssDropdownComponent">
+      <app-cnss-dropdown (Selected)="selectedCnssType($event)"></app-cnss-dropdown>
+    </div>
+    <div *ngIf="type === planCodeComponent">
+      <app-parent-plan-acc [group]="formGroupFilter" (selectedValue)="getplanParent($event)"></app-parent-plan-acc>
+    </div>
+
+    <div *ngIf="type === inputTypeBoolean">
+      <app-boolean-filter-drop-down [group]="formGroupFilter" [label]="label" (selectedValue)="getBooleanValue($event)">
+      </app-boolean-filter-drop-down>
+    </div>
+
+    <div *ngIf="type === closingComponentState">
+      <app-closing-state [group]="formGroupFilter" (selectedValue)="getClosingState($event)"></app-closing-state>
+    </div>
+
+    <div *ngIf="type === journalComponent ">
+      <app-journal-dropdown [form]="formGroupFilter" (selectedValue)="getSelectedJournalValue($event)">
+      </app-journal-dropdown>
+    </div>
+
+    <div *ngIf="type === employeeDropdownComponent">
+      <app-employee-dropdown [form]="formGroupFilter" [showAddButton]="true" (Selected)="selectedEmployee()">
+      </app-employee-dropdown>
+    </div>
+
+    <div *ngIf="type === creditTypeDropdown">
+      <app-credit-type-dropdown [group]="formGroupFilter" [isFromAdvancedFiltren]="true"
+                                (Selected)="selectedCreditType($event)">
+      </app-credit-type-dropdown>
+    </div>
+
+    <div *ngIf="type === statusAccountedComponent">
+      <app-status-accounted-dropdown [form]="formGroupFilter" (selectedValue)="getSelectedStatusAccountedValue($event)">
+      </app-status-accounted-dropdown>
+    </div>
+
+    <div *ngIf="type === paymentMethodeComponent">
+      <app-payment-dropdown [hideAddBtn]="true" [group]="formGroupFilter"
+                            (selectedValue)="getSelectedPaymentMethodeValue($event)"></app-payment-dropdown>
+    </div>
+    <div *ngIf="type === priceState" [formGroup]="formGroupFilter">
+      <kendo-dropdownlist class="col-lg-12 col-md-12 col-sm-12 form-control"
+                          textField="name" [data]="priceStateDataSource"
+                          valueField="value" formControlName="isActif"
+                          name="isActif" (valueChange)="onSelectPriceState()"></kendo-dropdownlist>
+    </div>
+    <div *ngIf="type === priceType" [formGroup]="formGroupFilter">
+      <kendo-dropdownlist class="col-lg-12 col-md-12 col-sm-12 form-control"
+                          textField="name" [data]="priceTypeDataSource"
+                          valueField="value" formControlName="priceType"
+                          name="priceType" (valueChange)="onSelectPriceType()"></kendo-dropdownlist>
+    </div>
+    <div *ngIf="type === claimStatusCode" [formGroup]="formGroupFilter">
+      <kendo-dropdownlist class="col-lg-12 col-md-12 col-sm-12 form-control"
+                          textField="name" [data]="claimStatusDataSource"
+                          valueField="value" formControlName="claimStatus"
+                          name="claimStatus" (valueChange)="onSelectClaimStatus()"></kendo-dropdownlist>
+    </div>
+    <div *ngIf="type === contractTypeDropdownComponent">
+      <app-contract-type-dropdown [group]="formGroupFilter" (selectedValue)="selectedContractType()">
+      </app-contract-type-dropdown>
+    </div>
+    <div *ngIf="type === salaryStructureDropdownComponent">
+      <app-salary-structure-dropdown [group]="formGroupFilter" (Selected)="selectedSalaryStructure()">
+      </app-salary-structure-dropdown>
+    </div>
+    <div *ngIf="type === exitReasonDropdownComponent">
+      <app-exit-reason-dropdown (Selected)="selectedExitEmployeeReason()" [group]="formGroupFilter">
+      </app-exit-reason-dropdown>
+    </div>
+    <div *ngIf="type === exitEmployeeStatusDropdown" [formGroup]="formGroupFilter">
+      <kendo-combobox [data]="exitEmployeeStatusDataSource"
+                      class="form-control" formControlName="Status" textField="name" valueField="value"
+                      (valueChange)="selectExitEmployeeStatus()">
+      </kendo-combobox>
+    </div>
+    <div
+      *ngIf="type === recruitmentStateDropdown || type === recruitmentRequestStateDropdown || type === recruitmentOfferStateDropdown"
+      [formGroup]="formGroupFilter">
+      <kendo-combobox [data]="type === recruitmentStateDropdown ? recruitmentStateDataSource : type === recruitmentRequestStateDropdown ? recruitmentRequestStateDataSource :
+   recruitmentOfferStateDataSource"
+                      class="form-control" formControlName="State" textField="name" valueField="value"
+                      (valueChange)="selectRecruitmentState()">
+      </kendo-combobox>
+    </div>
+    <div *ngIf="type === priorityDropdownComponent">
+      <app-priority-dropdwon [group]="formGroupFilter" (Selected)="selectedPriority()">
+      </app-priority-dropdwon>
+    </div>
+    <div *ngIf="type === jobDropdownComponent">
+      <app-job-dropdown (jobDropdownValueChanged)="selectedJob()" [group]="formGroupFilter">
+      </app-job-dropdown>
+    </div>
+    <div *ngIf="type === candidateDropdownComponent">
+      <app-candidate-combobox (selected)="selectedCandidate()" [group]="formGroupFilter">
+      </app-candidate-combobox>
+    </div>
+    <div *ngIf="type === documentRequestTypeDropdownComponent">
+      <app-document-request-type-dropdown (selectedValue)="selectedDocumentRequestType($event)"
+                                          [group]="formGroupFilter">
+      </app-document-request-type-dropdown>
+    </div>
+    <div *ngIf="type === teamMultiselectComponent">
+      <app-team-multiselect
+        [showFromFilter]="true" (Selected)="teamsSelected($event)">
+      </app-team-multiselect>
+    </div>
+    <div *ngIf="type === employeeMultiselectComponent">
+      <app-employee-multiselect
+        (selected)="selectedMultipleEmployees($event)"
+        [withTeamManager]="true" [showFromFilter]="true">
+      </app-employee-multiselect>
+    </div>
+    <div *ngIf="type === crmDropdownComponent">
+      <app-crm-dropdown [group]="formGroupFilter"
+                        [source]="'ORGANIZATION'" [filtreType]="'ACTIVITY_SECTOR'"
+                        (selected)="getSelectedCrmDropdownFiltre()"
+      >
+      </app-crm-dropdown>
+    </div>
+    <div *ngIf="type === prodStatusDropDownLaunchOf">
+      <app-launch-of-status-dropdown [group]="formGroupFilter" (Selected)="getSelectedProdStatusOfDropdownFiltre()">
+      </app-launch-of-status-dropdown>
+    </div>
+    <div *ngIf="type === prodArticleDropDownLaunchOf">
+      <app-launch-of-article-dropdown [group]="formGroupFilter" (Selected)="getSelectedProdArticleOfDropdownFiltre($event)">
+      </app-launch-of-article-dropdown>
+    </div>
+    <div *ngIf="type === userDropdownComponent">
+      <app-user-dropdown [form]="formGroupFilter" (Selected)="getSelectedUser()"></app-user-dropdown>
+    </div>
+  </div>
+</div>

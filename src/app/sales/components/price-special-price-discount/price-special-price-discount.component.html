@@ -1,0 +1,79 @@
+<div [formGroup]="formGroupInput">
+  <div class="row mt-2">
+
+    <div class="col-lg-4 col-md-6 col-sm-12" >
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE'|translate}}<span class="required">*</span></label>
+
+      <div class="input-group">
+        <input [owlDateTime]="startDateTime" placeholder="{{'CHOOSE_A_DATE_AND_TIME'|translate}}" formControlName="StartDateTime"
+          class="form-control"
+                  [ngClass]="{ 'has-error': (formGroupInput.controls.StartDateTime.touched || 
+        formGroupInput.controls.StartDateTime.dirty) && !formGroupInput.controls.StartDateTime.valid }">
+      
+        <div class="input-group-append">
+          <span [owlDateTimeTrigger]="startDateTime" class="input-group-text calendar-icon-container">
+            <i class="fa fa-calendar calendar-icon mr-1"></i>
+          </span>
+        </div>
+        <owl-date-time  [pickerMode]="'dialog'" #startDateTime></owl-date-time>
+      </div>
+  
+      <app-control-messages class="error-msg messages text-left text-danger"
+        [control]="formGroupInput.controls.StartDateTime"></app-control-messages>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12" >
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE'|translate}}<span class="required">*</span></label>
+
+      <div class="input-group" >
+        <input [owlDateTime]="endDateTime" placeholder="{{'CHOOSE_A_DATE_AND_TIME'|translate}}" formControlName="EndDateTime"
+          class="form-control"
+                  [ngClass]="{ 'has-error': (formGroupInput.controls.EndDateTime.touched || 
+        formGroupInput.controls.EndDateTime.dirty) && !formGroupInput.controls.EndDateTime.valid }">
+      
+        <div class="input-group-append">
+          <span [owlDateTimeTrigger]="endDateTime" class="input-group-text calendar-icon-container">
+            <i class="fa fa-calendar calendar-icon mr-1"></i>
+          </span>
+        </div>
+        <owl-date-time [pickerMode]="'dialog'" #endDateTime></owl-date-time>
+      </div>
+  
+      <app-control-messages class="error-msg messages text-left text-danger"
+        [control]="formGroupInput.controls.EndDateTime"></app-control-messages>
+    </div>
+  
+    <div class="col-lg-4 col-md-6 col-sm-12" >
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'PRICE'|translate}} <span class="required">*</span></label>
+      <input class="form-control" type="number" formControlName="SpecialPrice"
+                     [ngClass]="{ 'has-error': (formGroupInput.controls.SpecialPrice.touched || 
+        formGroupInput.controls.SpecialPrice.dirty) && !formGroupInput.controls.SpecialPrice.valid }">
+      <app-control-messages class="error-msg messages text-left text-danger"
+                            [control]="formGroupInput.controls.SpecialPrice"></app-control-messages>
+    </div>
+  
+  </div>
+  <div class="row mt-2">
+  
+    
+    <div class="col-lg-4 col-md-6 col-sm-12" >
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'MIN_QUANTITY'|translate}}<span
+        class="required">*</span></label>
+      <input class="form-control" type="number" formControlName="MinimumQuantity"
+                     [ngClass]="{ 'has-error': (formGroupInput.controls.MinimumQuantity.touched || 
+        formGroupInput.controls.MinimumQuantity.dirty) && !formGroupInput.controls.MinimumQuantity.valid }">
+      <app-control-messages class="error-msg messages text-left text-danger"
+                            [control]="formGroupInput.controls.MinimumQuantity"></app-control-messages>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12" >
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'MAX_QUANTITY'|translate}}<span
+        class="required">*</span></label>
+      <input class="form-control" type="number" formControlName="MaximumQuantity"
+                     [ngClass]="{ 'has-error': (formGroupInput.controls.MaximumQuantity.touched || 
+        formGroupInput.controls.MaximumQuantity.dirty) && !formGroupInput.controls.MaximumQuantity.valid }">
+      <app-control-messages class="error-msg messages text-left text-danger"
+                            [control]="formGroupInput.controls.MaximumQuantity"></app-control-messages>
+    </div>
+  
+  </div>
+
+</div>

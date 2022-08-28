@@ -1,0 +1,293 @@
+<div *ngIf="isModal">
+  <div class="card h-100" style="border: 1px solid #c0c0c0 !important;"> 
+    <div class="card-body">
+      <form class="form-horizontal" [formGroup]="addSettlementFormGroup">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}</label>
+            <input class="form-control" formControlName="Code" type="text" name="Code"
+            [ngClass]="{ 'has-error': (addSettlementFormGroup.controls.Code.touched || addSettlementFormGroup.controls.Code.dirty) && !addSettlementFormGroup.controls.Code.valid }">
+            <app-control-messages [control]="addSettlementFormGroup.controls.Code" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}</label>
+            <input class="form-control" formControlName="Label" type="text" name="Label"
+            [ngClass]="{ 'has-error': (addSettlementFormGroup.controls.Label.touched || addSettlementFormGroup.controls.Label.dirty) && !addSettlementFormGroup.controls.Label.valid }">
+            <app-control-messages [control]="addSettlementFormGroup.controls.Label" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </form>
+      <kendo-grid [data]="data" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter" (edit)="editHandler($event)"
+        (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+        (add)="addHandler($event)" (dataStateChange)="dataStateChange($event)" [sortable]="true"
+        [pageable]="pagerSettings" filterable="menu" [reorderable]="true" [columnMenu]="false">
+        <!--Grid Toolbar-->
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row" style="float :right; margin-right: 2px;">
+            <app-btn-grid [advencedAdd]='false' [add]='true' [export]='false' [addLink]='"AdvancedAdd"'
+              style="margin-top: -5%;    display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!--End Grid toolbar-->
+        <!--Columns-->
+        <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+          [title]="col.title | translate" [width]="col._width" [filter]="col.filter" [filterable]="col.filterable"
+          [format]="col.format">
+
+
+          <ng-template kendoGridEditTemplate>
+            <form [formGroup]='formGroup'>
+              <app-grid-cell-input-template *ngIf="col.field == 'Percentage'" [group]="formGroup"
+                controlName="Percentage" inputType="number">
+              </app-grid-cell-input-template>
+              <app-grid-cell-input-template *ngIf="col.field == 'NumberDays'" [group]="formGroup"
+                controlName="NumberDays" inputType="number">
+              </app-grid-cell-input-template>
+              <app-grid-cell-input-template *ngIf="col.field == 'SettlementDay'" [group]="formGroup"
+                controlName="SettlementDay" inputType="number">
+              </app-grid-cell-input-template>
+              <app-grid-cell-input-template *ngIf="col.field == 'CompletePrinting'" [group]="formGroup"
+                controlName="CompletePrinting" inputType="">
+              </app-grid-cell-input-template>
+
+              <app-payment-dropdown *ngIf="col.field == 'IdPaymentMethod'" [group]="formGroup"
+                (modalOpen)='openPaymentModal($event)'></app-payment-dropdown>
+
+              <kendo-combobox *ngIf="col.field == 'IdSettlementType'" [data]="typeOfPaymentsFiltred" textField="text" valueField="value"
+                [valuePrimitive]="true" name="IdSettlementType" [allowCustom]="allowCustom" formControlName="IdSettlementType"
+                class="form-control" [filterable]="true" (filterChange)="handleFilter($event)" (valueChange)="valueChange($event)">
+                  <ng-template kendoDropDownListNoDataTemplate>
+                    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                  </ng-template>
+              </kendo-combobox>
+            </form>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <div *ngIf="col.field == 'Percentage'">
+              {{dataItem.Percentage}}
+            </div>
+            <div *ngIf="col.field == 'NumberDays'">
+              <span *ngIf="dataItem.NumberDays">{{dataItem.NumberDays}}</span>
+              <span *ngIf="!dataItem.NumberDays">-</span>
+            </div>
+            <div *ngIf="col.field == 'SettlementDay'">
+              <span *ngIf="dataItem.SettlementDay">{{dataItem.SettlementDay}}</span>
+              <span *ngIf="!dataItem.SettlementDay">-</span>
+            </div>
+            <div *ngIf="col.field == 'CompletePrinting'">
+              <span *ngIf="dataItem.CompletePrinting">{{dataItem.CompletePrinting}}</span>
+              <span *ngIf="!dataItem.CompletePrinting">-</span>
+            </div>
+            <div *ngIf="col.field == 'IdPaymentMethod'">
+              {{dataItem.MethodNamePaymentMethod}}
+            </div>
+            <div *ngIf="col.field == 'IdSettlementType'">
+              {{dataItem.LabelSettlementType}}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--End Columns-->
+        <!--Actions-->
+        <kendo-grid-command-column [width]="170" [title]="'ACTIONS'| translate " [columnMenu]="false"
+          [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button kendoGridEditCommand *ngIf="hasUpdateSettlementModePermission">
+              <i class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+            </button>
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button kendoGridSaveCommand *ngIf="hasUpdateSettlementModePermission">
+              <span class="save-icon fa fa-save"></span>
+            </button>
+            <!-- cancel command directive, will be visible when in edit mode -->
+            <button kendoGridCancelCommand *ngIf="hasUpdateSettlementModePermission">
+              <span class="text-danger fa fa-close"></span>
+            </button>
+            <button kendoGridRemoveCommand *ngIf="hasUpdateSettlementModePermission">
+              <i class="text-danger cursor-pointer fa fa-trash-o la-lg"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--End Actions-->
+      </kendo-grid>
+    </div>
+    <div class="isShowedModalSideBar">
+      <footer class="app-footer mx-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!isModal">
+  <div class="card h-100">
+    <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+      <div class="row pl-3">
+        <div class="col-auto d-flex align-items-end">
+          <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_SETTLEMENT_MODE' :'ADD_SETTLEMENT_MODE') |translate}}
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <hr color="#d9d9d9" class="mt-0">
+    <div class="card-body">
+      <form class="form-horizontal" [formGroup]="addSettlementFormGroup">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required" >*</span></label>
+            <input class="form-control" formControlName="Code" type="text" name="Code" [disabled]="!hasUpdateSettlementModePermission || !hasAddSettlementModePermission"
+            [ngClass]="{ 'has-error': (addSettlementFormGroup.controls.Code.touched || addSettlementFormGroup.controls.Code.dirty) && !addSettlementFormGroup.controls.Code.valid }">
+            <app-control-messages [control]="addSettlementFormGroup.controls.Code" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Label" type="text" name="Label" [disabled]="!hasUpdateSettlementModePermission || !hasAddSettlementModePermission"
+            [ngClass]="{ 'has-error': (addSettlementFormGroup.controls.Label.touched || addSettlementFormGroup.controls.Label.dirty) && !addSettlementFormGroup.controls.Label.valid }">
+            <app-control-messages [control]="addSettlementFormGroup.controls.Label" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </form>
+
+
+      <kendo-grid [data]="data" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter" (edit)="editHandler($event)"
+        (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+        (add)="addHandler($event)" (dataStateChange)="dataStateChange($event)" [sortable]="true"
+        [pageable]="pagerSettings" filterable="menu" [reorderable]="true" [columnMenu]="false">
+        <!--Grid Toolbar-->
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row" style="float :right; margin-right: 2px;">
+            <app-btn-grid [advencedAdd]='false' [add]='hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode' [export]='false' [addLink]='"AdvancedAdd"'
+              style="margin-top: 5px;    display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!--End Grid toolbar-->
+        <!--Columns-->
+        <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+          [title]="col.title | translate" [width]="col._width" [filter]="col.filter" [filterable]="col.filterable"
+          [format]="col.format">
+
+
+          <ng-template kendoGridEditTemplate>
+            <form [formGroup]='formGroup'>
+              <app-grid-cell-input-template *ngIf="col.field == 'Percentage'" [group]="formGroup"
+                controlName="Percentage" inputType="number">
+              </app-grid-cell-input-template>
+              <app-grid-cell-input-template *ngIf="col.field == 'NumberDays'" [group]="formGroup"
+                controlName="NumberDays" inputType="number">
+              </app-grid-cell-input-template>
+              <app-grid-cell-input-template *ngIf="col.field == 'SettlementDay'" [group]="formGroup"
+                controlName="SettlementDay" inputType="number">
+              </app-grid-cell-input-template>
+              <app-grid-cell-input-template *ngIf="col.field == 'CompletePrinting'" [group]="formGroup"
+                controlName="CompletePrinting" inputType="">
+              </app-grid-cell-input-template>
+
+              <app-payment-dropdown *ngIf="col.field == 'IdPaymentMethod'" [group]="formGroup"
+                (modalOpen)='openPaymentModal($event)'></app-payment-dropdown>
+
+                <kendo-combobox *ngIf="col.field == 'IdSettlementType'" [data]="typeOfPaymentsFiltred" textField="text" valueField="value"
+                [valuePrimitive]="true" name="IdSettlementType" [allowCustom]="allowCustom" formControlName="IdSettlementType"
+                class="form-control" [filterable]="true" (filterChange)="handleFilter($event)" (valueChange)="valueChange($event)">
+                  <ng-template kendoDropDownListNoDataTemplate>
+                    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                  </ng-template>
+              </kendo-combobox>
+            </form>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <div *ngIf="col.field == 'Percentage'">
+              {{dataItem.Percentage}}
+            </div>
+            <div *ngIf="col.field == 'NumberDays'">
+              <span *ngIf="dataItem.NumberDays">{{dataItem.NumberDays}}</span>
+              <span *ngIf="!dataItem.NumberDays">-</span>
+            </div>
+            <div *ngIf="col.field == 'SettlementDay'">
+              <span *ngIf="dataItem.SettlementDay">{{dataItem.SettlementDay}}</span>
+              <span *ngIf="!dataItem.SettlementDay">-</span>
+            </div>
+            <div *ngIf="col.field == 'CompletePrinting'">
+              <span *ngIf="dataItem.CompletePrinting">{{dataItem.CompletePrinting}}</span>
+              <span *ngIf="!dataItem.CompletePrinting">-</span>
+            </div>
+            <div *ngIf="col.field == 'IdPaymentMethod'">
+              {{dataItem.MethodNamePaymentMethod}}
+            </div>
+            <div *ngIf="col.field == 'IdSettlementType'">
+              {{dataItem.LabelSettlementType}}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--End Columns-->
+        <!--Actions-->
+        <kendo-grid-command-column [width]="170" [title]="'ACTIONS'| translate " [columnMenu]="false"
+          [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button kendoGridEditCommand *ngIf="hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode">
+              <i class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+            </button>
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button kendoGridSaveCommand *ngIf="hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode">
+              <span class="save-icon fa fa-save"></span>
+            </button>
+            <!-- cancel command directive, will be visible when in edit mode -->
+            <button kendoGridCancelCommand *ngIf="hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode">
+              <span class="text-danger fa fa-close"></span>
+            </button>
+            <button kendoGridRemoveCommand *ngIf="hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode">
+              <i class="text-danger cursor-pointer fa fa-trash-o la-lg"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--End Actions-->
+      </kendo-grid>
+    </div>
+    <!--Begin Card footer -->
+    <div class="fixed-card-footer" *ngIf="!isModal">
+      <div [ngClass]="getFooterClass()">
+        <footer class="app-footer" style="margin-left: 0;">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a [routerLink]="settlementModelisturl">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <!--Card footer End-->
+  <!--Begin Card footer -->
+  <div class="isShowedModalSideBar" *ngIf="isModal">
+    <footer class="app-footer mx-0 footerModal">
+      <div class="w-100">
+        <div class="d-flex justify-content-end p-3 footer-content">
+          <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateSettlementModePermission && isUpdateMode || hasAddSettlementModePermission && !isUpdateMode">
+            <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <!--Card footer End-->
+</div>

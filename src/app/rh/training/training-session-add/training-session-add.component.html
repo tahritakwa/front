@@ -1,0 +1,52 @@
+<div class="card">
+
+  <!-- Begin card header -->
+  <div class="card-header" style="height: 75px;">
+    <div class="row">
+      <div class="col-1">
+        <img [src]="'../../../../assets/image/training-icon.png'" border="0" class="imgSize" id="blah"
+             style="width:70%; height:80%"/>
+      </div>
+      <div class="col-10 primaryColor mt-1">
+        <h3 *ngIf="!isUpdateMode" class="col-lg-12 mt-2 TitleSize primaryColor">
+          {{ 'PLANIFY_TRAINING_SESSION' |translate }} {{trainingName}}
+        </h3>
+        <h3 *ngIf="isUpdateMode" class="col-lg-12 mt-2 TitleSize primaryColor">
+          {{ 'MODIFY_TRAINING_SESSION' |translate }} {{trainingName}}
+        </h3>
+      </div>
+    </div>
+  </div>
+  <!-- End card header -->
+  <div class="card-body">
+    <div style="border-style: dashed;border-color:#F0F0F0; border-width: 2px;
+                  height: 43vh;"><!-- overflow: auto;-->
+      <app-training-type *ngIf="trainingSessionToUpdate" [idSkill]="idSkill"
+                         [idTraining]="idTraining" [isUpdateMode]="isUpdateMode"
+                         [trainingSessionToUpdate]="trainingSessionToUpdate"></app-training-type>
+    </div>
+    <!-- Begin session stepper -->
+    <app-sesssion-stepper #sessionStepper
+                          *ngIf="trainingSessionToUpdate"
+                          [idTrainingSession]="idTrainingSession"
+                          [idTraining]="idTraining"
+                          [isUpdateMode]="isUpdateMode"
+                          [trainingSession]="trainingSessionToUpdate"></app-sesssion-stepper>
+
+    <!-- End session stepper -->
+
+    <!-- Begin footer -->
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-lg-2 col-md-12">
+          <button *ngIf="!isUpdateMode" [routerLink]="['/main/rh/training/catalog']" class="btn btn-sm btn-primary">
+            <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_CATALOG_LIST'|translate}}
+          </button>
+          <button *ngIf="isUpdateMode" [routerLink]="['/main/rh/training/session']" class="btn btn-sm btn-primary">
+            <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_SESSION_LIST'|translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- End footer -->
+  </div>

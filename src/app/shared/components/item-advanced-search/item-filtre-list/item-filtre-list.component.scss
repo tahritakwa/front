@@ -1,0 +1,49 @@
+.stockDisplay {
+  position: absolute;
+}
+
+::ng-deep {
+  ng5-slider .ng5-slider-pointer {
+    width: 15px !important;
+    height: 15px !important;
+    top: -5px !important;
+  }
+}
+fieldset {
+  padding: 20px;
+}
+legend {
+  color: #13688c;
+  width: fit-content !important;
+  font-size: medium;
+}
+.refreshClass {
+  color:black;
+  cursor: pointer;
+  font-size: 20px;
+  margin-right:5px;
+  margin-top:5px;
+}
+.d-flex-item {
+  display: -ms-flexbox !important;
+  display: flex !important;
+  flex-direction: row;
+  -webkit-box-orient : initial;
+  -webkit-box-direction : normal;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.d-flex-item-rest {
+display: -webkit-box !important;
+    display: flex !important;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-box-pack: justify;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+.colTecDoc{
+    flex: auto;
+    max-width: 100%;
+    width: 100px;
+}

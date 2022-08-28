@@ -1,0 +1,97 @@
+import { Resource } from '../shared/ressource.model';
+import { ItemWarehouse } from './item-warehouse.model';
+import { Nature } from '../administration/nature.model';
+import { Tiers } from '../achat/tiers.model';
+import { ItemKit } from './item-kit.model';
+import { ItemVehicleBrandModelSubModel } from './ItemVehicleBrandModelSubModel.model';
+import { ProductItem } from './product-item.model';
+import { FileInfo } from '../shared/objectToSend';
+import { ItemTiers } from './item-tiers.model';
+import { InterventionItem } from '../garage/intervention-item.model';
+
+export class ReducedListItem extends Resource {
+  NumberOfItemEquiKit: number;
+  UrlPicture: string;
+  QuantityForDocumentLine: number;
+
+  Code: string;
+  Description: string;
+  RefDesignation: string;
+  BarCode1D: string;
+  BarCode2D: string;
+  IdUnitStock?: number;
+  IdUnitSales?: number;
+  CoeffConversion?: number;
+  IdPolicyValorization: number;
+  UnitHtpurchasePrice?: number;
+  UnitHtsalePrice?: number;
+  UnitTtcpurchasePrice?: number;
+  UnitTtcsalePrice?: number;
+  Tvarate?: number;
+  FixedMargin?: number;
+  VariableMargin?: number;
+  IdDiscountGroupItem?: number;
+  ItemInt1?: number;
+  ItemFloat1?: number;
+  ItemFloat2?: number;
+  DeletedToken: string;
+  IdNature?: number;
+  IdTiers?: number;
+  IdTiersNavigation: Tiers;
+  IdDiscountGroupItemNavigation;
+  IdNatureNavigation: Nature;
+  IdUnitSalesNavigation;
+  IdUnitStockNavigation;
+  DocumentLine;
+  ItemWarehouse: ItemWarehouse[];
+  ItemVehicleBrandModelSubModel: ItemVehicleBrandModelSubModel[];
+  Prices;
+  StockDocumentLine;
+  StockMovement;
+  TaxeItem: Array<any>;
+  EquivalenceItem: any;
+  AllAvailableQuantity: number;
+  IdFamily: number;
+  IdSubFamily: number;
+  OnOrder: boolean;
+  Note: string;
+  idAccountingAccountSales: number;
+  idAccountingAccountPurchase: number;
+  TecDocId: number;
+  TecDocRef: string;
+  TecDocBrandName: string;
+  TecDocIdSupplier: number;
+  IsForSales: boolean;
+  IsForPurchase: boolean;
+  IsKit: boolean;
+  ItemKitIdKitNavigation: Array<ItemKit>;
+  IdItemReplacement: number;
+  IdProductItem: number;
+  HaveClaims: boolean;
+  IdProductItemNavigation: ProductItem;
+  LabelProduct: string;
+  IsEcommerce: boolean;
+  ExistInEcommerce: boolean;
+  SynchonizationStatus: number;
+  OnlineSynchonizationStatus: number;
+  LastUpdateEcommerce: Date;
+  OrderedQuantity: number;
+  TiersName: string;
+  isViewed: boolean;
+  IdSupplier: any;
+  CRP: string;
+  CMD: number;
+  ReliquatQty: number;
+  UnitHtPurchasePriceFormatOption: any;
+  TecDocImageUrl: string;
+  
+  FilesInfos: Array<FileInfo>;
+  IsStockManaged: boolean;
+  ItemTiers: ItemTiers[];
+  ListTiers: Tiers[];
+  InterventionItem: Array<InterventionItem>;
+  
+  image: any;
+
+
+}

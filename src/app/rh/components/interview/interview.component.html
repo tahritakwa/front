@@ -1,0 +1,39 @@
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+  <div class="card">
+
+    <div class="card-header" style="color: #808080">
+      <b><span style="font-size:20px!important">{{'INTERVIEW'|translate}} {{index + 1}}:</span></b>
+
+      <span *ngIf="interview.InterviewDate" style="margin-right:5px!important;margin-left:15px!important;">
+        {{'THE'|translate}}
+      </span>
+
+      <b>
+        {{interview.InterviewDate | date:formatDate}}
+      </b>
+
+      <span *ngIf="interview.InterviewDate" style="margin-right:5px!important;margin-left:5px!important;">
+        {{'AT_TIME'|translate}}
+      </span>
+
+      <b>
+        {{interview.InterviewDate | date:'HH:mm'}}
+      </b>
+    </div>
+
+    <div class="card-body">
+      <b>
+        <span *ngIf="interview.InterviewMark" style="margin-right:5px!important;">
+          {{'INTERVIEWERS'|translate}}:
+        </span>
+      </b>
+
+      <div *ngFor="let currentInterviewMark of interview.InterviewMark"
+           style="margin-right:5px!important;margin-left:30px!important;">
+        {{currentInterviewMark.IdEmployeeNavigation.FirstName}} {{currentInterviewMark.IdEmployeeNavigation.LastName}}
+
+      </div>
+    </div>
+
+  </div>
+</div>

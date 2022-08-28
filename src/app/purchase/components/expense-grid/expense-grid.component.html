@@ -1,0 +1,240 @@
+<div class="row col-xs-12 col-lg-12 col-md-12">
+  <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+    <kendo-grid (cellClick)="!isDisabled ? lineClickHandler($event) : ''" (save)="!isDisabled ? saveLine() : ''"
+      (remove)="!isDisabled ? removeLine($event) : ''" (add)="!isDisabled ? addLine() : ''" [data]="view"
+      id="productsGrid" [style.maxHeight.px]="400" [scrollable]="'virtual'">
+      <!--start Media Lg-->
+
+      <!--Expense Column Start-->
+      <kendo-grid-column field="CodeExpense" title="{{'EXPENSE'|translate}}" [width]='150'>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf='isEditingMode'>
+          <app-expense-dropdown [selectedValue]="selectedExpense" [isInGrid]="true" (addClicked)="addExpenseEvent()"
+            [form]="formGroup" (selected)="expenseSelected($event)" [hideBtn]="hideBtn"></app-expense-dropdown>
+          <i #anchor></i>
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="CodeExpense">
+          </app-control-message-grid-cell>
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'EXPENSE'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Expense Column End-->
+      <!--Designation Start-->
+      <kendo-grid-column field="Designation" title="{{'DESIGNATION'|translate}}" [width]='200'>
+        <ng-template kendoGridEditTemplate let-formGroup="formGroup" *ngIf='isEditingMode'>
+          <app-grid-cell-input-template [group]="formGroup" controlName="Designation">
+          </app-grid-cell-input-template>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span *ngIf='dataItem.Designation'> {{dataItem.Designation}} </span>
+          <span *ngIf='!dataItem.Designation'> - </span>
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'DESIGNATION'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Designation End-->
+      <!--Recipient Column Start-->
+      <kendo-grid-column field="TiersName" title="{{'RECIPIENT'|translate}}" [width]='180'>
+        <ng-template kendoGridEditTemplate let-formGroup="formGroup" *ngIf='isEditingMode'>
+
+          <app-supplier-dropdown [type]=2 [itemForm]="formGroup" [selectedValue]="supplierRelatedToExpense"
+            [isInGrid]="true" (Selected)="selectSupplier($event)" [filterString]="supplierName"
+            class="error-msg messages text-left text-danger" (addClickedSupplier)="addSupplierEvent($event)"
+            [getRelationCurrency]='true'>
+          </app-supplier-dropdown>
+          <i #anchor></i>
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="IdTiers">
+          </app-control-message-grid-cell>
+
+
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'RECIPIENT'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Recipient Column End-->
+      <!--Currency Column Start-->
+      <kendo-grid-column field="CodeCurrency" title="{{'CURRENCY'|translate}}" [width]='90'>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf='isEditingMode'>
+          <app-currency-dropdown class="error-msg messages text-left text-danger" [group]="formGroup">
+          </app-currency-dropdown>
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'CURRENCY'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Currency Column End-->
+
+      <!--HtAmountLineWithCurrency Start-->
+      <kendo-grid-column field="HtAmountLineWithCurrency" title="{{'AMOUNTHT'|translate}}"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right", "padding-right": "1%"}'
+        [width]='100'>
+        <ng-template kendoGridEditTemplate let-formGroup="formGroup" let-dataItem="dataItem" *ngIf='isEditingMode'>
+
+          <div (click)="disablePercentageData(this)">
+
+            <input class="form-control" type="text" [(ngModel)]="HtAmountLineWithCurrency"
+              value="{{dataItem.HtAmountLineWithCurrency}}" style="border: 1px solid #e4e7ea !important;"
+              [disabled]='amountInputDisabled' (afterValueChanged)="changeAmountData()"
+              (keypress)='saveAmountColumn($event)' />
+            <div class="row">
+              <i #anchor></i>
+            </div>
+            <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="HtAmountLineWithCurrency">
+            </app-control-message-grid-cell>
+
+          </div>
+
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'AMOUNTHT'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.HtAmountLineWithCurrency.toLocaleString('fr-FR',{minimumFractionDigits:dataItem.IdCurrencyNavigation.Precision,style:
+          'currency', currency:dataItem.IdCurrencyNavigation.Code, currencyDisplay:'symbol'})}}
+        </ng-template>
+
+      </kendo-grid-column>
+      <!--HtAmountLineWithCurrency End-->
+
+      <!--HtAmountLineWithCurrencyPercentage Start-->
+      <kendo-grid-column field="HtAmountLineWithCurrencyPercentage"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right", "padding-right": "1%"}'
+        title="{{'AMOUNTHTPERCENTAGE'|translate}}" [width]='100'>
+        <ng-template kendoGridEditTemplate let-formGroup="formGroup" let-dataItem="dataItem" *ngIf='isEditingMode'>
+
+          <div (click)="disableAmountData(this)">
+
+            <input class="form-control" type="text" [(ngModel)]='HtAmountLineWithCurrencyPercentage'
+              value="{{dataItem.HtAmountLineWithCurrencyPercentage}}" style="border: 1px solid #e4e7ea !important;"
+              [disabled]='percentageInputDisabled' (afterValueChanged)="changePercentageData()"
+              (keypress)='savePercentageColumn($event)' />
+            <div class="row">
+              <i #anchor></i>
+            </div>
+            <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor"
+              controlName="HtAmountLineWithCurrencyPercentage">
+            </app-control-message-grid-cell>
+
+          </div>
+
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'AMOUNTHTPERCENTAGE'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <label>{{dataItem.HtAmountLineWithCurrencyPercentage}} %</label>
+        </ng-template>
+      </kendo-grid-column>
+      <!--HtAmountLineWithCurrencyPercentage End-->
+
+
+      <!--TVA Start-->
+      <kendo-grid-column field="CodeTaxe" title="{{'TVA'|translate}}" [width]='100'>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' let-column="column" let-formGroup="formGroup">
+          <div *ngIf='dataItem.CodeTaxe !== undefined'>
+            <div class="taxClass" style="border: 2px solid #61a8ad !important; padding: 2px">
+              {{dataItem.CodeTaxe}}
+            </div>
+          </div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-formGroup="formGroup" *ngIf='isEditingMode'>
+          <app-taxe-dropdown [selectedValue]="selectedVAT" (selected)="receiveTaxe($event)" [form]="formGroup">
+          </app-taxe-dropdown>
+          <i #anchor></i>
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="IdTaxe">
+          </app-control-message-grid-cell>
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'TVA'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!--TVA End-->
+      <!--TaxeAmount-->
+      <kendo-grid-column field="TaxeAmount" title="{{'TAXEAMOUNT'|translate}}" [width]='140' [filterable]="true"
+        filter="numeric" [format]="formatOptions">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{'TAXEAMOUNT' | translate}}" theme="light">
+            {{column.title|translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf='!showTaxeAmount(dataItem)' class="text-right">-</div>
+          <div *ngIf='showTaxeAmount(dataItem)' class="text-right">
+            <span>
+              {{dataItem.TaxeAmount ? dataItem.TaxeAmount.toLocaleString(language, {
+              minimumFractionDigits: dataItem.IdCurrencyNavigation.Precision,
+              style: 'currency', currency: dataItem.IdCurrencyNavigation.Code, currencyDisplay: 'symbol'
+              }) : ''}}
+            </span>
+          </div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <app-grid-cell-input-template [group]="formGroup" controlName="TaxeAmount" inputType="number"
+            [stopInputCounter]='true'>
+          </app-grid-cell-input-template>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!--TtcAmountLineWithCurrency Start-->
+      <kendo-grid-column field="TtcAmountLineWithCurrency"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right", "padding-right": "1%"}'
+        title="{{'AMOUNTTTC'|translate}}" [width]='120'>
+        <ng-template kendoGridEditTemplate let-formGroup="formGroup" let-dataItem="dataItem" *ngIf='isEditingMode'>
+          <app-grid-cell-input-template [group]="formGroup" controlName="TtcAmountLineWithCurrency">
+          </app-grid-cell-input-template>
+        </ng-template>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'AMOUNTTTC'|translate}} ({{companyCurrencySymbole}})" theme="light">{{column.title}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.TtcAmountLineWithCurrency.toLocaleString('fr-FR',{minimumFractionDigits:dataItem.IdCurrencyNavigation.Precision,style:
+          'currency', currency:dataItem.IdCurrencyNavigation.Code, currencyDisplay:'symbol'})}}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-command-column title="" [width]='100'
+        *ngIf='!isDisabled && (documentformGroup.value.IdDocumentStatus==1 || documentformGroup.value.IdDocumentStatus==13)'>
+        <ng-template kendoGridCellTemplate let-isNew="isNew">
+          <div style="display: flex; margin-top: 5%;">
+            <button kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr"
+              style="border: none; color: #E91E63 !important;" type="button">
+              <i class="fa fa-times fa-lg"></i>
+            </button>
+
+            <button class='noPadding btn-Add' *ngIf="isEditingMode" kendoGridSaveCommand type="button" id="btnSave">
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <button kendoGridCancelCommand *ngIf="isEditingMode" class="noPadding btn-Add k-button"
+              (click)="cancelHandler()" type="button">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </div>
+        </ng-template>
+      </kendo-grid-command-column>
+      <!--TtcAmountLineWithCurrency End-->
+      <div>
+        <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+          <button kendoGridAddCommand class="noPadding btn-Add k-button" dir="ltr" style="border: none"
+            *ngIf='!isDisabled && (documentformGroup.value.IdDocumentStatus==1 || documentformGroup.value.IdDocumentStatus==13) ' type="button">
+            <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+            <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+          </button><br style="line-height: 2.5em;">
+        </ng-template>
+        <kendo-grid-messages noRecords="">
+        </kendo-grid-messages>
+      </div>
+    </kendo-grid>
+
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<mat-horizontal-stepper #stepper [linear]="isLinear">
+
+  <mat-step [completed]="true">
+    <form class="steper">
+      <ng-template matStepLabel>{{'SCHEDULING_A_MEETING'|translate}}</ng-template>
+      <app-list-meeting-exit-employee [employeeExit]="employeeExit"
+                                      [isRefused]="employeeExit && employeeExit.Status === statusCode.Refused">
+      </app-list-meeting-exit-employee>
+      <div>
+        <button mat-button matStepperNext style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [completed]="true">
+    <form class="steper">
+      <ng-template matStepLabel>{{'RH_INFORMATION'|translate}}
+      </ng-template>
+      <app-rh-information [employeeExit]="employeeExit"></app-rh-information>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button mat-button matStepperNext style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [completed]="employeeExit.Status === statusCode.Accepted">
+    <form class="steper">
+      <ng-template matStepLabel>{{'IT_INFORMATION'|translate}}
+      </ng-template>
+      <app-it-information [employeeExit]="employeeExit"></app-it-information>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button mat-button matStepperNext style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [completed]="employeeExit.Status === statusCode.Accepted">
+    <form class="steper">
+      <ng-template matStepLabel>
+        <div (click)="checkIfExitEmployeeIsAccepted()">
+          {{'FINAL_SETTLEMENT_OF_SALARY'|translate}}
+        </div>
+      </ng-template>
+      <app-exit-employee-pay *ngIf="employeeExit" [employeeExit]="employeeExit"></app-exit-employee-pay>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button mat-button matStepperNext style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [completed]="employeeExit.Status === statusCode.Accepted">
+    <form class="steper">
+      <ng-template matStepLabel>
+        <div (click)="checkIfExitEmployeeIsAccepted()">
+          {{'DONE'|translate}}
+        </div>
+      </ng-template>
+      <app-exit-employee-desactivate *ngIf="employeeExit" [employeeExit]="employeeExit">
+      </app-exit-employee-desactivate>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-horizontal-stepper>

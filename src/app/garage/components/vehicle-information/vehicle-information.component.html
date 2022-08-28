@@ -1,0 +1,103 @@
+<div class="col-lg-12 col-md-12 col-sm-12" style="padding-right: 40px!important;">
+  <div class="form-group row">
+    <span style="font-weight: bold;">{{'VEHICLE' | translate}}</span>
+  </div>
+  <div class="form-group row">
+    <div class="col-lg-12">
+      <form class="form-horizontal" [formGroup]="form">
+        <div class="form-group row" style="margin-left: -1em;">
+          <label>{{'REGISTRATION_NUMBER' | translate}}
+            <span class="required">*</span>
+          </label>
+          <div class="col-lg-auto">
+            <app-registration-number-of-vehicle-dropdwon 
+              [group]="form.controls.IdReceptionNavigation"
+              [category]="vehicleCategoryEnum.Customer"
+              (valueSelected)="refreshVehicleInformation($event)">
+            </app-registration-number-of-vehicle-dropdwon>
+            <app-control-messages [control]="ReceptionFormGroup.controls.IdVehicle"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </form>
+      <div class="form-group row">
+        <label style="margin-right: 5.8em;">{{'BAND' | translate}}</label>
+        <span style="font-style: italic">
+          {{(vehicleSelected && vehicleSelected.IdVehicleBrandNavigation) ?
+          vehicleSelected.IdVehicleBrandNavigation.Designation: ''}}
+        </span>
+
+      </div>
+      <div class="form-group row">
+        <label style="margin-right: 6em;">{{'MODELE' | translate}}</label>
+        <span style="font-style: italic">
+          {{(vehicleSelected && vehicleSelected.IdVehicleModelNavigation) ?
+          vehicleSelected.IdVehicleModelNavigation.Designation : ''}}
+        </span>
+      </div>
+      <div class="form-group row">
+        <label style="margin-right: 6.3em;">{{'DPMC' | translate}}</label>
+        <span style="font-style: italic">
+          {{vehicleSelected ? ( vehicleSelected.FirstTraficDate | date : dateFormat ) : ''}}
+        </span>
+      </div>
+      <div class="form-group row">
+        <label style="margin-right: 6em;">{{'ENERGY' | translate}}</label>
+        <span style="font-style: italic">
+          {{(vehicleSelected && vehicleSelected.IdVehicleEnergyNavigation) ?
+          vehicleSelected.IdVehicleEnergyNavigation.Name : ''}}
+        </span>
+      </div>
+      <div class="form-group row">
+        <label style="margin-right: 2.3em;">{{'POWER_KW' | translate}}</label>
+        <span style="font-style: italic">
+          {{vehicleSelected ? vehicleSelected.Power : ''}}
+        </span>
+
+      </div>
+      <div class="form-group row">
+        <label style="margin-right: 4.3em;">{{'LAST_KILOMETER' | translate}}</label>
+        <span style="font-style: italic">
+          {{vehicleSelected ? vehicleSelected.LastMileage : ''}}
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <span style="font-weight: bold;">{{'CUSTOMER' | translate}}</span> &nbsp;
+    <span class="badge badge-primary" style="margin-top: 0.4em;"
+      *ngIf="(vehicleSelected && vehicleSelected.IdTiersNavigation ) && (vehicleSelected.IdTiersNavigation.TiersClassification === customerCategoryEnumerator.Normal)">
+      {{ 'NORMAL' | translate}}
+    </span>
+    <span class="badge badge-success" style="margin-top: 0.4em;"
+      *ngIf="(vehicleSelected && vehicleSelected.IdTiersNavigation ) && (vehicleSelected.IdTiersNavigation.TiersClassification === customerCategoryEnumerator.VIP)">
+      {{ 'VIP' | translate}}
+    </span>
+    <span class="badge badge-primary" style="margin-top: 0.4em;"
+      *ngIf="vehicleSelected && (!vehicleSelected.IdTiersNavigation || vehicleSelected.IdTiersNavigation && !vehicleSelected.IdTiersNavigation.TiersClassification)">
+      {{'NORMAL' | translate}}
+    </span>
+  </div>
+  <div class="form-group row">
+    <div class="col-lg-12">
+      <div class="form-group row">
+        <label style="margin-right: 5em; margin-top: 1em;">{{'CUSTOMER_NAME' | translate}}</label>
+        <span style="font-style: italic; margin-top: 1em;">
+          {{(vehicleSelected && vehicleSelected.IdTiersNavigation ) ? vehicleSelected.IdTiersNavigation.Name : ''}}
+        </span>
+      </div>
+      <div class="form-group row">
+        <label style="margin-right: 3.6em; margin-top: 1em;">N°&nbsp;{{'PHONE' | translate}}</label>
+        <span style="font-style: italic; margin-top: 1em;"
+          *ngIf="vehicleSelected && vehicleSelected.IdTiersNavigation && vehicleSelected && vehicleSelected.IdTiersNavigation.Fax">
+          {{vehicleSelected.IdTiersNavigation.Fax}} &nbsp;
+        </span>
+        <span style="font-style: italic; margin-top: 1em;"
+          *ngIf="vehicleSelected && vehicleSelected.IdTiersNavigation && vehicleSelected.IdTiersNavigation.IdPhoneNavigation">
+          {{vehicleSelected.IdTiersNavigation.IdPhoneNavigation.Number}}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

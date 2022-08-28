@@ -1,0 +1,33 @@
+
+input[type="radio"] {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+input[type="radio"] + label::before {
+  content: '\a0';
+  display: inline-block;
+  margin: .2em .5em;
+  width: .8em;
+  height: .8em;
+  line-height: .75em;
+  transition: all .5s;
+  border: 1px solid silver;
+}
+
+input[type="radio"] + label::before {
+  border-radius: 50%;
+}
+
+input[type="radio"]:checked + label::before {
+  content: '\a0';
+  background: #5bb3bb;
+  border: 1px solid white;
+  box-shadow: inset 0 0 0 1px white, 0 0 0 1px #5bb3bb;
+}
+
+input[type="radio"] {
+  -webkit-appearance: checkbox; /* Chrome, Safari, Opera */
+  -moz-appearance: checkbox; /* Firefox */
+  -ms-appearance: checkbox; /* not currently supported */
+}

@@ -1,0 +1,117 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'ORDERPROJECT'|translate}}</h3>
+          </div>
+        </div>
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body">
+          <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+            (filtrePredicateToSend)="getFiltrePredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+            (searchClickEvent)="searchClick()" (resetClickEvent)="resetClickEvent()">
+          </app-advanced-search>
+          <div class="justify-content-between mt-3">
+
+            <!-- search div-->
+            <div class="col-lg-6 col-md-6 col-sm-6 d-flex justify-content-center">
+              <div class="col-12">
+                    <div class="form-group row">
+                      <div class="col-10">
+                        <input type="text" class="form-control" placeholder="{{'SEARCH_REPLENISHMENT'|translate}}"
+                          aria-describedby="addon-wrapping" [(ngModel)]='orderProject' (keyup)='filter()'
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                      <div class="col-2 p-1">
+                        <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf='isModal!=true'>
+            
+                  <app-btn-grid class="col" [advencedAdd]='haveAddPermission' [addLink]='"addProvision"' [model]='true' [relativeStyle]='true'
+                  [fileName]="'ORDERPROJECT'|translate" [gridSettings]="gridSettings" [service]="provisionService"
+                  [isFromProvision]="true" [predicate]="predicateProvisionning" [isExportExcel]="true">
+                </app-btn-grid>
+                </div>
+              </div>
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [filter]="gridSettings.state.filter" [selectable]="selectableSettings"
+            (selectionChange)="selectRow($event)" (remove)="removeHandler($event)" [sort]="gridSettings.state.sort"
+            (dataStateChange)="dataStateChange($event)" [pageable]="pagerSettings" [sortable]="true">
+            <!--Grid Toolbar-->
+            
+            <!--End Grid toolbar-->
+            <!--Columns-->
+            <kendo-grid-checkbox-column [width]='30' *ngIf='isModal==true'></kendo-grid-checkbox-column>
+
+            <!--Code-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+              [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+              [format]="gridSettings.columnsConfig[0].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Date -->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+              [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+              [format]="gridSettings.columnsConfig[1].format" [style]="{'text-align': 'center'}"
+              [headerStyle]="{'text-align': 'center'}">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.CreationDate|date: gridSettings.columnsConfig[1].format}}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]=gridSettings.columnsConfig[2].field
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+              [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+              [format]="gridSettings.columnsConfig[2].format" [headerStyle]="{'text-align': 'center'}"
+              [style]="{'text-align': 'center'}">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <div *ngIf="dataItem.TiersProvisioning">
+                  <div *ngFor='let tiers of dataItem.TiersProvisioning' style="display: inline-flex">
+                    <span class="taxClass"
+                      style="border: 2px solid #61a8ad !important; padding: 3px; margin-top: 1px; margin-bottom: 1px; margin-left: 2px;">
+                      {{tiers.IdTiersNavigation.Name}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End Columns-->
+            <!--Actions-->
+            <kendo-grid-command-column [width]="100" *ngIf='isModal!=true' [title]="'ACTIONS'| translate"
+              [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <!--Open advanced edit form -->
+                <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true"
+                  (click)="goToAdvancedEdit(dataItem)" *ngIf="haveShowPermission || haveUpdatePermission"></i>
+                <i class="text-danger cursor-pointer fa fa-trash-o la-lg" aria-hidden="true"
+                  (click)="removeHandler(dataItem)"*ngIf="haveDeletePermission"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--End Actions-->
+
+          </kendo-grid>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

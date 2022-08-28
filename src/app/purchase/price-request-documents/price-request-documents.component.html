@@ -1,0 +1,193 @@
+<p>
+  <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridState.take" [skip]="gridState.skip"
+    [pageable]="pagerSettings" [filterable]="true" [columnMenu]="false" (dataStateChange)="dataStateChange($event)"
+    [sortable]="true" [sort]="gridSettings.state.sort">
+    <!--Client-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [filterable]="true"
+      [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+      [format]="gridSettings.columnsConfig[0].format" [style]='{"text-align": "left"}'>
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+          theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+      </ng-template>
+
+    </kendo-grid-column>
+    <!--Date-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [filterable]="false"
+      [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+      [format]="gridSettings.columnsConfig[1].format" filter="date" [style]='{"text-align": "left"}'>
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+          theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        {{dataItem.DocumentDate|date: gridSettings.columnsConfig[1].format}}
+      </ng-template>
+    </kendo-grid-column>
+    <!--Code-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [filterable]="true"
+      [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+      [format]="gridSettings.columnsConfig[2].format" [style]='{"text-align": "left"}'>
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+          theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+
+        <div class="d-flex justify-content-center">
+          <span class="pointer doc-code" [ngStyle]="{'color': '#' + dataItem.StatusColer}" theme="light"
+            (click)="showDocument(dataItem)">{{dataItem.Code}}</span>
+        </div>
+
+      </ng-template>
+    </kendo-grid-column>
+    <!--Montant HT-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [filterable]="true"
+      [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+      [format]="gridSettings.columnsConfig[3].format"
+      [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253","text-align": "right", "padding-right": "3%"}'
+      filter="numeric">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+          theme="light">{{gridSettings.columnsConfig[3].title | translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <kendo-numerictextbox [spinners]="false" [format]="dataItem.FormatOption" [step]="1"
+          style="border: none !important;" class="form-control inputEnabled as-label"
+          [value]="dataItem.DocumentHtpriceWithCurrency" [disabled]="true">
+        </kendo-numerictextbox>
+      </ng-template>
+    </kendo-grid-column>
+    <!--Montant TTC-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[4].field" [filterable]="true"
+      [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+      [format]="gridSettings.columnsConfig[4].format"
+      [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align": "right", "padding-right": "3%"}'
+      filter="numeric">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+          theme="light">{{gridSettings.columnsConfig[4].title | translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <kendo-numerictextbox [spinners]="false" [format]="dataItem.FormatOption" [step]="1"
+          style="border: none !important;" class="form-control inputEnabled as-label"
+          [value]="dataItem.DocumentTtcpriceWithCurrency" [disabled]="true">
+        </kendo-numerictextbox>
+      </ng-template>
+    </kendo-grid-column>
+    <!--Etat-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[5].field" [filterable]="false"
+      [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+      [format]="gridSettings.columnsConfig[5].format" [style]='{"text-align": "left"}'>
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+          theme="light">{{gridSettings.columnsConfig[5].title | translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+        <div class="row pl-3">
+          <div *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional">
+            <span
+              *ngIf='!(dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && dataItem.haveReservedLines)'
+              class="badge badge-warning" style="display: flex;">
+              {{'PROVISOIRE'|translate}}
+              <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">
+                &nbsp;B2B
+              </p>
+            </span>
+            <span *ngIf='dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && dataItem.haveReservedLines'
+              class="badge badge-warning" style="display: flex; background-color: #cb7119 !important;">
+              {{'PROVISOIRE'|translate}}
+              <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">
+                &nbsp;B2B
+              </p>
+              <p style="margin: 0px;">
+                &nbsp;/ {{'RESERVED'|translate}}
+              </p>
+            </span>
+          </div>
+          <div *ngIf="dataItem.IdDocumentStatus === statusCode.Printed">
+            <span class="badge" [ngStyle]="{'color': '#ffffff', 'background-color': '#4608a0'}">
+              {{'PRINTED'|translate}}
+              <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+            </span>
+          </div>
+          <div *ngIf="dataItem.IdDocumentStatus == statusCode.Refused">
+            <span class="badge badge-danger" style="display: flex;">
+              {{'CANCELED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+            </span>
+          </div>
+          <div
+            *ngIf="dataItem.IdDocumentStatus === statusCode.Valid || dataItem.IdDocumentStatus == statusCode.ToOrder">
+            <span class="badge badge-success" style="display: inline-flex;">
+              {{'VALID'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+              <p *ngIf='dataItem.IsDeliverySuccess === true' style="margin: 0px;">
+                &nbsp; /
+                {{ 'DELIVERED'|translate}}
+              </p>
+            </span>
+          </div>
+          <div *ngIf="dataItem.IdDocumentStatus === statusCode.Balanced">
+            <span class="badge" style="color: #ffffff; background-color: #816fa5; display: flex;" *ngIf='dataItem.DocumentTypeCode === documentEnumerator.SalesOrder
+          || dataItem.DocumentTypeCode == documentEnumerator.PurchaseFinalOrder'>
+              {{'TOTALLY_DELIVERED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">
+                &nbsp;B2B
+              </p>
+            </span>
+            <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+              *ngIf='dataItem.DocumentTypeCode == documentEnumerator.PurchaseOrder'>
+              {{'TOTALLY_ORDRED'|translate}}
+            </span>
+            <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+              *ngIf='dataItem.DocumentTypeCode == documentEnumerator.SalesAsset || dataItem.DocumentTypeCode == "IA-SA"'>
+              {{'BALANCED'|translate}}
+            </span>
+            <span class="badge" style="color: #ffffff; background-color: #816fa5; display: flex;"
+              *ngIf='dataItem.DocumentTypeCode === documentEnumerator.PurchaseDelivery
+          ||dataItem.DocumentTypeCode == documentEnumerator.SalesDelivery || dataItem.DocumentTypeCode == documentEnumerator.BS'>
+              {{'CHARGED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+            </span>
+            <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+              *ngIf='dataItem.DocumentTypeCode == documentEnumerator.SalesQuotations'>
+              {{'ODREDER'|translate}}
+            </span>
+
+            <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+              *ngIf='dataItem.DocumentTypeCode == documentEnumerator.PurchaseInvoices || dataItem.DocumentTypeCode == documentEnumerator.SalesInvoices'>
+              {{'STATUS_INVOICE_FROM_ASSET'|translate}}
+            </span>
+          </div>
+          <div *ngIf="dataItem.IdDocumentStatus === statusCode.TotallySatisfied">
+            <span class="badge" style="color: #ffffff; background-color: #816fa5; display: flex;">
+              {{'TOTALLY_PAID'|translate}}
+              <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+            </span>
+          </div>
+          <div *ngIf="dataItem.IdDocumentStatus === statusCode.Accounted">
+            <span class="badge" style="color: #ffffff; background-color: #0d35a3; display: flex;">
+              {{'ACCOUNTED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+            </span>
+          </div>
+          <div *ngIf="dataItem.IdDocumentStatus === statusCode.PartiallySatisfied">
+            <span class="badge badge-primary" style="color: #ffffff; display: flex;">
+              {{
+              ((dataItem.DocumentTypeCode === documentEnumerator.PurchaseFinalOrder || dataItem.DocumentTypeCode ===
+              documentEnumerator.SalesOrder)?
+              'PARTIALLY_DELIVERED': ((dataItem.DocumentTypeCode === documentEnumerator.PurchaseOrder ||
+              dataItem.DocumentTypeCode === documentEnumerator.SalesQuotations) ? 'PARTIALLY_ORDRED' :'PARTIALLY_PAID'
+              )) |translate
+              }}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+            </span>
+          </div>
+          <div
+            *ngIf="dataItem.IdDocumentStatus === statusCode.DRAFT && dataItem.DocumentTypeCode != documentEnumerator.SalesInvoices">
+            <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'DRAFT_B2B'|translate}}</span>
+          </div>
+          <div
+            *ngIf="dataItem.IdDocumentStatus === statusCode.DRAFT && dataItem.DocumentTypeCode == documentEnumerator.SalesInvoices">
+            <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'DRAFT'|translate}}</span>
+          </div>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</p>

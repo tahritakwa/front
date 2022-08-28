@@ -1,0 +1,497 @@
+<div [ngClass]="(!isEmployeeUpdateMode || isModal) ? 'card' : 'col-lg-12 col-sm-12 col-md-12 mr-5'">
+  <div class="card-header" *ngIf="!isEmployeeUpdateMode && !isModal">
+    <div class="row">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'UPDATE_CONTRACT' : 'ADD_CONTRACT')|translate}}</h3>
+      </div>
+      <div class="col-lg-7 col-md-7 col-sm-12" style="text-align:right">
+        <h4 class="statusAlignment" *ngIf="contractToUpdate &&contractToUpdate.State === contractStateEnumerator.New ">
+          <span class="badge badge-primary">{{"NEW" | translate }}</span>
+        </h4>
+        <h4 class="statusAlignment" *ngIf="contractToUpdate && contractToUpdate.State === contractStateEnumerator.InProgress">
+          <span class="badge badge-success">{{"IN_PROGReSS" | translate }}</span>
+        </h4>
+        <h4 class="statusAlignment" *ngIf=" contractToUpdate && contractToUpdate.State === contractStateEnumerator.Done">
+          <span class="badge badge-danger">{{ "DONE" | translate }}</span>
+        </h4>
+        <h4 class="statusAlignment" *ngIf=" contractToUpdate && contractToUpdate.State === contractStateEnumerator.UpComing">
+          <span class="badge badge-warning">{{ "UPCOMING" | translate }}</span>
+        </h4>
+      </div>
+   </div>
+  </div>
+  <div [ngClass]="(!isEmployeeUpdateMode || isModal) ? 'card-body' : ''">
+    <form class="form-horizontal">
+      <!-- Begin principal menu  part-->
+      <div class="card-body" [formGroup]="contractFormGroup" *ngIf="contractFormGroup">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+          <div class="form-group row">
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="!isEmployeeUpdateMode">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMPLOYEE'|translate}}<span
+                  class="required">*</span></label>
+              <app-employee-dropdown [form]="contractFormGroup"></app-employee-dropdown>
+              <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CONTRACT_TYPE'|translate}}<span
+                  class="required">*</span></label>
+              <app-contract-type-dropdown (Selected)='changeRequired($event)' [group]="contractFormGroup"
+               (selected)="selectedContractType($event)">
+              </app-contract-type-dropdown>
+              <app-control-messages [control]="IdContractType" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'START_DATE'|translate}}<span
+                  class="required">*</span></label>
+              <kendo-datepicker [format]="formatDate" formControlName="StartDate" class="form-control"
+                (valueChange)="updateStartDateValidity($event)">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="StartDate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="isEmployeeUpdateMode">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_DATE'|translate}}<span *ngIf="isRequired"
+                  class="required">*</span></label>
+              <kendo-datepicker [format]="formatDate" formControlName="EndDate" class="form-control"
+                (valueChange)="updateStartDateValidity($event)">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="EndDate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="!isEmployeeUpdateMode">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_DATE'|translate}}<span *ngIf="isRequired"
+                  class="required">*</span></label>
+              <kendo-datepicker [format]="formatDate" formControlName="EndDate" class="form-control"
+                (valueChange)="updateStartDateValidity($event)">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="EndDate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'SALARY_STRUCTURE'|translate}}<span
+                  class="required">*</span></label>
+              <app-salary-structure-dropdown (Selected)="receiveDataSalaryStructure($event)" [group]="contractFormGroup" [notWithRoot]="true">
+              </app-salary-structure-dropdown>
+              <app-control-messages [control]="IdSalaryStructure" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CNSS_TYPE'|translate}}<span
+                  class="required">*</span></label>
+              <app-cnss-dropdown [group]="contractFormGroup"></app-cnss-dropdown>
+              <app-control-messages [control]="IdCnss" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="isEmployeeUpdateMode">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'WORKING_TIME'|translate}}</label>
+              <input class="form-control" formControlName="WorkingTime" type="number" min="0" max="60"
+                name="WorkingTime"
+                [ngClass]="{ 'has-error': (WorkingTime.touched || WorkingTime.dirty) && (!WorkingTime.valid && !WorkingTime.disabled) }">
+              <app-control-messages [control]="WorkingTime" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-4 col-md-4 col-sm-12" *ngIf="!isEmployeeUpdateMode">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'WORKING_TIME'|translate}}</label>
+              <input class="form-control" formControlName="WorkingTime" type="number" min="0" max="60"
+                name="WorkingTime" pattern="^([1-9]|[1-5][0-9]|60)$"
+                [ngClass]="{ 'has-error': (WorkingTime.touched || WorkingTime.dirty) && (!WorkingTime.valid && !WorkingTime.disabled) }">
+              <app-control-messages [control]="WorkingTime" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <app-upload-file class="col-lg-12 col-md-12 col-sm-12" [fileToUpload]="contractFileToUpload"
+                [service]="contractService" [canUpdateFile]="isDisabled"></app-upload-file>
+            </div>
+          </div>
+        </div>
+        <!--  Tab beginning  -->
+        <div [ngClass]="(!isEmployeeUpdateMode || isModal) ? 'row' : ''">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <ul class="nav nav-tabs nav-tabs-new" role="tablist" *ngIf="!isEmployeeUpdateMode || isModal">
+              <li class="nav-item" [ngClass]='{"Error-Form-tab": (!salaryFormGroup.disabled ? !salaryFormGroup.get("BaseSalary").valid : !salaryFormGroup.disabled)}'>
+                <a class="nav-link nav-link-new active show"
+                  [ngClass]='{"Error-Form-tab-text": (!salaryFormGroup.disabled ? !salaryFormGroup.get("BaseSalary").valid : !salaryFormGroup.disabled)}' data-toggle="tab"
+                  href="#baseSalaryTab" role="tab" aria-controls="home" aria-selected="true">
+                  <i class="fa fa-money"></i> {{'BASE_SALARY'|translate}}
+                </a>
+              </li>
+              <li class="nav-item" [ngClass]='{"Error-Form-tab": (!bonusFormGroup.disabled ? !bonusFormGroup.get("ContractBonus").valid : !bonusFormGroup.disabled)}'>
+                <a class="nav-link nav-link-new" [ngClass]='{"Error-Form-tab-text": (!bonusFormGroup.disabled ? !bonusFormGroup.get("ContractBonus").valid : !bonusFormGroup.disabled)}'
+                  data-toggle="tab" href="#bonusTab" role="tab" aria-controls="home" aria-selected="false">
+                  <i class="icon-calculator"></i> &nbsp;{{'BONUS'|translate}}
+                </a>
+              </li>
+              <li class="nav-item"
+                [ngClass]='{"Error-Form-tab": (!benefitInKindFormGroup.disabled ? !benefitInKindFormGroup.get("ContractBenefitInKind").valid: !benefitInKindFormGroup.disabled)}'>
+                <a class="nav-link nav-link-new"
+                  [ngClass]='{"Error-Form-tab-text": (!benefitInKindFormGroup.disabled ? !benefitInKindFormGroup.get("ContractBenefitInKind").valid: !benefitInKindFormGroup.disabled)}'
+                  data-toggle="tab" href="#benefitinkindTab" role="tab" aria-controls="home" aria-selected="false">
+                  <i class="fa fa-plus-square-o"></i> &nbsp;{{'BENEFIT_IN_KIND'|translate}}
+                </a>
+              </li>
+              <li class="nav-item" [ngClass]='{"Error-Form-tab": (!otherAdvantagesFormGroup.disabled ? !otherAdvantagesFormGroup.valid: !otherAdvantagesFormGroup.disabled)}'>
+                <a class="nav-link nav-link-new"
+                  [ngClass]='{"Error-Form-tab-text": (!otherAdvantagesFormGroup.disabled ? !otherAdvantagesFormGroup.valid: !otherAdvantagesFormGroup.disabled)}'
+                  data-toggle="tab" href="#otheradvantages" role="tab" aria-controls="home" aria-selected="false">
+                  <i class="fa fa-plus-square"></i> {{'OTHER_ADVANTAGES'|translate}}
+                </a>
+              </li>
+            </ul>
+            <div [ngClass]="(!isEmployeeUpdateMode|| isModal) ? 'tab-content border-0' : ''">
+              <!-- BASE_SALARY validity Section Start -->
+                <div [ngClass]="(!isEmployeeUpdateMode|| isModal) ? 'tab-pane active show fade px-0' : 'form-group row'"
+                  [id]="uuid + 'baseSalaryTab'" id="baseSalaryTab" role="tabpanel"
+                  [style.border-style]="(isEmployeeUpdateMode && !isModal) ? 'dashed' : ''"
+                  [style.border-color]="(isEmployeeUpdateMode && !isModal) ? '#F0F0F0' : ''"
+                  [style.padding]="(isEmployeeUpdateMode && !isModal) ? '20px' : ''">
+                <div class="card-body" [formGroup]="salaryFormGroup">
+                  <div *ngIf="(!isUpdateMode || isUpdateMode && hasShowBaseSalaryPermission)" class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+                    <div class="form-group row"
+                      [style.border-style]="(!isEmployeeUpdateMode || isModal) ? 'dashed' : ''"
+                      [style.border-color]="(!isEmployeeUpdateMode || isModal) ? '#F0F0F0' : ''"
+                      [style.padding]="(!isEmployeeUpdateMode || isModal) ? '20px' : ''">
+                      <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="isEmployeeUpdateMode && !isModal">
+                        {{'BASE_SALARY'|translate}}</label>
+                      <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isDisabled">
+                        <button class="noPadding btn-Add k-button" type="button" dir="ltr"
+                          style="border: none; margin-bottom: 20px" (click)="addBaseSalaryValidityPeriod()">
+                          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                          <span>&nbsp;{{'ADD_BASE_SALARY'|translate}}</span>
+                        </button>
+                      </div>
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div formArrayName="BaseSalary" *ngFor="let baseSalary of BaseSalary.controls; let i=index">
+                          <div class="row" *ngIf="isBaseSalaryRowVisible(i)">
+                            <app-base-salary-validity
+                              ngClass="isEmployeeUpdateMode ? col-lg-7 col-sm-7 col-md-7 : col-lg-11 col-sm-11 col-md-11"
+                              [ValidityFormGroup]="baseSalary" [contractStartDate]="StartDate.value" [contractEndDate]="EndDate.value">
+                            </app-base-salary-validity>
+                            <div class="col-sm-1 " style="margin-top: 32px !important; margin-left:-20px">
+                              <button *ngIf="i !== 0 && !isDisabled" class="noPadding btn-Add k-button" type="button"
+                                style="border: none" (click)="deleteBaseSalaryValidityPeriod(i)">
+                                <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!(!isUpdateMode || isUpdateMode && hasShowBaseSalaryPermission)">
+                    <span style="font-style: italic;">{{'UNAUTHRIZED' | translate}} {{'SHOW_BASESALARY' | translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- BASE_SALARY validity Section End -->
+
+              <!-- BONUSES validity Section Start -->
+              <div [ngClass]="(!isEmployeeUpdateMode|| isModal) ? 'tab-pane fade px-0' : 'form-group row'"
+                [id]="uuid + 'bonusTab'" id="bonusTab" role="tabpanel"
+                [style.border-style]="(isEmployeeUpdateMode && !isModal) ? 'dashed' : ''"
+                [style.border-color]="(isEmployeeUpdateMode && !isModal) ? '#F0F0F0' : ''"
+                [style.padding]="(isEmployeeUpdateMode && !isModal) ? '20px' : ''">
+                <div class="card-body" [formGroup]="bonusFormGroup">
+                  <div *ngIf="(!isUpdateMode || isUpdateMode && hasShowContractBonusPermission)" class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+                    <div class="form-group row"
+                      [style.border-style]="(!isEmployeeUpdateMode || isModal) ? 'dashed' : ''"
+                      [style.border-color]="(!isEmployeeUpdateMode || isModal) ? '#F0F0F0' : ''"
+                      [style.padding]="(!isEmployeeUpdateMode || isModal) ? '20px' : ''">
+                      <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="isEmployeeUpdateMode && !isModal">
+                        {{'BONUSES'|translate}}</label>
+                      <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isDisabled">
+                        <button class="noPadding btn-Add k-button" type="button" dir="ltr"
+                          style="border: none; margin-bottom: 20px" (click)="addContractBonusValidityPeriod()">
+                          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                          <span>&nbsp;{{'ADD_BONUS'|translate}}</span>
+                        </button>
+                      </div>
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div formArrayName="ContractBonus" *ngFor="let contractBonus of ContractBonus.controls; let i=index">
+                          <div class="row" *ngIf="isContractBonusRowVisible(i)">
+                            <app-contract-bonus-validity class="col-lg-11 col-sm-11 col-md-11"
+                              ngClass="isEmployeeUpdateMode ? col-lg-7 col-sm-7 col-md-7 : col-lg-11 col-sm-11 col-md-11"
+                              [ValidityFormGroup]="contractBonus" [contractStartDate]="StartDate.value" [contractEndDate]="EndDate.value"></app-contract-bonus-validity>
+                            <div class="col-sm-1 " style="margin-top: 32px !important; margin-left:-20px">
+                              <button class="noPadding btn-Add k-button" type="button" style="border: none"
+                                (click)="deleteContractBonusValidityPeriod(i)" *ngIf="!isDisabled">
+                                <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!(!isUpdateMode || isUpdateMode && hasShowContractBonusPermission)">
+                    <span style="font-style: italic;">{{'UNAUTHRIZED' | translate}} {{'SHOW_CONTRACTBONUS' | translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- </div> -->
+              <!-- BONUSES validity Section End -->
+              <!-- Benefit in kind section -->
+              <div [ngClass]="(!isEmployeeUpdateMode|| isModal) ? 'tab-pane fade px-0' : 'form-group row'"
+                [id]="uuid + 'benefitinkindTab'" id="benefitinkindTab" role="tabpanel"
+                [style.border-style]="(isEmployeeUpdateMode && !isModal) ? 'dashed' : ''"
+                [style.border-color]="(isEmployeeUpdateMode && !isModal) ? '#F0F0F0' : ''"
+                [style.padding]="(isEmployeeUpdateMode && !isModal) ? '20px' : ''">
+                <div class="card-body" [formGroup]="benefitInKindFormGroup">
+                  <div *ngIf="(!isUpdateMode || isUpdateMode && hasShowContractBenefitInKindPermission)" class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+                    <div class="form-group row"
+                      [style.border-style]="(!isEmployeeUpdateMode || isModal) ? 'dashed' : ''"
+                      [style.border-color]="(!isEmployeeUpdateMode || isModal) ? '#F0F0F0' : ''"
+                      [style.padding]="(!isEmployeeUpdateMode || isModal) ? '20px' : ''">
+                      <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="isEmployeeUpdateMode && !isModal">
+                        {{'BENEFIT_IN_KIND'|translate}}</label>
+                      <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isDisabled">
+                        <button class="noPadding btn-Add k-button" type="button" dir="ltr"
+                          style="border: none; margin-bottom: 20px" (click)="addContractBenefitInKind()">
+                          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                          <span>&nbsp;{{'ADD_BENEFIT_IN_KIND'|translate}}</span>
+                        </button>
+                      </div>
+                      <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="hasShowContractBenefitInKindPermission">
+                        <div formArrayName="ContractBenefitInKind"
+                          *ngFor="let contractBenefitInKind of ContractBenefitInKind.controls; let i=index">
+                          <div class="row" *ngIf="isContractBenefitInKindRowVisible(i)">
+                            <app-benefit-in-kind-validity 
+                              ngClass="isEmployeeUpdateMode ? col-lg-7 col-sm-7 col-md-7 : col-lg-11 col-sm-11 col-md-11"
+                              [ValidityFormGroup]="contractBenefitInKind" [contractStartDate]="StartDate.value" [contractEndDate]="EndDate.value"></app-benefit-in-kind-validity>
+                            <div class="col-sm-1 " style="margin-top: 32px !important; margin-left:-20px">
+                              <button class="noPadding btn-Add k-button" type="button" style="border: none"
+                                (click)="deleteContractBenefitInKind(i)" *ngIf="!isDisabled">
+                                <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="!(!isUpdateMode || isUpdateMode && hasShowContractBenefitInKindPermission)">
+                    <span style="font-style: italic;">{{'UNAUTHRIZED' | translate}} {{'SHOW_CONTRACTBENEFITINKIND' | translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Benefit in kind section end-->
+              <!-- Other advantages section -->
+              <div [ngClass]="(!isEmployeeUpdateMode|| isModal) ? 'tab-pane fade px-0' : 'form-group row'"
+                [id]="uuid + 'otheradvantages'" id="otheradvantages" role="tabpanel"
+                [style.border-style]="(isEmployeeUpdateMode && !isModal) ? 'dashed' : ''"
+                [style.border-color]="(isEmployeeUpdateMode && !isModal) ? '#F0F0F0' : ''"
+                [style.padding]="(isEmployeeUpdateMode && !isModal) ? '20px' : ''">
+                <div class="card-body" [formGroup]="otherAdvantagesFormGroup">
+                  <div *ngIf="(!isUpdateMode || isUpdateMode && hasShowOtherAdvantagePermission)" class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+                    <div class="form-group row"
+                      [style.border-style]="(!isEmployeeUpdateMode || isModal) ? 'dashed' : ''"
+                      [style.border-color]="(!isEmployeeUpdateMode || isModal) ? '#F0F0F0' : ''"
+                      [style.padding]="(!isEmployeeUpdateMode || isModal) ? '20px' : ''">
+                      <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="isEmployeeUpdateMode && !isModal">
+                        {{'OTHER_ADVANTAGES'|translate}}</label>
+                      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+                        <div class="form-group row">
+                          <!--AvailableCar-->
+                          <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="row">
+                              <label class="col-lg-4 col-md-12 col-sm-12" for="AvailableCar">{{'AVAILABLE_CAR'|translate}}</label>
+                                <span class="col-lg-6 col-md-12 col-sm-12" style="margin-top: 17px;">
+                                  <input class="input-checkbox100 " id="{{getId(false)}}"
+                                      formControlName="AvailableCar" type="checkbox" aria-expanded="false">
+                                  <label class="label-checkbox100" for="{{getId(true)}}"></label>
+                                </span>
+                            </div>
+                          </div>
+                          <!--End AvailableCar-->
+                          <!--AvailableHouse-->
+                          <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="row">
+                              <label class="col-lg-5 col-md-12 col-sm-12" for="AvailableHouse">{{'AVAILABLE_HOUSE'|translate}}</label>
+                              <div class="col-lg-6 col-md-12 col-sm-12">
+                                <span>
+                                  <input class="input-checkbox100" id="{{getId(false)}}"
+                                      formControlName="AvailableHouse" type="checkbox" aria-expanded="false">
+                                  <label class="label-checkbox100" for="{{getId(true)}}"></label>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <!--End AvailableHouse-->
+                        </div>
+                      </div>
+                      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+                        <div class="form-group row">
+                          <div class="col-lg-6 col-md-12 col-sm-12">
+                           <!-- Thirteenth month bonus -->
+                           <div class="row">
+                             <label class="col-lg-4 col-md-12 col-sm-12"
+                               for="ThirteenthMonthBonus">{{'THIRTEENTH_MONTH_BONUS'|translate}}</label>
+                             <span class="col-lg-6 col-md-12 col-sm-12" style="margin-top: 17px;">
+                               <input class="input-checkbox100" id="{{getId(false)}}" formControlName="ThirteenthMonthBonus"
+                                 type="checkbox" aria-expanded="false">
+                               <label class="label-checkbox100" for="{{getId(true)}}"></label>
+                             </span>
+                           </div>
+                         <!-- End Thirteenth month bonus -->
+                         </div>
+                          <!--MealVoucher-->
+                          <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="row">
+                              <label class="col-lg-5 col-md-12 col-sm-12" for="AvailableMealVoucher">{{'MEAL_VOUCHER'|translate}}</label>
+                              <div class="col-lg-6 col-md-12 col-sm-12">
+                                <div class="row">
+                                  <div class="col-lg-2 col-md-12 col-sm-12" style="margin-top: 13px;">
+                                    <input class="input-checkbox100" id="{{getId(false)}}"
+                                      formControlName="AvailableMealVoucher" type="checkbox" aria-expanded="false"
+                                      (change)="mealVoucherSelectedFunction($event)">
+                                    <label class="label-checkbox100"  for="{{getId(true)}}"></label>
+                                  </div>
+                                  <div class="col-lg-10 col-md-12 col-sm-12" *ngIf="mealVoucherShow" style="margin-left: -2px;">
+                                    <input type="number" class="form-control"
+                                      formControlName="MealVoucher"
+                                      placeholder="{{'MEAL_VOUCHER_VALUE' | translate}}"
+                                      [ngClass]="{ 'has-error': (MealVoucher.touched || MealVoucher.dirty) && !MealVoucher.valid }">
+                                    <app-control-messages [control]="otherAdvantagesFormGroup.controls.MealVoucher" class="error-msg messages text-left text-danger"></app-control-messages>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!--End MealVoucher-->
+                        </div>
+                      </div>
+                      <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top: 23px;">
+                        <div>
+                          <!-- Commission -->
+                          <div class="form-group row">
+                              <label class="col-lg-2 col-md-12 col-sm-12" for="Commission">{{'COMMISSION'|translate}}</label>
+                              <div class="col-lg-10 col-md-12 col-sm-12">
+                                <div class="row">
+                                  <div class="col-lg-1 col-md-12 col-sm-12" style="margin-top: 13px;">
+                                    <input class="input-checkbox100" id="{{getId(false)}}"
+                                    formControlName="Commission" type="checkbox" aria-expanded="false"
+                                    (change)="commissionSelectedFunction($event)">
+                                    <label class="label-checkbox100" for="{{getId(true)}}"></label>
+                                  </div>
+                                  <div class="col-lg-3 col-md-12 col-sm-12" *ngIf="commissionShow">
+                                    <app-commission-type-dropdown   [group]="otherAdvantagesFormGroup" (commissionTypeChange)="commisionTypeChange($event)">
+                                    </app-commission-type-dropdown>
+                                    <app-control-messages [control]="otherAdvantagesFormGroup.controls.CommissionType" class="error-msg messages text-left text-danger"></app-control-messages>
+                                  </div>
+                                  <div class="col-lg-4 col-md-12 col-sm-12" style="margin-left: 10px;" *ngIf="commissionShow">
+                                    <div class="col-lg-10 col-md-12.col-sm-12 row">
+                                      <input type="number" class="form-control col-lg-7"
+                                      formControlName="CommissionValue"
+                                      placeholder="{{'COMMISSION_VALUE' | translate}}"
+                                      [ngClass]="{ 'has-error': (CommissionValue.touched || CommissionValue.dirty) && !CommissionValue.valid }">
+                                      <span *ngIf="commissionTypeValue == 1" class="input-group-append input-group-text" style="margin-left: 10px;">%</span>
+                                    </div>
+                                    <app-control-messages [control]="otherAdvantagesFormGroup.controls.CommissionValue" class="error-msg messages text-left text-danger">
+                                    </app-control-messages>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          <!-- End commision -->
+                        </div>
+                      </div>
+                      <!-- Other Advantages -->
+                      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+                        <div class="row" *ngIf="!(ContractAdvantage.length === 0 && isDisabled)">
+                          <label class="col-lg-4 col-md-12 col-sm-12">{{'OTHER_ADVANTAGES' | translate}}</label>
+                        </div>
+                        <!--Add Other advantages-->
+                        <div class="tab-pane" role="tabpanel">
+                          <div style="display: flex; flex-direction: column;">
+                            <div class="form-group row">
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <button class="noPadding btn-Add k-button" type="button" dir="ltr" *ngIf="!isDisabled"
+                                  style="border: none; margin-bottom: 20px" (click)="addOtherAdvantages()">
+                                  <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                                  <span>&nbsp;{{'ADD_OTHER_ADVANTAGES'|translate}}</span>
+                                </button>
+                              </div>
+                              <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div [formGroup]="advantage" *ngFor="let advantage of ContractAdvantage.controls; let i=index">
+                                  <div class="row" *ngIf="isOtherAdvantabesRowVisible(i)" style="margin-top: 5px;">
+                                    <label class="col-lg-3 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}<span
+                                        class="required">*</span></label>
+                                    <div class="col-lg-5 col-md-12 col-sm-12">
+                                      <textarea class="form-control" formControlName="Description"
+                                        [ngClass]="{ 'has-error': (advantage.controls.Description.touched || advantage.controls.Description.dirty) && !advantage.controls.Description.valid }">
+                                        </textarea>
+                                      <app-control-messages [control]="advantage.controls.Description"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                                    </div>
+                                    <div class="col-lg-2 col-md-12 col-sm-12">
+                                      <button *ngIf="!isDisabled" class="noPadding btn-Add k-button" type="button" style="border: none"
+                                        (click)="deleteOtherAdvantages(i)">
+                                        <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!--End Add Other advantages-->
+                      </div>
+                      <!-- End Other Advantages -->
+                      </div>
+                    </div>
+                    <div *ngIf="!(!isUpdateMode || isUpdateMode && hasShowOtherAdvantagePermission)">
+                      <span style="font-style: italic;">{{'UNAUTHRIZED' | translate}} {{'SHOW_CONTRACTOTHER_ADVANTAGES' | translate}}</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Other advantages section end-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isModal" class="d-flex justify-content-end p-3 footer-content">
+        <button class="btn btn-sm btn-save mx-1" (click)="save()" type="submit">
+          <i class="fa fa-floppy-o"></i> {{'ADD'|translate}}
+        </button>
+      </div>
+      
+      <div *ngIf="!isEmployeeUpdateMode && !isModal">
+        <div class="fixed-card-footer">
+          <div class="footerStyle">
+            <footer class="app-footer">
+              <div class="w-100">
+                <div class="d-flex justify-content-end p-3 footer-content">
+                  <a routerLink="/main/payroll/contract">
+                    <span class="btn btn-sm btn-back-to-list btn-primary">
+                      <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                    </span>
+                  </a>
+                  <button class="btn btn-sm btn-save mx-1" (click)="save()" type="submit"
+                  *ngIf="(hasAddContractPermission && !isUpdateMode || hasUpdateContractPermission && isUpdateMode && contractToUpdate && contractToUpdate.State !== contractStateEnumerator.Done)">
+                    <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                  </button>
+                  <button *ngIf="!isEmployeeUpdateMode && hasPayslipPreviewEmployeePermission" class="btn btn-sm btn-secondary active mx-1" type="button"
+                    (click)="save(true)">
+                    <i class="fa fa-eye"></i> &nbsp; {{'PAYSLIP_PREVIEW'|translate}}
+                  </button>
+                </div>
+              </div>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

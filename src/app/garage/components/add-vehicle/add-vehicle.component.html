@@ -1,0 +1,173 @@
+<div class="card" [ngStyle]="isUpdateMode &&  {'border': 'none'}">
+  <!-- card header -->
+  <div class="card-header" *ngIf="!isModal">
+    <div class="row">
+      <div class="col-lg-auto col-md-1 col-sm-12 primaryColor">
+        <i class="fa fa-car font-xm mt-2 fa-2x"></i>
+      </div>
+      <div class="col-lg-8 col-md-8 col-sm-12 pl-0 pt-2">
+        <div class="col-lg-auto  md-8 sm-12">
+          <h3 class="card-title mb-0" *ngIf="!isUpdateMode">{{(vehicleCategory === vehicleCategoryEnum.Customer ?
+            'ADD_CUSTOMER_VEHICLE' : 'ADD_LOAN_VEHICLE' ) |translate}}</h3>
+          <h3 class="card-title mb-0" *ngIf="isUpdateMode">{{(vehicleCategory === vehicleCategoryEnum.Customer ?
+            'EDIT_CUSTOMER_VEHICLE' : 'EDIT_LOAN_VEHICLE' ) |translate}}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- card-body -->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="addVehicleFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group row">
+              <!-- tiers -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin" *ngIf="vehicleCategory === vehicleCategoryEnum.Customer">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CUSTOMER' | translate}}
+                  <span class="required">*</span></label>
+                <app-supplier-dropdown [itemForm]="addVehicleFormGroup" [type]='customerTiers'
+                  [placeholder]="'CHOOSE_CUSTOMER_PLACEHOLDER' | translate" [hideAddBtn]="true"></app-supplier-dropdown>
+                <app-control-messages [control]="addVehicleFormGroup.controls.IdTiers"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Brand -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'VEHICLE_BRAND' | translate}}</label>
+                <app-brand-dropdown [form]="addVehicleFormGroup" (Selected)="brandSelectedChange($event)">
+                </app-brand-dropdown>
+                <app-control-messages [control]="addVehicleFormGroup.controls.IdVehicleBrand"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Model -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'MODELE' | translate}}</label>
+                <app-model-dropdown #vehicleModelViewChild [form]="addVehicleFormGroup"></app-model-dropdown>
+                <app-control-messages [control]="addVehicleFormGroup.controls.IdVehicleModel"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <!-- Registration number -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'REGISTRATION_NUMBER' | translate}}
+                  <span class="required">*</span></label>
+                <input type="text" class="form-control" formControlName="RegistrationNumber" [ngClass]="{ 'has-error': 
+                (addVehicleFormGroup.controls.RegistrationNumber.touched && !addVehicleFormGroup.controls.RegistrationNumber.value) && 
+                !addVehicleFormGroup.controls.RegistrationNumber.valid }" />
+                <app-control-messages [control]="addVehicleFormGroup.controls.RegistrationNumber"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Type vehicle -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'VEHICLE_TYPE' | translate}}
+                </label>
+                <app-vehicle-type-dropdown [form]="addVehicleFormGroup"></app-vehicle-type-dropdown>
+                <app-control-messages [control]="addVehicleFormGroup.controls.IdVehicleType"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Chassis number -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CHASSI_NUMBER' | translate}}
+                </label>
+                <input type="text" class="form-control" formControlName="ChassisNumber" [ngClass]="{ 'has-error': 
+                (addVehicleFormGroup.controls.ChassisNumber.touched || addVehicleFormGroup.controls.ChassisNumber.dirty) && 
+                !addVehicleFormGroup.controls.ChassisNumber.valid }" />
+                <app-control-messages [control]="addVehicleFormGroup.controls.ChassisNumber"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <!-- Power -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'POWER_KW' | translate}}
+                </label>
+                <input type="number" class="form-control" formControlName="Power" [ngClass]="{ 'has-error': 
+                (addVehicleFormGroup.controls.Power.touched || addVehicleFormGroup.controls.Power.dirty) && 
+                !addVehicleFormGroup.controls.Power.valid }" />
+                <app-control-messages [control]="addVehicleFormGroup.controls.Power"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Energy -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ENERGY' | translate}}
+                </label>
+                <app-energy-dropdown [form]="addVehicleFormGroup"></app-energy-dropdown>
+                <app-control-messages [control]="addVehicleFormGroup.controls.IdVehicleEnergy"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- First trafic date -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'FIRST_TRAFIC_DATE' | translate}}
+                </label>
+                <kendo-datepicker [format]="formatDate" class="form-control"  formControlName="FirstTraficDate" 
+                  (valueChange)="changeFirstTraficDate($event)" >
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="addVehicleFormGroup.controls.FirstTraficDate"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+                  <span *ngIf="!isValidFirstTraficDate" class="error-message" style="color:red">
+                    {{'FORMAT_DATE_INVALID'|translate}}
+              </span>
+              </div>
+              <!-- IsAvailable -->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin" *ngIf="vehicleCategory === vehicleCategoryEnum.Loan"
+                style="margin-top: auto;">
+                <input class="input-checkbox100" id="isAvailable" type="checkbox" formControlName="IsAvailable"
+                  style="border: 1px solid #e4e7ea !important; border-radius: 5px;">
+                <label class="label-checkbox100" for="isAvailable">
+                  {{'IS_AVAILABILE'|translate}}&nbsp;
+                </label>
+                <app-control-messages [control]="addVehicleFormGroup.controls.IsAvailable"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12" *ngIf="isUpdateMode">
+        <p-accordion [multiple]="true" class="w-100" *ngIf="vehicleCategory === vehicleCategoryEnum.Loan">
+          <p-accordionTab [selected]="true" header="{{ 'LOAN_HISTORY' | translate}}">
+            <div class="row">
+              <app-loan-vehicle-history [hasUpdatePermission]="hasUpdatePermission">
+              </app-loan-vehicle-history>
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+        <p-accordion [multiple]="true" class="w-100" *ngIf="vehicleCategory === vehicleCategoryEnum.Customer">
+          <p-accordionTab [selected]="true" header="{{ 'INTERVENTION_HISTORY'  | translate}}">
+            <div class="row">
+              <app-customer-vehicle-history>
+              </app-customer-vehicle-history>
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </form>
+  </div>
+
+  <!-- card footer -->
+  <div class="fixed-card-footer" *ngIf="!isModal">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="goToAdvancedList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdatePermission">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div *ngIf="isModal" style="margin-right: 2em; margin-bottom: 1em;">
+    <button (click)="save()" style="float: right;" class="btn btn-sm btn-save mx-1" type="button"
+      *ngIf="hasUpdatePermission">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+  </div>
+</div>

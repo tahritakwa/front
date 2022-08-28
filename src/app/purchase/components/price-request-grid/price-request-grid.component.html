@@ -1,0 +1,137 @@
+<kendo-grid (cellClick)="lineClickHandler($event)" (save)="saveCurrent()" (remove)="removeLine($event)"
+  (add)="addLine()" [data]="view" id="productsGrid" [style.maxHeight.px]="500" [scrollable]="'virtual'">
+
+  <ng-template kendoGridToolbarTemplate>
+    <div class="row" style="float :right;">
+      <app-btn-grid class="col" [advencedAdd]='false' [add]='haveAddPermission'></app-btn-grid>
+    </div>
+  </ng-template>
+
+  <kendo-grid-column field="IdItem" title="{{'ITEM'|translate}}" [width]='200'>
+    <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+      <span tooltip="{{column.title | translate}}" theme="light">
+        {{column.title}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf='isInEditingMode'>
+      <app-item-dropdown [itemForm]="gridFormGroup" (Selected)="itemSelect($event)" [activeKeyPress]='true'
+        [isForPurchase]='true' [parentViewContainerRef]="viewRef" [hideSearch]='hideSearch' [showFilter]='true'
+        [isFroSerach]='true'>
+      </app-item-dropdown>
+      <i #anchor></i>
+      <app-control-message-grid-cell [group]="gridFormGroup" [anchor]="anchor" controlName="IdItem">
+
+      </app-control-message-grid-cell>
+      <div *ngIf='dataItem.IdDocumentLineAssociated'>
+        <input class="form-control" type="text" value="{{dataItem.LabelItem}}" disabled="disabled">
+      </div>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.LabelItem}} - {{dataItem.Designation}}
+    </ng-template>
+  </kendo-grid-column>
+
+
+  <kendo-grid-column field="IdTiersNavigation" title="{{'SUPPLIER'|translate}}" [width]='200'>
+    <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+      <span tooltip="{{column.title | translate}}" theme="light">
+        {{column.title}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.IdTiersNavigation && dataItem.IdTiersNavigation.Name}}
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+      <kendo-combobox [data]="itemtier" [textField]="'Name'" [valueField]="'Id'" (valueChange)="onTierChange($event)"
+      [value]= "dataItem.IdTiersNavigation">
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      </kendo-combobox>
+      <div style="position: absolute;">
+        <label *ngIf="!(dataItem.IdTiers && dataItem.IdTiers > 0)"
+          class="error-msg messages text-left text-danger" style="font-size: small;">{{'REQUIRED'|translate}}</label>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+
+  <kendo-grid-column field="MovementQty" title="{{'QUANTITY'|translate}}" [width]='200'
+    [style]='{"float": "right", "margin-right":"50px"}'>
+    <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+      <span tooltip="{{column.title | translate}}" theme="light">
+        {{column.title}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-formGroup="gridFormGroup">
+      <app-grid-cell-input-template [group]="gridFormGroup" controlName="MovementQty">
+      </app-grid-cell-input-template>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <kendo-numerictextbox [spinners]="false" [format]="FormatNumber" [step]="1"
+        style="border: none !important;background-color: none !important;" class="form-control inputEnabled as-label"
+        [value]="dataItem.MovementQty" [disabled]="true">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column field="IdTiers" title="{{'QUANTITY'|translate}}" [width]='200' hidden="hidden"></kendo-grid-column>
+
+
+  <kendo-grid-column field="IdContact" title="{{'CONTACT'|translate}}" [width]='200'>
+    <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+      <span tooltip="{{column.title | translate}}" theme="light">
+        {{column.title}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf='isInEditingMode'>
+      <app-contact-dropdown class="error-msg messages text-left text-danger" [itemForm]="gridFormGroup"
+        (selectedContact)='selectedContact()' [showAddNew]="haveAddSupplierPermission || haveUpdateSupplierPermission">
+      </app-contact-dropdown>
+      <i #anchor></i>
+      <app-control-message-grid-cell [group]="gridFormGroup" [anchor]="anchor" controlName="IdContact">
+      </app-control-message-grid-cell>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <span *ngIf='dataItem.ContactString'> {{dataItem.ContactString}} </span>
+      <span *ngIf='!dataItem.ContactString'> - </span>
+    </ng-template>
+  </kendo-grid-column>
+
+
+  <kendo-grid-command-column title="" [width]='100'>
+    <ng-template kendoGridCellTemplate let-isNew="isNew">
+      <div style="display: flex; margin-top: 5%;">
+        <button type="button" kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr"
+          style="border: none; color: #E91E63 !important;" type="button" *ngIf='haveAddPermission'>
+          <i class="fa fa-times fa-lg"></i>
+        </button>
+
+        <button type="button" class='noPadding btn-Add' *ngIf="isInEditingMode && haveAddPermission" kendoGridSaveCommand>
+          <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+        </button>
+        <button type="button" kendoGridCancelCommand *ngIf="isInEditingMode" class="noPadding btn-Add k-button"
+          (click)="cancelHandler()">
+          <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+        </button>
+      </div>
+    </ng-template>
+  </kendo-grid-command-column>
+
+
+  <div>
+    <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+      <button type="button" kendoGridAddCommand class="noPadding btn-Add k-button" dir="ltr" style="border: none"
+        *ngIf='!isInEditingMode'>
+        <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+        <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+      </button>
+      <br style="line-height: 2.5em;">
+    </ng-template>
+    <kendo-grid-messages noRecords="">
+    </kendo-grid-messages>
+  </div>
+
+
+</kendo-grid>

@@ -1,0 +1,6 @@
+<div [formGroup]="form">
+  <kendo-multiselect (filterChange)="handleFilter($event)" (valueChange)="onSelect(this)"
+    [(ngModel)]="selectedValueMultiSelect" [data]="skillsFiltredDataSource" [textField]="'Label'" [valueField]="'Id'"
+    formControlName="TrainingExpectedSkills" [valuePrimitive]="true">
+  </kendo-multiselect>
+</div>

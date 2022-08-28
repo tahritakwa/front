@@ -1,0 +1,5 @@
+<div (click)="toggleButton($event)">
+  <button mat-menu-item>{{leftCriteria | translate}}
+    <mat-slide-toggle [checked]="buttonStatus" (change)="changeButton($event)"></mat-slide-toggle>
+    {{rightCriteria | translate}}</button>
+</div>

@@ -1,0 +1,22 @@
+<div [formGroup]="formGroup" *ngIf="formGroup">
+  <kendo-combobox #vehicleComboBox [data]="vehicleFiltredDataSource" class="form-control"  [textField]="'RegistrationNumber'" (focus)="openComboBox()"
+     [valuePrimitive]="true" [filterable]="true" [valueField]="'Id'" name="IdVehicle"  formControlName="IdVehicle"
+    (valueChange)="onSelect($event)" (filterChange)="handleFilter($event)" [allowCustom]="allowCustom">
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" > </kendo-combobox-messages>
+  </kendo-combobox>
+</div>
+
+<div *ngIf="!formGroup">
+  <kendo-combobox #vehicleComboBox [data]="vehicleFiltredDataSource" class="form-control"  textField="RegistrationNumber" (focus)="openComboBox()"
+     [(ngModel)]="selectedValue" [valuePrimitive]="true" [filterable]="true"
+    (valueChange)="onSelect($event)" (filterChange)="handleFilter($event)">
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+  </kendo-combobox>
+
+</div>

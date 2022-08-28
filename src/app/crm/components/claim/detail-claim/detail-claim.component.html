@@ -1,0 +1,251 @@
+<div class="card full-screen-card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card header-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ 'CLAIM_UPDATE' |translate }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="navItems my-3">
+      <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-item nav-link active nav-link-new" id="nav-home-tab" data-toggle="tab" href="#nav-home-claim"
+             role="tab"
+             aria-controls="nav-home" aria-selected="true">{{DETAILS| translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link nav-link-new" id="nav-related-items-tab" data-toggle="tab"
+             href="#nav-related-items-claim"
+             role="tab"
+             aria-controls="nav-contact" aria-selected="false">{{'RELATED_ITEM' | translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link nav-link-new" id="nav-history-tab" data-toggle="tab" href="#nav-history-claim" *ngIf="authService.hasAuthorities(['VIEW_HISTORY_CLAIM'])"
+             role="tab"
+             aria-controls="nav-contact" aria-selected="false">{{'HISTORY' | translate}}</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="tab-content tab-content-new" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-home-claim" role="tabpanel" aria-labelledby="nav-home-tab">
+
+        <form [formGroup]="updateClaimForm">
+          <fieldset [disabled]="isArchivingMode">
+          <div class="row form-group">
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'TOPIC'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" type="text" formControlName="topic"
+                     [value]="claimData ? claimData.topic : null"
+                     [ngClass]="{ 'has-error': (updateClaimForm.controls.topic.touched || updateClaimForm.controls.topic.dirty) && !updateClaimForm.controls.topic.valid }"
+                      >
+              <app-control-messages [control]="updateClaimForm.controls.topic"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+
+
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE'|translate}}</label>
+              <div class="input-group">
+                <kendo-dropdownlist formControlName="category" [data]="claimsCategoriesList" [disabled]="isArchivingMode"
+                                [valuePrimitive]="true"
+                                [filterable]="false"
+                                (filterChange)="handleFiltreClaimsCategories($event)"
+                                style="width: 100%;" >
+                                <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-dropdownlist>
+                <app-control-messages [control]="updateClaimForm.controls.category"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ORGANISM_LABEL'|translate}}</label>
+              <div class="input-group">
+                <kendo-combobox *ngIf="isPermittedOrganisationUpdate " [disabled]="isArchivingMode"
+                                [formControlName]="organizationFromControlName" [data]="organizationsList"
+                                (valueChange)="initContactsDropDown($event)"
+                                (filterChange)="handleFiltreOrganisation($event)"
+                                [textField]="'name'" [valueField]="'id'" [valuePrimitive]="true" [filterable]="true"
+                                class="form-control"
+                                [(ngModel)]="organisation">
+                                <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <label
+                  *ngIf="!isPermittedOrganisationUpdate && organisation">{{organisation?.name}}</label>
+              </div>
+              <app-control-messages [control]="updateClaimForm.controls.organizationId"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                {{'RESPONSABLE_USER_TITLE'|translate}}<span
+                class="required">*</span></label>
+              <kendo-combobox [data]="listUsers" formControlName="responsablesUsersId" [filterable]="true" [disabled]="isArchivingMode"
+                              (filterChange)="handleResponsablesFilter($event)" style="width: 100%"
+                              textField="FullName" valueField="Id" [valuePrimitive]="true">
+              </kendo-combobox>
+              <app-control-messages
+                [control]="updateClaimForm.controls.responsablesUsersId"
+                class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'DECLARED_BY'|translate}}</label>
+              <div class="input-group">
+                <kendo-combobox *ngIf="isPermittedContactUpdate" [disabled]="isArchivingMode"
+                                [formControlName]="declaredByFromControlName" [data]="contactsList"
+                                (valueChange)="changeSelectedContact($event)"
+                                (filterChange)="handleFiltreContact($event)"
+                                [textField]="'fullName'" [valueField]="'id'" [valuePrimitive]="true"
+                                [filterable]="true"
+                                class="form-control"
+                                [(ngModel)]="contact">
+                                <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <label
+                  *ngIf="(!isPermittedContactUpdate)  && contact && claimData.claimType === claimTypeProspect">{{contact?.name}} {{contact?.lastName}}</label>
+                <label
+                  *ngIf="(!isPermittedContactUpdate)  && contact && claimData.claimType === claimTypeClient">{{contact?.FirstName}} {{contact?.LastName}}</label>
+              </div>
+              <app-control-messages [control]="updateClaimForm.controls.declaredBy"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+
+          <p-accordion [multiple]="true">
+
+
+            <p-accordionTab header="{{'ADDITIONAL_INFORMATION'| translate}}" style="color: #4c9aae;">
+              <div class="row form-group">
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'DEADLINE_ACTION'|translate}}</label>
+                  <div class="input-group">
+                    <kendo-datepicker formatPlaceholder="dateFormat" (valueChange)="changeEndDate($event)" [disabled]="isArchivingMode"
+                                      class="form-control"
+                                      [value]="deadLine">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                  </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'GRAVITY'|translate}}</label>
+                  <div class="input-group">
+                    <kendo-dropdownlist [data]="actionsGravities" formControlName="gravity"  [valuePrimitive]="true" [disabled]="isArchivingMode"
+                                    [filterable]="false"
+                                    (filterChange)="handleFiltreGravities($event)"
+                                    style="width: 100%;"  >
+                                    <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-dropdownlist>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'STATE'|translate}}</label>
+                  <div class="input-group">
+                    <kendo-dropdownlist [data]="stateList" formControlName="state"  [valuePrimitive]="true" [disabled]="isArchivingMode"
+                                    [filterable]="false"
+                                    (filterChange)="handleFiltreState($event)"
+                                    style="width: 100%;"  >
+                                    <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-dropdownlist>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'OPPORTUNITY'|translate}}</label>
+                  <div class="input-group">
+                    <kendo-combobox formControlName="assignedTo" [disabled]="isArchivingMode" *ngIf="isPermittedOpportunityUpdate "
+                                    [data]="opportunitiesList" [filterable]="true"
+                                    (valueChange)="changeSelectedOpportunity($event)"
+                                    (filterChange)="handleFilterOpportunities($event)"
+                                    textField="title" [valuePrimitive]="true" valueField="id"
+                                    class="form-control"  [readonly]="!isPermittedOpportunityUpdate"
+                                    [(ngModel)]="opportunity">
+                                    <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-combobox>
+                    <label
+                      *ngIf="!isPermittedOpportunityUpdate && opportunity">{{opportunity?.title}}</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+                  <div class="input-group">
+                    <textarea class="form-control" type="text" formControlName="description"
+                              >
+                    </textarea>
+                  </div>
+                </div>
+              </div>
+
+            </p-accordionTab>
+          </p-accordion>
+          </fieldset>
+        </form>
+      </div>
+      <div class="tab-pane fade" id="nav-related-items-claim" role="tabpanel" aria-labelledby="nav-contacts-tab">
+        <app-claim-related-items [source]="'claim'" [data]="idClaim" [sourceId]="idClaim"
+                                 [isArchivingMode]="isArchivingMode || fromRelatedArchiving"></app-claim-related-items>
+      </div>
+
+      <div class="tab-pane fade" id="nav-history-claim" role="tabpanel" *ngIf="authService.hasAuthorities(['VIEW_HISTORY_CLAIM'])">
+        <app-history-list [source]="'Claim'" [sourceId]="idClaim"></app-history-list>
+      </div>
+    </div>
+  </div>
+
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="returnToList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{getValueButton() | translate}}
+              </span>
+            </a>
+            <button (click)="update()" *ngIf="!isArchivingMode" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

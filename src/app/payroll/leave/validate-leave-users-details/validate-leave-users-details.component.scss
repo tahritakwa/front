@@ -1,0 +1,65 @@
+body
+.ui-accordion
+.ui-accordion-header:not(.ui-state-disabled).ui-state-active
+a {
+  background-color: #4c9aae;
+  border: none;
+  color: #fff;
+}
+
+.ui-accordion
+.ui-accordion-header:not(.ui-state-active):not(.ui-state-disabled):hover
+a {
+  color: #6b778d;
+  /* background-color: #d3f6f3; */
+}
+
+.ui-accordion .ui-accordion-header:not(.ui-state-disabled).ui-state-active {
+  width: inherit;
+  border: none;
+}
+
+body .ui-accordion .ui-accordion-content {
+  padding: 0.571em 1em;
+  border: none;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 0.571em 1em;
+  margin-top: -0.7em;
+  margin-right: -1em;
+  margin-left: -1em;
+}
+
+body .ui-accordion .ui-accordion-header a {
+  padding: 0.571em 1em;
+  background-color: #f4f4f4;
+  color: #4c9aae;
+  font-weight: bold;
+  -moz-transition: background-color 0.2s;
+  -o-transition: background-color 0.2s;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+  font-size: large;
+}
+
+.ui-accordion .ui-accordion-header {
+  cursor: pointer;
+  position: relative;
+  margin-top: 1px;
+  zoom: 1;
+  width: inherit;
+  background: #f6f7f9;
+}
+
+.text {
+  color: #4c9aae;
+  font-size: medium;
+}
+
+.RoleClass {
+  font-size: 12px;
+  border-radius: 100px 100px 100px 100px;
+  -moz-border-radius: 100px 100px 100px 100px;
+  -webkit-border-radius: 100px 100px 100px 100px;
+  border: 3px solid #61a8ad;
+}

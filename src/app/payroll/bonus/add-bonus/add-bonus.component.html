@@ -1,0 +1,103 @@
+<div class="card" style="border-radius: 10px;border-bottom: 1px solid #c8ced3 !important;">
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="bonusFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Code" type="text"
+              [ngClass]="{ 'has-error': (Code.touched || Code.dirty) && (!Code.valid && !Code.pending) }">
+            <app-control-messages [control]="Code"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Name" type="text"
+              [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && !Name.valid }">
+            <app-control-messages [control]="Name"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+            <textarea class="form-control" formControlName="Description" type="text"
+              [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }"></textarea>
+            <app-control-messages [control]="Description"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CNSS_TYPE'|translate}}<span
+                class="required">*</span></label>
+            <app-cnss-dropdown [group]="bonusFormGroup"></app-cnss-dropdown>
+            <app-control-messages [control]="IdCnss"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-4 col-sm-12 contact100-form-checkbox">
+            <input class="input-checkbox100" formControlName="IsTaxable" id="IsTaxable" name="IsTaxable"
+              type="checkbox">
+            <label class="label-checkbox100 " for="IsTaxable" style="margin-top: 2%;">
+              {{'TAXABLE'|translate}}&nbsp;
+            </label>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12 contact100-form-checkbox">
+            <input class="input-checkbox100" (click)="showValiditySection()" formControlName="IsFixe" name="IsFixe"
+              type="checkbox" id="IsFixe">
+          <label class="label-checkbox100 " for="IsFixe" style="margin-top: 2%;">
+              {{'FIXE'|translate}}&nbsp;
+            </label>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12 contact100-form-checkbox">
+            <input class="input-checkbox100" formControlName="DependNumberDaysWorked" id="DependNumberDaysWorked" name="DependNumberDaysWorked"
+              type="checkbox">
+            <label class="label-checkbox100 " for="DependNumberDaysWorked" style="margin-top: 2%;">
+              {{'DEPEND_NUMBER_DAYS_WORKED'|translate}}&nbsp;
+            </label>
+          </div>
+        </div>
+        <!-- Bonus validity Section Start -->
+        <div class="form-group" style="border-style: dashed;border-color:#F0F0F0; padding: 20px"
+          *ngIf="showValidtyPeriodSection">
+          <div class="row">
+            <button class="noPadding btn-Add k-button" type="button" dir="ltr"
+              style="border: none; margin-bottom: 20px" (click)="addBonusValidityPeriod()">
+              <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+              <span>&nbsp;{{'ADD_VALIDITY_PERIOD'|translate}}</span>
+            </button>
+          </div>
+          <div style="max-height: 195px; overflow-x: hidden ">
+            <div formArrayName="BonusValidityPeriod"
+              *ngFor="let ValidityPeriod of BonusValidityPeriod.controls; let i=index">
+              <div class="row" *ngIf="isRowVisible(i)">
+                <app-bonus-validity (valueChange)="validateForm($event)" class="col-lg-11 col-sm-11 col-md-11"
+                  [ValidityFormGroup]="ValidityPeriod"></app-bonus-validity>
+                <div class="col-sm-1 " style="margin-top: 5% !important; margin-left:-20px">
+                  <button *ngIf="i !== 0 && !isDisabled" class="noPadding btn-Add k-button" type="button" style="border: none"
+                    (click)="deleteBonusValidityPeriod(i)">
+                    <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Bonus validity Section End -->
+      </div>
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button class="btn btn-sm btn-save mx-1" (click)="save()" type="submit" *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)">
+                <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'ADD') |translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,179 @@
+<div class="row">
+  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+    <div class="card">
+      <!--Card header Start-->
+      <div *ngIf="isCallFromTreasury" class="card-header">
+        <div class="col-sm-5 mt-1">
+          <h3 class="card-title mb-0">{{ "BANK_ACCOUNTS" | translate }}</h3>
+        </div>
+      </div>
+      <!-- Card header End-->
+      <!--Begin card body-->
+      <div class="card-body">
+        <!-- search div-->
+        <div class="row d-flex justify-content-between mt-3">
+          <div class="d-flex justify-content-center col-lg-4 col-md-6 col-sm-12">
+            <div class="col-12">
+              <div class="form-group row">
+                <div class="col-10">
+                  <input type="text" class="form-control" placeholder="{{'SEARCH_BANK_ACCOUNT'|translate}}"
+                         name='reference'
+                         aria-label="Username" aria-describedby="addon-wrapping" [(ngModel)]='bankAccount'
+                         (keyup)='filter()'>
+                </div>
+                <div class="col-2 p-1">
+                  <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- End search div-->
+          <!-- Add Button start -->
+          <app-btn-grid class="col" [advencedAdd]="!isCallFromTreasury && hasAddPermission" [cardView]="btnCardListVisibility()"
+                        [listView]="isCardView && data.length > 0" [export]="false" [addLink]='"add"'
+                        (cardViewEvent)="changeViewToCard($event)" (listViewEvent)="changeViewToList($event)">
+          </app-btn-grid>
+          <!-- Add Button End -->
+        </div>
+        <!-- Bank account Start -->
+        <div class="col-lg-12 col-md-12 col-sm-12" style="float: left; margin-top: 10px;">
+          <!-- Grid Start -->
+          <div class="tab-pane active show" id="home1" role="tabpanel">
+            <div *ngIf="!isCardView || (isCardView && data && data.length === 0 )">
+              <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                          [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+                          [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)"
+                          [sortable]="true" [pageable]="pagerSettings" [filterable]="false"
+                          [reorderable]="true" [columnMenu]="false">
+                <!--Columns-->
+                <!--Bank Name field-->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                                   [title]="gridSettings.columnsConfig[0].title | translate" [width]="200"
+                                   [filter]="gridSettings.columnsConfig[0].filter"
+                                   [filterable]="gridSettings.columnsConfig[0].filterable"
+                                   [format]="gridSettings.columnsConfig[0].format">
+                  <ng-template kendoGridHeaderTemplate>
+                                            <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                                                  theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+                  </ng-template>
+                  <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                    {{dataItem.BankName}}
+                  </ng-template>
+                </kendo-grid-column>
+                <!--End Bank Name field-->
+                <!-- Agency and code field-->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                                   [title]="gridSettings.columnsConfig[1].title | translate" [width]="300"
+                                   [filter]="gridSettings.columnsConfig[1].filter"
+                                   [filterable]="gridSettings.columnsConfig[1].filterable"
+                                   [format]="gridSettings.columnsConfig[1].format">
+                  <ng-template kendoGridHeaderTemplate>
+                                            <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                                                  theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+                  </ng-template>
+                  <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                    {{ dataItem.Agency }} / {{ dataItem.Code }}
+                  </ng-template>
+                </kendo-grid-column>
+                <!--End Agency and code field-->
+                <!--State Rib-->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                                   [title]="gridSettings.columnsConfig[2].title | translate" [width]="250"
+                                   [filter]="gridSettings.columnsConfig[2].filter"
+                                   [filterable]="gridSettings.columnsConfig[2].filterable"
+                                   [format]="gridSettings.columnsConfig[2].format">
+                  <ng-template kendoGridHeaderTemplate>
+                                            <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                                                  theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+                  </ng-template>
+                </kendo-grid-column>
+                <!--End Rib field-->
+                <!--Current Balance field-->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                                   [title]="gridSettings.columnsConfig[3].title | translate" [width]="200"
+                                   [filter]="gridSettings.columnsConfig[3].filter"
+                                   [filterable]="gridSettings.columnsConfig[3].filterable"
+                                   [format]="gridSettings.columnsConfig[3].format" [style]='{"font-family": "Roboto, serif",
+                                        "color": "#505253",
+                                        "text-align":"right",
+                                        "padding-right": "5%"}'>
+                  <ng-template kendoGridHeaderTemplate>
+                                            <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                                                  theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+                  </ng-template>
+                  <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                    {{dataItem.CurrentBalance.toLocaleString(language, {
+                    minimumFractionDigits: dataItem.Precision,
+                    style: 'currency', currency: dataItem.CodeCurrency, currencyDisplay: 'code'
+                  })}}
+                  </ng-template>
+                </kendo-grid-column>
+                <!--End Current Balance field-->
+
+                <!--Bank Account Type field-->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                                   [title]="gridSettings.columnsConfig[4].title | translate" [width]="200"
+                                   [filter]="gridSettings.columnsConfig[4].filter"
+                                   [filterable]="gridSettings.columnsConfig[4].filterable"
+                                   [format]="gridSettings.columnsConfig[4].format">
+                  <ng-template kendoGridHeaderTemplate>
+                                            <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                                                  theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+                  </ng-template>
+                  <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                                            <span *ngIf="dataItem.TypeAccount ===
+                                                bankAccountType.MainBankAccount">{{"MAINBANKACCOUNT" | translate}}
+                                            </span>
+                    <span *ngIf="dataItem.TypeAccount ===
+                                                bankAccountType.SecondaryBankAccount">
+                                                {{"MAINBANKACCOUNT" | translate}}
+                                            </span>
+                    <span *ngIf="(dataItem.TypeAccount !==
+                                            bankAccountType.MainBankAccount) && (dataItem.TypeAccount !==
+                                            bankAccountType.SecondaryBankAccount)">
+                                                ---
+                                            </span>
+                  </ng-template>
+                </kendo-grid-column>
+                <!--End Bank Account Type field-->
+
+                <!--End Columns-->
+                <!--Actions-->
+                <kendo-grid-command-column [width]="170" [title]="'ACTIONS'| translate " [columnMenu]="false"
+                                           [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+                  <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                    <!--Open advanced edit form -->
+                    <i class="las la-pen cursor-pointer edit-pencil la-lg"
+                       *ngIf="!isCallFromTreasury && (hasShowPermission || hasUpdatePermission)" (click)="goToAdvancedEdit(dataItem)"></i>
+                    <i class="fa fa-eye AddIcon" style="color: #20a8d8"
+                       *ngIf="isCallFromTreasury && (hasShowPermission || hasUpdatePermission || hasListPermission)" (click)="goToAdvancedEdit(dataItem)"></i>
+                    <i class="cursor-pointer fa fa-trash-o fa-lg text-danger"
+                       *ngIf="!isCallFromTreasury && hasDeletePermission" (click)="removeHandler(dataItem)"></i>
+                  </ng-template>
+                </kendo-grid-command-column>
+                <!--End Actions-->
+              </kendo-grid>
+            </div>
+          </div>
+          <!-- Grid End -->
+          <!-- Cards Start -->
+          <div class="tab-content" style="float: left; width: 100%;border: none;" *ngIf="isCardView">
+            <div class="tab-pane active show" id="home1" role="tabpanel">
+              <div *ngIf="isCardView && data && data.length > 0">
+                <app-card-view-bank-account [data]="data" [BankAccountFiltred]="BankAccountFiltred"
+                                            [isCallFromTreasury]="isCallFromTreasury"
+                                            (pageChangeEvent)="onPageChange($event, 'card')"
+                                            (sendBankAccountToDelete)="deleteAccount($event)"
+                                            (sendBankAccountToSave)="showDetails($event)">
+                </app-card-view-bank-account>
+              </div>
+            </div>
+          </div>
+          <!-- Cards End -->
+        </div>
+        <!-- Bank account End -->
+      </div>
+      <!--End card body-->
+    </div>
+  </div>
+</div>

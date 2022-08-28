@@ -1,0 +1,5 @@
+<div class="d-flex justify-content-between flex-row-reverse current-fiscal-year" [ngClass]="{'card-header' : showHeaderClass}">
+    <span class="mt-1" [hidden]="lastUnConcludedFiscalYear === undefined">
+      <span class="card-title mb-3">{{'CURRENT_FISCAL_YEAR'|translate}} : {{lastUnConcludedFiscalYear}}</span>
+    </span>
+</div>

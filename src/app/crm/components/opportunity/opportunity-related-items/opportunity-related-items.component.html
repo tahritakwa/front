@@ -1,0 +1,28 @@
+<div class="card-body">
+  <p-accordion [multiple]="true">
+
+    <p-accordionTab [header]="('NOTES'| translate) + ' (' + noteElementsCount + ')'"
+                    style="color: #4c9aae;">
+      <app-list-note [organisationId]="data" [source]='source' [entityType]="entityType"
+                     [sourceId]="sourceId" [related]="true"
+                     [fromRelatedArchiving]="isArchivingMode"
+                     (nbrNoteEvent)="nbrNoteEvent($event)"></app-list-note>
+    </p-accordionTab>
+    <br/>
+    <p-accordionTab *ngIf=" source!='claim' && source!='action' && (authService.hasAuthorities([CRMPermissions.VIEW_CLAIM_LEAD]) || authService.hasAuthorities([CRMPermissions.VIEW_CLAIM_CLIENT]))  "
+                    [header]="('CLAIMS'| translate) + ' (' + claimElementsCount + ')'"
+                    style="color: #4c9aae;">
+      <app-claims-list [related]="true" [source]="source" [sourceId]="sourceId"
+                       [fromRelatedArchiving]="isArchivingMode"
+                       (countclaim)='showCountClaim($event)' [isProspect]="isProspect"></app-claims-list>
+    </p-accordionTab>
+    <br/>
+    <p-accordionTab [header]="('FILES'| translate) + ' (' + fileElementsCount + ')'"
+                    style="color: #4c9aae;">
+      <app-file-list [sourceId]="sourceId" [entityType]="entityType"
+                     [source]="source"
+                     [fromRelatedArchiving]="isArchivingMode"
+                     (recount)="recount($event)"></app-file-list>
+    </p-accordionTab>
+  </p-accordion>
+</div>

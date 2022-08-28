@@ -1,0 +1,151 @@
+<div class="card" style="margin-right: 15px;margin-left: 15px;">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-4 col-md-6 col-sm-12" style="font-size:16px; margin-bottom: 15px">
+        <label class="col-lg-12 col-md-12 col-sm-6"> {{'FINANCIAL_COMMITMENTS_TTC_AMOUNT' |translate}}:
+          {{totalRemainingAmount.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+            style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+        </label>
+      </div>
+      <div align="center" class="col-lg-3 col-md-6 col-sm-12" style="font-size:16px; margin-bottom: 15px;">
+        <label class="col-lg-12 col-md-12 col-sm-6"> {{'HOLDING_TAX' |translate}}:
+          {{holdingTaxAmount.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+            style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+        </label>
+      </div>
+      <div align="right" class="col-lg-3 col-md-6 col-sm-12" style="font-size:16px; margin-bottom: 15px;">
+        <label class="col-lg-12 col-md-12 col-sm-6"> {{'REMAINING_AMOUNT_TO_PAID' |translate}}:
+          {{remainingAmountToBePaid.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+            style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+        </label>
+      </div>
+    </div>
+    <div class="col-lg-12 col-sm-12 col-md-12 margin">
+      <form class="form-horizontal">
+
+        <kendo-grid [data]="gridData" [pageSize]="gridState.take" [skip]="gridState.skip" [sort]="gridState.sort"
+                    [reorderable]="true" [sortable]="true" (remove)="removeHandler($event)">
+          <!-- Type Start-->
+          <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate"
+                             [width]="120">
+            <ng-template kendoGridHeaderTemplate>
+              <span [tooltip]="columnsConfig[0].tooltip | translate"
+                    theme="light">{{columnsConfig[0].title | translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+              <span *ngIf="dataItem.IdDocumentNavigation">
+                <span *ngIf="dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.SalesInvoices ||
+                             dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.PurchaseInvoices">
+                  <span class="badge badge-pill badge-primary" style="margin-right: 3px;">
+                    ECH
+                  </span>
+                  / {{'INVOICE'|translate}}
+                </span>
+                <span *ngIf="dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.SalesInvoiceAsset ||
+                            dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.PurchaseAsset">
+                  <span class="badge badge-pill badge-danger" style="margin-right: 3px;">
+                    ECH
+                  </span>
+                  / {{'ASSET'|translate}}
+                </span>
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Type End-->
+
+          <!-- Code bill Start -->
+          <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate"
+                             [width]="140">
+            <ng-template kendoGridHeaderTemplate>
+              <span [tooltip]="columnsConfig[1].tooltip | translate"
+                    theme="light">{{columnsConfig[1].title | translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span class="pointer doc-code" style="font-size: 1em;"
+                    (click)="showDocument(dataItem.IdDocumentNavigation)">&nbsp;{{dataItem.IdDocumentNavigation.Code}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Code bill End -->
+
+          <!-- Code financialCommitment Start -->
+          <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate"
+                             [width]="140">
+            <ng-template kendoGridHeaderTemplate>
+              <span [tooltip]="columnsConfig[2].tooltip | translate"
+                    theme="light">{{columnsConfig[2].title | translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span class="pointer doc-code" style="font-size: 1em;"
+                    (click)="showDocument(dataItem.IdDocumentNavigation)">&nbsp;{{dataItem.Code}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Code financialCommitment End -->
+
+          <!-- Settlement Date Start-->
+          <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate"
+                             [width]="120">
+            <ng-template kendoGridHeaderTemplate>
+              <span [tooltip]="columnsConfig[3].tooltip | translate"
+                    theme="light">{{columnsConfig[3].title | translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{  dataItem.CommitmentDate |date : formatDate }}
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Settlement Date End-->
+
+          <!-- TTC Price Start-->
+          <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate" [width]="150"
+                             [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253","text-align":"right"}'
+                             [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span [tooltip]="columnsConfig[4].tooltip | translate"
+                    theme="light">{{columnsConfig[4].title | translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+              style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </ng-template>
+          </kendo-grid-column>
+          <!-- TTC Price End-->
+
+          <!-- amount to be paid Start-->
+          <kendo-grid-column [field]="columnsConfig[5].field" [title]="columnsConfig[5].title | translate" [width]="190"
+                             [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right" }'
+                             [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span [tooltip]="columnsConfig[5].tooltip | translate"
+                    theme="light">{{columnsConfig[5].title | translate  }}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.RemainingAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+              style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </ng-template>=
+          </kendo-grid-column>
+          <!-- amount to be paid End-->
+
+          <!--Actions-->
+          <kendo-grid-command-column [width]="100">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <!--delete selected financial commitment -->
+
+              <button type="button" kendoGridRemoveCommand class="btnKendoGrid">
+                <i class="fa fa-trash-o"></i>
+              </button>
+            </ng-template>
+          </kendo-grid-command-column>
+          <!--End Actions-->
+        </kendo-grid>
+
+      </form>
+      <div class="row">
+        <div class="col-lg-12 col-md-12" style="margin-top: 15px" align="right">
+          <button style="margin-left: 20px; margin-right: 10px;" class="btn btn-sm btn-danger" (click)="deleteAll()"
+                  type="button">
+            <i class="fa fa-trash-o"></i> {{'DELETE_ALL'|translate}}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

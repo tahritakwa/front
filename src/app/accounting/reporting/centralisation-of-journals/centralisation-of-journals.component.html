@@ -1,0 +1,210 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="header-current-fiscal-year">
+  <app-accounting-reporting-menu-journals [currentFiscalYearId]="currentFiscalYear.id">
+  </app-accounting-reporting-menu-journals>
+</div>
+<div class="card">
+  <div class="d-flex flex-row-reverse bd-highlight m-3">
+    <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+  </div>
+  <form class="form-horizontal" [formGroup]="stateOfJournalsFilterFormGroup">
+    <div class="card-body">
+
+      <div class="form-group row">
+
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="form-group row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group row mb-0">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'START_DATE'|translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-datepicker [format]="formatDate" formControlName="startDate" class="form-control"
+                                    [min]="startDate" [max]="endDate">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="stateOfJournalsFilterFormGroup.controls.startDate"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="row">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'END_DATE'|translate}}<span class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-datepicker [format]="formatDate" formControlName="endDate" class="form-control"
+                                    [min]="startDate" [max]="endDate">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="stateOfJournalsFilterFormGroup.controls.endDate"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="row">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'JOURNAL'|translate}}
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <ng-multiselect-dropdown formControlName="valuesIdJournal" [placeholder]="placeholder|translate"
+                                           [data]="journalList" [disabled]="false" [settings]="dropdownSettings"
+                                           [(ngModel)]="journalListSelected" (click)="isMultiSelectTouched = true">
+                  </ng-multiselect-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row mb-0">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="row">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'BREAKING_ACCOUNT'|translate}}<span
+                  class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-numerictextbox [step]="1" [autoCorrect]="autoCorrect"
+                                        name="breakingAccount" class="form-control"
+                                        [format]="format"
+                                        [value]="breakingAccount" formControlName="breakingAccount" [min]="1"
+                                        [max]="8"
+                                        (valueChange)="validatechangedVlaueForBreakingAccount($event)">
+                  </kendo-numerictextbox>
+                  <app-control-messages [control]="stateOfJournalsFilterFormGroup.controls.breakingAccount"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="row">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'BREAKING_CUSTOMER'|translate}}<span
+                  class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-numerictextbox [step]="1" [autoCorrect]="autoCorrect" class="form-control"
+                                        [min]="1" [max]="8"
+                                        formControlName="breakingCustomerAccount" [format]="format"
+                                        [value]="breakingCustomerAccount"
+                                        (valueChange)="validatechangedVlaueForBreakingCustomerAccount($event)">
+                  </kendo-numerictextbox>
+                  <app-control-messages [control]="stateOfJournalsFilterFormGroup.controls.breakingCustomerAccount"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="row">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'BREAKING_SUPPLIER'|translate}}<span
+                  class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-numerictextbox [autoCorrect]="autoCorrect" [step]="1" class="form-control"
+                                        [min]="1" [max]="8"
+                                        formControlName="breakingSupplierAccount" [format]="format"
+                                        [value]="breakingSupplierAccount"
+                                        (valueChange)="validatechangedVlaueForBreakingSupplierAccount($event)">
+                  </kendo-numerictextbox>
+                  <app-control-messages [control]="stateOfJournalsFilterFormGroup.controls.breakingSupplierAccount"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row d-flex flex-row-reverse">
+        <div class="col-lg-12 d-flex justify-content-between">
+          <div>
+              <input type="checkbox" id="prev-check-box" class="input-checkbox100"
+                     (click)='changeProvisionalEdition()'/>
+              <label class="label-checkbox100" for="prev-check-box"> {{'PROVISIONAL_EDITION'|translate}}</label>
+          </div>
+          <div class="mt-4">
+            <button class="btn btn-sm btn-search mr-2" type="button" aria-hidden="true" (click)="onSearch()"
+              *ngIf="this.authService.hasAuthority(AccountingPermissions.VIEW_JOURNALS_REPORTS)">
+              <i class="fa fa-search fa"></i> <span>{{'SEARCH'|translate}}</span>
+            </button>
+
+            <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    *ngIf="this.authService.hasAuthority(AccountingPermissions.PRINT_JOURNALS_REPORTS)">
+              <i class="fa fa-print"></i> </button>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+              <a class="dropdown-item" (click)="onClickPrintByJasper()">PDF</a>
+              <a class="dropdown-item" (click)="onClickPrintExcel()">Excel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="this.authService.hasAuthority(AccountingPermissions.VIEW_JOURNALS_REPORTS)">
+      <kendo-grid [data]="stateOfJournalsView | async" [pageSize]="gridSettings.state.take"
+                  [skip]="gridSettings.state.skip" [sortable]="true" [pageable]="pagerSettings" [navigable]="true"
+                  (dataStateChange)="dataStateChange($event)" [columnMenu]="true" (pageChange)="onPageChange()"
+                  class="bulk-table">
+
+
+        <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="codeJournal" width="150px" [columnMenu]="false"
+                           [headerStyle]="{'padding' : '0.75rem 0'}" [title]="'CODE_JOURNAL'|translate">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'CODE_JOURNAL'|translate}}" theme="light">{{'CODE_JOURNAL'|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="journal" [title]="'JOURNAL'|translate" [columnMenu]="false"
+                           [width]="350" [headerStyle]="{'padding' : '0.75rem 0'}">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'JOURNAL'|translate}}" theme="light">{{'LABEL'|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div class="total-class"> {{'TOTAL_STATE_OF_JOURNALS'|translate}}</div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="show" [footerStyle]="{'font-weight': 'bolder'}" field="debitJournal" width="100px"
+                           [title]="'JOURNAL_TOTAL_AMOUNT'|translate" [format]="formatNumberOptions"
+                           class="amount-field" [columnMenu]="false">
+
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'JOURNAL_TOTAL_DEBIT'|translate}}" theme="light">{{'DEBIT'|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <kendo-numerictextbox class="read-only-amount" [readonly]="true" [format]="formatNumberOptions"
+                                  [value]="totalAmountDebit">
+            </kendo-numerictextbox>
+          </ng-template>
+
+        </kendo-grid-column>
+
+        <kendo-grid-column *ngIf="show" [footerStyle]="{'font-weight': 'bolder'}" field="creditJournal" width="100px"
+                           [title]="'JOURNAL_TOTAL_AMOUNT'|translate" [format]="formatNumberOptions"
+                           class="amount-field" [columnMenu]="true">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'JOURNAL_TOTAL_CREDIT'|translate}}" theme="light">{{'CREDIT'|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <kendo-numerictextbox class="read-only-amount" [readonly]="true" [format]="formatNumberOptions"
+                                  [value]="totalAmountCredit">
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <div *kendoGridDetailTemplate="let dataItem">
+          <app-detail-journal-centralisation [journal]="dataItem">
+          </app-detail-journal-centralisation>
+        </div>
+        <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                             pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+        </kendo-grid-messages>
+      </kendo-grid>
+      </div>
+    </div>
+  </form>
+</div>

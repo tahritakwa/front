@@ -1,0 +1,82 @@
+<nav class="navbar navbar-expand-lg">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class=" las la-chevron-down fa-lg" style="   color: #607D8B"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+    <ng-container *ngIf="list_Quotation_SA">
+      <div class="dropdown" *ngIf='isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/sales/quotation']"
+          routerLinkActive="active-link">{{'DEVIS'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list_Order_SA">
+      <div class="dropdown" *ngIf='isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/sales/order']"
+          routerLinkActive="active-link">{{'ORDER'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list_Delivery_SA">
+      <div class="dropdown" *ngIf='isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/sales/delivery']"
+          routerLinkActive="active-link">{{'DELIVERY_FORM'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list_Invoice_SA">
+      <div class="dropdown" *ngIf='isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/sales/invoice']"
+          routerLinkActive="active-link">{{'INVOICE'|translate}}</a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="list_Asset_SA">
+      <div class="dropdown" *ngIf='isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/sales/asset']"
+          routerLinkActive="active-link">{{'ASSET'|translate}}</a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="list_InvoiceAsset_SA">
+      <div class="dropdown" *ngIf='isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/sales/invoiceasset']"
+          routerLinkActive="active-link">{{'INVOICEASSEST'|translate}}</a>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="list_OrderQuotation_PU">
+      <div class="dropdown" *ngIf='!isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/purchase/purchaseorder']"
+          routerLinkActive="active-link">{{'ORDER_QUOTATION'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list_PurchaseInvoice_PU">
+      <div class="dropdown" *ngIf='!isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/purchase/purchasefinalorder']"
+          routerLinkActive="active-link">{{'FINAL_ORDER'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list_Receipt_PU">
+      <div class="dropdown" *ngIf='!isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/purchase/delivery']"
+          routerLinkActive="active-link">{{'RECEIPT'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list_Invoice_PU">
+      <div class="dropdown" *ngIf='!isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/purchase/invoice']"
+          routerLinkActive="active-link">{{'INVOICE'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="list_Asset_PU">
+      <div class="dropdown" *ngIf='!isSalesDocument'>
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/purchase/asset']"
+          routerLinkActive="active-link">{{'ASSET'|translate}}</a>
+      </div>
+    </ng-container>
+  </div>
+</nav>

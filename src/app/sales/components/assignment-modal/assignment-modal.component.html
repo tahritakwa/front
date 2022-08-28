@@ -1,0 +1,118 @@
+<div class="card">
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="moveToAssignFormGroup">
+      <div class="card-body" *ngIf="showControl">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'ASSIGNMENT_DATE'|translate}}<span
+                    class="required">*</span></label>
+                <kendo-datepicker [format]="formatDate" formatPlaceholder="formatDate" formControlName="AssignmentDate"
+                  class="form-control" (valueChange)="AssignmentDateValueChange($event)">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="AssignmentDate" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'AVERAGE_DAILY_RATE'|translate}}</label>
+                <input class="form-control" formControlName="AverageDailyRate" type="number" [min]="0"
+                  [ngClass]="{ 'has-error': (AverageDailyRate.touched || AverageDailyRate.dirty) && !AverageDailyRate.valid }">
+                <app-control-messages [control]="AverageDailyRate" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'UN_ASSIGNMENT_DATE'|translate}}</label>
+                <kendo-datepicker [format]="formatDate" formatPlaceholder="formatDate"
+                  formControlName="UnassignmentDate" class="form-control" [min]="minDate"
+                  [ngClass]="{ 'has-error': (UnassignmentDate.touched || UnassignmentDate.dirty) && !UnassignmentDate.valid }">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="UnassignmentDate" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+            <br />
+            <div class="row" *ngIf="showBillableOption">
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="row contact100-form-checkbox">
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <input class="input-checkbox100" id="ckb2" formControlName="IsBillable" name="IsBillable"
+                      type="checkbox" (click)='clickIsBillableCheckBox()'>
+                    <label class="label-checkbox100" for="ckb2" style="margin-top: 15%;">
+                      {{'IS_BILLABLE' | translate}}&nbsp;
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="assignementIsBillable">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'ASSIGNMENT_PERCENTAGE'|translate}}</label>
+                <div class="input-group mb-3">
+                  <input class="form-control" formControlName="AssignmentPercentage" type="number"
+                    aria-describedby="basic-addon2">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">%</span>
+                  </div>
+                </div>
+                <app-control-messages [control]="AssignmentPercentage" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'REALIZATION_COMPANY'|translate}}</label>
+                  <app-company-combobox [group]="moveToAssignFormGroup"></app-company-combobox>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fixed-card-footer">
+          <div class="footerStyle">
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 footer-content">
+                <button class="btn btn-sm btn-save mx-1" (click)="toAssignClick()" type="submit">
+                  <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'VALIDATE') |translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="max-height: 300px; overflow-x: hidden ">
+        <div class="form-group row">
+          <table class="table table-responsive-sm table-striped">
+            <thead>
+              <tr>
+                <th>{{'ASSIGNMENT_DATE' | translate}}</th>
+                <th>{{'ADR' | translate}}</th>
+                <th>{{'UN_ASSIGNMENT_DATE' | translate}}</th>
+                <th>{{'IS_BILLABLE' | translate}}</th>
+                <th>{{'PROPORTION' | translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let d of dataAssignementHistoric" class="col-lg-12 col-sm-12 col-md-12">
+                <td>{{ d.AssignmentDate | date: formatDate}}</td>
+                <td>{{ d.AverageDailyRate}}</td>
+                <td>{{ d.UnassignmentDate | date: formatDate}}</td>
+                <div *ngIf="d.IsBillable == true; then thenIsBillable else elseIsBillable"></div>
+                <ng-template #thenIsBillable>
+                  <span class="badge badge-success">
+                    <i class="fa fa-check" style="width: 13px;height:11px;"></i>
+                  </span>
+                </ng-template>
+                <ng-template #elseIsBillable>
+                  <span class="badge badge-danger">
+                    <i class="fa fa-close" style="width: 13px;height:11px;"></i>
+                  </span>
+                </ng-template>
+                <td>{{ d.AssignmentPercentage }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

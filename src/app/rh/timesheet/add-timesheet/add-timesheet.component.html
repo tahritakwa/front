@@ -1,0 +1,360 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <form [formGroup]="addTimeSheetFormGroup">
+    <!-- Post-->
+    <div class="post-module">
+      <!-- Thumbnail-->
+      <div class="thumbnail">
+        <div class="row d-flex align-items-center justify-content-between">
+          <div class="status" style="background-color: black" *ngIf="timeSheet && timeSheet.Status=== statusCode.ToDo">
+            <div class="size">
+              {{'TODO'|translate}}
+            </div>
+          </div>
+          <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.Draft "
+            style="background-color: orange">
+            <div class="size">
+              {{'DRAFT'|translate}}
+            </div>
+          </div>
+          <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.Sended"
+            style="background-color: rgb(76, 169, 231)">
+            <div class="size">
+              {{'SENDED'|translate}}
+            </div>
+          </div>
+          <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.Validated"
+            style="background-color: rgb(110, 236, 110)">
+            <div class="size">
+              {{'VALID'|translate}}
+            </div>
+          </div>
+          <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.PartiallyValidated"
+            style="background-color: greenyellow">
+            <div class="size">
+              {{'PARTIALLY_VALID'|translate}}
+            </div>
+          </div>
+          <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.ToReWork"
+            style="background-color: rgb(222, 233, 129)">
+            <div class="size">
+              {{'TOREWORK'|translate}}
+            </div>
+          </div>
+          <img src="../../../../assets/image/pngtree-simple-cra.png" />
+        </div>
+      </div>
+      <div class="category">
+        <div class="row col-md-12">
+        <div class="col-md-9 cra">
+          <h2>
+            {{'TIMESHEET' |translate }}
+          </h2>
+        </div>
+        <div class="col-md-3 cra" *ngIf="hasShowDocumentPermission && timeSheet && timeSheet.Document && timeSheet.Document.length > 0">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12" style="color: white;">{{'ASSOCIATED_INVOICES'|translate}}</label>
+              <div  *ngFor="let document of documents" class="col-lg-2 col-md-2 col-sm-2">
+                <a *ngIf="document.IdDocumentStatus==statusCodeDocument.Provisional"
+                  [routerLink]="['/main/sales/invoice/edit', document.Id,document.IdDocumentStatus]"
+                  style="color: blue; text-decoration: underline;" target="_blank">
+                  {{document.Code}}
+                </a>
+                <a *ngIf="document.IdDocumentStatus!=statusCodeDocument.Provisional"
+                  [routerLink]="['/main/sales/invoice/show', document.Id,document.IdDocumentStatus]"
+                  style="color: blue; text-decoration: underline;" target="_blank">
+                  {{document.Code}}
+                </a>
+              </div>
+            </div>
+        </div>
+            <br />
+          </div>
+        <div class="col-lg-12 col-sm-12 col-md-12 ">
+          <div class="form-group row">
+            <!-- EMPLOYEE -->
+            <div *ngIf="hasValidatePermission; then thenAllEmployeeBlock else elseHierrarchyEmployee"></div>
+            <ng-template #thenAllEmployeeBlock>
+              <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px;color: white;">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="text-align: left;">{{'EMPLOYEE'|translate}}<span
+                    class="required">*</span></label>
+                <app-employee-dropdown (Selected)="onChangeEmployee($event)" [form]="addTimeSheetFormGroup">
+                </app-employee-dropdown>
+                <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </ng-template>
+            <ng-template #elseHierrarchyEmployee>
+              <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px;color: white;">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="text-align: left;">{{'EMPLOYEE'|translate}}<span
+                    class="required">*</span></label>
+                <app-employee-dropdown (Selected)="onChangeEmployee($event)" [form]="addTimeSheetFormGroup"
+                  [hierarchy]="true" [withTeamCollaborater]="true" [withTheSuperior]="true">
+                </app-employee-dropdown>
+                <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </ng-template>
+            <!-- MONTH -->
+            <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px;color: white;">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'MONTH'|translate}} <span
+                  class="required">*</span></label>
+              <kendo-datepicker (valueChange)="onChangeDate()" [bottomView]="'year'" [format]="'MMMM yyyy'"
+                [max]="currentDate" [topView]="'decade'" class="form-control" formControlName="Month">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="Month" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <!-- FILE -->
+            <div class="col-lg-4 col-md-6 col-sm-12 py-3 px-4" style="margin-bottom:15px;color: white;">
+              <app-upload-file [canUpdateFile]="canNotUpdateFile" [fileToUpload]="timeSheetAttachementFileInfo"
+                [service]="timeSheetService"></app-upload-file>
+            </div>
+          </div>
+          <div [formGroup]="reportFormGroup" class="col-lg-12 col-sm-12 col-md-12"
+            *ngIf="hasPrintPermission && timeSheet && timeSheet.Status == statusCode.Validated">
+            <div class="form-group row">
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROJECT'|translate}} </label>
+                <app-project-timesheet-dropdown (Selected)="receivedMessage($event)" [group]="reportFormGroup"
+                  [reportObject]="reportObject" style="border-color: aqua;"></app-project-timesheet-dropdown>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top:30px">
+                <button (click)="onPrintJasperClick()" class="btn btn-sm btn-success" type="submit">
+                  <i class="cui-envelope-letter"></i> {{'PRINT'|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <!--Begin Card body-->
+      <div class="card-body">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="panel-body col-sd-12">
+            <div class="col-md-12">
+              <br />
+              <div class="table-responsive" style="padding-top: 10px;">
+                <table class="matable col-lg-12 col-md-12 col-sm-12">
+                  <tbody *ngFor="let timeSheetDay of TimeSheetDay.controls; let i=index;" class="tbody"
+                    formArrayName="TimeSheetDay">
+                    <tr (click)="hideWeekBody(timeSheetDay.value.WeekNumberInYear)"
+                      *ngIf="i == 0 || dayDictionnary[i] && dayDictionnary[i]['Value']=='Mon'"
+                      [ngClass]="{'tr line':timeSheetDay.value.Hide,'tr line-hide':!timeSheetDay.value.Hide}"
+                      style="cursor: pointer; font-size: large;"
+                      [ngStyle]=" !timeSheetDay.value.Hide ? {'background-color': '#f17278'} : ''">
+                      <td colspan="20">
+                        <button class="noPadding btn-Add k-button"
+                          style="background: no-repeat!important;border: none!important;">
+                          <i [ngClass]="{'cui-chevron-bottom':timeSheetDay.value.Hide,'cui-chevron-top':!timeSheetDay.value.Hide}"
+                            aria-hidden="true" style="color: #4c9aae!important;"></i>
+                        </button>
+                        {{'WEEK'| translate}} {{timeSheetDay.value.WeekNumberInYear}}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        {{ weekDictionnary[timeSheetDay.value.WeekNumberInYear] }}
+                      </td>
+                    </tr>
+                    <!-- CRA Row -->
+                    <tr *ngIf="timeSheetDay.value.Hide == false" class="tr line-hide">
+                      <td [ngClass]="timeSheetDay.value.Hollidays ? 'holiday-back' : ''" width="7%">
+                        {{dayDictionnary[i] && dayDictionnary[i]['Value'] | uppercase | translate}}
+                      </td>
+                      <td [ngClass]="timeSheetDay.value.Hollidays ? 'holiday-back' : ''" width="5%">
+                        {{dayDictionnary[i] && dayDictionnary[i]['Key']}}
+                        <a *ngIf="canAddOrDeleteTimeSheetLine">
+                          <i (click)="addNewTimeSheetLine(timeSheetDay)" class="fa fa-plus-circle fa-lg AddIcon"
+                            style="cursor: pointer"></i>
+                        </a>
+                        <a *ngIf="timeSheetDay.value.WaitingLeave"
+                          [routerLink]="['/main/payroll/leave/edit', timeSheetDay.value.WaitingLeave]"
+                          class="text-warning" style="vertical-align: bottom;" target="_blank">
+                          <span title="{{'LEAVE_WAITING'|translate}}">
+                            {{timeSheetDay.value.WaitingLeaveTypeName}}
+                          </span>
+                        </a>
+                      </td>
+                      <ng-container
+                        *ngFor="let timeSheetLineFormGroup of timeSheetDay.controls.TimeSheetLine.controls let j=index">
+                        <div *ngIf="!timeSheetLineFormGroup.value.IsDeleted" [formGroup]="timeSheetLineFormGroup"
+                          [ngClass]="timeSheetDay.value.Hollidays && !timeSheetLineFormGroup.value.Worked ? 'holiday' : 'workDay'"
+                          class="form-inline">
+                          <div
+                            *ngIf="timeSheetLineFormGroup.value.IdLeave > 0  && !timeSheetLineFormGroup.value.Worked ; then thenLeaveBlock else elseProjectBlock">
+                          </div>
+                          <ng-template #thenLeaveBlock>
+                            <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 mb-2">
+                              <span class="time">{{timeSheetLineFormGroup.value.StartTime | time}}</span>
+                            </div>
+                            <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 mb-2" style="width: 100%">
+                              <span class="time">{{timeSheetLineFormGroup.value.EndTime | time}}</span>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 mb-2" style="width: 100%">
+                              <a [routerLink]="['/main/payroll/leave/edit', timeSheetLineFormGroup.value.IdLeave]"
+                                class="employee-link" target="_blank">
+                                <span class="time">{{timeSheetLineFormGroup.value.WaitingLeaveTypeName}}</span>
+                              </a>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mb-2"></div>
+                          </ng-template>
+                          <ng-template #elseProjectBlock>
+                            <div
+                              *ngIf="timeSheetLineFormGroup.value.IdDayOff > 0; then thenDayOffBlock else elseDayOffBlock">
+                            </div>
+                            <ng-template #thenDayOffBlock>
+                              <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mb-2"></div>
+                              <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 mb-2" style="width: 100%">
+                                <a class="employee-link">
+                                  <span class="time">{{timeSheetLineFormGroup.value.DayOffLabel}}</span>
+                                </a>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mb-2"></div>
+                            </ng-template>
+                            <ng-template #elseDayOffBlock>
+                              <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 mb-2">
+                                <app-start-time-dropdown
+                                  (Selected)="startTimeValueChange($event, timeSheetLineFormGroup, timeSheetDay)"
+                                  [disabled]="timeSheetLineFormGroup.value.Worked" [group]="timeSheetLineFormGroup"
+                                  [timeSheetDay]="timeSheetDay">
+                                </app-start-time-dropdown>
+                                <app-control-messages [control]="timeSheetLineFormGroup.controls.StartTime"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+                              </div>
+                              <div class="col-lg-2 col-md-6 col-sm-12 col-xs-12 mb-2" style="width: 100%">
+                                <app-end-time-dropdown
+                                  (Selected)="endTimeValueChange($event, timeSheetLineFormGroup, timeSheetDay)"
+                                  [disabled]="timeSheetLineFormGroup.value.Worked" [group]="timeSheetLineFormGroup"
+                                  [timeSheetDay]="timeSheetDay">
+                                </app-end-time-dropdown>
+                                <app-control-messages [control]="timeSheetLineFormGroup.controls.EndTime"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+                              </div>
+                              <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 mb-2" style="width: 100%">
+                                <app-project-timesheet-dropdown [group]="timeSheetLineFormGroup"
+                                  [timeSheetDay]="timeSheetDay" style="border-color: aqua;">
+                                </app-project-timesheet-dropdown>
+                                <app-control-messages [control]="timeSheetLineFormGroup.controls.IdProject"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+                              </div>
+                              <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mb-2">
+                                <textarea class="form-control desc" formControlName="Details" maxlength="150"
+                                  placeholder="{{'DETAILS'|translate}}" rows="1" style="width: 100%"></textarea>
+                              </div>
+                            </ng-template>
+                          </ng-template>
+                          <div class="row col-lg-1 col-md-6 col-sm-12 col-xs-12 mb-2">
+                            <span class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                              <label class="switch" style="margin-bottom: 5px; margin-left: -8px; margin-top: 5px;">
+                                <input [checked]="true" type="radio">
+                                <div class="slider round">
+                                  <div class="ctn">{{timeSheetLineFormGroup.value.LineTotalTime}}</div>
+                                </div>
+                              </label>
+                            </span>
+                            <span class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="margin-left: 20px !important;">
+                              <div
+                                *ngIf="!myTimeSheet && hasRight && (timeSheet.Status === statusCode.Sended || timeSheet.Status === statusCode.PartiallyValidated)"
+                                style="padding-bottom: 10px;">
+                                <label class="container">
+                                  <input formControlName="Valid" style="float: right;" type="checkbox" />
+                                  <span class="checkmark"></span>
+                                </label>
+                              </div>
+                            </span>
+                            <span class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="margin-top: 8px;">
+                              <a
+                                *ngIf="numberOfValideLines(timeSheetDay) > 1 && !timeSheetLineFormGroup.value.IdLeave && !timeSheetLineFormGroup.value.IdDayOff && canAddOrDeleteTimeSheetLine">
+                                <i (click)="deleteTimeSheetLine(timeSheetDay, j)"
+                                  *ngIf="timeSheet && timeSheet.Status !== statusCode.Validated"
+                                  class="fa fa-lg fa-times-circle-o" style="cursor: pointer;"></i>
+                              </a>
+                            </span>
+                          </div>
+                        </div>
+                      </ng-container>
+                    </tr>
+                    <p *ngIf="dayDictionnary[i] && dayDictionnary[i]['Value']=='Sun'"
+                      style="border: 0px; padding-top: 25px;"></p>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--End Card body-->
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <!-- Comment Section Start -->
+        <div *ngIf="isUpdateMode" style="margin-top: 30px">
+          <h3 class="card-title mb-0"><b>{{'COMMENT'|translate}}</b></h3>
+          <div [ngStyle]="{'max-height': '400px', 'overflow-y': 'auto'}" class="col-lg-12 col-md-12 col-sm-12">
+            <app-comment (deletedComment)="deletecomment($event)" (editedComment)="editcomment($event)"
+              [comments-data]="commentsData"></app-comment>
+          </div>
+          <hr />
+          <div class="row">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <textarea class="k-input" formControlName="Message" placeholder="{{'TYPE_MESSAGE'|translate}}"
+              rows="2"></textarea>
+            <button (click)="addComment()" [disabled]="validCommentary()"
+              class="k-button k-flat k-button-icon k-button-send" type="button">
+              <i class="fa fa-send-o"></i>
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </div>
+        <!-- Comment Section end -->
+      </div>
+    </div>
+  </form>
+</div>
+<div class="fixed-card-footer">
+  <div class="footerStyle">
+    <footer class="app-footer">
+      <div class="w-100">
+        <div class="d-flex justify-content-end p-3 footer-content">
+          <a [routerLink]="['/main/rh/timesheet']" #BackToList>
+            <span class="btn btn-sm btn-primary btn-back-to-list" #BackToList>
+              <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+            </span>
+          </a>
+          <div *ngIf="timeSheet && timeSheet.Status == statusCode.ToReWork; then thenReWorkBlock else elseReWorkBlock">
+          </div>
+          <ng-template #thenReWorkBlock>
+            <button (click)="save(statusCode.Sended)" *ngIf="hasUpdatePermission" class="btn btn-sm btn-success"
+              type="submit">
+              <i class="fa fa-floppy-o"></i> {{'FIX_AND_SENDED'|translate}}
+            </button>
+          </ng-template>
+          <ng-template #elseReWorkBlock>
+            <span *ngIf="timeSheet && timeSheet.Status <= statusCode.Draft && ((hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode))
+                        && (myTimeSheet || isUpperHierrarchyOrTeamManager)">
+              <button class="btn btn-sm btn-danger" type="submit" (click)="save()">
+                <i class="fa fa-floppy-o"></i> {{'SAVE_AS_DRAFT'|translate}}
+              </button>
+              <button class="btn btn-sm btn-success" type="submit" (click)="save(statusCode.Sended)" *ngIf="((hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode))
+                          && (myTimeSheet || isUpperHierrarchyOrTeamManager)">
+                <i class="cui-envelope-letter"></i> {{'SUBMIT'|translate}}
+              </button>
+            </span>
+            <button *ngIf="(hasValidatePermission || isUpperHierrarchyOrTeamManager) && timeSheet && timeSheet.Status > statusCode.Draft
+                                    && !myTimeSheet && !timeSheetAlreadyValidate" class="btn btn-sm btn-success"
+              type="submit" (click)="Validate()">
+              <i class="cui-envelope-letter"></i> {{'VALIDATE'|translate}}
+            </button>
+          </ng-template>
+          <button
+            *ngIf="(hasCorrectionPermission || isUpperHierrarchyOrTeamManager) && timeSheet && !myTimeSheet &&
+                        (timeSheet.Status == statusCode.Sended || timeSheet.Status == statusCode.PartiallyValidated || timeSheet.Status == statusCode.Validated)"
+            class="btn btn-sm btn-dark active" type="button" (click)="onTimeSheetFixRequestClick()">
+            {{'FIX_REQUEST'|translate}} &nbsp; <i class="fa fa-wrench"></i>
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>

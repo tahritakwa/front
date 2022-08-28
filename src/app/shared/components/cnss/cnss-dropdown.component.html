@@ -1,0 +1,36 @@
+<div *ngIf="group" [formGroup]="group">
+  <kendo-combobox (filterChange)="handleFilter($event)" (valueChange)="onValueChange($event)" [allowCustom]="allowCustom"
+                  [data]="cnssFiltredDataSource" [filterable]="true" [valuePrimitive]="true" class="form-control HistoryCommandMargin"
+                  formControlName="IdCnss" name="IdCnss"
+                  textField="Label" valueField="Id">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer *ngIf="hasAddPermission" [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<div *ngIf="!group">
+  <kendo-combobox (filterChange)="handleFilter($event)" (valueChange)="onValueChange($event)" [allowCustom]="allowCustom"
+                  [data]="cnssFiltredDataSource" [filterable]="true" [valuePrimitive]="true" class="form-control HistoryCommandMargin"
+                  name="IdCnss"
+                  textField="Label" valueField="Id">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

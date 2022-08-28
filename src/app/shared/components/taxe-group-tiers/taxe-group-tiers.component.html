@@ -1,0 +1,35 @@
+<div *ngIf='group' [formGroup]="group">
+  <kendo-combobox [data]="taxeGroupTiersListFiltredDataSource" class="form-control" name="IdTaxeGroupTiers"
+    [textField]="'Label'" [valueField]="'Id'" [allowCustom]="allowCustom" formControlName="IdTaxeGroupTiers"
+    [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilter($event)"  (valueChange)="onSelect($event)"
+    [disabled]="disabled" >
+    <!--footer template-->
+    <!-- <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template> -->
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" noDataText="{{'NO_DATA_FOUND'|translate}}" > </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<div *ngIf='!group'>
+  <kendo-combobox name="IdTaxeGroupTiers" [data]="taxeGroupTiersListFiltredDataSource" class="form-control"
+    [allowCustom]="allowCustom" [textField]="'Label'"[valueField]="'Id'" [valuePrimitive]="true" 
+    [filterable]="true" (filterChange)="handleFilter($event)" 
+    (valueChange)="onSelect($event)" [disabled]="disabled">
+   <!--No data template-->
+   <ng-template kendoDropDownListNoDataTemplate>
+    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+  </ng-template>
+  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" > </kendo-combobox-messages>  </kendo-combobox>
+</div>
+
+
+
+
+
+

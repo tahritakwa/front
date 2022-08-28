@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+spec:
+  selector:
+    matchLabels:
+      app: front
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+        - name: front_cont
+          image: front_image 
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+
+kind: Service apiVersion: v1 metadata:
+  name: hello-world-service spec:
+  selector:
+    app: hello-world
+  ports:
+    - protocol: TCP
+      port: 90
+      targetPort: 80
+  type: NodePort

@@ -1,0 +1,29 @@
+<!-- Start Form-->
+<div class="col-lg-12 col-sm-12 col-md-12">
+  <div class="form-group row">
+    <div class="col-sm-12 col-md-3 col-lg-3">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}</label>
+      <input class="form-control" disabled placeholder="{{courantSession.Code}}" type="text">
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-4">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'MONTH'|translate}}</label>
+      <kendo-datepicker [(value)]="courantSession.Month" [bottomView]="'year'" [format]="'MMMM yyyy'" [topView]="'decade'"
+                        class="form-control" disabled>
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-5">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}</label>
+      <input class="form-control" disabled placeholder="{{courantSession.Title}}" type="text">
+    </div>
+  </div>
+  <div class="form-group row">
+    <div *ngIf="page==='payslip'" class="col-sm-12 col-md-4 col-lg-4">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'TYPE_OF_TREATMENT'|translate}}<span
+        class="required"></span></label>
+      <app-type-of-treatment-combobox [form]="TreatmentTypeFormGroup"></app-type-of-treatment-combobox>
+    </div>
+  </div>
+</div>
+<!--End add form-->

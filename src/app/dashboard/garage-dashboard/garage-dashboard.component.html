@@ -1,0 +1,124 @@
+<div class="period-filter" *ngIf="!shouldRefresh && hasGaragePermission">
+  <div class="period-filter  dashboard-widget  row" [dragula]="dragula">
+
+    <!-- RDV list -->
+    <div class="period-filter col-xl-4 col-lg-4 col-md-6 col-sm-12  draggable-card">
+      <div class={{ClickedClass}}>
+        <div class="card-header py-3" style="background-color: #84c1e5;">
+          <h4 class="card-title mb-0"><i class="fa fa-calendar mr-2" aria-hidden="true"></i>
+            {{'APPOINTMENT_OF_DAY'|translate}}
+          </h4>
+        </div>
+        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th scope="col">{{'GARAGE'|translate}}</th>
+                <th scope="col">{{'VEHICLE' |translate}}</th>
+                <th scope="col">{{'START_TIME'|translate}}</th>
+                <th scope="col">{{'END_TIME'|translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let appointment of listDailyAppointment ">
+                <th scope="row">{{appointment.GarageName}}</th>
+                <td>{{appointment.VehicleImmatriculation}}</td>
+                <td *ngIf="appointment.StartDate">{{appointment.StartDate| date: dateTimeFormat }}</td>
+                <td *ngIf="!appointment.StartDate">-</td>
+                <td *ngIf="appointment.EndDate">{{appointment.EndDate | date: dateTimeFormat}}</td>
+                <td *ngIf="!appointment.EndDate">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Intervention list -->
+    <div class="period-filter col-xl-4 col-lg-4 col-md-6 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <div class="card-header py-3">
+          <h4 class="card-title mb-0"><i class="fa fa-wrench text-success mr-2" aria-hidden="true"></i>
+            {{'INTERVENTIONS'|translate}} <span class="badge badge-success ml-2">{{'INPROGRESS'|translate}}</span>
+          </h4>
+        </div>
+        <div class="content overflow-auto" style=" max-height: 200px;">
+          <table class="table">
+            <thead style="background-color: #dee2e6;">
+              <tr>
+                <th scope="col"> {{'CLIENT'|translate}}</th>
+                <th scope="col">{{'MODEL'|translate}}</th>
+                <th scope="col">{{'REGISTRATION_NUMBER'|translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let intervention of listIntervention">
+                <td>{{intervention.TiersName}} {{intervention.TiersCode}} </td>
+                <td> {{intervention.Model}}
+                  {{intervention.Brand}}</td>
+                <td> {{intervention.RegistrationNumber}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loan Vehcile list -->
+    <div class="period-filter col-xl-4 col-lg-4 col-md-6 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <div class="card-header py-3">
+          <h4 class="card-title mb-0"> <i class="fa fa-car text-warning mr-2" aria-hidden="true"></i>{{'LOAN_VEHICLE'
+            |translate}}
+            <span class="badge badge-warning ml-3">{{'AVAILABLE'|translate}}</span>
+          </h4>
+        </div>
+        <div class="content overflow-auto" style=" max-height: 200px;">
+          <table class="table">
+            <thead style="background-color: #dee2e6;">
+              <tr>
+                <th scope="col"> {{'MODEL'|translate}}</th>
+                <th scope="col">{{'REGISTRATION_NUMBER'|translate}}</th>
+                <th scope="col">{{'ENERGY'|translate}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vehicle of listLoanVehicle">
+                <td>{{vehicle.Model}}
+                  {{vehicle.Brand}} </td>
+                <td> {{vehicle.RegistrationNumber}}</td>
+                <td> {{vehicle.Energie}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!--Turnover/garage (par mois)-->
+    <div class="period-filter col-xl-4 col-lg-6 col-md-6 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <app-turnover-garage-by-month class="period-filter" [currencySymbole]="userCurrencySymbol" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-turnover-garage-by-month>
+      </div>
+    </div>
+
+    <!--Turnover-per-operation-->
+    <div class="period-filter col-xl-4 col-lg-6 col-md-6 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <app-turnover-operation class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-turnover-operation>
+      </div>
+    </div>
+
+    <!--Intervention/garage-->
+    <div *ngIf="!hasOneGarage" class="period-filter col-xl-4 col-lg-6 col-md-6 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <app-intervention-garage class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat" (hasOneGarage)="userHasOneGarage($event)"></app-intervention-garage>
+      </div>
+    </div>
+
+  </div>
+
+</div>

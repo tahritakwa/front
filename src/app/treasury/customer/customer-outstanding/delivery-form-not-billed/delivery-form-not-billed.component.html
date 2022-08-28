@@ -1,0 +1,168 @@
+
+<div class="col-lg-12 col-md-12 col-sm-122">
+  <div class="row">
+    <div class="card" style="width:100%; border: 0px;">
+      <div class="card-content">
+          <!--Begin card body-->
+          <div class="card-body">
+              <div class="row" style="margin-bottom: 30px;">
+                <div class="col-lg-3 col-md-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'CUSTOMER'|translate}}</label>
+                    <app-supplier-dropdown [type]=tiersTypeEnum.Customer (Selected)="emitSupplier($event)" #supplierViewChild
+                    [selectedValue]="selectedTiers" [disabled]=supplierDropdownDisabled
+                    [hideAddBtn]="true" ></app-supplier-dropdown>
+                </div>
+                <div align="right" class="col-lg-9 col-md-12" style="margin-top: 25px;">
+                  <button style="margin-bottom: 10px;"
+                    tooltip="{{getSelectedDeliveryFormsCodes()}}"
+                    data-placement="bottom"
+                    class="k-button btn-secondary ml-3 mr-2"
+                    type="button" tabindex="0" (click)="generateInvoice()" *ngIf="false">
+                    <i class="fa fa-cogs fa-lg AddIcon"></i>
+                    <span>&nbsp;{{'GENERATE_BILL' | translate}} ({{getNumberOfSelectedDeliveryForm()}})</span>
+                  </button>
+                </div>
+              </div>
+              <!-- Kendo grid start-->
+              <kendo-grid
+                  [data]="gridSettings.gridData"
+                  [pageable]="pagerSettings"
+                  [pageSize]="gridSettings.state.take"
+                  [skip]="gridSettings.state.skip"
+                  [sortable]="true"
+                  [sort]="gridSettings.state.sort"
+                  [reorderable]="true"
+                  (dataStateChange)="dataStateChange($event)"
+                  [filterable]="true"
+                  [filter]="gridSettings.state.filter"
+                  #grid>
+
+                  <ng-template kendoGridToolbarTemplate>
+                    <div class="row" style="float :right; margin-right: 4px;">
+                      <app-btn-grid [advencedAdd]='false' [add]='false' [export]='true' [idForExportFile]="'idForExportFile'"
+                        style="margin-top: -5%;    display: inline-flex;"></app-btn-grid>
+                    </div>
+                  </ng-template>
+
+                <!--Code start-->
+                  <kendo-grid-column
+                  [field]="gridSettings.columnsConfig[0].field"
+                  [width]="150"
+                  [title]="gridSettings.columnsConfig[0].title | translate" >
+                  <ng-template kendoGridHeaderTemplate>
+                    <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                      theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+                  </ng-template>
+                  <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                      {{dataItem.Code}}
+                  </ng-template>
+                  <ng-template kendoGridFooterTemplate>
+                    <div style="font-weight:bold;color: #4c9aae; font-size: 16px; padding-top: 7px;
+                    padding-bottom: 7px;"> {{'TOTAL'| translate}}</div>
+                  </ng-template>
+                  </kendo-grid-column>
+                  <!--Code end-->
+                  <!--Client start-->
+                  <kendo-grid-column
+                    [field]="gridSettings.columnsConfig[1].field"
+                    [title]="gridSettings.columnsConfig[1].title | translate"
+                    [width]="150"
+                    [filterable]="true">
+                    <ng-template kendoGridHeaderTemplate>
+                      <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                        theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--Client end-->
+                  <!--DocumentDate start-->
+                  <kendo-grid-column
+                    [field]="gridSettings.columnsConfig[2].field"
+                    [title]="gridSettings.columnsConfig[2].title | translate"
+                    [filterable]="true"
+                    [width]="150"
+                    filter="date">
+                    <ng-template kendoGridHeaderTemplate>
+                      <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                        theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        <div *ngIf="dataItem.DocumentDate">
+                          {{dataItem.DocumentDate| date: dateFormat}}
+                        </div>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--DocumentDate end-->
+                  <!--DocumentTtcpriceWithCurrency start-->
+                  <kendo-grid-column
+                    [field]="gridSettings.columnsConfig[3].field"
+                    [title]="gridSettings.columnsConfig[3].title | translate"
+                    [filterable]="true"
+                    [reorderable]="true"
+                    [width]="150"
+                    filter="numeric"
+                    [headerStyle]="{'text-align':'right','padding-right':'1%'}"
+                    [style]='{"font-family": "Arial, Helvetica, serif",
+                    "color": "#505253",
+                    "text-align":"right",
+                    "padding-right": "1%"}'>
+                    <ng-template kendoGridHeaderTemplate>
+                      <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                        theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      {{dataItem.DocumentTtcpriceWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.CurrencyPrecision,
+                       style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay:'code'})}}
+                   </ng-template>
+                    <ng-template kendoGridFooterTemplate>
+                      <div class="totalStyle" style="text-align: right;font-weight:bold; font-size: 16px;padding-right: 25% !important;"
+                      *ngIf="userCurrency">
+                        {{TotalTtcAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+                         style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+                       </div>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--DocumentTtcpriceWithCurrency end-->
+                  <!--DocumentRemainingAmountWithCurrency start-->
+                  <kendo-grid-column
+                    [field]="gridSettings.columnsConfig[4].field"
+                    [title]="gridSettings.columnsConfig[4].title | translate"
+                    [filterable]="false"
+                    [reorderable]="false"
+                    [width]="150"
+                    filter="numeric"
+                    [headerStyle]="{'text-align':'right','padding-right':'1%'}"
+                    [style]='{"font-family": "Arial, Helvetica, serif",
+                    "color": "#505253",
+                    "text-align":"right",
+                    "padding-right": "1%"}'>
+                    <ng-template kendoGridHeaderTemplate>
+                      <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                        theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      {{dataItem.DocumentRemainingAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.CurrencyPrecision,
+                       style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay:'code'})}}
+                   </ng-template>
+                    <ng-template kendoGridFooterTemplate>
+                      <div class="totalStyle" style="text-align: right;font-weight:bold; font-size: 16px;padding-right: 1% !important;"
+                      *ngIf="userCurrency">
+                        {{TotalRemainingAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+                         style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+                       </div>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--DocumentRemainingAmountWithCurrency end-->
+                   <!--grid pdf & excel-->
+                  <app-grid-export [gridSettings]="gridSettings" fileName="{{ 'CUSTOMER_OUTSTANDING_DELIVERY_FORM_LIST' |translate}}" pdf="true"
+                    excel="false" [service]="customerOutstandingService" [predicate]="predicate" [api]="apiForExport">
+                  </app-grid-export>
+                <!--end grid pdf & excel-->
+
+              </kendo-grid>
+            <!-- Kendo grid end-->
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+

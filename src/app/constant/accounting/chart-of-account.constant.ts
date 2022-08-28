@@ -1,0 +1,29 @@
+export class ChartOfAccountsConstant {
+    public static ENTITY_NAME = 'chart-account';
+    public static GET_ALL_CHARTS = 'charts';
+    public static BUILD_CHARTS_ACCOUNT = 'build-charts-account';
+    public static UPDATE_METHOD_URL = 'update';
+    public static DELETE_METHOD_URL = 'delete';
+    public static EDIT_ACCOUNT = 'EDIT_ACCOUNT';
+    public static CHART_ACCOUNT_TO_BALANCED = 'chart-account-to-balanced';
+    public static EXISTING_CODE_LABEL = 'Code And Label should be unique';
+    public static EXISTING_LABEL = 'Label should be unique';
+    public static EXISTING_CODE = 'Code should be unique';
+    public static SEARCH_BY_CODE_ITERATION = 'search-by-code-iteration';
+    public static SEARCH_BY_CODE = 'search-by-code';
+    public static SEARCH_BY_LABEL = 'search-by-label';
+    public static SEARCH_BY_CODES = 'search-by-codes';
+    public static CHARTS_OF_ACCOUNT_DOES_NOT_EXIST = 'CHARTS_OF_ACCOUNT_DOES_NOT_EXIST';
+    public static ACCOUNT_TO_BE_CHOSEN_MUST_BE_PREFIXED_BY_NUMBER = 'ACCOUNT_TO_BE_CHOSEN_MUST_BE_PREFIXED_BY_NUMBER';
+    public static ADD_NEW_CHART_ACCOUNT = 'ADD_NEW_CHART_ACCOUNT';
+    public static ADD_PARENT_CHART_ACCOUNT = 'ADD_PARENT_CHART_ACCOUNT';
+    public static EDIT_CHART_ACCOUNT = 'EDIT_CHART_ACCOUNT';
+    public static EDIT_PARENT_CHART_ACCOUNT = 'EDIT_PARENT_CHART_ACCOUNT';
+    public static CHART_ACCOUNT_ALREADY_USED_CANT_DELETE = 'CHART_ACCOUNT_ALREADY_USED_CANT_DELETE';
+    public static CHARTS_EXPORT = 'export-charts';
+    public static CHARTS_EXPORT_MODEL = 'excel-template';
+    public static CHARTS_IMPORT = 'import-charts';
+    public static EXPORT_CHART_ACCOUNT_EXCEL_FILE_NAME = 'EXPORT_CHART_ACCOUNT_EXCEL_FILE_NAME';
+    public static EXPORT_CHART_ACCOUNT_EXCEL_MODEL_FILE_NAME = 'EXPORT_CHART_ACCOUNT_EXCEL_MODEL_FILE_NAME';
+    public static IMPORT_CHART_ACCOUNT_EXCEL_ERROR_FILE_NAME = 'IMPORT_CHART_ACCOUNT_EXCEL_ERROR_FILE_NAME';
+  }

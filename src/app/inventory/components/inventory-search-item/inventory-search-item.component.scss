@@ -1,0 +1,76 @@
+body {
+  background: #efefef;
+  font-family: 'Raleway', sans-serif;
+  color: #666;
+}
+
+main {
+        width: 60vw;
+    margin: 10vh 10px;
+    margin-top: 5px;
+    margin-bottom: 1px;
+    margin-left: 400px;
+}
+
+fieldset {
+ padding: 3%;
+ padding-top: 0;
+ 
+    padding-bottom: 7px;
+
+}
+
+legend {
+  padding: 0 20px;
+  font-size: 1.25em;
+  width: auto !important;
+  color: #4b9aad !important;
+}
+
+label {
+  position: relative;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+input[type="checkbox"] + label::before,
+input[type="radio"] + label::before {
+  content: '\a0';
+  display: inline-block;
+  margin: .2em .5em;
+  width: .8em;
+  height: .8em;
+  line-height: .75em;
+  transition: all .5s;
+  border: 1px solid silver;
+}
+
+input[type="radio"] + label::before {
+  border-radius: 50%;
+}
+
+input[type="checkbox"]:checked + label::before,
+input[type="radio"]:checked + label::before {
+  content: '\a0';
+  background: #5bb3bb;
+  border: 1px solid white;
+  box-shadow: inset 0 0 0 1px white, 0 0 0 1px #5bb3bb;
+}
+label.a{
+  text-decoration: underline !important;
+}
+label.a:hover{
+  color : #4b9aad !important;
+  cursor: pointer;
+}
+span.a{
+  text-decoration: underline !important;
+}
+span.a:hover{
+  color : #4b9aad !important;
+  cursor: pointer;
+}

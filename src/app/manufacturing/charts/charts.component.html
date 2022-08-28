@@ -1,0 +1,94 @@
+<div class="period-filter" >
+  <div class="period-filter row" >
+    <div class="period-filter col-xl-6 col-lg-12  col-md-12 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <div class="period-filter card-header" style="background-color: white;  border: none">
+          <div class="period-filter row justify-content-between pt-2">
+            <div class="col-sm-6">
+              <h4 class="card-title mb-0">{{'SALESTATE'|translate}} </h4>
+            </div>
+            <div class="period-filter mx-3">
+              <div class="period-filter dropdown">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <canvas baseChart
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType">
+          </canvas>
+        </div>
+      </div>
+    </div>
+    <div class="period-filter col-xl-6 col-lg-12  col-md-12 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <div class="period-filter card-header" style="background-color: white;  border: none">
+        <div class="period-filter row justify-content-between pt-2">
+          <div class="col-sm-6">
+            <h4 class="card-title mb-0">{{'SALESTATE'|translate}} </h4>
+          </div>
+          <div class="period-filter mx-3">
+            <div class="period-filter dropdown">
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+            <canvas baseChart chartType="doughnut"
+              [data]="doughnutChartData"
+              [labels]="doughnutChartLabels"
+              [options]="chartDoughnutOptions"
+              [legend]="true"
+              [colors]="doughnutChartColors">
+            </canvas>
+        </div>
+      </div>
+      </div>
+    </div>
+        <div class="period-filter col-xl-6 col-lg-12  col-md-12 col-sm-12 draggable-card" >
+          <div class={{ClickedClass}}>
+            <div class="period-filter card-header" style="background-color: white;  border: none">
+              <div class="period-filter row justify-content-between pt-2">
+                <div class="col-sm-6">
+                  <h4 class="card-title mb-0">{{'SALESTATE'|translate}} </h4>
+                </div>
+                <div class="period-filter mx-3">
+                  <div class="period-filter dropdown">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+<!--              <canvas baseChart-->
+<!--                      [chartType]="chartLineType"-->
+<!--                      [datasets]="chartLineData"-->
+<!--                      [labels]="chartLineLabels"-->
+<!--                      [colors]="chartLineColors"-->
+<!--                      [options]="chartLineOptions">-->
+<!--              </canvas>-->
+            </div>
+          </div>
+        </div>
+        <div class="period-filter col-xl-6 col-lg-12  col-md-12 col-sm-12 draggable-card">
+          <div class={{ClickedClass}}>
+              <div class="period-filter card-header" style="background-color: white;  border: none">
+                <div class="period-filter row justify-content-between pt-2">
+                  <div class="col-sm-6">
+                    <h4 class="card-title mb-0">{{'SALESTATE'|translate}} </h4>
+                  </div>
+                  <div class="period-filter mx-3">
+                    <div class="period-filter dropdown">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <p>hey</p>
+              </div>
+          </div>
+        </div>
+  </div>
+</div>

@@ -1,0 +1,317 @@
+<div class="w-100" *ngIf="isCollapsed && itemService.TecDoc">
+  <!-- Collapse tec doc Advanced list products -->
+  <p-accordion [multiple]="true" class="w-100">
+
+    <p-accordionTab header="{{'EQUIVALENT_PRODUCT'| translate}}" *ngIf="isCollapsed && itemService.TecDoc">
+      <div class="my-3">
+        <ul class="nav nav-tabs nav-tabs-new" id="tab-tecDoc" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link nav-link-new active" id="items-tecDoc" data-toggle="tab" href="#items-tecDoc" role="tab"
+              aria-controls="items" aria-selected="true">{{"ITEMS"|translate}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-new" id="fiche-tecDoc" data-toggle="tab" href="#fiches-tecDoc" role="tab"
+              aria-controls="fiches" aria-selected="false">{{'ITEM_SHEET'|translate}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-new" id="tab-associated-depot-tecDoc" data-toggle="tab"
+              href="#associated-depot-tecDoc" role="tab" aria-controls="associated-depot"
+              aria-selected="false">{{'ASSOCIATED_DEPOT'|translate}}</a>
+          </li>
+        </ul>
+        <div class="tab-content tab-content-new" id="tecDocTabContent">
+          <div class="tab-pane fade show active px-0 pt-0" id="items-tab-tecDoc" role="tabpanel"
+            aria-labelledby="items-tab-tecDoc">
+            <div class="card border-0">
+              <div class="card-content">
+                <div class="card-body p-3" style="min-height: fit-content;">
+
+
+                  <div class="row">
+                    <div class="card border-0">
+                      <div class="card-content">
+                        <div class="card-body">
+                          <kendo-grid #grid [pageSize]="gridEquivalenceSettings.state.take"
+                            [skip]="gridEquivalenceSettings.state.skip" [sort]="gridEquivalenceSettings.state.sort"
+                            [filter]="gridEquivalenceSettings.state.filter " [rowClass]="rowCallback"
+                            [data]="gridEquivalenceSettings.gridData" [pageable]="true"
+                            (detailExpand)="loadWarehousDetails($event)" (dataStateChange)="onStateChange($event)">
+
+
+                            <!-- TecDoc Item -->
+
+                            <!--Reference-->
+                            <kendo-grid-column *ngIf="itemService.TecDoc"
+                              [field]="gridEquivalenceSettings.columnsConfig[3].field"
+                              [title]="gridEquivalenceSettings.columnsConfig[3].title | translate"
+                              [width]="gridEquivalenceSettings.columnsConfig[3]._width"
+                              [filter]="gridEquivalenceSettings.columnsConfig[3].filter"
+                              [filterable]="gridEquivalenceSettings.columnsConfig[3].filterable"
+                              [format]="gridEquivalenceSettings.columnsConfig[3].format">
+                            </kendo-grid-column>
+
+                            <!--Designation-->
+                            <kendo-grid-column *ngIf="itemService.TecDoc"
+                              [field]="gridEquivalenceSettings.columnsConfig[4].field"
+                              [title]="gridEquivalenceSettings.columnsConfig[4].title | translate"
+                              [width]="gridEquivalenceSettings.columnsConfig[4]._width"
+                              [filter]="gridEquivalenceSettings.columnsConfig[4].filter"
+                              [filterable]="gridEquivalenceSettings.columnsConfig[4].filterable"
+                              [format]="gridEquivalenceSettings.columnsConfig[4].format">
+                            </kendo-grid-column>
+
+                            <!--Supplier-->
+                            <kendo-grid-column *ngIf="itemService.TecDoc"
+                              [field]="gridEquivalenceSettings.columnsConfig[5].field"
+                              [title]="gridEquivalenceSettings.columnsConfig[5].title | translate"
+                              [width]="gridEquivalenceSettings.columnsConfig[5]._width"
+                              [filter]="gridEquivalenceSettings.columnsConfig[5].filter"
+                              [filterable]="gridEquivalenceSettings.columnsConfig[5].filterable"
+                              [format]="gridEquivalenceSettings.columnsConfig[5].format">
+                            </kendo-grid-column>
+
+                            <!--AllAvailableQuantity-->
+                            <kendo-grid-column *ngIf="itemService.TecDoc"
+                              [field]="gridEquivalenceSettings.columnsConfig[6].field"
+                              [title]="gridEquivalenceSettings.columnsConfig[6].title | translate"
+                              [width]="gridEquivalenceSettings.columnsConfig[6]._width"
+                              [filter]="gridEquivalenceSettings.columnsConfig[6].filter"
+                              [filterable]="gridEquivalenceSettings.columnsConfig[6].filterable"
+                              [format]="gridEquivalenceSettings.columnsConfig[6].format">
+                              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                                <kendo-numerictextbox *ngIf="dataItem.IsInDb" [spinners]="false" [format]="FormatNumber"
+                                  [step]="1" style="border: none !important;" class="form-control inputEnabled as-label"
+                                  [value]="dataItem.ItemInDB.AllAvailableQuantity" [disabled]="true">
+                                </kendo-numerictextbox>
+                                <div *ngIf="!dataItem.IsInDb">
+                                  {{'NOT_AVAILABLE'|translate}}
+                                </div>
+                              </ng-template>
+                            </kendo-grid-column>
+
+                            <kendo-grid-column *ngIf="isAutoVersion" field="Tecdoc" [width]='24'
+                              [class]="{'tec-doc': true}"
+                              [headerStyle]="{'padding': '0','flex-wrap': 'wrap','align-content': 'center','vertical-align': 'middle'}">
+                              <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+                                <img src="../../../../assets/image/TecDoc.png" width="23px" />
+                              </ng-template>
+                              <ng-template kendoGridCellTemplate let-dataItem='dataItem' class="px-0">
+                                <i aria-hidden="true" class="fa fa-info-circle fa-lg" style="cursor: pointer;"
+                                  (click)='openTecdocModal(dataItem)' data-toggle="modal"
+                                  data-target="#tecdocdetails"></i>
+                              </ng-template>
+                            </kendo-grid-column>
+
+                            <!-- End TecDoc Item -->
+                            <ng-template kendoGridDetailTemplate let-dataItem="dataItem" let-rowIndex="rowIndex"
+                              *ngIf="!isEquivalenceGroupInterface && !itemService.TecDoc">
+                              <div *ngIf="dataItem.ItemWarehouse.length==0">
+                                {{'NODATAFOUND' | translate}}
+                              </div>
+
+                              <div *ngIf="dataItem.ItemWarehouse.length>0" class="row">
+                                <div *ngFor="let itemWarhouse of dataItem.ItemWarehouse" class="card">
+                                  <div class="card-body">
+                                    <div style="display: -webkit-box;">
+                                      <h3 class="card-title">
+                                        {{itemWarhouse.WarehouseName}}
+                                      </h3>
+                                      <span *ngIf="itemWarhouse.State == 1"
+                                        class="badge badge-success margrin-badget">{{'INSTOCK'|translate}}</span>
+                                      <span *ngIf="itemWarhouse.State == 2"
+                                        class="badge badge-warning  margrin-badget">{{'INCOMMAND'|translate}}</span>
+                                      <span *ngIf="itemWarhouse.State == 3"
+                                        class="badge badge-danger  margrin-badget">{{'SOLDOUT'|translate}}</span>
+                                    </div>
+                                    <p><strong>{{'MINQUANT' | translate}} : </strong> {{itemWarhouse.MinQuantity}}</p>
+                                    <p><strong>{{'AVAILABLEQUANTITY' | translate}}
+                                        : </strong> {{itemWarhouse.AvailableQuantity}}</p>
+                                    <p><strong>{{'RESERVEDQUANTITY' | translate}}
+                                        : </strong>{{itemWarhouse.ReservedQuantity}} </p>
+                                    <p><strong>{{'ON_ORDER_QUANTITY' | translate}}
+                                        : </strong> {{itemWarhouse.OnOrderQuantity}}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                            </ng-template>
+
+
+                            <ng-template kendoGridDetailTemplate let-dataItem="dataItem" let-rowIndex="rowIndex">
+                              <div *ngIf="dataItem.IsInDb">
+                                <div class="row tec-doc-bar">
+                                  <div class="col-4">
+                                    <strong class="sizeStyle">{{'TECDOC_REFERENCE'|translate}} :</strong>
+                                    {{dataItem.Reference}}
+                                  </div>
+                                  <div class="col-4">
+                                    {{dataItem.Description}}
+                                  </div>
+                                </div>
+                                <div class="no-info" *ngIf="dataItem.ItemInDB.ItemWarehouse.length==0">
+                                  {{'NODATAFOUND' | translate}}
+                                </div>
+                                <div *ngIf="dataItem.ItemInDB.ItemWarehouse.length>0" class="itemWarehouse">
+                                  <div *ngFor="let itemWarhouse of dataItem.ItemInDB.ItemWarehouse">
+                                    <div *ngIf="itemWarhouse.IdWarehouseNavigation.IsCentral"
+                                      class="itemWarehouseCentral">
+                                      <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                          <h3 class="card-title">
+                                            {{itemWarhouse.WarehouseName}}
+                                          </h3>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-6">
+                                          <span *ngIf="itemWarhouse.State == 1"
+                                            class="badge badge-success margrin-badget warehouseDetails">{{'INSTOCK'|translate}}</span>
+                                          <span *ngIf="itemWarhouse.State == 2"
+                                            class="badge badge-info  margrin-badget warehouseDetails">{{'INCOMMAND'|translate}}</span>
+                                          <span *ngIf="itemWarhouse.State == 3"
+                                            class="badge badge-danger  margrin-badget warehouseDetails">{{'SOLDOUT'|translate}}</span>
+                                          <span *ngIf="itemWarhouse.State == 4"
+                                            class="badge badge-warning  margrin-badget warehouseDetails">
+                                            {{'IN_STOCK_BUT_NOT_SUFFISANT_QUANTITY'|translate}}
+                                          </span>
+
+                                          <!-- <ng-container *ngIf="!isInSalesRole" > -->
+                                          <ng-container>
+                                            <a class="grid-cell-link" (click)="onClickGoToDetails(dataItem.ItemInDB.Id)"
+                                              style="margin-left: 1%;display: inline-flex;">
+                                              <i class="fa fa-history fa-lg AddIcon"></i>
+                                              &nbsp;{{'SEE_HISTORY' | translate}}
+                                            </a>
+                                          </ng-container>
+
+
+                                        </div>
+                                      </div>
+                                      <div class="row" style="margin-left: 1%;margin-top: 1%">
+                                        <div class="col-lg-3 col-md-6 col-sm-12">
+                                          <p><strong class="sizeStyle">{{'AVAILABLEQUANTITY' | translate}} : </strong>
+                                            {{itemWarhouse.SumOfAvailableQuantity}}</p>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-12">
+                                          <p><strong class="sizeStyle">{{'ON_ORDER_QUANTITY' | translate}} : </strong>
+                                            {{itemWarhouse.OnOrderQuantity}}</p>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-12">
+                                          <p><strong class="sizeStyle">{{'MINQUANT' | translate}} : </strong>
+                                            {{itemWarhouse.MinQuantity}}</p>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-12">
+                                          <p><strong class="sizeStyle">{{'NOT_TRANSFERED_QUANTITY' | translate}}
+                                              : </strong>
+                                            {{itemWarhouse.AvailableQuantity}}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <ngb-tabset (tabChange)="beforeChange($event)">
+                                    <div *ngFor="let itemWarhouse of dataItem.ItemInDB.ItemWarehouse">
+                                      <div *ngIf="!itemWarhouse.IdWarehouseNavigation.IsCentral">
+                                        <ngb-tab>
+                                          <ng-template ngbTabTitle>
+                                            <span class="tabTitle" (click)="showTab=!showTab">
+                                              <strong>{{itemWarhouse.WarehouseName}}</strong>
+                                            </span>
+                                          </ng-template>
+                                          <div *ngIf="showTab">
+                                            <ng-template ngbTabContent>
+                                              <div class="row" style="margin-left: 1%;padding-top: 1%;">
+                                                <span *ngIf="itemWarhouse.State == 1"
+                                                  class="badge badge-success margrin-badget">{{'INSTOCK'|translate}}</span>
+                                                <span *ngIf="itemWarhouse.State == 3"
+                                                  class="badge badge-danger  margrin-badget">{{'SOLDOUT'|translate}}</span>
+                                                <span *ngIf="itemWarhouse.State == 4"
+                                                  class="badge badge-warning  margrin-badget">
+                                                  {{'IN_STOCK_BUT_NOT_SUFFISANT_QUANTITY'|translate}}
+                                                </span>
+                                              </div>
+                                              <div class="row" style="margin-left: 1%;padding-top: 1%;">
+                                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                                  <p>
+                                                    <strong class="sizeStyle">{{'AVAILABLEQUANTITY' | translate}}
+                                                      : </strong>
+                                                    {{itemWarhouse.AvailableQuantity}}
+                                                  </p>
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                                  <p>
+                                                    <strong class="sizeStyle">{{'RESERVEDQUANTITY' | translate}} :
+                                                    </strong>{{itemWarhouse.ReservedQuantity}}
+                                                  </p>
+                                                </div>
+                                                <div class="col-lg-3 col-md-6 col-sm-12">
+                                                  <p>
+                                                    <strong class="sizeStyle">{{'MINQUANT' | translate}} : </strong>
+                                                    {{itemWarhouse.MinQuantity}}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </ng-template>
+                                          </div>
+                                        </ngb-tab>
+                                      </div>
+                                    </div>
+                                  </ngb-tabset>
+                                </div>
+                              </div>
+                              <div *ngIf="!dataItem.IsInDb">
+                                {{'NOT_REGISTERED_YET'| translate}}
+                              </div>
+                            </ng-template>
+                          </kendo-grid>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-pane fade px-0" id="fiches-tecDoc" role="tabpanel" aria-labelledby="fiches-tecDoc">
+            <div class="card border-0">
+              <div class="card-content">
+                <div class="card-body p-3" style="min-height: fit-content;">
+                  <!--To be inserted-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade  px-0" id="associated-depot-tecDoc" role="tabpanel"
+            aria-labelledby="tab-associated-tecDoc">
+            <div class="card border-0">
+              <div class="card-content">
+                <div class="card-body p-3" style="min-height: fit-content;">
+                  <app-associated-warehouse-grid></app-associated-warehouse-grid>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+
+<!-- tecdoc Modal -->
+<div class="modal " id="tecdocdetails" tabindex="-1" role="dialog" aria-labelledby="tecdocdetails" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false" *ngIf='opentecdocdetails'>
+  <div class="modal-dialog modal-dialog modal-xlg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tecdocdetails">{{'TEC_DOC_DETAILS' | translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='closeTecdocModal()'>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-tecdoc-details [isModal]="true" [selectedItem]="SelectedForDetails" *ngIf="!FromApi"></app-tecdoc-details>
+        <app-tecdoc-details-api [isModal]="true" [selectedItem]="SelectedForDetails" *ngIf="FromApi">
+        </app-tecdoc-details-api>
+      </div>
+    </div>
+  </div>
+</div>

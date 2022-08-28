@@ -1,0 +1,98 @@
+.k-splitter {
+  position: relative;
+  border  : none;
+}
+
+.k-splitbar {
+  color           : #212529;
+  background-color: #d5dae0;
+  margin-top      : -1.3em;
+  margin-bottom   : -1.3em;
+}
+
+.badge-completed {
+  color           : #fff;
+  background-color: #563d7c;
+}
+
+kendo-dropdownbutton.k-widget.k-dropdown-button .k-button {
+  background-color: #20a8d8;
+  color           : white;
+  height          : 1.85em;
+}
+
+.margin {
+  margin-bottom: 15px;
+}
+
+.cadre {
+  border: 1px solid black;
+  padding: 3px;
+}
+
+.labelStyle {
+  color: #4c9aae;
+  font-weight: bold;
+  font-size: 16px;
+  padding-top: 10px;
+}
+
+
+body .ui-accordion .ui-accordion-header a {
+  background-color: #f4f4f4;
+  color: #4c9aae;
+  font-weight: 700;
+  -moz-transition: background-color 0.2s;
+  -o-transition: background-color 0.2s;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+  font-size: large;
+}
+
+
+fieldset {
+  border: 1px solid #ddd !important;
+  margin: 0;
+  min-width: 0;
+  padding: 5px;
+  position: relative;
+  border-radius: 4px;
+  background-color: #FFF;
+  padding-left: 10px !important;
+}
+
+legend {
+  font-size: 14px;
+  margin-bottom: 0px;
+  margin-right: 0px;
+  min-width: 5%;
+  width: auto;
+  padding: 2px 10px 2px 10px;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  min-height: 400px;
+}
+
+fieldset legend {
+  font-size: 16px;
+}
+
+.hideShowAccordionHeader {
+  .ui-accordion-header.ui-state-default.ui-corner-all.ui-state-active {
+    display: none;
+  }
+}
+
+.ui-accordion .ui-accordion-content {
+  padding: 0em;
+}
+
+.main-cash-class {
+  cursor: pointer;
+  opacity: 1;
+}
+
+.edit-pencil:hover{
+  color:rgb(166, 218, 218);
+}
+

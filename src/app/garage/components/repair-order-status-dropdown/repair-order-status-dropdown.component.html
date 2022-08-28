@@ -1,0 +1,16 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="repairOrderStateFilterDataSource" class="form-control" formControlName="IdRepairOrderState"
+    textField="name" valueField="value" [valuePrimitive]="true" [allowCustom]="false" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="onValueChanged($event)">
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+  </kendo-combobox>
+</div>
+
+<div *ngIf="!group">
+  <kendo-combobox [data]="repairOrderStateFilterDataSource" class="form-control" name="status"
+    (valueChange)="onValueChanged($event)" textField="name" valueField="Id" [valuePrimitive]="true"
+    [(ngModel)]="selectedValue" (filterChange)="handleFilter($event)">
+  </kendo-combobox>
+</div>

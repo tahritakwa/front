@@ -1,0 +1,16 @@
+<div [formGroup]="itemForm">
+
+    <span
+    tooltip="{{(itemForm.controls['DocumentOtherTaxesWithCurrency'] && itemForm.controls['DocumentOtherTaxesWithCurrency'].value) ? itemForm.controls['DocumentOtherTaxesWithCurrency'].value.toLocaleString('fr-FR',{minimumFractionDigits: 3}):0}} {{formatOptions? formatOptions.currency : ''}}"
+    theme="light">
+    <kendo-numerictextbox [spinners]="false" [step]="1" formControlName="DocumentOtherTaxesWithCurrency"
+                          [format]="formatOptions" class="num-field form-control disabledInput" style="margin-top: -5%;
+    font-family: Roboto; font-weight: bold; color: rgb(80, 82, 83); font-size: 0.9rem !important;
+     " *ngIf='type' (focusout)="changeOtherTaxes()"></kendo-numerictextbox>
+
+    <kendo-numerictextbox [spinners]="false" [step]="1" formControlName="DocumentOtherTaxesWithCurrency"
+                          [format]="formatOptions" class="num-field form-control disabledInput" style="margin-top: -5%;
+    font-family: Roboto; font-weight: bold; color: rgb(80, 82, 83); font-size: 0.9rem !important;
+     " *ngIf='!type'></kendo-numerictextbox>
+  </span>
+</div>

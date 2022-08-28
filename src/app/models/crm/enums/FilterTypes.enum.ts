@@ -1,0 +1,16 @@
+export enum FilterTypesEnum {
+
+  BY_ORGANISATION = 'BY_ORGANISATION',
+
+  BY_TYPE_AFFAIRE = 'BY_TYPE_AFFAIRE',
+
+  BY_GATEGORY = 'BY_GATEGORY',
+
+  BY_EMPLOYEE = 'BY_EMPLOYEE',
+
+  BY_ARTICLE = 'BY_ARTICLE',
+
+  STAFFING = 'Staffing',
+
+  PRODUCT_SALE = 'Product sale'
+}

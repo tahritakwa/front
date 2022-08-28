@@ -1,0 +1,92 @@
+[
+    {
+        "Id": 1,
+        "product": "product 1",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 2,
+        "product": "product 2",
+        "quantStock": 30,
+        "quantMin": 50,
+        "quantOrder": 20,
+        "lastprice": "30",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 3,
+        "product": "product 3",
+        "quantStock": "100",
+        "quantMin": "120",
+        "quantOrder": 20,
+        "lastprice": "50",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 4,
+        "product": "product 4",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 5,
+        "product": "product 5",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 6,
+        "product": "product 6",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 7,
+        "product": "product 7",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 8,
+        "product": "product 8",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 9,
+        "product": "product 9",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    },
+    {
+        "Id": 10,
+        "product": "product 10",
+        "quantStock": 20,
+        "quantMin": 30,
+        "quantOrder": 10,
+        "lastprice": "20.3",
+        "isDeleted": "false"
+    }
+]

@@ -1,0 +1,130 @@
+<div class="card  h-100" style="border: 1px solid #c0c0c0 !important;">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(isUpdateMode ? 'UPDATE_DISCOUNT' : 'ADD_DISCOUNT')|translate}}</h3>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+
+    <!--Begin add form-->
+    <form class="form-horizontal" [formGroup]="priceFormGroup">
+
+      <div class="form-group row">
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+          <input class="form-control" formControlName="CodePrices" type="text" name="CodePrices"
+                 [ngClass]="{ 'has-error': (priceFormGroup.controls.CodePrices.touched || priceFormGroup.controls.CodePrices.dirty) && !priceFormGroup.controls.CodePrices.valid }">
+          <app-control-messages [control]="priceFormGroup.controls.CodePrices"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'CONTRACT_CODE'|translate}}</label>
+          <input class="form-control" formControlName="ContractCode" type="text" name="ContractCode">
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'CURRENCY'|translate}}<span class="required">*</span></label>
+          <app-currency-dropdown [group]="priceFormGroup" (Selected)="selectedCurrency($event)"
+          [disabled]="disabledCurrency"></app-currency-dropdown>
+          <app-control-messages [control]="priceFormGroup.controls.IdCurrency"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+      </div>
+
+      <div class="form-group row">
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}<span
+            class="required">*</span></label>
+          <textarea class="form-control" formControlName="LabelPrices" type="text" name="LabelPrices"
+                    [ngClass]="{ 'has-error': (priceFormGroup.controls.LabelPrices.touched || priceFormGroup.controls.LabelPrices.dirty) && !priceFormGroup.controls.LabelPrices.valid }"></textarea>
+          <app-control-messages [control]="priceFormGroup.controls.LabelPrices"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <app-upload-file [fileToUpload]="ObservationsFilesToUpload" [service]="pricesService"></app-upload-file>
+        </div>
+
+      </div>
+
+
+      <p-accordion [multiple]="true" class="w-100">
+        <!-- Collapse AFFECTATION -->
+        <p-accordionTab header="{{'COLLAPSE_AFFECTATION_TITLE'| translate}}"
+                        (selectedChange)="isAffectationDiscollapsed = !isAffectationDiscollapsed"
+                        [selected]="isAffectationDiscollapsed">
+          <app-price-customers-card-list [idPrice]="idPrice" [idCurrency]="idCurrency"
+                                         (affectionClicked)="createPriceAndOpenCustomerAffectionModal()"
+                                         (CustomerListEmpty)="CustomerListEmpty($event)"
+                                         [hasUpdatePermission]="hasUpdatePricePermission && isUpdateMode || hasAddPricePermission "
+                                         #customersCardList>
+          </app-price-customers-card-list>
+          <app-price-items-card-list [idPrice]="idPrice" (affectionClicked)="createPriceAndOpenItemAffectionModal()"
+          [hasUpdatePermission]="hasUpdatePricePermission && isUpdateMode || hasAddPricePermission"
+                                     #itemsCardList>
+          </app-price-items-card-list>
+
+          <div class="form-group row"></div>
+
+        </p-accordionTab>
+        <!-- Collapse Quantity Discount -->
+        <p-accordionTab header="{{'COLLAPSE_QUANTITY_DISCOUNT_TITLE'| translate}}"
+                        (selectedChange)="quantityDiscountSelectedChange()" [selected]="isQuantityDiscountDiscollapsed">
+          <app-price-quantity-discount-list [priceFormGroup]='priceFormGroup'
+          [hasUpdatePermission]="hasUpdatePricePermission && isUpdateMode || hasAddPricePermission " #quantityDiscountList>
+          </app-price-quantity-discount-list>
+        </p-accordionTab>
+        <!-- Collapse Total Purchases Discount -->
+        <!-- <p-accordionTab header="{{'COLLAPSE_TOTAL_PURCHASES_DISCOUNT_TITLE'| translate}}"
+                        (selectedChange)="totalPurchasesDiscountSelectedChange()"
+                        [selected]="isTotalPurchasesDiscountDiscollapsed">
+          <app-price-total-purchases-discount-list [priceFormGroup]='priceFormGroup' #totalPurchasesDiscountList>
+          </app-price-total-purchases-discount-list>
+        </p-accordionTab> -->
+        <!-- Collapse Special Price Discount -->
+        <p-accordionTab header="{{'COLLAPSE_SPECIAL_PRICE_DISCOUNT_TITLE'| translate}}"
+                        (selectedChange)="specialPriceDiscountSelectedChange()"
+                        [selected]="isSpecialPriceDiscountDiscollapsed">
+          <app-price-special-price-discount-list [priceFormGroup]='priceFormGroup' 
+          [hasUpdatePermission]="hasUpdatePricePermission && isUpdateMode || hasAddPricePermission" [currencyPrecesion] ="currencyPrecesion" #specialPriceDiscountList>
+          </app-price-special-price-discount-list>
+        </p-accordionTab>
+        <!-- Collapse Gifted Items Discount -->
+        <!-- <p-accordionTab header="{{'COLLAPSE_GIFTED_ITEMS_DISCOUNT_TITLE'| translate}}"
+                        (selectedChange)="giftedItemsDiscountSelectedChange()"
+                        [selected]="isGiftedItemsDiscountDiscollapsed">
+          <app-price-gifted-items-discount-list [priceFormGroup]='priceFormGroup' #giftedItemsDiscountList>
+          </app-price-gifted-items-discount-list>
+        </p-accordionTab> -->
+      </p-accordion>
+
+    </form>
+    <!--End add form-->
+  </div>
+  <!--End Card body-->
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="urlList" >
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="onClickAddPrice()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="(hasUpdatePricePermission && isUpdateMode) || (hasAddPricePermission)">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Card footer End-->
+</div>

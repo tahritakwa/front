@@ -1,0 +1,22 @@
+
+
+<div *ngIf="group" [formGroup]="group">
+  <kendo-combobox [data]="tierCategoryFiltredDataSource"
+      class="form-control"
+      formControlName="IdTierCategory"
+      textField="Name"
+      valueField="Id"
+      [valuePrimitive]="true" 
+      [allowCustom]="false" 
+      [filterable]="true"
+      (filterChange)="handleFilter($event)" 
+      (valueChange)="onchange($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.Name | translate }} 
+    </ng-template>
+   <!--No data template-->
+   <ng-template kendoDropDownListNoDataTemplate>
+    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+  </ng-template>
+  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" > </kendo-combobox-messages>  </kendo-combobox >
+</div>

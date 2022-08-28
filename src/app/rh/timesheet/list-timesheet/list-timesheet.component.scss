@@ -1,0 +1,127 @@
+.fa-lg {
+  font-size: 1.2em !important;
+  line-height: 0.75em !important;
+  vertical-align: -15% !important;
+}
+
+.color-blue {
+  color: #13688c;
+  font-size: initial;
+}
+
+.square {
+  height: 70px;
+  width: 70px;
+  background-color: #63c2de9c;
+  border-radius: 50%;
+}
+
+.status-icon-style {
+  color: white;
+  margin-top: 18px;
+  margin-left: 19px;
+  font-size: 2.5em !important;
+}
+
+.AddIcon {
+  color: #518390 !important;
+}
+
+
+ @media (min-width: 490px) {
+ .post-module {
+	position: relative;
+    z-index: 1;
+    display: block;
+    min-width: 360px;
+    height: 325px;
+    border-radius: 0px;
+    border: 1px solid #c0c0c0;
+}
+.container_footer {
+  width: 84%;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: flex-end;
+  position: absolute;
+  bottom: 0;
+  top: 134px;
+}
+ }
+@media (max-width: 480px) {
+  .post-module {
+    position: relative;
+    z-index: 1;
+    display: block;
+    height: 325px;
+    border-radius: 0px;
+    border: 1px solid #c0c0c0;
+    min-width: 235px;
+  }
+  .container_footer {
+    width: 75%;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: flex-end;
+    position: absolute;
+    bottom: 0;
+    top: 137px;
+  }
+}
+
+ .post-module:hover .thumbnail img {
+	 -webkit-transform: scale(1.1);
+	 -moz-transform: scale(1.1);
+	 transform: scale(1.1);
+	 opacity: .6;
+}
+ .post-module .thumbnail {
+	 background: white;
+	 height: 250px;
+	 overflow: hidden;
+}
+ .post-module .thumbnail .status {
+  position: absolute;
+  top: -5px;
+  right: 20px;
+  z-index: 1;
+  width: 81px;
+  height: 125px;
+  padding: 12.5px 0;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+}
+ .post-module .thumbnail .status .size {
+	 font-size: 12px;
+	 text-transform: uppercase;
+}
+ .post-module .thumbnail img {
+	 display: block;
+	 width: 120%;
+}
+ .post-module .post-content {
+	 position: absolute;
+	 bottom: 0;
+	 background: white;
+	 width: 100%;
+	 padding: 30px;
+}
+ .post-module .post-content .category {
+	position: absolute;
+    top: -123px;
+    left: 22px;
+    padding: 10px 15px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: -webkit-xxx-large;
+    font-family: monospace;
+}
+ 
+ 
+
+ 

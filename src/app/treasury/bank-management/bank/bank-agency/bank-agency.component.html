@@ -1,0 +1,43 @@
+<p-accordion [multiple]="true" [formGroup]="bankFormGroup" class="w-100">
+  <!--Collapse AGENCY-->
+  <p-accordionTab header="{{'AGENCIES'| translate}}" (click)="onAccordionClick()"
+                  (selectedChange)="selectedChange()"
+                  [selected]="agencyCollapseOpened">
+    <div class = "row">
+    <div class="row col-12 mt-3 k-justify-content-end">
+      <button class="btn-Add k-button btn btn-add" type="button" (click)='addAgency()' >
+          <i class="fa fa-plus fa AddIcon"></i>
+            <span>&nbsp; {{'ADD'|translate}} {{'AGENCY'|translate}}</span>
+      </button>
+    </div>
+    </div>
+    <div class="w-100" *ngFor="let agency of BankAgency.controls; let i=index;">
+      <p-accordion [multiple]="true" class="w-100" *ngIf = "showAgency(agency)">
+      <p-accordionTab (click)="onAccordionAgencyClick()"
+                  (selectedChange)="selectedAgencyChange()"
+                  [selected]="collapseContactOpened">
+      <p-header>
+          <span>
+            {{agency.value.Label}}
+            <i class="las la-pen la-lg" (click)="openEditAgencyDialog(agency)" *ngIf="hasUpdateAgencePermission"></i>
+          </span>
+          <i class="fa fa-close fa-1x AddIcon text-danger float-right" (click)="onAgencyDelete(agency)" *ngIf="hasUpdateAgencePermission" type="button">
+            <!-- <i class="fa fa-times fa-lg AddIcon" style="color: white"></i>
+            <span>&nbsp; {{'DELETE'|translate}}</span> -->
+          </i>
+      </p-header>
+      <app-tiers-contact class="mt-2"
+                       [tiersFormGroup]="agency"
+                       [tiersContactToUpdate]="bankToUpdate?.BankAgency[i]?.Contact?
+                       bankToUpdate.BankAgency[i].Contact:[]"
+                       [contactLabel]="contactLabel"
+                       [hasUpdateContactPermission]="hasUpdateAgencePermission"
+                       [isBankAgency]="true"
+                       [collapseOnOpenAction]="collapseContactOpened"
+                       (phoneHasErrorEvent)="isContactPhoneHasError($event)">&a'
+      </app-tiers-contact>
+    </p-accordionTab>
+  </p-accordion>
+    </div>
+  </p-accordionTab>
+</p-accordion>

@@ -1,0 +1,84 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_JOURNAL' : 'ADD_NEW_JOURNAL') |translate}}</h3>
+      </div>
+    </div>
+  </div>
+  <hr color="#d9d9d9" class="mt-0">
+
+  <!--End Card header-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="journalAddFormGroup">
+      <div class="card-body">
+        <div class="form-group row ml-2">
+
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE_JOURNAL'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" formControlName="code" name="code">
+            <app-control-messages [control]="journalAddFormGroup.controls.code"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" formControlName="label" name="label">
+            <app-control-messages [control]="journalAddFormGroup.controls.label"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row ml-2">
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="form-group row">
+              <div class="col-12 contact100-form-checkbox mt-3">
+                <input type="checkbox" class="input-checkbox100 " formcontrolname="reconcilable"
+                       id="checkReconciliation" name="reconcilable"
+                       (click)='checkReconciliation()'
+                       [checked]="isReconcilableChecked == true ? 'checked': null">
+                <label class="label-checkbox100"
+                       for="checkReconciliation">{{'IS_RECONCILABLE'|translate}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="form-group row">
+              <div class="col-12 contact100-form-checkbox mt-3">
+                <input type="checkbox" class="input-checkbox100 " formcontrolname="cashFlow"
+                       id="checkCashFlow" name="cashFlow"
+                       (click)='checkCashFlow()'
+                       [checked]="isCashFlowChecked == true ? 'checked': null">
+                <label class="label-checkbox100"
+                       for="checkCashFlow">{{'IS_CASH_FLOW'|translate}}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer mx-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="{{journalListUrl}}">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="saveJournal()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

@@ -1,0 +1,197 @@
+.column {
+  margin-top: 2%;
+  float: left;
+  border-radius: 2% 2% 2% 2%;
+  height: 100%;
+  padding: 1%;
+  margin-right: 1%;
+  background-color: #f0f3f57a;
+  margin-block-end: 4%;
+}
+
+.columnMail {
+  margin-top: 2%;
+  float: right;
+  padding: 10px;
+  width: min-content;
+  background-color: #92b5a3;
+  border-radius: 8%;
+  margin-right: 2%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.log {
+  width: 221px;
+  padding-block-end: 41px;
+  margin-block-end: 95px;
+  max-height: 250px;
+  overflow-y: scroll;
+  padding-left: 15px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 0% 4% 0% 0%;
+  background-color: rgba(35, 40, 44, 0.53);
+  max-width: 20%;
+  position: absolute;
+  top: 59%;
+  left: 87%;
+  color: white;
+
+  .fit-picture {
+    width: 50px;
+  }
+}
+
+.logdetail {
+  height: 85%;
+  overflow-y: scroll;
+  padding-left: 11px;
+  position: absolute;
+  color: #23282c;
+  left: 81%;
+}
+
+.buttonAdd {
+  z-index: 999;
+  width: 42px;
+  height: 40.5px;
+  background: #ffffff;
+  border-radius: 100%;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  cursor: pointer;
+  border: 2px solid #4b9aad !important;
+}
+
+.oppCard {
+  margin-bottom: 5px;
+  padding: 5%;
+  border: 0.1em solid #8691af;
+  width: auto;
+  background-color: White;
+  box-shadow: 0 0px 6px 0 rgba(0, 0, 0, 0.2), 0 0px 10px 0 rgba(0, 0, 0, 0.19);
+}
+
+.oppAddCard {
+  height: 39px;
+  border: 0.1em solid #8691af54;
+  width: 100%;;
+  background-color: White;
+  -webkit-box-shadow: 0 0px 6px 0 rgba(0, 0, 0, 0.2), 0 0px 10px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 0px 6px 0 rgba(0, 0, 0, 0.2), 0 0px 10px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+#container {
+  background: #fff;
+  width: 100%;
+}
+
+.items {
+  height: 50px;
+  width: 18%;
+  margin: 2%;
+}
+
+#left, #right {
+  width: 10%;
+  height: auto;
+}
+
+.button {
+  background-color: red;
+}
+
+.dropdown-item-active {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.25rem 1.5rem !important;
+  clear: both !important;
+  font-weight: 400 !important;
+  text-align: inherit !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: relative !important;
+  padding: 10px 20px !important;
+  border-bottom: 1px solid #c8ced3 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  background-color: #4c9aae !important;
+}
+
+.modal-dialog {
+  max-width: 100% !important;
+  width: 65% !important;
+}
+
+.card {
+  border: 0 !important;
+}
+
+.text-muted {
+  font-family: 'Arial';
+  color: #cfcfcf;
+  font-weight: bolder;
+  font-style: italic;
+}
+
+.addIcon {
+  color: #028fb9 !important;
+}
+
+.card-header {
+  border-radius: 15px 15px 0px 0px !important;
+}
+
+.card-footer {
+  height: 40px !important;
+  padding: 5px !important;
+  border-radius: 0px 0px 15px 15px !important;
+
+}
+
+.text-detail {
+  font-size: 13px;
+  font-family: Arial;
+  font-weight: normal !important;
+  white-space: initial;
+}
+
+.totalEstimatedIncomeByStatus {
+  font-family: 'Arial';
+  font-size: larger;
+  color: #4c9aae !important;
+  font-style: initial;
+  float: right;
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.estimatedIncome {
+  font-family: 'Arial';
+  font-size: larger;
+  float: right;
+  color: #4c9aae !important;
+  font-style: initial;
+  margin: 2px;
+}
+
+.opportunity-title {
+  margin-bottom: 0 !important;
+  text-align: left;
+  font-family: 'Arial';
+  color: black;
+  font-weight: bold;
+  background-color: #cccccc94;
+}
+
+.blue {
+  color: #4c9aae !important;
+}
+
+
+

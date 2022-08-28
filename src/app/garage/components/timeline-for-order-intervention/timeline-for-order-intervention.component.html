@@ -1,0 +1,23 @@
+<div div *ngIf="historyInterventionList && historyInterventionList.length !== 0" class="timeline">
+  <ul>
+    <li *ngFor="let item of historyInterventionList">
+      <div class="content">
+        <div class="name" style="font-weight: 650;" (click)="GoToLink(item)">{{item.OperationName}}</div>
+        <div class="state" *ngIf="item.State">{{item.State}}</div>
+        <p class="subcontent">{{item.User}}</p>
+      </div>
+      <div class="time">
+        <div>{{item.Date | date:'dd/MM/yyyy HH:mm'}}</div>
+      </div>
+    </li>
+    <div style="clear:both;"></div>
+  </ul>
+</div>
+<div *ngIf="historyInterventionList && historyInterventionList.length === 0">
+  <div class="no-data-image">
+    <img src="../../../../assets/image/no_datafound.png">
+  </div>
+  <div class="no-data-text">
+    <h5> {{'NO_DATA_FOUND' | translate}} </h5>
+  </div>
+</div>

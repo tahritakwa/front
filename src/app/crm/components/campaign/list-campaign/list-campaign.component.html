@@ -1,0 +1,95 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card border-0 full-screen-card">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header" style="background-color: white; border:none">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'CAMPAIGN_LIST'|translate}}</h3>
+          </div>
+        </div>
+        <div class="card-body">
+
+
+          <app-filtre-campaign [paramsFromOrgList]="gridState" class="col-lg-4 col-md-6 col-sm-12 col-xs-12"
+                               [gridSettings]="gridSettings"
+                               (sendData)="initGridDataSourceEvent($event)"
+          ></app-filtre-campaign>
+
+
+          <app-btn-grid  [advencedAdd]='true' [addLink]='"AdvancedAdd"' [export]='false' *ngIf="this.authService.hasAuthorities([CRMPermissions.ADD_PH_CAMPAIGN])">
+          </app-btn-grid>
+          <kendo-grid [data]="gridSettings.gridData"
+                      [pageSize]="gridSettings.state.take"
+                      [skip]="gridSettings.state.skip"
+                      [pageable]="pagerSettings"
+                      [filterable]="false"
+                      [reorderable]="true"
+                      [columnMenu]="true"
+                      [sort]="gridSettings.state.sort"
+                      (pageChange)="onPageChange($event)"
+                      [filter]="gridSettings.state.filter"
+                      [sortable]="{allowUnsort: true, mode: 'single'}"
+                      (sortChange)="sortChange($event)"
+                      (dataStateChange)="dataStateChange($event)"
+                      kendoGridSelectBy="id">
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field "
+                               [title]="gridSettings.columnsConfig[0].title | translate"
+                               [width]="gridSettings.columnsConfig[0]._width"
+                               [filter]="gridSettings.columnsConfig[0].filter"
+                               [filterable]="gridSettings.columnsConfig[0].filterable"
+                               [format]="gridSettings.columnsConfig[0].format">
+            </kendo-grid-column>
+            <kendo-grid-column *ngIf="this.showStateCol" [field]="gridSettings.columnsConfig[1].field"
+                               [title]="gridSettings.columnsConfig[1].title | translate"
+                               [width]="gridSettings.columnsConfig[1]._width"
+                               [filter]="gridSettings.columnsConfig[1].filter"
+                               [filterable]="gridSettings.columnsConfig[1].filterable"
+                               [format]="gridSettings.columnsConfig[1].format">
+            </kendo-grid-column>
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                               [title]="gridSettings.columnsConfig[2].title | translate"
+                               [width]="gridSettings.columnsConfig[2]._width"
+                               [filter]="gridSettings.columnsConfig[2].filter"
+                               [filterable]="gridSettings.columnsConfig[2].filterable"
+                               [format]="gridSettings.columnsConfig[2].format">
+            </kendo-grid-column>
+            <kendo-grid-command-column [width]="160" [title]="'PIPELINE' | translate">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <app-stepper [campaign]="dataItem"></app-stepper>
+              </ng-template>
+            </kendo-grid-command-column>
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                               [title]="gridSettings.columnsConfig[3].title | translate"
+                               [width]="gridSettings.columnsConfig[3]._width"
+                               [filter]="gridSettings.columnsConfig[3].filter"
+                               [filterable]="gridSettings.columnsConfig[3].filterable"
+                               [format]="gridSettings.columnsConfig[3].format">
+
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div *ngIf="dataItem.startDate"><span>{{ dataItem.startDate| date : formatDate }}</span>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-command-column [width]="100" [title]="'ACTIONS' | translate">
+
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+                <!-- edit command directive-->
+                <i class="las la-pen cursor-pointer edit-pencil la-lg" tooltip="{{'UPDATE' | translate}}" *ngIf="this.authService.hasAuthorities([CRMPermissions.EDIT_PH_CAMPAIGN])"
+                   (click)="showCampaignDetails(dataItem)"   ></i>
+                <!-- remove command directive -->
+                <i
+                  class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true" (click)="removeHandler(dataItem)" *ngIf="this.authService.hasAuthorities([CRMPermissions.DELETE_PH_CAMPAIGN])"
+                  tooltip="{{'DELETE' | translate}}"></i>
+
+              </ng-template>
+            </kendo-grid-command-column>
+          </kendo-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-stepper></app-stepper>

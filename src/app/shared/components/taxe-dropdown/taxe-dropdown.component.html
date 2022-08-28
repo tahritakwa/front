@@ -1,0 +1,18 @@
+<div [formGroup]="form">
+  <kendo-combobox #taxComboBox [data]="taxesFiltredDataSource" class="form-control" name="IdExpense"
+    [formControlName]="TaxeControl" textField="CodeTaxe" (focus)="openComboBox()" valueField="Id"
+    [allowCustom]="allowCustom" [(ngModel)]="selectedValue" [valuePrimitive]="true" [filterable]="true"
+    (valueChange)="onSelect($event)" (filterChange)="handleFilter($event)">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate *ngIf="hideAddBtn && hasAddTaxePermission">
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" > </kendo-combobox-messages>   
+   <!--end No data template-->
+  </kendo-combobox>
+</div>

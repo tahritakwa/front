@@ -1,0 +1,121 @@
+<!-- Begin add training seances weekly-->
+<div class="card" style="border: none;">
+  <!--Begin Card body-->
+  <div class="card-body">
+
+    <div class="table-responsive">
+      <table class="matable col-lg-11 col-md-12 col-sm-12">
+        <tbody *ngFor="let trainingSeanceForDay of TrainingSeanceOfDay.controls; let i=index;" [formGroup]="trainingSeanceForDay"
+               class="tbody">
+        <tr>
+          <td width="20%">
+            <label class="label-day" style="margin-top: 5px;">{{trainingSeanceForDay.controls.DayOfWeek.value}}</label>
+            <a class="add-btn " *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+              <i (click)="addTrainingSeanceLine(trainingSeanceForDay,i)" class="fa fa-plus-circle fa-lg AddIcon"></i>
+            </a>
+          </td>
+          <td class="lines-td">
+            <ng-container
+              *ngFor="let trainingSeanceLineFormGroup of trainingSeanceForDay.controls.TrainingSeanceLine.controls let j=index">
+              <div *ngIf="isTrainingSeanceLineVisible(trainingSeanceForDay, j)"
+                   [formGroup]="trainingSeanceLineFormGroup" class="form-training form-inline">
+                <div class="col-lg-2 col-md-12 col-sm-12">
+                  <input [ngClass]="{ 'has-error': (trainingSeanceLineFormGroup.controls.StartHour.touched ||
+                                  trainingSeanceLineFormGroup.controls.StartHour.dirty) && !trainingSeanceLineFormGroup.controls.StartHour.valid }" class="form-control" formControlName="StartHour" style="width: 100%"
+                         type="time"/>
+                  <app-control-messages [control]="trainingSeanceLineFormGroup.controls.StartHour"
+                                        class="error-msg messages text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-2 col-md-12 col-sm-12">
+                  <input [ngClass]="{ 'has-error': (trainingSeanceLineFormGroup.controls.EndHour.touched ||
+                                  trainingSeanceLineFormGroup.controls.EndHour.dirty) && !trainingSeanceLineFormGroup.controls.EndHour.valid }" class="form-control" formControlName="EndHour" style="width: 100%"
+                         type="time"/>
+                  <app-control-messages [control]="trainingSeanceLineFormGroup.controls.EndHour"
+                                        class="error-msg messages text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-7 col-md-12 col-sm-12">
+                  <textarea class="form-control desc" formControlName="Details" maxlength="150"
+                            placeholder="{{'DETAILS'|translate}}" rows="1" style="width: 100%"></textarea>
+                </div>
+                <div class="row col-lg-1 col-md-6 col-sm-12 col-xs-12 mb-2" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+                                <span class="col-lg-4 col-md-4 col-sm-4 col-xs-4" style="margin-top: 8px;">
+                                  <a>
+                                      <i (click)="deleteTrainingSeanceLine(trainingSeanceForDay, j)"
+                                         class="fa fa-lg fa-times-circle-o"
+                                         style="cursor: pointer;"></i>
+                                  </a>
+                                </span>
+                </div>
+              </div>
+            </ng-container>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!--End Card body-->
+</div>
+<!-- End add training seances weekly-->
+
+<!-- Begin add training seances per day-->
+<div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 23px; margin-left: 3px;">
+  <div class="row">
+    <button (click)="addTrainingSeance()" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode" class="noPadding btn-Add k-button" dir="ltr"
+            style="border: none; margin-bottom: 20px" type="button">
+      <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+      <span>&nbsp;{{'ADD'|translate}}</span>
+    </button>
+  </div>
+</div>
+<div *ngFor="let trainingSeanceAddFormGroup of TrainingSeance.controls; let i=index"
+     [formGroup]="trainingSeanceAddFormGroup"
+     class="col-lg-12 col-md-12 col-sm-12"
+     style="margin-bottom:20px;">
+  <div *ngIf="isTrainingSeanceRowVisible(i)" class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 5px;">
+    <div class="col-lg-5 col-md-12 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'DATE'|translate}}<span class="required">*</span></label>
+      <kendo-datepicker class="form-control" formControlName="Date">
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+      <app-control-messages [control]="trainingSeanceAddFormGroup.controls.Date"
+                            class="error-msg messages text-danger"></app-control-messages>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'START_TIME'|translate}}<span class="required">*</span></label>
+      <input [ngClass]="{ 'has-error': (trainingSeanceAddFormGroup.controls.StartHour.touched ||
+                  trainingSeanceAddFormGroup.controls.StartHour.dirty) && !trainingSeanceAddFormGroup.controls.StartHour.valid }" class="form-control" formControlName="StartHour"
+             type="time"/>
+      <app-control-messages [control]="trainingSeanceAddFormGroup.controls.StartHour"
+                            class="error-msg messages text-danger"></app-control-messages>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12">
+      <div class="row">
+        <div class="col-lg-11 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_TIME'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingSeanceAddFormGroup.controls.EndHour.touched ||
+                  trainingSeanceAddFormGroup.controls.EndHour.dirty) && !trainingSeanceAddFormGroup.controls.EndHour.valid }" class="form-control" formControlName="EndHour"
+                 type="time"/>
+          <app-control-messages [control]="trainingSeanceAddFormGroup.controls.EndHour"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+
+      </div>
+    </div>
+    <div class="col-lg-1 col-md-12 col-sm-12" style=" margin-top:30px" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+      <button (click)="deleteTrainingSeance(i)" class="noPadding btn-Add k-button" style="border: none"
+              type="button">
+        <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<!-- End add training seances per day-->
+<div class="col-lg-2 col-md-12">
+  <!-- Save  -->
+  <button (click)="saveTrainingSeances()" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode" class="btn btn-sm btn-danger" type="submit">
+    <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+  </button>
+  <!-- End Save  -->
+</div>

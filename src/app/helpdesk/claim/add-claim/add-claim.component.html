@@ -1,0 +1,173 @@
+<div class="card" style="border: 1px solid #c0c0c0 !important;" *ngIf="claimAddForm">
+  <form class="form-horizontal" [formGroup]="claimAddForm">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 float-left">
+          <div class="row">
+            <div class="col-auto">
+              <h2 class="card-title ml-1 mb-0,00">
+                {{ 'CLAIM' |translate }}
+              </h2>
+            </div>
+            <div class="col-auto mt-1">
+              <span class="code">{{getCode()}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 float-right">
+          <h2 class="card-title mb-0,00 float-right">
+            <div *ngIf="idStatus === 1" class="row">
+              <div>
+                <span class="badge badge-pill badge-warning">{{'NEW_CLAIM'|translate}}</span>
+              </div>
+              <div *ngIf="isUpdateMode" class="ml-2 mr-2">
+                <!-- remove command directive, will be visible in update mode -->
+                <i class="text-danger cursor-pointer fa fa-trash-o" aria-hidden="true"
+                   (click)="removeClaim()" *ngIf="haveDeletePermission"></i>
+              </div>
+            </div>
+            <div *ngIf="idStatus === 2"><span
+              class="badge badge-pill badge-info">{{'SUBMITTED_CLAIM'|translate}}</span></div>
+            <div *ngIf="idStatus === 3"><span
+              class="badge badge-pill badge-success">{{'ACCEPTED_CLAIM'|translate}}</span></div>
+            <div *ngIf="idStatus === 4"><span
+              class="badge badge-pill badge-danger">{{'REFUSED_CLAIM'|translate}}</span></div>
+            <div *ngIf="idStatus === 5"><span
+              class="badge badge-pill badge-secondary">{{'CLOSED_CLAIM'|translate}}</span></div>
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="row" *ngIf="isInitialPage">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="row form-group">
+
+              <div class="col-lg-12 col-sm-12 col-md-12 ">
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-lg-4">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'DATE'|translate}}<span
+                      class="required">*</span></label>
+                    <kendo-datepicker class="form-control" formControlName="DocumentDate"
+                                      [disabled]='isShowForm'>
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                 toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                    <app-control-messages [control]="claimAddForm.controls.DocumentDate"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+
+                  <div class="col-sm-12 col-md-6 col-lg-4">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE_CLAIM'|translate}}</label>
+                    <app-claim-type-dropdown *ngIf="!isUpdateMode" [parent]="claimAddForm"
+                                             [ClaimTypeName]="'ClaimType'" [FromComponent]='true'
+                                             [placeholder]="'CHOOSE_TYPE_FOR_CLAIM' | translate"
+                                             [ExternalDataSource]='claimTypeDropdownSource'
+                                             (Focused)="receiveClaimType($event)"
+                                             (Selected)="receiveClaimTypeSelected($event)"
+                                             class="error-msg messages text-left text-danger">
+                    </app-claim-type-dropdown>
+                    <input *ngIf="isUpdateMode" class="form-control" formControlName="ClaimTypeReference"
+                           type="text"
+                           [ngClass]="{ 'has-error': (claimAddForm.controls.ClaimType.touched || claimAddForm.controls.ClaimType.dirty) && !claimAddForm.controls.ClaimType.valid }">
+                    <app-control-messages [control]="claimAddForm.controls.ClaimType"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+
+
+                </div>
+              </div>
+
+            </div>
+            <div *ngIf="isSecondPage && !isClosed">
+              <app-add-claim-details [parent]="claimAddForm" [builder]="formBuilder"
+                                     [isParentUpdateMode]="isUpdateMode"
+                                     [haveUpdatePermission]="haveUpdatePermission"
+                                     [haveAddPermission] = "haveAddPermission"
+                                     [haveGeneratePermission]="haveGeneratePermission"
+                                     [claimDetailsType]="claimTypeCode" [claimData]='claimData'
+                                     [isClaimAccepted]="isClaimAccepted"
+                                     [isClaimRefused]="isRefused"
+                                     (parentGenerateMovementOut)="generateMovementOut()"
+                                     (parentGenerateMovementIn)="generateMovementIn()"
+                                     (parentOnUpdateSaleDeliveryDocumentClicked)="onUpdateSaleDeliveryDocumentClicked()"
+                                     (parentOnUpdateAssetDocumentClicked)="onGenerateAssetDocumentClicked()"
+                                     (parentOnUpdateBSDocumentClicked)="OnUpdateBSDocumentClicked()"
+                                     (parentSelectedItem)="claimQtySetValidators($event)"
+                                     (parentSelectedTier)="claimTierSetValidators($event)"
+                                     #appClaimDetailsComponent>
+              </app-add-claim-details>
+            </div>
+          </div>
+        </div>
+        <ng-container>
+          <p-accordion [multiple]="true">
+            <!-- CLAIM INTERACTION MANEGEMNT -->
+            <p-accordionTab header="{{'CLAIM_INTERACTION'|translate}}" [selected]="collapseInteractionIsOpened"
+                            (selectedChange)="this.collapseInteractionIsOpened = ! this.collapseInteractionIsOpened"
+                            style="color: #4c9aae;">
+              <div class="form-group" style="border-color:#F0F0F0;">
+                <div style=" overflow-x: hidden ">
+                  <div formArrayName="ClaimInteraction"
+                       *ngFor="let interaction of ClaimInteraction.controls; let i=index;  let isFirst=first">
+                    <div *ngIf="isRowVisible(i)">
+                      <hr *ngIf="!isFirst">
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row py-1 d-flex justify-content-between">
+                          <div class="col px-0">
+                            <i class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"
+                              (click)="deleteClaimInteraction(i)" style="float: right;"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <app-add-claim-interaction class="col-lg-12 col-sm-12 col-md-12"
+                                                 [ClaimInteractionStorage]="interaction">
+                      </app-add-claim-interaction>
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+                  <button class="btn-Add k-button btn btn-add" type="button" (click)='addNewClaimInteraction()'*ngIf="(haveUpdatePermission && isUpdateMode) || (haveAddPermission && !isUpdateMode)">
+                    <i class="fa fa-plus fa AddIcon"></i>
+                    <span>&nbsp; {{'ADD'|translate}}</span>
+                  </button>
+                </div>
+              </div>
+              <br/>
+            </p-accordionTab>
+          </p-accordion>
+        </ng-container>
+        <br/>
+        <br>
+      </div>
+    </div>
+  </form>
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="'/main/helpdesk/claims'">
+                      <span class="btn btn-sm btn-back-to-list btn-primary">
+                        <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                      </span>
+            </a>
+            <button [disabled]="!claimServices.enableAllButton"
+                    (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="(haveUpdatePermission && isUpdateMode) || (haveAddPermission && !isUpdateMode)" >
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+</div>

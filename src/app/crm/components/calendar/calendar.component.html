@@ -1,0 +1,67 @@
+<div class="card-body" style="background-color: white;">
+  <div class="row" style="margin: 2%;">
+  <div class="col-lg-5 col-md-5 col-sm-12">
+    <div class="btn-group col-lg-11 col-md-8 col-sm-12">
+      <button class="btn btn-primary dropdown-toggle btnColor" type="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="true">
+        {{selectedFilter|translate}}
+      </button>
+
+      <div class="dropdown-menu drop-resp-right"
+           style="border: 1px solid rgb(200, 206, 211) !important;">
+        <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_MY_ACTIONS,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_MY_ACTIONS
+                    }"
+                (click)="filterAction(actionsFilter.ACTION_MY_ACTIONS)">
+        <span> {{'MY_ACTIONS_RIMINDERS_CALENDAR' | translate}} </span>
+        </button>
+        <button
+          [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_ALL,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_ALL
+                    }"
+                (click)="filterAction(actionsFilter.ACTION_ALL)">
+          {{'ALL_ACTIONS_CALENDAR'|translate}}
+        </button>
+        <button
+          [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_BY_COMMERCIAL,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_BY_COMMERCIAL
+                    }"
+          (click)="filterAction(actionsFilter.ACTION_BY_COMMERCIAL)">
+          {{'BY_COLLABORATER'|translate}}
+        </button>
+
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-5 col-md-5 col-sm-12" *ngIf="showCommercialDropDown">
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group white">
+        <kendo-combobox [data]="listUsers"
+                        [valuePrimitive]="true"
+                        textField="FullName" valueField="Id"
+                        [filterable]="true"
+                        (filterChange)="handleResponsablesFilter($event)"
+                        (valueChange)="getActionsAndLeaveByCommercial($event)"
+                        style="width: 100%;">
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+        </kendo-combobox>
+      </div>
+    </div>
+  </div>
+  </div>
+    <p-schedule [events]="events"
+              [header]="headerConfig"
+              [locale]="locale"
+              (onDayClick)="handleEventClick($event)"
+              (onEventClick)="showEvent($event)"></p-schedule>
+</div>
+<app-popup-element *ngIf="showModal" [showModal]="showModal" (closeModel)="closeModel()"
+                   [selectedDate]="selectedDate"
+                   (saveAndClose)="initAfterSave()"></app-popup-element>

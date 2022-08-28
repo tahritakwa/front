@@ -1,0 +1,9 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="interventionLoanVehicleStatusFilterDataSource" class="form-control"
+    [formControlName]="fieldName" textField="name" valueField="value" [valuePrimitive]="true" [allowCustom]="false"
+    [filterable]="true" (filterChange)="handleFilter($event)" (valueChange)="onValueChanged($event)">
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+  </kendo-combobox>
+</div>

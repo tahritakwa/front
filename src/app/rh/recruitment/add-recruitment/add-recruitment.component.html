@@ -1,0 +1,29 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <!-- begin principal menu  part -->
+  <app-recruitment-need #recruitmentNeedViewChild *ngIf="recruitmentId === 0 || isRecruitmentReady" (currentRecruitmentChanged)="changeCurrentRecruitment($event)"
+    [currentRecruitment]="currentRecruitment"></app-recruitment-need>
+  <!-- End principal menu  part -->
+  <!-- Begin steps menu  part -->
+  <div class="row">
+    <div *ngIf="currentRecruitment && currentRecruitment.State > recruitmentState.Draft && hasFullRecuitmentPermission"
+      class="card col-lg-12 col-md-12 col-sm-12 col-12">
+      <app-candidacy-steper #candidacySteperiewChild (recruitmentStateChangeAction)="refreshRecruitmentNeed()"
+        [currentRecruitment]="currentRecruitment" [recruitmentId]="recruitmentId">
+      </app-candidacy-steper>
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="/main/rh/recruitment">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End steps menu  part -->
+</div>

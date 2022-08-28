@@ -1,0 +1,157 @@
+<div class="row scroll-small" style="place-content: center;"  *ngIf="!isModal">
+  <div class="col-lg-3 col-md-6 col-sm-12 align-items-stretch" style="min-height: 225px; min-width: 350px;"
+       *ngFor="let employee of employees; let i=index;">
+    <div class="card" style="height: 475px;">
+      <div class="card-body">
+        <div class="row d-flex align-items-center mb-3">
+          <div class="col-12" style="text-align: center;">
+            <img id="blah" class="rounded-circle card-employee-avatar"
+              [src]="employee.image" alt="avatar"
+              (click)="hasShowPermission || hasUpdatePermission ? goToProfil(employee) : ''"
+              [ngStyle]="!hasShowPermission && !hasUpdatePermission ? {'pointer-events':'none'} : {'cursor': 'pointer'}"/>
+            <span *ngIf="employee.Status === employeeState.Active" class="badge badge-success badge-position">{{'ACTIVE'|translate}}</span>
+            <span *ngIf="employee.Status === employeeState.Resigning" class="badge badge-warning badge-position">{{'RESIGNING'|translate}}</span>
+            <span *ngIf="employee.Status === employeeState.Resigned" class="badge badge-danger badge-position">{{'RESIGNED'|translate}}</span>
+            <span class="btn-position cursor-pointer">
+              <i *ngIf="hasShowPermission || hasUpdatePermission" class="las la-pen edit-pencil" (click)="goToAdvancedEdit(employee)"
+                tooltip="{{'UPDATE' | translate}}"></i>
+              <i *ngIf="hasDeletePermission" class="las la-trash-alt text-danger" (click)="deleteEmployee(employee)"
+                tooltip="{{'DELETE' | translate}}"></i>
+            </span>
+          </div>
+        </div>
+         
+        <div class="row">
+          <div class="col">
+            <div class="col pl-0 name-style">
+              <span class="tiers-title"
+                        (click)="hasShowPermission || hasUpdatePermission ? goToProfil(employee) : ''"
+                        [ngStyle]="!hasShowPermission && !hasUpdatePermission ? {'pointer-events':'none'} : {'cursor': 'pointer'}">
+                        <a>{{employee.FirstName}} {{employee.LastName}}</a>
+                        <p style="font-size: 50%;">{{'REGISTRATION_NUMBER'|translate}} : {{employee.Matricule}}</p>
+                      </span>
+               <hr class="d-print-none" />
+              <div class="mb-2 mr-2 row">
+                <span *ngIf="employee.AnnuelLeaveBalanceRemaining" class="date-style description-title-style"
+                  [ngStyle]="{'width':'100%'}">
+                  {{'LEAVE_TYPE' | translate}}
+                  <span class="mr-4 rounded-element-cell description-title"> 
+                    {{ employee.AnnuelLeaveBalanceRemaining.IdLeaveTypeNavigation.Label }}</span> 
+                  </span>
+                  <span *ngIf="employee.AnnuelLeaveBalanceRemaining==null" class="date-style description-title-style"
+                  [ngStyle]="{'width':'100%'}">
+                  {{'LEAVE_TYPE' | translate}}
+                  <span class="mr-4 rounded-element-cell description-title"> 
+                    {{'ANNUAL_LEAVE'|translate }}</span> 
+                  </span>
+              </div>
+              <table [ngStyle]="{'width':'114%'}">
+                <thead>
+                    <tr>
+                        <th scope="col" style="font-size: initial;">{{'CUMULATIVE_ACQUIRED_SHORT' | translate}}</th>
+                        <th scope="col" style="font-size: initial;">{{'CUMULATIVE_TAKEN_SHORT' | translate}}</th>
+                        <th scope="col" style="font-size: initial;">{{'REMAINING_BALANCE_SHORT' | translate}}</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <td style="font-size: large" *ngIf="employee.AnnuelLeaveBalanceRemaining">{{ employee.AnnuelLeaveBalanceRemaining.CumulativeAcquired.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ employee.AnnuelLeaveBalanceRemaining.CumulativeAcquired.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large" *ngIf="employee.AnnuelLeaveBalanceRemaining">{{ employee.AnnuelLeaveBalanceRemaining.CumulativeTaken.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ employee.AnnuelLeaveBalanceRemaining.CumulativeTaken.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large" *ngIf="employee.AnnuelLeaveBalanceRemaining">{{ employee.AnnuelLeaveBalanceRemaining.RemainingBalance.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ employee.AnnuelLeaveBalanceRemaining.RemainingBalance.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large" *ngIf="employee.AnnuelLeaveBalanceRemaining==null">{{ 0 }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{0 }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large" *ngIf="employee.AnnuelLeaveBalanceRemaining==null">{{ 0 }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ 0 }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large" *ngIf="employee.AnnuelLeaveBalanceRemaining==null">{{ 0 }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ 0 }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large" *ngIf="employee.AnnuelLeaveBalanceRemaining && hasLeaveBalanceListPermission">
+                          <button class="btn btn-sm" style="color: transparent;" type="button" *ngIf="employee.AnnuelLeaveBalanceRemaining">
+                            <i tooltip="{{'LEAVE_BALANCE' | translate}}" style="color: #4dbd74;font-size: x-large;" (click)="leaveBalanceRemainingDetails(employee)" class="fa fa-angle-double-right" aria-hidden="true"></i>
+                          </button>
+                        </td>
+                </tbody>
+            </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Cards end-->
+<!-- Paginator start-->
+<app-kendo-pager [dataSource]="gridSettings" *ngIf="!isModal"
+                 (pageChangeEvent)="paginate($event)"
+                 (stateChangeEvent)="dataStateChange($event)">
+</app-kendo-pager>
+<!-- Paginator end-->
+<div class="row scroll-small" *ngIf="isModal">
+  <div class="col-lg-12 col-md-12 col-sm-12 align-items-stretch" 
+  style="min-height: 225px; min-width: 350px;">
+      <div class="card-body">
+        <div class="row d-flex align-items-center mb-3">
+          <div class="col-12" style="text-align: center;">
+            <img id="blah" class="rounded-circle card-employee-avatar"
+              [src]="employee.image" alt="avatar"
+              
+              [ngStyle]="{'cursor': 'pointer'}"/>
+            <span *ngIf="employee.Status === employeeState.Active" class="badge badge-success badge-position-popup">{{'ACTIVE'|translate}}</span>
+            <span *ngIf="employee.Status === employeeState.Resigning" class="badge badge-warning badge-position-popup">{{'RESIGNING'|translate}}</span>
+            <span *ngIf="employee.Status === employeeState.Resigned" class="badge badge-danger badge-position-popup">{{'RESIGNED'|translate}}</span>
+          </div>
+        </div>
+         
+        <div class="row">
+          <div class="col">
+            <div class="col pl-0 name-style">
+              <span class="tiers-title"
+                [ngStyle]="{'cursor': 'pointer'}">
+                <a>{{employee.FirstName}} {{employee.LastName}}</a>
+                <p style="font-size: 50%;">{{'REGISTRATION_NUMBER'|translate}} : {{employee.Matricule}}</p>
+               </span>
+               <div  *ngFor="let balanceRemaining of leaveBalance; let i=index;">
+               <hr *ngIf="balanceRemaining" class="d-print-none" />
+              <div class="mb-4 mr-4 row">
+                <span *ngIf="balanceRemaining" class="date-style"
+                  [ngStyle]="{'width':'100%'}" class="description-title-style">
+                  {{'LEAVE_TYPE' | translate}} 
+                  <span class="rounded-element-cell description-title"> 
+                    {{ balanceRemaining.IdLeaveTypeNavigation.Label }}</span> 
+                  </span>
+              </div>
+              <table *ngIf="balanceRemaining" [ngStyle]="{'width':'100%'}">
+                <thead>
+                    <tr>
+                        <th scope="col" style="font-size: initial;">{{'CUMULATIVE_ACQUIRED_SHORT' | translate}}</th>
+                        <th scope="col" style="font-size: initial;">{{'CUMULATIVE_TAKEN_SHORT' | translate}}</th>
+                        <th scope="col" style="font-size: initial;">{{'REMAINING_BALANCE_SHORT' | translate}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        <td style="font-size: large">{{ balanceRemaining.CumulativeAcquired.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ balanceRemaining.CumulativeAcquired.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large">{{ balanceRemaining.CumulativeTaken.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ balanceRemaining.CumulativeTaken.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                        <td style="font-size: large">{{ balanceRemaining.RemainingBalance.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                          {{ balanceRemaining.RemainingBalance.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                        </td>
+                </tbody>
+            </table>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>

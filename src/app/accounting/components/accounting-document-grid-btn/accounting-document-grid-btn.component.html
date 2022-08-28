@@ -1,0 +1,39 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+
+<a *ngIf='advancedAdd' (click)="goToAddNewDocumentAccount()" style="background: transparent; margin-right: 8px;"  [tooltip]="addAccount" content-type="template"  >
+</a>
+  <button *ngIf='advancedAdd'
+          tooltip="{{title|translate}}" data-placement="bottom"
+          class="form-group btn btn-sm  addBtn m-1" type="button" tabindex="0"
+          (click)="goToAddNewDocumentAccount()">
+    <i class="fa fa-plus fa-lg addBtn"></i>
+    <span class="addBtn">&nbsp;{{'ADD' | translate}}</span>
+  </button>
+
+
+
+<ng-template #addAccount>
+  <span>{{title|translate}}</span>
+</ng-template>
+
+<div *ngIf='canExportModel || export || canImport'   class="ml-1" content-type="template">
+  <i class="las la-ellipsis-v la-2x mt-1" aria-hidden="true"
+     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+     aria-expanded="false"></i>
+  <div  class="dropdown-menu dpMenu" id="action_grid_toggle" aria-labelledby="dropdownMenuButton">
+    <a *ngIf='canExportModel'  class="dropdown-item dpItem" kendoGridExcelCommand (click)="exportModel()">{{'EXPORT_MODEL_FOR_IMPORT'|translate}}</a>
+
+    <label *ngIf='canImport' class="list-item">
+      <a class="dropdown-item dpItem k-button k-grid-excel">
+        {{'IMPORT_DOCUMENTS_FROM_EXCEL'|translate}}
+      </a>
+      <input type="file" (change)=uploadFile($event) (click)="reset()" id="currentFile" style="display:none">
+    </label>
+    <a *ngIf='export' class="dropdown-item dpItem" kendoGridExcelCommand (click)="exportDocumentAccount()">{{'EXPORT_DOCUMENTS_IN_EXCEL'|translate}}</a>
+  </div>
+</div>
+
+
+<ng-template #import>
+  <span>{{(canImport? 'IMPORT_EXPORT_EXCEL':'EXPORT_EXCEL')|translate}}</span>
+</ng-template>

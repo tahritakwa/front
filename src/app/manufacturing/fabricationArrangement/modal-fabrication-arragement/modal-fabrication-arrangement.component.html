@@ -1,0 +1,24 @@
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table align-items-center table-flush">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col">{{'article'|translate}}</th>
+            <th scope="col">{{'component'|translate}}</th>
+            <th scope="col">{{'REMAINING_QUANTITY'|translate}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let product of mpOfsDispo" class="col-12 col-md-12" style="width: 40rem;">
+            <tr *ngFor="let child of product.articleChildren; let ci = index" >
+              <td [attr.rowspan]="product.articleChildren.length" *ngIf="ci === 0">{{product.article}}</td>
+              <td>{{child.components}}</td>
+              <td>{{absoluteValue(child.remaining_quantity)}}</td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

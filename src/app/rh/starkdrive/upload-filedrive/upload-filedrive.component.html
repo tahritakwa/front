@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="col-12">
+    <input #File (change)="onFileChange($event)" hidden id="File" multiple type="file">
+    <button (click)="File.click()" *ngIf="!onlyPdf" class="btn btn-sm" type="button">
+      <div class='favourite'>
+        <div class='favourite_heart'>
+          <i aria-hidden="true" class="fa fa-upload"></i>
+        </div>
+      </div>
+    </button>
+  </div>
+</div>

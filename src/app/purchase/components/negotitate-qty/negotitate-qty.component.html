@@ -1,0 +1,102 @@
+<div class="card" style="border: none;">
+  <div class="card-body p-0">
+    <!-- <div class="row ml-1">
+<p class="badge badge-warning">
+ : &nbsp;
+  demo@spark-It.fr
+</p>
+     <h6>{{'ARTICLE'|translate}}: &nbsp; {{documentLineDetails.Designation}}</h6>
+    </div> -->
+
+    <div class="row">
+
+      <div class="col-4">
+        <div class="row">
+          <p class="badge badge-warning ml-3" style="font-size: 15px">
+            {{'ARTICLE'|translate}} &nbsp; :{{documentLineDetails.Designation}}
+          </p>
+        </div>
+      </div>
+      <div class="col-8" *ngIf="itemForm.controls['IdUserNavigation'].value.FullName">
+        <div class="row" style="float: right;  margin-right: 5px;">
+          <p class="badge badge-primary" style="font-size: 15px">
+            {{'USER'|translate}} &nbsp; : {{itemForm.controls['IdUserNavigation'].value.FullName}}</p>
+        </div>
+
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-3 col-sm-6">{{'QUANTITY'|translate}}</div>
+      <div class="col-lg-3 col-md-3 col-sm-6">{{'PRICE'|translate}}</div>
+      <div class="col-lg-3 col-md-3 col-sm-6">{{'QUANTITY_SUPPLIER'|translate}}</div>
+      <div class="col-lg-3 col-md-3 col-sm-6">{{'PRICE_SUPPLIER'|translate}}</div>
+    </div>
+    <div class="row" [formGroup]='itemForm'>
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <input type="number" formControlName="Qty" class="form-control" maxlength="10"
+          [ngClass]="{ 'has-error': (itemForm.controls.Qty.touched || itemForm.controls.Qty.dirty) && !itemForm.controls.Qty.valid  && !itemForm.controls.Qty.disabled}">
+
+        <app-control-messages [control]="itemForm.controls.Qty" class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <kendo-numerictextbox class="form-control" formControlName="Price"
+              [format]="documentLineDetails && documentLineDetails.IdDocumentNavigation && documentLineDetails.IdDocumentNavigation.IdTiersNavigation &&
+              documentLineDetails.IdDocumentNavigation.IdTiersNavigation.FormatOption ? documentLineDetails.IdDocumentNavigation.IdTiersNavigation.FormatOption : (formatOption ? formatOption : null)"
+              style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+              [ngClass]="{ 'has-error': (itemForm.controls.Price.touched || itemForm.controls.Price.dirty) && !itemForm.controls.Price.valid  &&  !itemForm.controls.Price.disabled}">
+            </kendo-numerictextbox>
+          <app-control-messages [control]="itemForm.controls.Price" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <input type="number" formControlName="QteSupplier" class="form-control" maxlength="10"
+          [ngClass]="{ 'has-error': (itemForm.controls.QteSupplier.touched || itemForm.controls.QteSupplier.dirty) && !itemForm.controls.QteSupplier.valid &&  !itemForm.controls.QteSupplier.disabled}">
+
+        <app-control-messages [control]="itemForm.controls.QteSupplier"
+          class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+      <div class="col-lg-3 col-md-3 col-sm-6">
+        <div class="row">
+          <kendo-numerictextbox class="form-control" formControlName="PriceSupplier"
+              [format]="documentLineDetails && documentLineDetails.IdDocumentNavigation && documentLineDetails.IdDocumentNavigation.IdTiersNavigation &&
+              documentLineDetails.IdDocumentNavigation.IdTiersNavigation.FormatOption ? documentLineDetails.IdDocumentNavigation.IdTiersNavigation.FormatOption : (formatOption ? formatOption : null)"
+              style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+              [ngClass]="{ 'has-error':
+              (itemForm.controls.PriceSupplier.touched || itemForm.controls.PriceSupplier.dirty) && !itemForm.controls.PriceSupplier.valid  &&
+               !itemForm.controls.PriceSupplier.disabled}">
+            </kendo-numerictextbox>
+          <span tooltip="{{'SAVE'|translate}}" theme="light"
+            *ngIf='documentLineDetails.IdDocumentLineStatus === statusCode.Provisional && updatePurchaseOrderQuotation'>
+            <i class="fa fa-floppy-o text-primary  mt-2 fa-lg ml-2" aria-hidden="true" (click)='saveNegotiation()'
+              style="cursor: pointer;" *ngIf="!isFinal"></i>
+          </span>
+          <span tooltip="{{'ACCEPT'|translate}}" theme="light"
+            *ngIf='documentLineDetails.IdDocumentLineStatus === statusCode.Provisional && updatePurchaseOrderQuotation'>
+            <i class="fa fa-check text-success  mt-2 fa-lg ml-2" style="cursor: pointer" aria-hidden="true"
+              style="cursor: pointer;" *ngIf="!isFinal && this.itemForm.controls['Qty'].disabled"
+              (click)='acceptOrRejectPrice(true)'>
+            </i>
+          </span>
+          <span tooltip="{{'REJECT'|translate}}" theme="light"
+            *ngIf='documentLineDetails.IdDocumentLineStatus === statusCode.Provisional && updatePurchaseOrderQuotation'>
+            <i class="fa fa-times text-danger ml-2 mt-2 fa-lg" style="cursor: pointer" aria-hidden="true"
+              style="cursor: pointer;" (click)='acceptOrRejectPrice(false)'
+              *ngIf="!isFinal && this.itemForm.controls['Qty'].disabled">
+            </i>
+          </span>
+
+        </div>
+        <app-control-messages [control]="itemForm.controls.PriceSupplier" class="error-msg messages text-left text-danger">
+        </app-control-messages>
+        <!-- <app-control-messages [control]="itemForm.controls.PriceSupplier"
+          class="error-msg messages text-left text-danger">
+        </app-control-messages> -->
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,214 @@
+<div class="row mr-1">
+  <div class="row col-lg-6 col-sm-12 col-md-12 mt-2 ml-1" *ngIf="showSearch">
+    <div class="d-flex justify-content-center">
+      <div class="col-12">
+        <div class="form-group row">
+          <div class="col-10">
+            <input type="text" class="form-control" placeholder="{{'SEARCH_ITEM'|translate}}" name='item'
+                   aria-describedby="addon-wrapping" [(ngModel)]='articleReference' (afterValueChanged)='filteritem()'>
+          </div>
+          <div class="col-2 p-1">
+            <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filteritem()'></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+    <kendo-grid (cellClick)="documentLineClickHandler($event)" (save)="saveLine($event)" [data]="gridSettings.gridData"
+                [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip" [pageable]="true"
+                id="productsGrid"
+                [style.maxHeight.px]="1360" (pageChange)="pageChange($event)">
+      <!--start Media Lg-->
+      <kendo-grid-column field="IdItem" title="{{'ITEM'|translate}}" [width]='150' [hidden]='true'></kendo-grid-column>
+
+      <kendo-grid-column field="CodeItem" title="{{'Ref'}}" [width]='100'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{'reference'|translate}}" theme="light">{{column.title}}</span>
+
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf='dataItem.CodeItem'>
+            {{dataItem.CodeItem}}
+          </div>
+        </ng-template>
+
+
+      </kendo-grid-column>
+
+      <kendo-grid-column field="DesignationItem" title="{{'DESIGNATION'|translate}}" [width]='230'>
+      </kendo-grid-column>
+
+
+      <kendo-grid-column field="ItemUnitAmount" title="{{'NET_PRICE'|translate}} ({{currencyCode}})" [width]='90'
+                         [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "1.5%"}'>
+        <ng-template kendoGridCellTemplate let-column let-columnIndex="columnIndex" let-formGroup="formGroup"
+                     let-dataItem="dataItem">
+          {{intl.formatNumber(dataItem.ItemUnitAmount, documentCurrency? documentCurrency : null)}}
+        </ng-template>
+
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'NET_PRICE'|translate}} ({{currencyCode}})" theme="light">{{column.title}}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="OldPrice" title="{{'OLD_NET_PRICE'|translate}} ({{currencyCode}})" [width]='100'
+                         [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "1.5%"}'>
+        <ng-template kendoGridCellTemplate let-column let-columnIndex="columnIndex" let-formGroup="formGroup"
+                     let-dataItem="dataItem">
+          {{intl.formatNumber(dataItem.OldPrice, documentCurrency? documentCurrency : null)}}
+        </ng-template>
+
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'OLD_NET_PRICE'|translate}} ({{currencyCode}})" theme="light">{{column.title}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <kendo-grid-column field="Quantity" title="{{'ON_ORDER_QTY'|translate}}" [width]='70' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "1.5%"}'>
+        <ng-template kendoGridCellTemplate let-column let-columnIndex="columnIndex" let-formGroup="formGroup"
+                     let-dataItem="dataItem">
+          {{dataItem.Quantity}}
+        </ng-template>
+
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'ON_ORDER_QTY'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column field="StockQty" title="{{'AVAILABLE_QTY'|translate}}" [width]='70' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "1.5%"}'>
+        <ng-template kendoGridCellTemplate let-column let-columnIndex="columnIndex" let-formGroup="formGroup"
+                     let-dataItem="dataItem">
+          {{dataItem.StockQty}}
+        </ng-template>
+
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'AVAILABLE_QTY'|translate}}" theme="light">{{column.title}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column field="CostPrice" [format]="companyFormatOptions"
+                         title="{{'COST'|translate}} ({{companyCurrencyCode}})" [width]='100' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "1.5%"}'>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'COST'|translate}} ({{companyCurrencyCode}})" theme="light">{{column.title}}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <kendo-grid-column field="PercentageMargin" title="{{'MARGIN'|translate}}" [width]='100'
+                         [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right", "padding-right": "1%"}'
+                         tabindex='1'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <div *ngIf='isDisabled' style="margin-left: 5px !important;">
+            <div class="row" tooltip="{{'MARGIN'|translate}}" theme="light">
+              {{'MARGIN'|translate}}</div>
+            <div class="row">
+              <input type="number" (input)="showactionForMargin($event)" class="form-control form-control-sm margin"
+                     style="border-bottom: 1px solid #e4e7ea !important;
+                  width: 60% !important; margin-right: 2px !important;" aria-label="Username" tabindex="1"
+                     aria-describedby="addon-wrapping" [(ngModel)]='margin' (keydown.enter)="assignMargin(true)">%
+            </div>
+          </div>
+          <span *ngIf="!isDisabled" tooltip="{{'MARGIN'|translate}}">{{'MARGIN'|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-column let-columnIndex="columnIndex" let-formGroup="formGroup"
+                     let-dataItem="dataItem" style="font-family: Arial, Helvetica;" *ngIf='isInEditingMode'>
+
+
+          <input class="form-control" type="text" [(ngModel)]='PercentageMargin' value="{{dataItem.PercentageMargin}}"
+                 style="border: 1px solid #e4e7ea !important; width: 85% !important;
+            margin-bottom: -20px !important; margin-left: -2px !important;" [tabIndex]='1'
+                 (keydown.ArrowRight)='ArrowRigthPress()' (afterValueChanged)="assignMargin(false)"> %
+          <div class="row">
+            <i #anchor></i>
+          </div>
+
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="PercentageMargin">
+          </app-control-message-grid-cell>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <kendo-grid-column field="SellingPrice" [format]="companyFormatOptions" title="{{'INCREASED_SALES_PRICE'|translate}} ({{companyCurrencyCode}})" [width]='100' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "1%"}'>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'INCREASED_SALES_PRICE'|translate}} ({{companyCurrencyCode}})"
+                theme="light">{{column.title}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column field="OldSellingPrice"  [format]="companyFormatOptions" title="{{'OLD_SALES_NET_PRICE'|translate}} ({{companyCurrencyCode}})" [width]='100' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "2%"}'>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{'OLD_SALES_NET_PRICE'|translate}} ({{companyCurrencyCode}})"
+                theme="light">{{column.title}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+      <kendo-grid-column field="SalePolicy" title="{{'POLICY'|translate}}" [width]='120'>
+        <ng-template kendoGridHeaderTemplate let-dataItem="dataItem" *ngIf='isDisabled'>
+          <app-policy-combo-box (selectValue)='changePlicyValue($event, false)'>
+          </app-policy-combo-box>
+        </ng-template>
+
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+          <div [formGroup]='formGroup'>
+            <app-policy-combo-box [parentForm]="formGroup" (selectValue)='changePlicyValue($event, true)'
+                                  (keydown.ArrowLeft)='ArrowLeftPress()'>
+            </app-policy-combo-box>
+          </div>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-column let-columnIndex="columnIndex" let-dataItem="dataItem">
+          <span *ngIf='dataItem.SalePolicy !== undefined'>{{dataItem.SalePolicy}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column field="ConclusiveSellingPrice"  [format]="companyFormatOptions" title="{{'SALES_PRICE'|translate}} ({{companyCurrencyCode}})" [width]='100' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "2%"}'>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate let-column>
+          <span tooltip="{{column.title}}" theme="light">{{column.title}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-command-column title="" [width]='100' *ngIf='isDisabled'>
+        <ng-template kendoGridCellTemplate let-isNew="isNew">
+          <div style="display: flex;
+              margin-top: 5%;">
+
+            <button class='noPadding btn-Add' *ngIf="isInEditingMode" kendoGridSaveCommand style="padding-left: 0px;
+              padding-right: 5%;" type="button">
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <button kendoGridCancelCommand *ngIf="isInEditingMode" class="noPadding btn-Add k-button"
+                    (click)="cancelHandler()" type="button" style="padding-left: 5%;
+              padding-right: 0px;">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </div>
+        </ng-template>
+      </kendo-grid-command-column>
+    </kendo-grid>
+  </div>
+</div>

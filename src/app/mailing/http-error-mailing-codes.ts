@@ -1,0 +1,11 @@
+export enum HttpMailingErrorCodes {
+  /*Employee Codes*/
+  NULL_EMPLOYEE_FOUND = 41105,
+  /*Template Email Codes*/
+  NULL_TEMPLATE_FOUND = 41100,
+  STORE_PICTURE_FAILED = 41102,
+  CREATE_DIRECTORY_FAILED = 41103,
+  DELETE_PICTURE_FAILED = 41104,
+  /*ServerSettigs Codes*/
+  NULL_OUTGOING_SERVER_SETTINGS_FOUND = 41101
+}

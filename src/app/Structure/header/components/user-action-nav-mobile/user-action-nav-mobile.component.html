@@ -1,0 +1,9 @@
+<div class="nav-item" [routerLink]="['/main/user_actions/']">
+  <div *ngIf="user && user.Picture" class="border border-secondary customer-photo d-flex justify-content-center">
+    <img id="ThumbnailSupplier" class="imgSize" [src]= "user.Picture" />
+  </div>
+  <div *ngIf="user && !user.Picture" class="border border-secondary rounded-circle">
+    <h1
+      style="font-size: 15px; font-family: sans-serif; margin-top: 10px;">{{user.FirstName.charAt(0).toUpperCase()}}{{user.LastName.charAt(0).toUpperCase()}}</h1>
+  </div>
+</div>

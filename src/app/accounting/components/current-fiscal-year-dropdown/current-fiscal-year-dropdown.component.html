@@ -1,0 +1,22 @@
+<div class="d-flex flex-row-reverse">
+<span *ngIf="showFiscalYearDropDown">
+        <span class="card-title mb-3">{{'FISCAL_YEAR'|translate}}</span>
+        <kendo-dropdownlist [data]="fiscalYears" [textField]="'name'"
+                            [valueField]="'id'" [valuePrimitive]="true"
+                            (valueChange)="changeCurrentFiscalYear($event)"
+                            [(value)]="selectedValue" style="width: 220px;margin: auto;"
+                            [disabled]="!this.authService.hasAuthority(this.AccountingPermissions.ACCOUNTING_SETTINGS)">
+          <ng-template kendoDropDownListItemTemplate let-dataItem>
+            <div class="container">
+              <div>
+                <b>{{dataItem.name}}</b>
+              </div>
+              <div>
+                  <span class="small">{{dataItem.startDate | date: formatDate}} -
+                    {{dataItem.endDate  | date: formatDate}}</span>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-dropdownlist>
+      </span>
+</div>

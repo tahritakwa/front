@@ -1,0 +1,144 @@
+<div class="card">
+  <div class="card-body">
+    <app-advanced-search [filtreFieldsColumns]="filterFieldsColumns" [filtreFieldsInputs]="filterFieldsInputs"
+                         (filtrePredicateToSend)="getFilterPredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+                         (searchClickEvent)="searchClick()" (resetClickEvent)="resetClickEvent()">
+    </app-advanced-search>
+    <kendo-grid [data]="fiscalYearsView | async" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+                [skip]="gridSettings.state.skip" (dataStateChange)="dataStateChange($event)"
+                [sort]="gridSettings.state.sort"
+                [filter]="gridSettings.state.filter" [selectable]="true" [sortable]="true" [filterable]="false"
+                [reorderable]="true" (sortChange)="sortChange()" (filterChange)="filterChange()"
+                (pageChange)="onPageChange()"
+                [navigable]="true">
+
+      <!--Grid Toolbar-->
+      <ng-template kendoGridToolbarTemplate>
+        <div class="row" style="float :right; margin-right: 2px;">
+          <app-btn-grid [advencedAdd]='this.authService.hasAuthority(AccountingPermissions.ADD_FISCAL_YEARS)' [add]='false' [export]='false' [addLink]='"add"'
+                        style="margin-top: -5%;    display: inline-flex;" [tooltip]="addNew" content-type="template">
+          </app-btn-grid>
+          <ng-template #addNew>
+            <strong>{{ 'ADD_FISCAL_YEAR'|translate}}</strong>
+          </ng-template>
+        </div>
+      </ng-template>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                         [title]="gridSettings.columnsConfig[0].title | translate"
+                         [filter]="gridSettings.columnsConfig[0].filter"
+                         [width]="gridSettings.columnsConfig[0]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                         [title]="gridSettings.columnsConfig[1].title | translate"
+                         [filter]="gridSettings.columnsConfig[1].filter"
+                         [width]="gridSettings.columnsConfig[1]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.startDate | date: formatDate}}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                         [title]="gridSettings.columnsConfig[2].title | translate"
+                         [filter]="gridSettings.columnsConfig[2].filter"
+                         [width]="gridSettings.columnsConfig[2]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.endDate | date: formatDate}}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                         [title]="gridSettings.columnsConfig[3].title | translate"
+                         [filter]="gridSettings.columnsConfig[3].filter"
+                         [width]="gridSettings.columnsConfig[3]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.conclusionDate | date: formatDate}}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                         [title]="gridSettings.columnsConfig[4].title | translate"
+                         [filter]="gridSettings.columnsConfig[4].filter"
+                         [filterable]="gridSettings.columnsConfig[4].filterable"
+                         [width]="gridSettings.columnsConfig[4]._width"
+                         [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf="dataItem.closingState === fiscalYearStateEnumerator.Closed">
+            <span class="badge" style="color: #ffffff; background-color: #df0000fa;">{{'CLOSED'|translate}}</span>
+          </div>
+          <div *ngIf="dataItem.closingState === fiscalYearStateEnumerator.PartiallyClosed">
+            <span class="badge"
+                  style="color: #ffffff; background-color: #516670;">{{'PARTIALLY_CLOSED'|translate}}</span>
+          </div>
+          <div *ngIf="dataItem.closingState === fiscalYearStateEnumerator.Open">
+            <span class="badge" style="color: #ffffff; background-color: #0f9021;">{{'OPEN'|translate}}</span>
+          </div>
+          <div *ngIf="dataItem.closingState === fiscalYearStateEnumerator.Concluded">
+            <span class="badge" style="color: #ffffff; background-color: #5531a3;">{{'CONCLUDED'|translate}}</span>
+          </div>
+        </ng-template>
+
+        <ng-template kendoGridFilterCellTemplate let-filter>
+          <kendo-combobox style="width: 200px" [data]="closingStateFilteredList"
+                          [(ngModel)]="selectedClosingStateInFilter" (filterChange)="handleFilterClosingState($event)"
+                          [textField]="'text'" [valueField]="'value'" [filterable]="true"
+                          (valueChange)="closingStateValueChange()">
+                           <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+          </kendo-combobox>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <!--Actions-->
+      <kendo-grid-column [width]="100" [title]="'ACTION' | translate" [headerStyle]="{'text-align': 'center'}"
+                         [style]="{'text-align': 'center'}">
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <i tooltip="{{'EDIT_FISCAL_YEAR'|translate}}" class="las la-pen cursor-pointer edit-pencil la-lg"
+             aria-hidden="true" (click)="goToAdvancedEdit(dataItem)" *ngIf="this.authService.hasAuthority(AccountingPermissions.UPDATE_FISCAL_YEARS)"></i>
+
+          <i tooltip=" {{'OPEN_PERIOD'|translate}}" class="fa fa-unlock-alt la-lg save-icon"
+            *ngIf="dataItem.closingState !== fiscalYearStateEnumerator.Open && this.authService.hasAuthority(AccountingPermissions.OPEN_FISCAL_YEARS)"
+            (click)="openFiscalYearModal(dataItem)"></i>
+
+          <i tooltip="{{'CLOSE_PERIOD'|translate}}" class="fa fa-lock la-lg text-danger cursor-pointer mx-3"
+            *ngIf="dataItem.closingState === fiscalYearStateEnumerator.Open && this.authService.hasAuthority(AccountingPermissions.CLOSE_FISCAL_YEARS)"
+            (click)="openClosingDialog(dataItem)"></i>
+
+          <i *ngIf="dataItem.id === this.firstFiscalYearNotConcluded && this.authService.hasAuthority(AccountingPermissions.CONCLUDE_FISCAL_YEARS)"
+             (click)="closingAndReopeningDialog(dataItem)">
+            <i class="fa fa-share cursor-pointer skipNext" tooltip="{{'MOVE_TO_NEXT_FISCAL_YEAR'|translate}}"></i>
+          </i>
+        </ng-template>
+        <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                             pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+        </kendo-grid-messages>
+      </kendo-grid-column>
+      <!--End Actions-->
+    </kendo-grid>
+  </div>
+</div>

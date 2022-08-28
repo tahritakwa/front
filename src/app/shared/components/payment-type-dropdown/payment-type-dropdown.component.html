@@ -1,0 +1,37 @@
+<div [formGroup]="group" *ngIf="group">
+  <kendo-combobox [data]="paymentTypeFilterdDataSource" class="form-control" name="IdPaymentType"
+    formControlName="IdPaymentType" textField="Label" valueField="Id" [valuePrimitive]="true"
+    [allowCustom]="allowCustom" [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="valueChange($event)">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate *ngIf="showAddButton">
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+
+<div *ngIf="!group">
+  <kendo-combobox [data]="paymentTypeFilterdDataSource" class="form-control"
+   textField="Label" valueField="Id" [disabled]="disabled" [valuePrimitive]="true" [(ngModel)]="selectedPaymentType"
+    [allowCustom]="allowCustom" [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="valueChange($event)">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate *ngIf="showAddButton">
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

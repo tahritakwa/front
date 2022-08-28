@@ -1,0 +1,72 @@
+<div class="card">
+  <!--Begin Card header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'RESOURCE_ALLOCATION'|translate}}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin Card body-->
+  <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <div class="row">
+        <!-- garage -->
+        <label class="col-lg-1 col-md-4 col-sm-12" style="padding-left: 30px;">{{'GARAGE' | translate}}
+        </label>
+        <div class="col-lg-2 col-md-6 col-sm-12">
+          <app-garage-dropdown [group]="searchFormGroup"></app-garage-dropdown>
+        </div>
+        <!-- per worker or per post -->
+        <label class="col-lg-1 col-md-4 col-sm-12" style="padding-left: 30px;">{{'PAR' | translate}}
+        </label>
+        <div class="col-lg-2 col-md-6 col-sm-12">
+          <kendo-combobox [data]="filtreDataSource" [textField]="'name'" [valueField]="'value'"
+            [(ngModel)]="selectedFiltre" [valuePrimitive]="true"></kendo-combobox>
+        </div>
+        <!-- worker dropdown -->
+        <div class="col-lg-2 col-md-6 col-sm-12"
+          *ngIf="selectedFiltre && selectedFiltre === resourceAllocationFilterByEnumerator.Worker">
+          <app-worker-dropdown [group]="searchFormGroup"></app-worker-dropdown>
+        </div>
+        <!-- post dropdown -->
+        <div class="col-lg-2 col-md-6 col-sm-12"
+          *ngIf="selectedFiltre && selectedFiltre === resourceAllocationFilterByEnumerator.Post">
+          <app-post-dropdown [group]="searchFormGroup"></app-post-dropdown>
+        </div>
+        <!-- serach button -->
+        <div class="col-1 p-1">
+          <i class="fa fa-search fa-lg" aria-hidden="true" ></i>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12 col-sm-12 col-md-12" style="padding-top: 20px;">
+      <kendo-scheduler [kendoSchedulerBinding]="events" [selectedDate]="selectedDate" style="height: 800px;"
+        [group]="group" [resources]="resources">
+        <ng-template kendoSchedulerEventTemplate let-event="event" let-resources="resources">
+          <div *ngFor="let resource of resources" [ngClass]="resource.text"
+            title="{{event.title}} {{event.OperationName}}" kendoTooltip>
+            <span *ngIf="resource.ouvrier==true">{{ resource.text }}</span>
+
+            {{event.title}}
+          </div>
+        </ng-template>
+
+        <kendo-scheduler-timeline-view showWorkHours=true workDayStart="08:00" workDayEnd="18:00">
+        </kendo-scheduler-timeline-view>
+
+        <kendo-scheduler-messages today="{{'today'| translate}}" weekViewTitle="{{'week'| translate}}"
+          monthViewTitle="{{'month'| translate}}" showWorkDay="{{'SHOW_BUSINESS_HOURS'|translate}}"
+          showFullDay="{{'SHOW_FULL_DAY'|translate}}">
+
+        </kendo-scheduler-messages>
+      </kendo-scheduler>
+    </div>
+
+  </div>
+  <!-- End card body-->
+  <!--Begin Card footer Start-->
+  <div class="card-footer">
+
+  </div>
+  <!--Begin Card footer End-->
+</div>

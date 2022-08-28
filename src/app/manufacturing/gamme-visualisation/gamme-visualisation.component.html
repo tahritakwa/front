@@ -1,0 +1,83 @@
+<div class="row">
+  <div class="col" [ngClass]="{'col-md-6': displayGraph, 'col-md-12': !displayGraph}">
+    <div class="row">
+      <div class="card">
+        <div class="card-content">
+          <!--Begin card header-->
+          <div class="card-header">
+            <div class="col-sm-5 mt-1">
+              <h3 class="card-title mb-0">{{'RANGE_VISIBILITY'|translate}}</h3>
+            </div>
+          </div>
+          <!-- end card header -->
+          <!-- begin card body -->
+          <div class="card-body">
+            <div class="row d-flex justify-content-between mt-6">
+              <div class="col-md-6 d-flex justify-content-center">
+                <div *ngFor="let enum of enum_product" style="display: inline-block;" class="radio-group">
+                  <label for="enum_answer_{{enum.name}}">
+                    <input id="enum_answer_{{enum.name}}" [value]='enum.name' type="radio" name="enums"
+                           [(ngModel)]="radioSelected">
+                    {{enum.name}}
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row  d-flex justify-content-between mt-3">
+              <div class="col col-md-12">
+                <div class="card  mt-2">
+                  <div class="card-content">
+                    <div class="card-body p-3" style="min-height: fit-content;">
+                      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                                  [skip]="gridSettings.state.skip" [sortable]="false"
+                                  [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+                                  [pageable]="pagerSettings" (pageChange)="onPageChange($event)"
+                                  filterable="menu" [filterable]="false" [reorderable]="false"
+                                  [columnMenu]="false" [rowClass]="rowCallback"
+                                  (dataStateChange)="dataStateChange($event)">
+                        <!--Columns-->
+                        <kendo-grid-column
+                          *ngFor="let col of gridSettings.columnsConfig; let i = index"
+                          [field]="col.field" [title]="col.title | translate" [width]="col._width"
+                          [filter]="col.filter" [filterable]="col.filterable"
+                          [format]="col.format">
+                          <ng-template kendoGridEditTemplate>
+                            <!--Reference edit template-->
+                            <app-grid-cell-input-template *ngIf="col.field == 'REFERENCE'"
+                                                          [group]="formGroup" controlName="Reference" inputType="text">
+                            </app-grid-cell-input-template>
+                            <!--TypeNomenclature edit template-->
+                            <app-grid-cell-input-template *ngIf="col.field == 'article'"
+                                                          [group]="formGroup" controlName="TypeNomenclature"
+                                                          inputType="text">
+                            </app-grid-cell-input-template>
+
+                          </ng-template>
+                        </kendo-grid-column>
+                        <!--End Columns-->
+                        <kendo-grid-command-column [width]="170">
+                          <ng-template kendoGridCellTemplate let-isNew="isNew"
+                                       let-dataItem="dataItem">
+                            <button class="btn" [ngClass]="{'btn-secondary': dataItem.showGammeInGraph, 'btn-info': !dataItem.showGammeInGraph}"
+                                    [disabled]="!dataItem.showGammeInGraph && displayGraph"
+                                    (click)="displayGammeInGraphe(dataItem)">
+                              {{!dataItem.showGammeInGraph ? ('SHOW_RANGE_GRAPH'|translate) : ('CLOSE'|translate) }}
+                            </button>
+                          </ng-template>
+                        </kendo-grid-command-column>
+                      </kendo-grid>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end card body -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col col-md-6" *ngIf="displayGraph">
+    <app-gamme-flowchart [gammeToBeDisplayedInGraph]="sendGamme"></app-gamme-flowchart>
+  </div>
+</div>

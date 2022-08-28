@@ -1,0 +1,269 @@
+<div class="card h-100">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_MACHINE' : 'SAVE_MACHINE') |translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="formGroup">
+
+      <div class="col-lg-12 col-sm-12 co
+      l-md-12 mr-5">
+        <div class="form-group row">
+        <div class="col-lg-10 col-sm-12 col-md-12">
+        <div class="form-group row">
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REFERENCE_MACHINE'|translate}}<span
+                class="required">*</span></label>
+            <input class="form-control" name="reference" formControlName="reference" disabled>
+            <app-control-messages [control]="formGroup.controls['reference']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'BRAND_MACHINE'|translate}}</label>
+            <input class="form-control" name="brand" formControlName="brand" >
+            <app-control-messages [control]="formGroup.controls['brand']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE_MACHINE'|translate}}</label>
+            <kendo-dropdownlist style="width: 100%; !important;" [data]="typeMachineList" formControlName="typeMachine"
+                                valueField="enumValue" textField="enumText" [valuePrimitive]="true">
+            </kendo-dropdownlist>
+            <app-control-messages [control]="formGroup.controls['typeMachine']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'SERIAL_NUMBER_MACHINE'|translate}}</label>
+            <input class="form-control" name="serialNumber" formControlName="serialNumber" >
+            <app-control-messages [control]="formGroup.controls['serialNumber']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION_MACHINE'|translate}}<span
+                class="required">*</span></label>
+            <input class="form-control" name="description" formControlName="description">
+            <app-control-messages [control]="formGroup.controls['description']"
+              class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'OPERATION' |translate}}</label>
+            <kendo-multiselect [data]="listOperations" [textField]="'description'" [valueField]="'id'"
+              [(ngModel)]="machineOperations" [ngModelOptions]="{standalone: true}">
+              <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                <div class="container">
+                  <div class="row">
+                    <span class="small">{{dataItem.description}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-multiselect>
+          </div>
+
+          <div *ngIf="isUpdateMode" class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'STATE'|translate}}<span class="required">*</span></label>
+            <kendo-combobox formControlName="stateMachine" [data]="typesList" [textField]="'name'"
+              [valueField]="'value'" class="form-control" [valuePrimitive]="true" [filterable]="true">
+            </kendo-combobox>
+            <app-control-messages [control]="formGroup.controls['stateMachine']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12" style="margin-bottom:15px">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'RESPONSIBLE'|translate}}<span
+                class="required">*</span></label>
+            <kendo-dropdownlist [data]="listUsers" [textField]="'FullName'" [valueField]="'Id'" [valuePrimitive]="true"
+              [(value)]="selectedUsers" formControlName="IdResponsible" class="form-control">
+              <ng-template kendoDropDownListItemTemplate let-dataItem>
+                <div class="container">
+                  <div class="row">
+                    <span class="small">{{dataItem.FullName}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-dropdownlist>
+            <app-control-messages [control]="formGroup.controls.IdResponsible"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'FAMILY'|translate}}<span class="required">*</span></label>
+            <kendo-dropdownlist style="width: 100%; !important;" [data]="familiesList" formControlName="familyMachine"
+              valueField="enumValue" textField="enumText" [valuePrimitive]="true">
+            </kendo-dropdownlist>
+            <app-control-messages [control]="formGroup.controls['familyMachine']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12" tooltip="{{currency}}">{{'PURCHASE_PRICE'|translate}}<span class="required">*</span></label>
+            <input type="number"  class="form-control text-right" name="price" formControlName="price" min="1" (ngModelChange)="calculateCost()">
+              <app-control-messages [control]="formGroup.controls['price']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'PURCHASE_DATE'|translate}}<span class="required">*</span></label>
+              <kendo-datepicker class="form-control" name="purchaseDate" formControlName="purchaseDate" [format]="'dd-MMM-yyyy'" (valueChange)="calculateCost()">
+              </kendo-datepicker>
+              <app-control-messages [control]="formGroup.controls['purchaseDate']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12" >{{'AMORTISATION_PERIOD'|translate}}<span class="required">*</span></label>
+              <kendo-numerictextbox class="form-control text-right"   [min]="0" [max]="100" [autoCorrect]="true" name="periodAmortisation" formControlName="periodAmortisation"
+                (keydown)="checkPositive($event, inputAmortisation)"  #inputAmortisation (valueChange)="calculateCost()">
+               </kendo-numerictextbox>
+              <app-control-messages [control]="formGroup.controls['periodAmortisation']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+         </div>
+
+         <div class="col-lg-4 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12" >{{'END_DATE_AMORTISATION'|translate}}</label>
+              <kendo-datepicker class="form-control" name="endDateAmortisation" formControlName="endDateAmortisation"
+                [readonly]="true" [format]="'dd-MMM-yyyy'">
+              </kendo-datepicker>
+              <app-control-messages [control]="formGroup.controls['endDateAmortisation']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12" >{{'COST_PER_HOUR'|translate}}</label>
+              <input class="form-control text-right" type="number"  name="costPerHour" formControlName="costPerHour" [readonly]="true">
+              <app-control-messages [control]="formGroup.controls['costPerHour']"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+        </div>
+        </div>
+<!--image machine-->
+        <div class="col-lg-2 col-sm-4 col-md-5 d-flex justify-content-center" id="imagemachinediv">
+          <label class="img-border  d-flex justify-content-center" for="machineImage" #fileInput>
+            <img id="machineImage" style="height: 100%;width: 100%;" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                 [src]="pictureMachineSrc || '../../../assets/image/machine_place_holder.png'"
+                 (click)="fileInput.click()" *ngIf="!isUpdateMode"/>
+            <img id="updateMachineImage" style="height: 100%;width: 100%;" class="img-upload" alt="Illustration des problèmes de suddation" border="0" *ngIf="isUpdateMode"
+                 [src]="changePicture ? pictureMachineSrc :
+             (imageData !== null ?
+             sanitizer.bypassSecurityTrustResourceUrl(imageData) : '../../../assets/image/machine_place_holder.png')"
+                 (click)="fileInput.click()"/>
+            <i class="fa fa-camera fa-lg"></i>
+          </label>
+          <input type='file' (change)="uploadPictureFile($event);" #fileInput
+                 accept="image/x-png,image/gif,image/jpeg"/>
+        </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <ul class="nav nav-tabs" role="tablist">
+
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#home1" role="tab" aria-controls="home1" aria-selected="false">
+              <i class="cui-list"></i> {{'SPARE_PART' |translate }}
+            </a>
+          </li>
+        </ul>
+        <div class="tab-content border-0">
+          <div class="tab-pane fade  px-0 pt-0 active show" id="home1" role="tabpanel"
+            [ngStyle]="{'min-height': '400px', 'max-height': '400px', 'overflow-y': 'auto'}">
+            <div class="card  mt-2">
+              <div class="card-content">
+                <div class="card-body p-3" style="min-height: fit-content;">
+                  <kendo-grid [data]="rowSparesList" [skip]="gridSettingsSpares.state.skip"
+                    [sort]="gridSettingsSpares.state.sort" [filter]="gridSettingsSpares.state.filter"
+                    (edit)="editHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
+                    (remove)="removeSpareHandler($event)" (add)="addHandler($event)" [sortable]="true" filterable="menu"
+                    [reorderable]="true" [columnMenu]="true">
+                    <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+                      <button kendoGridAddCommand class="noPadding btn-Add k-button">
+                        <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                        <span>&nbsp; {{'ADD_SPARE_PART'|translate}}</span>
+                      </button>
+                    </ng-template>
+                    <kendo-grid-column *ngFor="let col of gridSettingsSpares.columnsConfig; let i = index"
+                      [field]="col.field" [title]="col.title | translate" [width]="col._width" [filter]="col.filter"
+                      [filterable]="col.filterable" [format]="col.format">
+
+                      <ng-template kendoGridEditTemplate>
+
+                        <form [formGroup]="productLineFormGroup">
+                          <app-item-dropdown [itemForm]="productLineFormGroup"
+                            (Selected)="itemSelectProductLineForm($event)" [parentViewContainerRef]="viewRef">
+                          </app-item-dropdown>
+                          <i #anchorProductId></i>
+                          <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorProductId"
+                            controlName="IdItem">
+                          </app-control-message-grid-cell>
+
+                        </form>
+                      </ng-template>
+
+                    </kendo-grid-column>
+                    <kendo-grid-command-column title="{{'ACTION' | translate}}">
+                      <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                        <button kendoGridEditCommand style="background: transparent">
+                          <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true"></i>
+                        </button>
+
+                        <!-- remove command directive, will be visible when not in edit mode -->
+                        <button kendoGridRemoveCommand class="btnKendoGrid" style="background: transparent">
+                          <i class="text-danger cursor-pointer fa fa-trash-o la-lg" aria-hidden="true"></i>
+                        </button>
+
+                        <!-- save command directive, will be visible when in edit mode -->
+                        <button kendoGridSaveCommand class="btnKendoGrid" style="background: transparent">
+                          <span class="fa fa-save"></span></button>
+                        <!-- cancel command directive, will be visible when in edit mode -->
+                        <button kendoGridCancelCommand class="btnKendoGrid" style="background: transparent">
+                          <span class="fa fa-close"></span></button>
+                      </ng-template>
+                    </kendo-grid-command-column>
+                  </kendo-grid>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer ml-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 flex-align footer-content">
+            <a [routerLink]="'/main/settings/manufacturing/machine'">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i>
+                {{ "BACK_TO_LIST" | translate }}
+              </span>
+            </a>
+            <button class="btn btn-sm btn-save mx-1" (click)="save()" type="button">
+              <i class="fa fa-floppy-o"></i> {{ "SAVE" | translate }}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,138 @@
+<div class="card">
+  <!--Begin Card eader-->
+  <div *ngIf="!disabledField" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_ACTIVE': 'ADD_ACTIVE') |translate }}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <form class="form-horizontal" [formGroup]="activeFormGroup" (ngSubmit)="onAddActiveClick()">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-sm-4 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Code" type="text" name="Code"
+              [ngClass]="{ 'has-error': (activeFormGroup.controls.Code.touched || activeFormGroup.controls.Code.dirty) && !activeFormGroup.controls.Code.valid }">
+            <app-control-messages [control]="activeFormGroup.controls.Code"
+              class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+          <div class="col-sm-4 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Label" type="text" name="Label"
+              [ngClass]="{ 'has-error': (activeFormGroup.controls.Label.touched || activeFormGroup.controls.Label.dirty) && !activeFormGroup.controls.Label.valid }">
+            <app-control-messages [control]="activeFormGroup.controls.Label"
+              class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+          <div class="col-sm-4 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'BUYING_PRICE'|translate}}<span
+                class="required">*</span></label>
+            <kendo-numerictextbox class="form-control text-right" [format]="formatNumberOptions"
+              [decimals]="purchasePrecision" (input)="onPurchasePriceChange($event)" formControlName="Value">
+            </kendo-numerictextbox>
+            <app-control-messages [control]="activeFormGroup.controls.Value"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-4 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'STATUS'|translate}}<span class="required">*</span></label>
+            <app-status-combobox [form]="activeFormGroup" id="status-combobox">
+            </app-status-combobox>
+            <app-control-messages [control]="activeFormGroup.controls.Status"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+            <!--<app-control-messages [control]="activeFormGroup.controls.StatusName" class="error-msg messages text-left text-danger"></app-control-messages>-->
+          </div>
+          <div class="col-sm-4 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'ACQUISATION_DATE'|translate}}<span
+                class="required">*</span></label>
+            <app-acquisation-date-datepicker [form]="activeFormGroup" [DateName]="'AcquisationDate'"
+              [change]="changeAcquisationDate()" [max]="maxAcquisationDate">
+            </app-acquisation-date-datepicker>
+            <app-control-messages [control]="activeFormGroup.controls.AcquisationDate"
+              class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+          <div class="col-sm-4 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'SERVICE_DATE'|translate}} </label>
+            <app-acquisation-date-datepicker [form]="activeFormGroup" [DateName]="'ServiceDate'"
+              [change]="changeServiceDate()" [min]="minServiceDate">
+            </app-acquisation-date-datepicker>
+            <app-control-messages [control]="activeFormGroup.controls.ServiceDate"
+              class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'NUM_SERIE'|translate}}</label>
+            <input class="form-control" formControlName="NumSerie" type="text" name="NumSerie">
+            <app-control-messages [control]="activeFormGroup.controls.NumSerie"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CATEGORY'|translate}}<span class="required">*</span></label>
+            <app-category-dropdown [form]="activeFormGroup" id="category-dropdown" [isAdvancedAdd]="true">
+            </app-category-dropdown>
+            <app-control-messages [control]="activeFormGroup.controls.IdCategory"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+            <textarea class="col-lg-12 col-md-6 col-sm-4 form-control" rows="1" formControlName="Description"
+              name="Description"></textarea>
+          </div>
+        </div>
+        <div class="form-group row" style="display: flex; justify-content: flex-end;">
+          <div class="col-sm-4 col-md-4 col-lg-4">
+            <div class="row">
+              <label class="col-lg-12 col-md-12 col-sm-12" style="text-align: center;">
+                {{'BARCODE2D'|translate}}
+              </label>
+            </div>
+            <br>
+            <div class="row" id="print-section">
+              <qrcode [qrdata]="activeFormGroup.value.Code?activeFormGroup.value.Code:'Stark'" [size]="130"
+                [level]="'M'" style="float: none;
+                margin: 0 auto;" id="qrCode"></qrcode>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-lg-5 col-md-5 col-sm-5"></div>
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <button type="button" class="btn btn-sm btn-primary" style="color: white" printSectionId="print-section"
+                  (click)="downloadCodeBar2D()" ngxPrint>
+                  <i class="fa fa-print" aria-hidden="true"></i>
+                  {{'PRINT'|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--End add form-->
+    </div>
+    <!--End Card body-->
+    <!--Begin Card footer-->
+    <div *ngIf="!disabledField" class="card-footer">
+      <a [routerLink]="__assetsRouterLink ">
+        <span class="btn btn-sm btn-primary">
+          <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+        </span>
+      </a>
+      <button *ngIf="!disabledFormGroup" class="btn btn-sm btn-danger" type="submit">
+        <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+      </button>
+    </div>
+  </form>
+  <!--End Card footer-->
+</div>

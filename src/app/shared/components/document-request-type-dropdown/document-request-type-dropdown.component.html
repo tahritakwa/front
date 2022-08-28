@@ -1,0 +1,20 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="DocumentRequestTypeFiltredDataSource"
+                      class="form-control HistoryCommandMargin"
+                      name="IdDocumentRequestType"
+                      formControlName="IdDocumentRequestType"
+                      textField="Label"
+                      valueField="Id"
+                      [allowCustom]="allowCustom"
+                      [valuePrimitive]="true"
+                      [filterable]="true"
+                      (filterChange)="handleFilter($event)"
+                      (valueChange)="onSelect($event)"
+                      [disabled]="disabled">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate *ngIf="showAddButton && !InGrid">
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>

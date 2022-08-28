@@ -1,0 +1,27 @@
+.disabledInput {
+  background: transparent;
+  border: none;
+}
+
+.k-numeric-wrap {
+  border-radius: 0.25rem;
+  padding: 0;
+  width: 100%;
+  border-width: 1px;
+  border-style: none;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  -webkit-transition: all 0.1s ease;
+  transition: all 0.1s ease;
+  cursor: default;
+  outline: 0;
+  color : blue;
+}
+.k-numeric-wrap > .k-input {
+  color: black;
+}
+
+.get-amount-to-right > .k-input {
+  color: green;
+}

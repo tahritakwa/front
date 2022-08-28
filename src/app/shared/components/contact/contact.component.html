@@ -1,0 +1,144 @@
+<div [formGroup]="contactForm" *ngIf="!isModal">
+  <div>
+    <div>
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FIRST_NAME'|translate}}<span
+              class="required">*</span></label>
+          <input class="form-control" type="text" formControlName="FirstName"
+            [ngClass]="{ 'has-error': (FirstName.touched || FirstName.dirty) && !FirstName.valid }">
+          <app-control-messages [control]="FirstName" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'LAST_NAME'|translate}}<span class="required">*</span></label>
+          <input class="form-control" type="text" formControlName="LastName"
+            [ngClass]="{ 'has-error': (LastName.touched || LastName.dirty) && !LastName.valid }">
+          <app-control-messages [control]="LastName" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'PHONE'|translate}}</label><br>
+          <kendo-maskedtextbox class="form-control" [maskValidation]="false" [includeLiterals]="true"
+            formControlName="Tel1" name="Tel1" [ngClass]="{ 'has-error': (Tel1.touched || Tel1.dirty) && !Tel1.valid }">
+
+          </kendo-maskedtextbox>
+          <app-control-messages [control]="Tel1" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FAX'|translate}}</label><br>
+          <kendo-maskedtextbox class="form-control" [maskValidation]="false" [includeLiterals]="true"
+            formControlName="Fax1" name="Fax1" [ngClass]="{ 'has-error': (Fax1.touched || Fax1.dirty) && !Fax1.valid }">
+          </kendo-maskedtextbox>
+          <app-control-messages [control]="Fax1" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMAIL'|translate}}</label>
+          <input class="form-control" type="email" formControlName="Email"
+            [ngClass]="{ 'has-error': (Email.touched || Email.dirty) && !Email.valid }">
+          <app-control-messages [control]="Email" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FUNCTION'|translate}}</label>
+          <input class="form-control" type="text" formControlName="Fonction"
+            [ngClass]="{ 'has-error': (Fonction.touched || Fonction.dirty) && !Fonction.valid }">
+          <app-control-messages [control]="Fonction" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-5">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'ADRESS'|translate}}</label>
+          <input class="form-control" type="text" formControlName="Adress"
+            [ngClass]="{ 'has-error': (Adress.touched || Adress.dirty) && !Adress.valid }">
+          <app-control-messages [control]="Adress" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </div>
+</div>
+<div class="card" *ngIf="isModal">
+  <div class="card-header" *ngIf="!isModal">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ADD_CONTACT'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="contactAddForm">
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FIRST_NAME'|translate}}<span
+              class="required">*</span></label>
+          <input class="form-control" type="text" formControlName="FirstName" name="FirstName" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+            [ngClass]="{ 'has-error': (contactAddForm.controls.FirstName.touched || contactAddForm.controls.FirstName.dirty) && !contactAddForm.controls.FirstName.valid }">
+          <app-control-messages [control]="contactAddForm.controls.FirstName"
+            class="error-msg messages text-left text-danger" style="">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'LAST_NAME'|translate}}<span class="required">*</span></label>
+          <input class="form-control" type="text" formControlName="LastName" name="LastName" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+            [ngClass]="{ 'has-error': (contactAddForm.controls.LastName.touched || contactAddForm.controls.LastName.dirty) && !contactAddForm.controls.LastName.valid }">
+          <app-control-messages [control]="contactAddForm.controls.LastName"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'PHONE'|translate}}</label>
+          <input class="form-control" formControlName="Tel1" name="Tel1" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+            [ngClass]="{ 'has-error': (contactAddForm.controls.Tel1.touched || contactAddForm.controls.Tel1.dirty) && !contactAddForm.controls.Tel1.valid }">
+          <app-control-messages [control]="contactAddForm.controls.Tel1"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FAX'|translate}}</label>
+          <input class="form-control" formControlName="Fax1" name="Fax1" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+            [ngClass]="{ 'has-error': (contactAddForm.controls.Fax1.touched || contactAddForm.controls.Fax1.dirty) && !contactAddForm.controls.Fax1.valid }">
+          <app-control-messages [control]="contactAddForm.controls.Fax1"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+      </div>
+      <div class="form-group row">
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMAIL'|translate}}</label>
+          <input class="form-control" type="email" formControlName="Email" name="Email" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+            [ngClass]="{ 'has-error': (contactAddForm.controls.Email.touched || contactAddForm.controls.Email.dirty) && !contactAddForm.controls.Email.valid }">
+          <app-control-messages [control]="contactAddForm.controls.Email"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-3">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FUNCTION'|translate}}</label>
+          <input class="form-control" type="text" formControlName="Fonction" name="Fonction" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+            [ngClass]="{ 'has-error': (contactAddForm.controls.Fonction.touched || contactAddForm.controls.Fonction.dirty) && !contactAddForm.controls.Fonction.valid }">
+          <app-control-messages [control]="contactAddForm.controls.Fonction"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-sm-5">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'ADRESS'|translate}}</label>
+          <input class="form-control" type="text" formControlName="Adress" name="Adress" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+            [ngClass]="{ 'has-error': (contactAddForm.controls.Adress.touched || contactAddForm.controls.Adress.dirty) && !contactAddForm.controls.Adress.valid }">
+          <app-control-messages [control]="contactAddForm.controls.Adress"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+    <button class="btn btn-sm btn-danger" (click)="save()" *ngIf="!isModal">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+    <button class="btn btn-sm btn-success statusAlignment" (click)="save()" type="submit" *ngIf="isModal">
+      <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'SAVE') |translate}}
+    </button>
+  </div>
+</div>

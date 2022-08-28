@@ -1,0 +1,149 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card w-100">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0" *ngIf="tiersType === 2">{{ 'PROFILE_SUPPLIER' |translate}}</h3>
+            <h3 class="card-title mb-0" *ngIf="tiersType === 1">{{'PROFILE_CUSTOMER' |translate}}</h3>
+            <h3 class="card-title mb-0" *ngIf="!tiersType">{{'PROFILE_CUSTOMER_SUPPLIER' |translate}}</h3>
+          </div>
+        </div>
+
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body">
+          <div class="card" *ngIf="tier">
+            <div class="card-body py-3" style="min-height: fit-content;">
+              <div class="row">
+
+                <div class="col-auto m-auto" style="max-width: 230px;">
+                  <div class="img-border m-0 d-flex justify-content-center" id="item-photo" for="file-input">
+
+                    <img class="imgSize" alt="item photo"
+                      [src]="pictureTierSrc || 'assets/image/placeholder-logo.png'" />
+                  </div>
+                </div>
+
+                <div class="col-lg col-md-12 col-sm-12 pl-3 mr-auto py-2">
+                  <div class="row px-3">
+                    <div class="col-lg-auto col-md-auto pl-0 h3">
+                      {{tier.Name}}</div>
+                    <div class="col-auto p-0 h3">
+                      <i  *ngIf="((hasUpdateCustomerPermission || hasShowCustomerPermission) && tiersType === 1)
+                        || (hasUpdateSupllierPermission && tiersType === 2)" class="las la-pen edit-pencil cursor-pointer" (click)="goToAdvancedEdit(tier)"></i>
+                      <i *ngIf=" (hasDeleteCustomerPermission && tiersType ==1)  || (hasDeleteSupllierPermission && tiersType ==2)" class="las la-trash-alt text-danger cursor-pointer" (click)="deletePhone(tier)"></i>
+                    </div>
+                  </div>
+                  <div class="row px-3">
+                    <p class="sector">{{tier.ActivitySector |translate}}</p>
+                  </div>
+                  <div class="row px-3">
+                    <p class="code">{{tier.CodeTiers}}</p>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12">
+                  <div class="row pl-3">
+                    <ul class="fa-ul m-0 list-info">
+                      <li *ngIf="tier.IdPhoneNavigation"><i
+                          class="las la-lg la-phone"></i>{{tier.IdPhoneNavigation.DialCode}}{{tier.IdPhoneNavigation.Number}}
+                      </li>
+                      <li *ngIf="tier.Email"><i class=" las la-lg la-envelope"></i>{{tier.Email}}</li>
+                      <li *ngIf="tier.Address && tier.Address.length"><i
+                          class="las la-lg la-map-marker-alt"></i>{{tier.Address[0].PrincipalAddress}}</li>
+                    </ul>
+                  </div>
+                  <div class="row d-flex justify-content-center">
+                    <div class="col-auto px-1">
+                      <button (click)="gotoLink('fb')" target="_blank"
+                        class="btn btn-lg btn-pill btn-brand btn-facebook" [disabled]="!tier.Facebook" type="button">
+                        <i class="fa btn-pill rounded-circle fa-facebook"></i>
+                      </button>
+                    </div>
+                    <div class="col-auto px-1">
+                      <button (click)="gotoLink('tw')" class="btn btn-pill btn-lg btn-brand btn-twitter"
+                        [disabled]="!tier.Twitter" type="button">
+                        <i class="fa btn-pill rounded-circle fa-twitter"></i>
+                      </button>
+                    </div>
+                    <div class="col-auto px-1">
+                      <button (click)="gotoLink('li')" class="btn btn-pill btn-brand btn-lg btn-linkedin"
+                        [disabled]="!tier.Linkedin" type="button">
+                        <i class="fa btn-pill rounded-circle fa-linkedin"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="my-3">
+            <ul class="nav nav-tabs nav-tabs-new" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link nav-link-new active" id="general-tab" data-toggle="tab" href="#general" role="tab"
+                  aria-controls="general" aria-selected="true">{{"GENERAL"|translate}}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link nav-link-new" id="activities-tab" data-toggle="tab" href="#activities" role="tab"
+                  aria-controls="activities" aria-selected="false">{{'ACTIVITY'|translate}}</a>
+              </li>
+              <li class="nav-item" (click)="isOpenLastArticles=true">
+                <a class="nav-link nav-link-new" id="last-articles-tab" data-toggle="tab" href="#last-articles"
+                  role="tab" aria-controls="last-articles" aria-selected="false">{{'LAST_ORDER_ARTICLES'|translate}}</a>
+              </li>
+            </ul>
+            <div class="tab-content tab-content-new" id="myTabContent">
+              <div class="tab-pane fade show active px-0" id="general" role="tabpanel" aria-labelledby="general-tab">
+                <div class="">
+                  <div class="card-content">
+                    <div class="card-body p-3" style="min-height: fit-content;">
+                      <app-profile-tier-general [tier]="tier">
+                      </app-profile-tier-general>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade px-0" id="activities" role="tabpanel" aria-labelledby="activities-tab">
+                <div class="">
+                  <div class="card-content">
+                    <div class="card-body p-3" style="min-height: fit-content;">
+                      <app-profile-tier-activities [tier]="tier">
+                      </app-profile-tier-activities>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane fade  px-0" id="last-articles" role="tabpanel" aria-labelledby="last-articles-tab">
+                <div class="">
+                  <div class="card-content">
+                    <div class="card-body p-3" style="min-height: fit-content;">
+                      <app-profile-tier-last-articles [tier]="tier" *ngIf="isOpenLastArticles">
+                      </app-profile-tier-last-articles>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="hasListPermission" class="fixed-card-footer">
+    <div class="footerStyle">
+
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="{{tiersListURL}}">
+              <span class="btn btn-sm btn-primary btn-back-to-list" #BackToList>
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

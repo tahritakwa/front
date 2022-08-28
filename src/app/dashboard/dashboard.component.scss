@@ -1,0 +1,430 @@
+.chart {
+  display: block;
+  width: 100%;
+}
+
+.test:hover {
+  opacity: 0.5;
+}
+* {
+  overflow: hidden;
+}
+.ConfigDash {
+  -webkit-box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.75);
+}
+
+.draggable-card {
+  padding-bottom: 30px;
+}
+
+.period-filter {
+  overflow: visible;
+}
+
+.pointer-cursor:hover {
+  cursor: pointer;
+}
+
+.with-shadow {
+  box-shadow: 5px 6px 9px 0px grey;
+}
+
+.card {
+  border-radius: 5px;
+  border: none;
+
+}
+
+.static-card {
+  margin-top: 30px;
+  margin-bottom: -30px;
+}
+
+body{
+  margin-top:20px;
+  background:#FAFAFA;
+}
+.order-card {
+  color: #fff;
+}
+
+.bg-c-blue {
+  background: linear-gradient(45deg,#4099ff,#73b4ff);
+}
+
+.bg-c-green {
+  background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+}
+
+.bg-c-yellow {
+  background: linear-gradient(45deg,#FFB64D,#ffcb80);
+}
+
+.bg-c-pink {
+  background: linear-gradient(45deg,#FF5370,#ff869a);
+}
+
+.bg-c-vertical-card {
+  background: linear-gradient(45deg,#d4dbe0,#a8b1b9);
+}
+.card .card-block {
+  padding: 25px;
+  height: 9.25rem;
+}
+
+.order-card i {
+  font-size: 26px;
+}
+
+.f-left {
+  float: left;
+}
+
+.f-right {
+  float: right;
+}
+
+.text-nowrap {
+  color: black;
+}
+
+
+
+  .header {
+      padding: 20px 20px;
+  }
+
+  .title {
+      margin: 0;
+      color: #252422;
+      font-weight: 300;
+  }
+
+
+
+  .card .content {
+      padding: 15px 15px 10px 15px;
+  }
+
+  .list-unstyled {
+      padding-left: 0;
+      list-style: none;
+  }
+
+  .card ul.team-members li:not(:last-child) {
+      border-bottom: 1px solid #c3cad0;
+  }
+
+  .card ul.team-members li {
+      padding: 10px 0px;
+  }
+
+  .card .avatar {
+      width: 50px;
+      height: 50px;
+      overflow: hidden;
+      border-radius: 50%;
+      margin-right: 5px;
+  }
+
+  .card .btn.btn-icon {
+      padding: 7px;
+  }
+
+  .card .btn-sm {
+      font-size: 12px;
+      border-radius: 26px;
+      padding: 4px 4px;
+  }
+
+  .card .btn {
+      box-sizing: border-box;
+      border-width: 2px;
+      background-color: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 7px 18px;
+      border-color: #66615B;
+      color: #66615B;
+      -webkit-transition: all 150ms linear;
+      -moz-transition: all 150ms linear;
+      -o-transition: all 150ms linear;
+      -ms-transition: all 150ms linear;
+      transition: all 150ms linear;
+  }
+
+
+
+
+
+  /*card user*/
+  .card-user .image {
+      border-radius: 8px 8px 0 0;
+      height: 150px;
+      position: relative;
+      overflow: hidden;
+  }
+  .card .image {
+      width: 100%;
+      overflow: hidden;
+      height: 260px;
+      border-radius: 6px 6px 0 0;
+      position: relative;
+      -webkit-transform-style: preserve-3d;
+      -moz-transform-style: preserve-3d;
+      transform-style: preserve-3d;
+  }
+  .card-user .image img {
+      width: 100%;
+  }
+  .card-user .author {
+      text-align: center;
+      text-transform: none;
+      margin-top: -65px;
+  }
+  .card .author {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+  }
+
+  .card-user .avatar.border-white {
+      border: 5px solid #FFFFFF;
+  }
+  .card-user .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: relative;
+      margin-bottom: 15px;
+  }
+  .card-user .author .title {
+      color: #403D39;
+  }
+  .card-user .title {
+      font-weight: 600;
+      line-height: 24px;
+  }
+  .card-user .author .title small {
+      color: #ccc5b9;
+  }
+
+  .card .description {
+      font-size: 16px;
+      color: #66615b;
+  }
+
+  .my-flex-card  {
+    height: calc(100% - 15px);
+    margin-bottom: 15px;
+}
+
+.chart-pie {
+  position: relative;
+  height: 15rem;
+  width: 100%;
+}
+
+
+.my-card
+{
+    background: #f0f3f5;
+    border-radius: 100%;
+    padding: 10px;
+    border: 2px solid #63c2de
+
+}
+
+
+.widget-card-1 {
+  text-align: center;
+ }
+  .widget-card-1 .card1-icon {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: -15px;
+    font-size: 35px;
+    border-radius: 8px;
+    display: flex;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    transition: all 0.3s ease-in-out; }
+
+  .widget-card-1:hover .card1-icon {
+    top: -25px; }
+
+
+
+
+.f-w-600 {
+  font-weight: 600;
+ }
+
+
+.text-c-blue {
+  color: #4099ff;
+  font-size: 17px;
+}
+
+.text-c-pink {
+  color: #FF5370;
+  font-size: 17px;
+}
+
+.card .card-block-small {
+  padding: 15px 20px; }
+
+  .donut-inner {
+    margin-top: -100px;
+    margin-bottom: 100px;
+ }
+ .donut-inner h5 {
+    margin-bottom: 5px;
+    margin-top: 0;
+ }
+ .donut-inner span {
+    font-size: 12px;
+ }
+ /////////////////////////////////////////////progress bar/////
+
+$borderWidth: 5px;
+$animationTime: .5s;
+$border-color-default: #efefef;
+$border-color-fill: #ffc169;
+$size: 160px;
+$howManySteps: 100; //this needs to be even.
+
+.progress {
+  width: $size;
+  height: $size;
+  line-height: $size;
+  background: none;
+  margin: 0 auto;
+  box-shadow: none;
+  position: relative;
+  &:after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: $borderWidth solid $border-color-default;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  > span {
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 1;
+  }
+  .progress-left {
+    left: 0;
+  }
+  .progress-bar {
+    width: 100%;
+    height: 100%;
+    background: none;
+    border-width: $borderWidth;
+    border-style: solid;
+    position: absolute;
+    top: 0;
+    border-color: $border-color-fill;
+  }
+  .progress-left .progress-bar {
+    left: 100%;
+    border-top-right-radius: ($size/2);;
+    border-bottom-right-radius: ($size/2);;
+    border-left: 0;
+    -webkit-transform-origin: center left;
+    transform-origin: center left;
+    //animation: loading-2 1.5s linear forwards 1.8s;
+  }
+  .progress-right {
+    right: 0;
+    .progress-bar {
+      left: -100%;
+      border-top-left-radius: ($size/2);;
+      border-bottom-left-radius: ($size/2);;
+      border-right: 0;
+      -webkit-transform-origin: center right;
+      transform-origin: center right;
+      //animation: loading-1 1.8s linear forwards;
+    }
+  }
+  .progress-value {
+    display: flex;
+    border-radius: 50%;
+    font-size: 1rem;
+    text-align: center;
+    line-height: 20px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    font-weight: 300;
+    span {
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+  }
+}
+
+/* This for loop creates the necessary css animation names
+Due to the split circle of progress-left and progress right, we must use the animations on each side.
+*/
+@for $i from 1 through $howManySteps {
+	$stepName: ($i*(100 / $howManySteps));
+
+	//animation only the left side if below 50%
+	@if $i <= ($howManySteps/2) {
+		.progress[data-percentage="#{$stepName}"] {
+			.progress-right .progress-bar {
+				 animation: loading-#{$i} $animationTime linear forwards;
+			}
+			.progress-left .progress-bar {animation: 0;}
+		}
+	}
+	//animation only the right side if above 50%
+	@if $i > ($howManySteps/2)  {
+		.progress[data-percentage="#{$stepName}"] {
+			.progress-right .progress-bar {
+				animation: loading-#{($howManySteps/2)} $animationTime linear forwards; //set the animation to longest animation
+			}
+			.progress-left .progress-bar {
+      animation: loading-#{$i - ($howManySteps/2)} $animationTime linear forwards $animationTime;
+    }
+		}
+	}
+}
+
+//animation
+@for $i from 1 through ($howManySteps/2) {
+	$degrees: (180/($howManySteps/2));
+	$degrees: ($degrees*$i);
+	@keyframes loading-#{$i}{
+    0%{
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100%{
+        -webkit-transform: rotate($degrees);
+			transform: rotate(#{$degrees}deg);
+    }
+	}
+}
+
+.border-right-white{
+  border-right : 2px solid #f0f3f5 !important;
+}
+
+.currency{
+  font-size: x-small;
+}

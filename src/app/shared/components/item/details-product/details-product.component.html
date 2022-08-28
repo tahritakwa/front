@@ -1,0 +1,305 @@
+<div class="card">
+  <!-- Header start -->
+  <div class="card-header" *ngIf='!isModalHtml'>
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'DETAILS_PRODUCT' | translate}}</h3>
+    </div>
+  </div>
+  <!-- Header end -->
+  <!-- body start-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="itemFormGroup">
+      <!-- Params starts-->
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'ITEM'|translate}} <span
+                    class="required">*</span></label>
+                <app-item-dropdown [activeKeyPress]='true' [parentViewContainerRef]="viewRef" [itemForm]="itemFormGroup"
+                  [hideSearch]='hideSearch' [showFilter]='true' [isFroSerach]='true' [onlySelectedItem]="true"
+                  (FocusOut)="selectedItem()" #itemDrop>
+                </app-item-dropdown>
+                <app-control-messages [control]="itemFormGroup.controls.IdItem"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-2">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'STARTDATE'|translate}}</label>
+                <kendo-datepicker formatPlaceholder="narrow" formControlName="StartDate"
+                  (valueChange)="changeStartDate()" [max]="maxStartDate" class="form-control"
+                  [popupSettings]="{ appendTo: containerRef }">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                    toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="itemFormGroup.controls.StartDate"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-2">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'ENDDATE'|translate}}</label>
+                <kendo-datepicker formatPlaceholder="narrow" formControlName="EndDate" (valueChange)="changeEndDate()"
+                  class="form-control" [min]="minEndDate" [popupSettings]="{ appendTo: containerRef }">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                    toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="itemFormGroup.controls.EndDate"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-5 row">
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                  <button (click)="search()" class="k-button btn-secondary" data-placement="top" data-toggle="tooltip"
+                    tabindex="0" type="button" style="margin-top: 35px;">
+                    <i class="fa fa-history fa-lg AddIcon"></i>
+                    <span>&nbsp;{{'SEE_HISTORY' | translate}}</span>
+                  </button>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-8" style="place-content: flex-end;">
+                  <label class="col-12">&nbsp;</label>
+                  <h3 class="float-right" style="color:#4b9aad;"><b>{{'ALLQUANTITY' | translate }} :
+                      {{availableQty}}</b></h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Params end-->
+      <!-- tabs -->
+      <ul class="nav nav-tabs nav-tabs-new" id="myTab" role="tablist">
+        <li class="nav-item" (click)="changeTab(1)">
+          <a class="nav-link nav-link-new active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+            style="margin-bottom: 0 !important;" aria-controls="home" aria-selected="true">{{'DETAILS_PRODUCT'
+            |translate}}</a>
+        </li>
+        <li class="nav-item" (click)="changeTab(2)">
+          <a class="nav-link nav-link-new" id="mvtStock-tab" data-toggle="tab" href="#mvtStock" role="tab"
+            style="margin-bottom: 0 !important;" aria-controls="mvtStock"
+            aria-selected="false">{{'TRANSFERT_MOVEMENT'|translate}}</a>
+        </li>
+        <li class="nav-item" (click)="changeTab(3)">
+          <a class="nav-link nav-link-new" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+            style="margin-bottom: 0 !important;" aria-controls="profile"
+            aria-selected="false">{{'LIST_MOVEMENT_HISTORY'|translate}}</a>
+        </li>
+        <li class="nav-item" (click)="changeTab(4)">
+          <a class="nav-link nav-link-new" id="neg-tab" data-toggle="tab" href="#neg" role="tab"
+            style="margin-bottom: 0 !important;" aria-controls="neg"
+            aria-selected="false">{{'HISTORY_NEGOTIATIONS'|translate}}</a>
+        </li>
+      </ul>
+      <div class="tab-content tab-content-new" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+          <!-- Result in Kendo Grid starts-->
+          <div class="card-body">
+            <kendo-grid [data]="filteredview" #gridDetails [scrollable]="'virtual'" [rowClass]="rowCallback">
+              <kendo-grid-column field="DocumentTypeCode" title="{{'TYPE' | translate}}" [width]='100'>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && dataItem.IsReservedLine"
+                    class="badge badge-warning">{{'SALES'|translate}}:{{'Delivery'|translate}}-R</span>
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && !dataItem.IsReservedLine && dataItem.Status !== documentStatusCode.Provisional"
+                    class="badge badge-success">{{'SALES'|translate}}:{{'Delivery'|translate}}-V</span>
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && !dataItem.IsReservedLine && dataItem.Status == documentStatusCode.Provisional"
+                    class="badge badge-success">{{'SALES'|translate}}:{{'Delivery'|translate}}-P</span>
+
+
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.PurchaseDelivery && dataItem.Status !== documentStatusCode.Provisional"
+                    class="badge badge-primary">{{'PURCHASE'|translate}}:{{'BR'|translate}}-V</span>
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.PurchaseDelivery && dataItem.Status === documentStatusCode.Provisional"
+                    class="badge badge-primary">{{'PURCHASE'|translate}}:{{'BR'|translate}}-P</span>
+
+
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.SalesAsset && dataItem.Status == documentStatusCode.Provisional"
+                    class="badge badge-danger">{{'SALES'|translate}}:{{'ASSET'|translate}}-P</span>
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.SalesAsset && dataItem.Status !== documentStatusCode.Provisional"
+                    class="badge badge-danger">{{'SALES'|translate}}:{{'ASSET'|translate}}-V</span>
+
+
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.PurchaseAsset && dataItem.Status == documentStatusCode.Provisional"
+                    class="badge badge-info">{{'PURCHASE'|translate}}:{{'ASSET'|translate}}-P</span>
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.PurchaseAsset && dataItem.Status !== documentStatusCode.Provisional"
+                    class="badge badge-info">{{'PURCHASE'|translate}}:{{'ASSET'|translate}}-V</span>
+
+
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.BE && dataItem.Status == documentStatusCode.Provisional"
+                    class="badge badge-light">{{'BE'|translate}}-P</span>
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.BE && dataItem.Status !== documentStatusCode.Provisional"
+                    class="badge badge-light">{{'BE'|translate}}-V</span>
+
+
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.BS && dataItem.Status == documentStatusCode.Provisional"
+                    class="badge badge-secondary">{{'BS'|translate}}-P</span>
+                  <span
+                    *ngIf="dataItem.DocumentTypeCode === documentEnumerator.BS && dataItem.Status !== documentStatusCode.Provisional"
+                    class="badge badge-secondary">{{'BS'|translate}}-V</span>
+
+                  <span *ngIf="dataItem.IsInventoryDocument" class="badge badge-Dark">{{'INVENTORY'|translate}}-V</span>
+
+                </ng-template>
+
+              </kendo-grid-column>
+              <kendo-grid-column field="Code" title="{{'DOCUMENT' | translate}}" [width]='130'>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  <ng-container>
+                    <!-- Link code -->
+                    <a *ngIf="(dataItem.DocumentTypeCode === documentEnumerator.PurchaseDelivery && (hasShowPurchaseDeliveryPermission || hasUpdatePurchaseDeliveryPermission))
+                      || (dataItem.DocumentTypeCode === documentEnumerator.PurchaseAsset && (hasShowPurchaseAssetPermission || hasUpdatePurchaseAssetPermission))
+                      || (dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && (hasShowSalesDeliveryPermission || hasUpdateSalesDeliveryPermission))
+                      || (dataItem.DocumentTypeCode === documentEnumerator.SalesAsset && (hasShowSalesAssetPermission || hasUpdateSalesAssetPermission))
+                      || (dataItem.DocumentTypeCode === documentEnumerator.BS && (hasShowBSPermission || hasUpdateBSPermission))
+                      || (dataItem.DocumentTypeCode === documentEnumerator.BE && (hasShowBEPermission || hasUpdateBEPermission))
+                      " class="grid-cell-link"
+                      (click)="onClickGoToDocument(dataItem.DocumentTypeCode, dataItem.Status, dataItem.IdDocument)">
+                      {{dataItem.Code}}
+                    </a>
+                    <!--Simple code -->
+                    <a *ngIf="(dataItem.DocumentTypeCode === documentEnumerator.PurchaseDelivery && !hasShowPurchaseDeliveryPermission && !hasUpdatePurchaseDeliveryPermission)
+                      || (dataItem.DocumentTypeCode === documentEnumerator.PurchaseAsset && !hasShowPurchaseAssetPermission && !hasUpdatePurchaseAssetPermission)
+                      || (dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && !hasShowSalesAssetPermission && !hasUpdateSalesAssetPermission)
+                      || (dataItem.DocumentTypeCode === documentEnumerator.SalesAsset && !hasShowSalesAssetPermission && !hasUpdateSalesAssetPermission)
+                      || (dataItem.DocumentTypeCode === documentEnumerator.BS && !hasShowBSPermission && !hasUpdateBSPermission)
+                      || (dataItem.DocumentTypeCode === documentEnumerator.BE && !hasShowBEPermission && !hasUpdateBEPermission)
+                      " class="grid-cell"> {{dataItem.Code}} </a>
+                  </ng-container>
+
+                  <ng-container
+                    *ngIf="dataItem.DocumentTypeCode !== documentEnumerator.SalesDelivery && dataItem.DocumentTypeCode !== documentEnumerator.PurchaseDelivery
+                        && dataItem.DocumentTypeCode !== documentEnumerator.BE && dataItem.DocumentTypeCode !== documentEnumerator.BS
+                        && dataItem.DocumentTypeCode !== documentEnumerator.PurchaseAsset &&  dataItem.DocumentTypeCode !== documentEnumerator.SalesAsset">
+                    <ng-container>
+                      <a class="grid-cell-link"
+                        (click)="onClickGoToDocument(dataItem.DocumentTypeCode, dataItem.Status, dataItem.IdDocument)">
+                        {{dataItem.Code}} </a>
+                    </ng-container>
+                  </ng-container>
+
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-column field="TiersCode" title="{{'CODE_TIERS'| translate}}" [width]='100'>
+              </kendo-grid-column>
+              <kendo-grid-column field="TiersName" title="{{'TIERS' | translate}}" width="400">
+
+                <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+                  <div class="row">
+                    <div class="d-flex align-items-end px-1">{{column.title}}</div>
+                    <div class="px-1 flex-grow-1 bd-highlight">
+                      <div class="input-group">
+                        <input type="search" (input)="showaction()" class="form-control form-control-sm"
+                          placeholder="{{'SEARCH'|translate}}" style="border-bottom: 1px solid #e4e7ea !important;"
+                          aria-label="tiers" aria-describedby="addon-wrapping" [(ngModel)]='tiersNameSearch'
+                          [ngModelOptions]="{standalone: true}">
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+
+
+              </kendo-grid-column>
+              <kendo-grid-column field="DocumentDate" title="{{'DATE' | translate}}" width="100">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  {{dataItem.DocumentDate|date: formatDate}}
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column field="PurchaseQuantity" title="{{'QTY_IN' | translate}}" width="110">
+              </kendo-grid-column>
+              <kendo-grid-column field="SalesQuantity" title="{{'QTY_OUT' | translate}}" width="100">
+              </kendo-grid-column>
+
+              <ng-container>
+                <kendo-grid-column [hidden]="!hasShowCostPricePermission" field="PurchaseAmount"
+                  title="{{'PURCHASE' | translate}}" width="200" format='{0:##,#.###}'
+                  [style]='{"font-family": "Arial, Helvetica, serif", "text-align":"right","padding-right": "4%"}'>
+
+                  <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+                    <p style="margin-bottom: 0px;">{{'PUHT_PURCHASE' | translate}} ({{symbole}})</p>
+                  </ng-template>
+                  <ng-template kendoGridCellTemplate let-column let-columnIndex="columnIndex" let-dataItem="dataItem">
+                    {{intl.formatNumber(dataItem.PurchaseAmount, formatPurchaseOptions)}}
+                  </ng-template>
+                </kendo-grid-column>
+              </ng-container>
+
+
+              <kendo-grid-column [hidden]="!hasShowSalePricePermission" field="SalesAmount" width="200"
+                title="{{'SALES_ON_SPECIAL_DEVISE' | translate}}"
+                [style]='{"font-family": "Arial, Helvetica, serif", "text-align":"right","padding-right": "4%"}'>
+                <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+                  <p style="margin-bottom: 0px;">{{'PUHT_SALES' | translate}} ({{symbole}})</p>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-column let-columnIndex="columnIndex" let-dataItem="dataItem">
+                  {{intl.formatNumber(dataItem.SalesAmount, formatSaleOptions)}}
+                </ng-template>
+              </kendo-grid-column>
+
+
+            </kendo-grid>
+
+
+          </div>
+        </div>
+        <!---Movement stock-->
+        <div class="tab-pane fade" id="mvtStock" role="tabpanel" aria-labelledby="mvtStock-tab">
+          <app-list-transfer-movement [isModalHtml]="true" [idItem]="id">  </app-list-transfer-movement>
+        </div>
+        <!---End Movement stock-->
+
+        <!-- Result in Kendo Grid end-->
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+          <app-movement-history [isModalHtml]="true" [itemFormGroup]="itemFormGroup">
+          </app-movement-history>
+        </div>
+
+        <div class="tab-pane fade" id="neg" role="tabpanel" aria-labelledby="neg-tab">
+
+          <app-list-negotiation [itemFormGroup]="itemFormGroup"></app-list-negotiation>
+        </div>
+
+      </div>
+      <br />
+      <div class="col-sm-12 col-md-12 col-lg-12 row" style="float: right; place-content: flex-end;color: #4b9aad;
+        margin-right: auto;">
+
+        <h5><b>{{'NUMBER_DAYS_OUT_STOCK' | translate }} : {{numberDaysOutStock}}</b></h5>
+      </div>
+    </form>
+  </div>
+  <!-- body end -->
+  <!-- footer start-->
+  <div class="fixed-card-footer" *ngIf="!isModal">
+    <div class="footerStyle">
+
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="'/main/inventory/product'">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!-- footer end-->
+</div>

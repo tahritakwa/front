@@ -1,0 +1,71 @@
+<div class="card">
+  <!-- Begin form -->
+  <form [formGroup]="trainingRequestFormGroup" class="form-horizontal">
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!-- Employee -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label>{{'EMPLOYEE'|translate}}<span class="required">*</span></label>
+            <app-employee-dropdown [form]="trainingRequestFormGroup"
+                                   [idEmployeeColName]="'IdEmployeeCollaborator'"></app-employee-dropdown>
+            <app-control-messages [control]="IdEmployeeCollaborator" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- End Employee -->
+          <!-- Excpected Date -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label>{{'AVAILABILITY_START_DATE'|translate}}<span
+              class="required">*</span>
+            </label>
+            <kendo-datepicker [ngClass]="{ 'has-error': (ExpectedDate.touched || ExpectedDate.dirty) && !ExpectedDate.valid }" class="form-control"
+                              formControlName="ExpectedDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+          <!-- End Excpected Date -->
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!-- Description -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label>{{'DESCRIPTION'|translate}}
+            </label>
+            <textarea [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }" class="form-control" formControlName="Description"
+                      rows="2"></textarea>
+          </div>
+          <!-- End Description -->
+          <!-- Training -->
+          <div *ngIf="isUpdateMode" class="col-lg-6 col-md-6 col-sm-12">
+            <label>{{'TRAINING'|translate}}
+            </label>
+            <app-training-dropdown [group]="trainingRequestFormGroup"></app-training-dropdown>
+          </div>
+          <!-- End Trainig -->
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!isUpdateMode || (isUpdateMode && (trainingRequesToUpdate.Status === trainingRequestState.Waiting))"
+         class="card-footer">
+      <!-- Save  -->
+      <button (click)="save()" class="btn btn-sm btn-primary" style="margin-top: 10px;" type="submit" *ngIf="hasUpdateTrainingRequestPermission && isUpdateMode || hasAddPTrainingRequestPermission && !isUpdateMode">
+        <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+      </button>
+      <!-- End Save  -->
+      <!-- Validate  -->
+      <button (click)="validateTrainingRequest()" *ngIf="isUpdateMode && hasValidityPermission && (trainingRequesToUpdate.Status === trainingRequestState.Waiting)" class="btn btn-sm btn-success" style="margin-top: 10px;"
+              type="submit">
+        <i class="fa fa-check-square-o"></i> {{'VALIDATE'|translate}}
+      </button>
+      <!-- End Validate  -->
+      <!-- Refuse  -->
+      <button (click)="refuseTrainingRequest()" *ngIf="isUpdateMode && hasRefusePermission && (trainingRequesToUpdate.Status === trainingRequestState.Waiting)" class="btn btn-sm btn-danger" style="margin-top: 10px;"
+              type="submit">
+        <i class="fa fa-times"></i> {{'REFUSE'|translate}}
+      </button>
+      <!-- End Refuse  -->
+    </div>
+  </form>
+</div>

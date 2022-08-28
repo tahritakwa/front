@@ -1,0 +1,116 @@
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="externalTrainerFormGroup" class="form-horizontal">
+
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FIRST_NAME'|translate}}<span
+            class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (externalTrainerFormGroup.controls.FirstName.touched ||
+          externalTrainerFormGroup.controls.FirstName.dirty) && !externalTrainerFormGroup.controls.FirstName.valid }" class="form-control" formControlName="FirstName" name="FirstName" type="text">
+          <app-control-messages [control]="externalTrainerFormGroup.controls.FirstName"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'LAST_NAME'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (externalTrainerFormGroup.controls.LastName.touched ||
+          externalTrainerFormGroup.controls.LastName.dirty) && !externalTrainerFormGroup.controls.LastName.valid }" class="form-control" formControlName="LastName" name="LastName" type="text">
+          <app-control-messages [control]="externalTrainerFormGroup.controls.LastName"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+      </div>
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMAIL'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (externalTrainerFormGroup.controls.Email.touched ||
+          externalTrainerFormGroup.controls.Email.dirty) && !externalTrainerFormGroup.controls.Email.valid }" class="form-control" formControlName="Email" name="Email" type="text">
+          <app-control-messages [control]="externalTrainerFormGroup.controls.Email"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'PERSONAL_PHONE'|translate}}<span
+            class="required">*</span></label>
+          <kendo-maskedtextbox [mask]="'(+216)00000000'" [ngClass]="{ 'has-error': (externalTrainerFormGroup.controls.PhoneNumber.touched ||
+                               externalTrainerFormGroup.controls.PhoneNumber.dirty) && !externalTrainerFormGroup.controls.PhoneNumber.valid }" class="form-control"
+                               formControlName="PhoneNumber"
+                               name="PhoneNumber"></kendo-maskedtextbox>
+          <app-control-messages [control]="externalTrainerFormGroup.controls.PhoneNumber"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-4 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'YEARS_OF_EXPERIENCE'|translate}}<span
+            class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (externalTrainerFormGroup.controls.YearsOfExperience.touched ||
+          externalTrainerFormGroup.controls.YearsOfExperience.dirty) && !externalTrainerFormGroup.controls.YearsOfExperience.valid }" class="form-control" formControlName="YearsOfExperience" min="0"
+                 type="number"/>
+          <app-control-messages [control]="externalTrainerFormGroup.controls.YearsOfExperience"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-4 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'HOUR_COST'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (externalTrainerFormGroup.controls.HourCost.touched ||
+          externalTrainerFormGroup.controls.HourCost.dirty) && !externalTrainerFormGroup.controls.HourCost.valid }" class="form-control" formControlName="HourCost" min="0"
+                 type="number"/>
+          <app-control-messages [control]="externalTrainerFormGroup.controls.HourCost"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+      </div>
+    </form>
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 23px; margin-left: 3px;">
+      <div class="row">
+        <button (click)="addExternalTrainerSkillsForm()" class="noPadding btn-Add k-button" dir="ltr"
+                style="border: none; margin-bottom: 20px" type="button">
+          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+          <span>&nbsp;{{'ADD_SKILLS'|translate}}</span>
+        </button>
+      </div>
+    </div>
+    <div *ngFor="let externalTrainerSkillsAddFormGroup of ExternalTrainerSkills.controls; let i=index"
+         [formGroup]="externalTrainerSkillsAddFormGroup"
+         class="col-lg-12 col-md-12 col-sm-12"
+         style="margin-bottom:20px;">
+      <div *ngIf="isExternalTrainerSkillsRowVisible(i)" class="row" style="margin-top: 5px;">
+        <div class="col-lg-4 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+          <kendo-combobox [data]="skillsList" [ngClass]="{ 'has-error': (externalTrainerSkillsAddFormGroup.controls.Label.touched ||
+                externalTrainerSkillsAddFormGroup.controls.Label.dirty) && !externalTrainerSkillsAddFormGroup.controls.Label.valid }" class="form-control"
+                          formControlName="Label">
+          </kendo-combobox>
+          <app-control-messages [control]="externalTrainerSkillsAddFormGroup.controls.Label"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+        <div *ngIf="externalTrainerSkillsAddFormGroup.controls.Label.value" class="col-lg-4 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'TRAINER_LEVEL'|translate}}<span
+            class="required">*</span></label>
+          <bar-rating [max]="6" [ngClass]="{ 'has-error': (externalTrainerSkillsAddFormGroup.controls.Rate.touched ||
+                  externalTrainerSkillsAddFormGroup.controls.Rate.dirty) && !externalTrainerSkillsAddFormGroup.controls.Rate.valid }" [theme]="'default'" class="form-control"
+                      formControlName="Rate"
+                      style="border: none;float: right;margin: -14px 20px 10px 0;">
+          </bar-rating>
+          <app-control-messages [control]="externalTrainerSkillsAddFormGroup.controls.Rate"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+        <div class="col-lg-1 col-md-12 col-sm-12" style=" margin-top:30px">
+          <button (click)="deleteExternalTrainerSkills(i)" *ngIf="i !== 0" class="noPadding btn-Add k-button" style="border: none"
+                  type="button">
+            <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button (click)="save()" class="btn btn-sm btn-danger" type="submit">
+      <i class="fa fa-floppy-o"></i> {{'ADD'|translate}}
+    </button>
+  </div>
+</div>

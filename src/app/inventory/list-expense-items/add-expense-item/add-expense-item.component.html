@@ -1,0 +1,82 @@
+<div class="card">
+    <!--Begin add form-->
+    <form class="form-horizontal" [formGroup]="expenseItemFormGroup" (ngSubmit)="onAddExpenseItemClick()"
+        autocomplete="off">
+        <!--Begin Card body-->
+        <div class="card-body">
+            <h3 class="card-title mb-0" style="margin-bottom: 30px !important;">
+                {{ (isUpdateMode ? 'EDIT_EXPENSE_ITEM': 'ADD_EXPENSE_ITEM') |translate }}</h3>
+            <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 10px;">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span
+                                class="required">*</span></label>
+                        <input class="form-control" formControlName="Code" type="text" name="Code" [ngClass]="{ 'has-error': (expenseItemFormGroup.controls.Code.touched
+                      || expenseItemFormGroup.controls.Code.dirty) && !expenseItemFormGroup.controls.Code.valid }">
+                        <app-control-messages [control]="expenseItemFormGroup.controls.Code"
+                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 10px;">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}<span
+                                class="required">*</span></label>
+                        <input class="form-control" formControlName="Description" type="text" name="Description"
+                            [ngClass]="{ 'has-error': (expenseItemFormGroup.controls.Description.touched || expenseItemFormGroup.controls.Description.dirty) && !expenseItemFormGroup.controls.Description.valid }">
+                        <app-control-messages [control]="expenseItemFormGroup.controls.Description"
+                            class="error-msg messages text-left text-danger">
+
+                        </app-control-messages>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 10px;">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{'TVA'|translate}}<span
+                                class="required">*</span></label>
+                        <app-taxe-dropdown [selectedValue]="selectedVAT" (selected)="receiveTaxe($event)"
+                            [form]="expenseItemFormGroup"></app-taxe-dropdown>
+                        <app-control-messages [control]="expenseItemFormGroup.controls.IdTaxe"
+                            class="error-msg messages text-left text-danger">
+
+                        </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 10px;">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{'RECIPIENT'|translate}}<span
+                                class="required">*</span></label>
+
+                        <app-supplier-dropdown [type]=2 [itemForm]="expenseItemFormGroup"
+                            [selectedValue]="selectedSupplier" (Selected)="receiveSupplier($event)"
+                            class="error-msg messages text-left text-danger" [hideAddBtn]='options'
+                            [getRelationCurrency]='true'>
+                        </app-supplier-dropdown>
+                        <app-control-messages [control]="expenseItemFormGroup.controls.IdTiers"
+                            class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 10px;">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{'CURRENCY'|translate}}<span
+                                class="required">*</span></label>
+                        <app-currency-dropdown class="error-msg messages text-left text-danger"
+                            [group]="expenseItemFormGroup">
+                        </app-currency-dropdown>
+                        <app-control-messages [control]="expenseItemFormGroup.controls.IdCurrency"
+                            class="error-msg messages text-left text-danger">
+
+                        </app-control-messages>
+                    </div>
+                </div>
+            </div>
+            <!--End add form-->
+        </div>
+        <!--End Card body-->
+
+        <!--Begin Card footer-->
+        <div class="card-footer">
+
+            <button *ngIf="!isModal" class="btn btn-sm btn-primary" (click)="backToPrevious()">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+            </button>
+            <button class="btn btn-sm btn-danger" type="submit">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+        </div>
+    </form>
+    <!--End Card footer-->
+</div>

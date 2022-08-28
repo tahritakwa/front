@@ -1,0 +1,98 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card body-->
+        <div class="card-body">
+          <div class="row d-flex justify-content-between mt-3">
+            <!-- search div-->
+            <div class="d-flex justify-content-center">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-10">
+                    <input type="text" style="width: 130px;" class="form-control" placeholder="{{'SEARCH_SLAES_PRICE'|translate}}"
+                           aria-describedby="addon-wrapping" [(ngModel)]='salesPrice'(keyup)='filter()'>
+                  </div>
+                  <div class="col-2 p-1">
+                    <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End search div-->
+            <app-btn-grid class="col" [advencedAdd]='hasAddPermission' [addLink]='"AdvancedAdd"'
+                          [model]='true' [relativeStyle]='true'
+                          [gridSettings]="gridSettings"
+                          [fileName]="'LIST_SALES_PRICE'|translate"
+                          [service]="salesPriceService"
+                          [predicate]="predicate"
+                          [isExportExcel]="true">
+            </app-btn-grid>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 px-0">
+            <div class="mb-3" style="float: left;width: 100%">
+              <div class="tab-pane active show" id="home1" role="tabpanel">
+                <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                            [skip]="gridSettings.state.skip"
+                            [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+                            (remove)="removeHandler($event)" (dataStateChange)="dataStateChange($event)"
+                            [sortable]="true" [pageable]="pagerSettings" [reorderable]="true"
+                            [columnMenu]="false">
+                  <!--Code-->
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                                     [title]="gridSettings.columnsConfig[0].title | translate"
+                                     [width]="gridSettings.columnsConfig[0]._width"
+                                     [filter]="gridSettings.columnsConfig[0].filter"
+                                     [filterable]="gridSettings.columnsConfig[0].filterable"
+                                     [format]="gridSettings.columnsConfig[0].format" [columnMenu]="false">
+                  </kendo-grid-column>
+                  <!-- Label -->
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                                     [title]="gridSettings.columnsConfig[1].title | translate" [width]="300"
+                                     [filter]="gridSettings.columnsConfig[1].filter"
+                                     [filterable]="gridSettings.columnsConfig[1].filterable"
+                                     [format]="gridSettings.columnsConfig[1].format" [columnMenu]="false">
+                  </kendo-grid-column>
+                  <!-- Value -->
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                                     [title]="gridSettings.columnsConfig[2].title | translate"
+                                     [width]="gridSettings.columnsConfig[2]._width"
+                                     [filter]="gridSettings.columnsConfig[2].filter"
+                                     [filterable]="gridSettings.columnsConfig[2].filterable"
+                                     [format]="gridSettings.columnsConfig[2].format"
+                                     [columnMenu]="false">
+                                     <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                                       <span>{{dataItem.Value}} % </span>
+                                       </ng-template>
+                  </kendo-grid-column>
+                  <!-- State -->
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                                     [title]="gridSettings.columnsConfig[3].title | translate"
+                                     [width]="gridSettings.columnsConfig[3]._width"
+                                     [filter]="gridSettings.columnsConfig[3].filter"
+                                     [filterable]="gridSettings.columnsConfig[3].filterable"
+                                     [format]="gridSettings.columnsConfig[3].format"
+                                     [columnMenu]="false">
+                    <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                        <span *ngIf="dataItem.IsActivated" class="badge badge-success">{{'ACTIVE'|translate}}</span>
+                        <span *ngIf="!dataItem.IsActivated" class="badge badge-danger">{{'INACTIVE'|translate}}</span>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--Actions-->
+                  <kendo-grid-command-column [width]="actionColumnWidth"
+                                             [title]="'ACTIONS' | translate" >
+                    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                      <i class="las la-pen cursor-pointer edit-pencil la-lg" (click)="goToAdvancedEdit(dataItem)" *ngIf="hasUpdatePermission"></i>
+                      <i class="fa fa-trash-o la-lg mx-3 text-danger" aria-hidden="true" *ngIf="hasDeletePermission"
+                         [attr.disabled]="dataItem.CanDelete === false"  (click)="removeHandler(dataItem)"></i>
+                    </ng-template>
+                  </kendo-grid-command-column>
+                </kendo-grid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

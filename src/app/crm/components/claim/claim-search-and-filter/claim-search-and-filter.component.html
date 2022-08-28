@@ -1,0 +1,107 @@
+<div style="margin-left:25%">
+  <!-- Search input -->
+  <form>
+    <div class="input-group flex-nowrap" style="width: 56%;">
+      <input type="text" class="form-control" autocomplete="off" [(ngModel)]="dataToSearchWith"
+             placeholder="{{'SEARCH_CLAIM'|translate}}" name='value' (keyup.enter)='search()'
+             [disabled]="filters.length > 0"
+             aria-label="Search" aria-describedby="addon-wrapping">
+      <div class="input-group-prepend">
+        <button class="btn btn-secondary" type="button" id="button-addon2" [disabled]="filters.length > 0"
+                (click)='search()'>
+          <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+<div style="text-align: center;margin-left:2%" >
+  <div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-12">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 text-align-box">
+          <label style="color: white"></label>
+        </div>
+        <div class="btn-group col-lg-11 col-md-8 col-sm-12">
+          <button [disabled]="filters.length > 0" class="btn btn-primary dropdown-toggle btnColor" type="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="true">
+            {{chosenFilterLabel|translate}}
+          </button>
+
+          <div class="dropdown-menu drop-resp-right" style="border: 1px solid rgb(200, 206, 211) !important;">
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterLabel!=claimsFilter[claimsFilter.ALL_CLAIMS],
+                    'dropdown-item-active':chosenFilterLabel==claimsFilter[claimsFilter.ALL_CLAIMS]
+                    }" (click)="filter(claimsFilter.ALL_CLAIMS)">
+              {{'ALL_CLAIMS'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterLabel!=claimsFilter[claimsFilter.BY_GRAVITY],
+                    'dropdown-item-active':chosenFilterLabel==claimsFilter[claimsFilter.BY_GRAVITY]
+                    }" (click)="filter(claimsFilter.BY_GRAVITY)">
+              {{'GRAVITY'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterLabel!=claimsFilter[claimsFilter.BY_ORGANIZATION],
+                    'dropdown-item-active':chosenFilterLabel==claimsFilter[claimsFilter.BY_ORGANIZATION]
+                    }" (click)="filter(claimsFilter.BY_ORGANIZATION)">
+              {{'ORGANIZATION'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterLabel!=claimsFilter[claimsFilter.BY_TYPE],
+                    'dropdown-item-active':chosenFilterLabel==claimsFilter[claimsFilter.BY_TYPE]
+                    }" (click)="filter(claimsFilter.BY_TYPE)">
+              {{'TYPE'|translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-12">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 text-align-box">
+          <label *ngIf="chosenFilterLabel === 'BY_GRAVITY'">{{'BY_GRAVITY' | translate}}</label>
+          <label *ngIf="chosenFilterLabel === 'BY_TYPE'">{{'BY_TYPE' | translate}}</label>
+          <label *ngIf="chosenFilterLabel === 'BY_ORGANIZATION'">{{'BY_ORGANIZATION' | translate}}</label>
+
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <kendo-dropdownlist *ngIf="chosenFilterLabel === 'BY_GRAVITY'"
+                              [data]="gravitiesList" [defaultItem]="ALL_GRAVITIES"
+                              (valueChange)="filterByGravity($event)"
+                              style="float: left;width: 100%;">
+            <ng-template kendoDropDownListItemTemplate let-dataItem>
+              <span class="template"
+                    *ngIf="dataItem">{{(dataItem.value ? dataItem.value : dataItem) | translate}}</span>
+            </ng-template>
+            <ng-template kendoDropDownListValueTemplate let-dataItem>
+              <span class="template"
+                    *ngIf="dataItem">{{(dataItem.value ? dataItem.value : dataItem) | translate}}</span>
+            </ng-template>
+          </kendo-dropdownlist>
+          <kendo-dropdownlist *ngIf="chosenFilterLabel === 'BY_TYPE'"
+                              [data]="categoriesList" [defaultItem]="ALL_CATEGORIES"
+                              (valueChange)="filterByCategory($event)"
+                              style="float: left;width: 100%;">
+            <ng-template kendoDropDownListItemTemplate let-dataItem>
+              <span class="template"
+                    *ngIf="dataItem">{{(dataItem.value ? dataItem.value : dataItem) | translate}}</span>
+            </ng-template>
+            <ng-template kendoDropDownListValueTemplate let-dataItem>
+              <span class="template"
+                    *ngIf="dataItem">{{(dataItem.value ? dataItem.value : dataItem) | translate}}</span>
+            </ng-template>
+          </kendo-dropdownlist>
+          <kendo-dropdownlist *ngIf="chosenFilterLabel === 'BY_ORGANIZATION'"
+                              [data]="organizationsList" textField="name" [defaultItem]="selectAllOrganization"
+                              (valueChange)="filterByOrganization($event)"
+                              style="float: left;width: 100%;">
+          </kendo-dropdownlist>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+

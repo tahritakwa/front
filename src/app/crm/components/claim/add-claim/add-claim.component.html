@@ -1,0 +1,298 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <form class="col-12 form-horizontal" [formGroup]="addFormGroup" (ngSubmit)="save()">
+
+        <div class="card">
+          <div class="card-header" style="height: 75px;">
+            <div class="row">
+              <div class="col-1 primaryColor mt-1">
+                <i class="fa fa-exclamation-circle fa-3x"></i>
+              </div>
+              <div class="col-lg-10 mt-2 TitleSize" style="display:inline-flex">
+                <h2 class="card-title mb-0,00">{{'ADD_A_CLAIM'| translate}} </h2>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p-accordion [multiple]="true">
+
+
+              <br/>
+              <div class="row form-group">
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'TOPIC'|translate}}<span
+                    class="required">*</span></label>
+
+
+                  <input class="form-control" type="text" formControlName="topic"
+                         [ngClass]="{ 'has-error': (addFormGroup.controls.topic.touched ||
+                               addFormGroup.controls.topic.dirty) && !addFormGroup.controls.topic.valid }">
+
+                  <app-control-messages [control]="addFormGroup.controls.topic"
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+
+
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'TYPE'|translate}}</label>
+
+                  <kendo-combobox formControlName="category" [data]="claimsCategoriesList"
+                                   [valuePrimitive]="true"
+                                  [filterable]="true"
+                                  (filterChange)="handleFiltreClaimsCategories($event)"
+                                  style="width: 100%;">
+<!--No data template-->
+<ng-template kendoDropDownListNoDataTemplate>
+  <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+</ng-template>
+<kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                  </kendo-combobox>
+
+
+                  <app-control-messages [control]="addFormGroup.controls.category"
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+
+
+                </div>
+
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+
+                  <br/>
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANIZATION'|translate}}</label>
+
+
+                  <div class="k-form-field" style="margin-left:2%">
+                    <input type="radio" id="myActionsButton" name="action" class="k-radio"
+                           [defaultChecked]="prospectType"
+                           [disabled]="isModal"
+                           (click)="switchToProspectList()">
+                    <label class="k-radio-label" for="myActionsButton">{{'PROSPECT' | translate}}</label>
+
+                    <input type="radio" id="allActionsButton" name="action" class="k-radio"
+                           [defaultChecked]="!prospectType"
+                           [disabled]="isModal"
+                           (click)="switchToClientList()">
+                    <label class="k-radio-label" for="allActionsButton">{{'CONTACT_CLIENT' | translate}}</label>
+                  </div>
+                </div>
+                <br/>
+              </div>
+                <div class="row form-group">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANIZATION'|translate}}</label>
+                  <kendo-combobox formControlName="organizationId" [data]="searchedOrganizationList"
+                                  (valueChange)="initContactsDropDown($event)"
+                                  [filterable]="true" (filterChange)="handleOrganizationFilter($event)"
+                                  textField="name" valueField="id" [valuePrimitive]="true"
+                                  [readonly]="organisationReadOnly"
+                                  class="form-control" [ngClass]="{ 'has-error': (addFormGroup.controls.organizationId.touched ||
+                               addFormGroup.controls.organizationId.dirty) && !addFormGroup.controls.organizationId.valid }">
+                               <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                  </kendo-combobox>
+
+                  <app-control-messages [control]="addFormGroup.controls.organizationId"
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                  <label class="col-lg-12 col-md-12 col-sm-12">
+                    {{'RESPONSABLE_USER_TITLE'|translate}}<span
+                    class="required">*</span></label>
+                  <kendo-combobox [data]="listUsers" formControlName="responsablesUsersId" [filterable]="true"
+                                  (filterChange)="handleResponsablesFilter($event)" style="width: 100%"
+                                  textField="FullName" valueField="Id" [valuePrimitive]="true">
+                  </kendo-combobox>
+                  <app-control-messages
+                    [control]="addFormGroup.controls.responsablesUsersId"
+                    class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'DECLARED_BY'|translate}}</label>
+
+
+                  <kendo-combobox formControlName="declaredBy" [data]="searchedContactsList"
+                                  (valueChange)="changeSelectedContact($event)"
+                                  [filterable]="true" (filterChange)="handleContactFilter($event)"
+                                  [readonly]="contactReadOnly"
+                                  textField="fullName" valueField="id" [valuePrimitive]="true"
+                                  class="form-control" [ngClass]="{ 'has-error': (addFormGroup.controls.declaredBy.touched ||
+                               addFormGroup.controls.declaredBy.dirty) && !addFormGroup.controls.declaredBy.valid }">
+                               <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                  </kendo-combobox>
+
+                  <app-control-messages [control]="addFormGroup.controls.declaredBy"
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+
+
+                </div>
+
+              </div>
+
+              <br/>
+
+              <!-- Cordonnées cordination -->
+              <p-accordionTab [selected]="openSecondCollapse"
+                              (selectedChange)="openSecondCollapse = !openSecondCollapse"
+                              header="{{'ADDITIONAL_INFORMATION'| translate}}" style="color: #4c9aae;">
+                <br/>
+                <div class="row form-group">
+
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'DEADLINE_ACTION'|translate}}</label>
+
+
+                    <kendo-datepicker formControlName="deadline"
+                                      class="form-control" [min]="minDeadLine">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+
+                    <app-control-messages [control]="addFormGroup.controls.deadline"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+
+
+                  </div>
+
+
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'GRAVITY'|translate}}</label>
+
+
+                    <kendo-combobox formControlName="gravity" [data]="gravitiesList"
+                                     [valuePrimitive]="true"
+                                    [filterable]="true"
+                                    (filterChange)="handleFiltreGravities($event)"
+                                    style="width: 100%;">
+<!--No data template-->
+<ng-template kendoDropDownListNoDataTemplate>
+  <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+</ng-template>
+<kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-combobox>
+
+
+                    <app-control-messages [control]="addFormGroup.controls.gravity"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+
+
+                  </div>
+
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+
+                    <label class="col-lg-12 col-md-12 col-sm-12">  {{'STATE'|translate}}</label>
+
+
+                    <kendo-combobox formControlName="state" [data]="stateList"
+                                    [valuePrimitive]="true"
+                                    [filterable]="true"
+                                    (filterChange)="handleFiltreState($event)"
+                                    style="width: 100%;">
+<!--No data template-->
+<ng-template kendoDropDownListNoDataTemplate>
+  <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+</ng-template>
+<kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-combobox>
+
+                    <app-control-messages [control]="addFormGroup.controls.state"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+
+
+                  </div>
+                </div>
+                <div class="row form-group">
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'OPPORTUNITY'|translate}}</label>
+
+
+                    <kendo-combobox formControlName="assignedTo" [data]="searchedOpportunitiesList"
+                                    textField="title" [valuePrimitive]="true" valueField="id"
+                                    [filterable]="true" (filterChange)="handleOpportunityFilter($event)"
+                                    [readonly]="opportunityReadOnly"
+                                    (valueChange)="changeSelectedOpportunity($event)" class="form-control">
+                                    <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-combobox>
+
+                    <app-control-messages [control]="addFormGroup.controls.assignedTo"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+
+
+                  </div>
+
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+
+
+                    <textarea class="form-control" type="text" formControlName="description"
+                              [ngClass]="{ 'has-error': (addFormGroup.controls.description.touched ||
+                               addFormGroup.controls.description.dirty) && !addFormGroup.controls.description.valid }">
+                        </textarea>
+
+                    <app-control-messages [control]="addFormGroup.controls.description"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+
+
+                  </div>
+
+                </div>
+              </p-accordionTab>
+              <br/>
+            </p-accordion>
+          </div>
+          <!--Begin Card footer-->
+          <div class="card-footer">
+            <div class="footerStyle">
+              <footer >
+                <div class="w-100">
+                  <div class="d-flex justify-content-end p-3 footer-content">
+                    <a (click)="onBackToListOrCancel()" >
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+                    </a>
+                    <button  class="btn btn-sm btn-save mx-1" type="submit">
+                      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                    </button>
+                  </div>
+                </div>
+              </footer>
+            </div>
+          </div>
+
+
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

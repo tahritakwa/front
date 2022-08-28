@@ -1,0 +1,9 @@
+<div [formGroup]="form">
+  <kendo-dropdownlist class="form-control" [data]="operationFiltredList" [textField]="'description'" [valueField]="'id'"
+                  [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilterParentCode($event)"
+                  (valueChange)="onSelect($event)"
+                  [defaultItem]="defaultItem"
+                  [value]="operationFiltredList[0]"
+                  >
+  </kendo-dropdownlist>
+</div>

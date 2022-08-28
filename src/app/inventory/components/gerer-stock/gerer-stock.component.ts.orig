@@ -1,0 +1,59 @@
+import { FormGroup, FormControl } from '@angular/forms';
+import {
+  Component, Input, EventEmitter, Output
+} from '@angular/core';
+<<<<<<< HEAD
+import { AddproductComponent } from '../../item/add-item/add-product.component';
+=======
+import { AddproductComponent } from '../../../shared/components/item/add-item/add-product.component';
+import { DepotDropdownComponent } from '../../../shared/components/depot-dropdown/depot-dropdown.component';
+>>>>>>> Stabilisation_Auto_Commercial
+
+@Component({
+  selector: 'app-gerestock',
+  templateUrl: './gerer-stock.component.html',
+  styleUrls: ['./gerer-stock.component.scss']
+})
+export class GerestockComponent {
+  @Input() ItemWarehouseStorage: FormGroup;
+  @Output() formReady = new EventEmitter<FormGroup>();
+  @Output() WarehouseSelected = new EventEmitter<boolean>();
+
+  constructor(public product: AddproductComponent) { }
+  /**
+   * updateMaxValidity
+   * */
+  updateMaxValidity() {
+    this.MaxQuantity.updateValueAndValidity();
+  }
+  /**
+   * updateMinValidity
+   * */
+  updateMinValidity() {
+    this.MinQuantity.updateValueAndValidity();
+  }
+  updateShelfValidity() {
+    this.Shelf.updateValueAndValidity();
+  }
+  updateStorageValidity() {
+    this.Storage.updateValueAndValidity();
+  }
+  get Warehouse(): FormGroup {
+    return <FormGroup>this.ItemWarehouseStorage.get('Warehouse');
+  }
+  get MaxQuantity(): FormControl {
+    return <FormControl>this.ItemWarehouseStorage.get('MaxQuantity');
+  }
+  get MinQuantity(): FormControl {
+    return <FormControl>this.ItemWarehouseStorage.get('MinQuantity');
+  }
+  get Storage(): FormControl {
+    return <FormControl>this.ItemWarehouseStorage.get('Storage');
+  }
+  get Shelf(): FormControl {
+    return <FormControl>this.ItemWarehouseStorage.get('Shelf');
+  }
+  public warehouseSelected($event) {
+    this.WarehouseSelected.emit($event);
+  }
+}

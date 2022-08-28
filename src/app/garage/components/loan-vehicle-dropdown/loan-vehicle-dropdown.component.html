@@ -1,0 +1,6 @@
+<div *ngIf="group" [formGroup]="group">
+  <kendo-combobox [data]="loanVehicleFilterDataSource" class="form-control" formControlName="IdVehicle"
+    textField="RegistrationNumber" valueField="Id" [valuePrimitive]="true" [allowCustom]="false" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="onValueChanged($event)" [placeholder]="placeholder|translate">
+  </kendo-combobox>
+</div>

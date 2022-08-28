@@ -1,0 +1,46 @@
+<br />
+<br />
+<div class="form-group" [formGroup]="ItemBrandForm">
+  <div class="row">
+    <div class="col-lg-4 col-md-4 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12 mt-2">{{'BRAND'|translate}}<span class="required">*</span></label>
+        <div class="col-lg-7 col-md-12 col-sm-12">
+          <app-brand-combo-box [itemForm]="ItemBrandForm" (Selected)="receiveBrand($event)" [disabled]="isUpdateMode && !hasUpdatePermission">
+          </app-brand-combo-box>
+          <app-control-messages [control]="ItemBrandForm.controls.IdVehicleBrand"
+                                class="error-msg messages text-left text-danger">
+          </app-control-messages>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-4 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12 mt-2">{{'MODEL'|translate}}</label>
+        <div class="col-lg-7 col-md-12 col-sm-12">
+          <app-model-of-item-combo-box [itemForm]="ItemBrandForm" (Selected)="receiveModel($event)"
+                                       [disabled]="!ItemBrandForm.value.IdVehicleBrand && (isUpdateMode && !hasUpdatePermission)">
+          </app-model-of-item-combo-box>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-lg-4 col-md-4 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12 mt-2">{{'SUBMODEL'|translate}}</label>
+        <div class="col-lg-7 col-md-12 col-sm-12">
+          <app-sub-model-combo-box [itemForm]="ItemBrandForm"
+                                   [disabled]="!ItemBrandForm.value.IdModel && (isUpdateMode && !hasUpdatePermission)">
+          </app-sub-model-combo-box>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+<br />
+<hr />

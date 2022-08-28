@@ -1,0 +1,56 @@
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12" style="float:right">
+          <button class="btn btn-sm btn-danger" (click)="jobSynchronize()"
+            style="float: right !important; margin-top: 4px;margin-bottom: 10px; margin-right: -700px;">
+            <i class="fa fa-refresh"></i> <span *ngIf="InProgres">{{'OPERATION_IN_PROGRESS'|translate}} </span>
+            <span *ngIf="!InProgres">{{'SYNC_NOW'|translate}}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="card-body">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+        (dataStateChange)="dataStateChange($event)" [sortable]="true" filterable="menu" [reorderable]="true"
+        [columnMenu]="true" [pageable]="pagerSettings" [selectable]="true">
+
+        <kendo-grid-column *ngFor="let column of gridSettings.columnsConfig; let i = index" [field]="column.field"
+          title="{{column.title | translate}}" [width]="column._width" [filter]="column.filter"
+          [filterable]="column.filterable" [hidden]="column.hidden" [format]="column.format">
+
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="column.field == 'LastUpdateEcommerce'">
+            {{dataItem.LastUpdateEcommerce | date:formatDate()}}
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field == 'IsEcommerce'">
+
+
+
+            <div *ngIf="dataItem.IsEcommerce">
+              <span class="badge badge-success">{{'YES'|translate}}</span>
+            </div>
+            <div *ngIf="!dataItem.IsEcommerce">
+              <span class="badge badge-danger">{{'NO'|translate}}</span>
+            </div>
+
+          </ng-template>
+
+        </kendo-grid-column>
+
+
+
+
+      </kendo-grid>
+
+
+
+    </div>
+
+  </div>
+</div>

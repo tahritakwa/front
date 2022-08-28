@@ -1,0 +1,16 @@
+<div [formGroup]="group">
+  <kendo-combobox (valueChange)="onValueChanged($event)"
+                  [data]="ofStatusDataSource"
+                  [disabled]="disabled"
+                  [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin"
+                  formControlName="productionOfStatusDropdown"
+                  name="productionOfStatusDropdown"
+                  textField="name"
+                  valueField="value"
+  >
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      {{ dataItem?.name | translate }}
+    </ng-template>
+  </kendo-combobox>
+</div>

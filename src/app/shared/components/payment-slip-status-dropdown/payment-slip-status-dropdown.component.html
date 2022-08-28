@@ -1,0 +1,6 @@
+<div [formGroup]="form">
+  <kendo-combobox class="form-control" [data]="paymentSlipStatusDataSource" [formControlName]="'State'"
+                  name="State" textField="Value" [valueField]="'Id'"
+                  (valueChange)="onchange($event)">
+  </kendo-combobox>
+</div>

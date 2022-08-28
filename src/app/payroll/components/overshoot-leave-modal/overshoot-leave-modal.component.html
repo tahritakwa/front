@@ -1,0 +1,93 @@
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="moveToOvershootLeaveFormGroup" class="form-horizontal">
+      <div class="card-body">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group row">
+              <!--Leave Type-->
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'LEAVE_TYPE'|translate}}<span
+                  class="required">*</span></label>
+                <app-leave-type-dropdown (Required)="isRequired($event)" (Selected)="calculateNumberOfDays()"
+                                         [DaysHoursRemaining]="daysHoursRemaining"
+                                         [LeaveBalanceRemainingListByIdEmployee]="leaveBalanceRemainingListByIdEmployee"
+                                         [group]="moveToOvershootLeaveFormGroup"
+                                         [leaveTypeExcludedId]="leave.IdLeaveTypeNavigation.Id">
+                </app-leave-type-dropdown>
+                <app-control-messages [control]="IdLeaveType" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'VOUCHERS'|translate}}<span *ngIf="required"
+                                                                                           class="required">*</span></label>
+                <app-upload-file [canUpdateFile]="leaveAlreadyValidate" [fileToUpload]="leaveAttachementFileInfo"
+                                 [service]="leaveService"></app-upload-file>
+              </div>
+            </div>
+            <div class="form-group row">
+              <!--  -->
+              <div class="col-lg-3 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE'|translate}}<span
+                  class="required">*</span></label>
+                <kendo-datepicker (valueChange)="startDateValueChange($event)" [disabled]="true" [format]="formatDate"
+                                  [ngClass]="{ 'has-error': (StartDate.touched || StartDate.dirty) && !StartDate.valid }" class="form-control"
+                                  formControlName="StartDate"
+                                  formatPlaceholder="formatDate"
+                                  onkeydown="return false;">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="StartDate" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'START_TIME'|translate}}<span
+                  class="required">*</span></label>
+                <app-start-time-dropdown [disabled]="true" [group]="moveToOvershootLeaveFormGroup" [startDateTime]="startDateTime"
+                                         disabled>
+                </app-start-time-dropdown>
+                <app-control-messages [control]="StartTime" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE'|translate}}<span
+                  class="required">*</span></label>
+                <kendo-datepicker (valueChange)="endDateValueChange($event)" [disabled]="true" [format]="formatDate"
+                                  [ngClass]="{ 'has-error': (EndDate.touched || EndDate.dirty) && !EndDate.valid }" class="form-control"
+                                  formControlName="EndDate"
+                                  formatPlaceholder="formatDate"
+                                  onkeydown="return false;">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="EndDate" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'END_TIME'|translate}}<span
+                  class="required">*</span></label>
+                <app-end-time-dropdown [disabled]="true" [endDateTime]="endDateTime"
+                                       [group]="moveToOvershootLeaveFormGroup">
+                </app-end-time-dropdown>
+                <app-control-messages [control]="EndTime" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'REASON_OF_LEAVE'|translate}}</label>
+                <textarea class="col-lg-12 col-md-12 col-sm-12 form-control" formControlName="Description" rows="5">
+                </textarea>
+              </div>
+            </div>
+          </div>
+          <app-leave-balance-detail [group]="moveToOvershootLeaveFormGroup" [leave]="leave"></app-leave-balance-detail>
+        </div>
+      </div>
+      <button (click)="save()" *ngIf="isModal" class="btn btn-sm btn-danger" type="submit">
+        <i class="fa fa-floppy-o"></i> {{ 'ADD' |translate}}
+      </button>
+    </form>
+  </div>
+</div>

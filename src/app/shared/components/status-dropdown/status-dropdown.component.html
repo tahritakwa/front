@@ -1,0 +1,18 @@
+<div [formGroup]="form" *ngIf = "!isCnssDeclaration">
+  <kendo-combobox [data]="statusDataSource" class="form-control HistoryCommandMargin" name="status" textField="name"
+                  formControlName="Status" valueField="value" [valuePrimitive]="true" (valueChange)="onSelect($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.name | translate }}
+    </ng-template>
+  </kendo-combobox>
+</div>
+
+
+<div [formGroup]="form" *ngIf = "isCnssDeclaration">
+  <kendo-combobox [data]="statusDataSource" class="form-control HistoryCommandMargin" name="state" textField="name"
+                  formControlName="State" valueField="value" [valuePrimitive]="true" (valueChange)="onSelect($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.name | translate }}
+    </ng-template>
+  </kendo-combobox>
+</div>

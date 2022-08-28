@@ -1,0 +1,45 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-9">
+      <h4 class="card-title mb-0">{{'RATE_SUCCESSFUL_SUBMITTED_CANDIDACIES'|translate}}</h4>
+      <div *ngIf="hasRateData" class="small text-muted">
+        {{'DU'|translate}} {{startDate|date: dateFormat}}
+        {{'AU'|translate}} {{endDate|date: dateFormat}}
+      </div>
+      <div *ngIf="!hasRateData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="changePeriod($event)"></app-period-filter>
+      <button *ngIf="hasRateData || isFilterOn" mat-icon-button [matMenuTriggerFor]="filterMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card-body">
+  <div class="chartContainer" id="rateSuccessfulSubmittedCandidaciesChart" [hidden]="!hasRateData" #rateSuccessfulSubmittedCandidaciesChart></div>
+  <div *ngIf="!hasRateData && !dataLoading">
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_DATA_FOUND' | translate}} </h5>
+  </div>
+</div>
+
+<mat-menu xPosition="before" [overlapTrigger]="false" #filterMenu="matMenu">
+  <div class="filter-label">
+    {{'GENDER' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="genderList"
+                          [clearSelectedFilters]="clearFilters" (newItemSelectedEvent)="onSelectGender($event)" ></app-multiselect-filter>
+  <div class="filter-label">
+    {{'OFFICE' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="officeList"
+                          [clearSelectedFilters]="clearFilters" (newItemSelectedEvent)="onSelectOffice($event)" ></app-multiselect-filter>
+  <div class="filter-label">
+    {{'Contract' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="contractList"
+                          [clearSelectedFilters]="clearFilters" (newItemSelectedEvent)="onSelectContract($event)" ></app-multiselect-filter>
+</mat-menu>

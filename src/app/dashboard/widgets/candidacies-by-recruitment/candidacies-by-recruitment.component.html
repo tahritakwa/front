@@ -1,0 +1,51 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-6">
+      <h4 class="card-title mb-0">{{'CANDIDACIES_BY_RECRUITMENT'|translate}}</h4>
+      <div *ngIf="hasTopSuppliersData" class="small text-muted">
+        {{'DU'|translate}} {{topSuppliersStartDate|date: dateformat}}
+        {{'AU'|translate}} {{topSuppliersEndDate|date: dateformat}}
+      </div>
+      <div *ngIf="!hasTopSuppliersData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+
+      <div class="period-filter dropdown">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{topSuppliersPeriod | translate}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item pointer-cursor"
+            (click)="ChangeTopSupplierChart(1)">{{'CURRENT_MONTH' | translate}}</a>
+          <a class="dropdown-item pointer-cursor"
+            (click)="ChangeTopSupplierChart(2)">{{'LAST_MONTH' | translate}}</a>
+          <a class="dropdown-item pointer-cursor"
+            (click)="ChangeTopSupplierChart(3)">{{'LAST_SIX_MONTH' | translate}}</a>
+          <a class="dropdown-item pointer-cursor"
+            (click)="ChangeTopSupplierChart(4)">{{'CURRENT_YEAR' | translate}}</a>
+          <a class="dropdown-item pointer-cursor"
+            (click)="ChangeTopSupplierChart(5)">{{'LAST_YEAR' | translate}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card-body">
+  <canvas *ngIf="hasTopSuppliersData && supplier" baseChart [data]="supplier.pieChartData"
+    [labels]="supplier.pieChartLabels" [colors]="supplier.pieChartColors" [chartType]="supplier.pieChartType"
+    [options]="supplier.pieChartOptions" (chartHover)="onHover($event)"
+    (chartClick)="TopSupplierChartClicked($event)" #canvasSupplier></canvas>
+  <div *ngIf="!topSupplierLoading && !hasTopSuppliersData" #canvasDivSupplier>
+    <img src="../../../../assets/image/no_datafound.png" style="
+                              position: absolute;
+                              opacity: 0.2;
+                              width: 60%;
+                              margin-left: 15%;">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_SUPPLIER' | translate}} </h5>
+  </div>
+  <div *ngIf="topSupplierLoading && !hasTopSuppliersData" #canvasDivSupplier>
+    <app-spinner></app-spinner>
+  </div>
+</div>

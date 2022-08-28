@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "mappings": "AAAA,aAAc;EACV,SAAS,EAAE,UAAU",
+  "sources": [
+    "search-section.component.scss"
+  ],
+  "names": [],
+  "file": "search-section.component.css"
+}

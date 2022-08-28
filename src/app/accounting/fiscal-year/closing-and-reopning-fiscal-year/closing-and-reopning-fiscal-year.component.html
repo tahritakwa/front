@@ -1,0 +1,103 @@
+<app-spinner *ngIf="showSpinner" class="spinner"></app-spinner>
+
+<div class="card">
+  <div class="card-body">
+    <form class="form-horizontal">
+      <div class="card-body">
+        <div class="form-group" [formGroup]="closeAndReopeningForm">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <label for="labelCurrentFiscalYear">{{ 'CURRENT_FISCAL_YEAR' | translate}} :</label>
+              <strong> {{currentFiscalYear}}</strong>
+            </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <input class="input-checkbox" id="TransferOfDepreciationPeriod"
+                formControlName="transferOfDepreciationPeriod" [checked]=true
+                (change)="checkTransferOfDepreciationPeriod($event)" type="checkbox" />
+              <label for="TransferOfDepreciationPeriod">{{'TRANSFER_OF_DEPRECIATION_TABLE'|translate}}</label>
+            </div>
+            <app-control-messages [control]="closeAndReopeningForm.controls.transferOfDepreciationPeriod"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <input class="input-checkbox" id="TransferOfReports" formControlName="transferOfReports" [checked]=true
+                (change)="checkTransferOfReports($event)" type="checkbox" />
+              <label for="TransferOfReports">{{'TRANSFER_OF_REPORTS'|translate}}</label>
+            </div>
+            <app-control-messages [control]="closeAndReopeningForm.controls.transferOfReports"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <input class="input-checkbox" id="PassEnrtyAccounting" formControlName="passEntryAccounting"
+                [checked]=true (change)="checkPassEntryAccounting($event)" type="checkbox" />
+              <label for="PassEnrtyAccounting">{{'PASS_ENTRY_ACCOUNTING'|translate}}</label>
+              <app-control-messages [control]="closeAndReopeningForm.controls.passEntryAccounting"
+                class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <kendo-combobox formControlName="journalANewId" [data]="journalFiltredList" [textField]="'label'"
+                [valueField]="'id'" class="form-control" [valuePrimitive]="true" [filterable]="true">
+
+                <!--No data template-->
+                <ng-template kendoDropDownListNoDataTemplate>
+                  <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                </ng-template>
+                <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                <!--end No data template-->
+              </kendo-combobox>
+              <app-control-messages [control]="closeAndReopeningForm.controls.journalANewId"
+                class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-sm-12 col-md-12 col-lg-3  offset-lg-3">
+              <label>{{'RESULT_ACCOUNT'|translate}}</label>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <app-accounts-dropdown-component [fieldName]="'resultAccount'" [group]="closeAndReopeningForm" [listAccount]="resultAccounts"
+                (Selected)="receiveResultAccounts($event)" formControlName="resultAccount" ngDefaultControl>
+              </app-accounts-dropdown-component>
+              <app-control-messages [control]="closeAndReopeningForm.controls.resultAccount"
+                class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6 offset-lg-3 mt-3">
+              <input class="input-checkbox" id="LiterableAccounts" formControlName="literableAccounts"
+                (change)="checkLiterableAccounts($event)" type="checkbox" />
+              <label for="LiterableAccounts">{{'CHECK_LITERABLE_CLOSE_FISCAL_YEAR'|translate}}</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <label>{{'NEW_FISCAL_YEAR_ACCOUNTING_CLOSE'|translate}}</label>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6">
+              <app-fiscal-year-dropdown [form]="'targetFiscalYearId'" [group]="closeAndReopeningForm" [closeFiscalYearStartDate]=optionDialog.data.startDate
+                formControlName="targetFiscalYearId" ngDefaultControl>
+              </app-fiscal-year-dropdown>
+              <app-control-messages [control]="closeAndReopeningForm.controls.targetFiscalYearId"
+                class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <button class="btn btn-sm btn-success float-right" (click)="closeAndReOpen()">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate }}
+    </button>
+  </div>
+</div>

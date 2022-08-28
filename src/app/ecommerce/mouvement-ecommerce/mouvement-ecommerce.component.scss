@@ -1,0 +1,28 @@
+.dropdown-item-active {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.25rem 1.5rem !important;
+  clear: both !important;
+  font-weight: 400 !important;
+  text-align: inherit !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: relative !important;
+  padding: 10px 20px !important;
+  border-bottom: 1px solid #c8ced3 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  background-color: #4c9aae !important;
+}
+
+.btnColor {
+  background-color: #4c9aae !important;
+}
+.dropdown-menu {
+  border: 1px solid rgb(200, 206, 211) !important;
+  position: absolute;
+  /* transform: translate3d(15px, 33px, 0px); */
+  /* top: 0px; */
+  /* left: 0px; */
+  will-change: transform;
+}

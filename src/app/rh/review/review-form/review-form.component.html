@@ -1,0 +1,461 @@
+<form [formGroup]="reviewFormGroup" class="form-horizontal">
+  <!-- Past objective -->
+  <div style="margin-top: 10px;">
+    <p-accordion>
+      <p-accordionTab [selected]="true" header="{{'PAST_OBJECTIVES'|translate}}" style="color: #4c9aae;">
+        <div *ngIf="PastObjective.controls.length === 0" class="default-frame">
+          <div class="default-frame-text">
+            {{'NO_OBJECTIVE_FOR_OLD_REVIEW' | translate}}
+          </div>
+        </div>
+        <table *ngIf="PastObjective.controls.length > 0" class="table table-responsive table-bordered">
+          <thead>
+          <tr>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">{{'REVIEW_OBJECTIVES' | translate}}
+            </th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle; width: 30%;">{{'TITLE' | translate}}
+            </th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle; width: 20%;">
+              {{'REALISATION_DATE' | translate}}</th>
+            <th colspan="2" style="text-align: center; width: 50%;">{{'EVALUATION' | translate}}</th>
+          </tr>
+          <tr>
+            <th style="text-align: center;">{{'COLLABORATOR' | translate}}</th>
+            <th style="text-align: center;">{{'MANAGERS' | translate}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let objective of PastObjective.controls; let i=index" [formGroup]="objective">
+            <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+            <td style="min-width: 220px;">
+              <span class="objective-label">{{objective.controls.Label.value}}</span>
+            </td>
+            <td style="text-align: center; vertical-align: middle;min-width: 250px;">
+              <kendo-datepicker [format]="formatDate"
+                                class="form-control table-datepicker"
+                                formControlName="RealisationDate"
+                                style="width: 10em; vertical-align: middle; text-align: center; margin-left: 1.2em;height: 25px;">
+              </kendo-datepicker>
+              <app-control-messages [control]="objective.controls.RealisationDate"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+              <span
+                style="margin-left: 1.3em;"
+                tooltip="{{'EXPECTED_DATE_TITLE' | translate}} : {{objective.controls.ExpectedDate.value | date: formatDate}}">
+                  <i class="fa fa-info-circle fa-lg" style="color: #4c9aae;"></i>
+                </span>
+            </td>
+            <!--collaborator rating-->
+            <td style="vertical-align: left !important; line-height: 2.5em !important;min-width: 220px;">
+              <input [checked]="checkedCollaboratorReached(objective.controls.ObjectiveCollaboratorStatus.value)" class="k-radio"
+                     formControlName="ObjectiveCollaboratorStatus" id="reachedCode'{{i}}'"
+                     type="radio"
+                     value='1'/>
+              <label class="k-radio-label" for="reachedCode'{{i}}'">{{'REACHED'|translate}}</label><br/>
+              <input [checked]="checkedCollaboratorPartiallyReached(objective.controls.ObjectiveCollaboratorStatus.value)" class="k-radio"
+                     formControlName="ObjectiveCollaboratorStatus" id="partiallyReachedCode'{{i}}'"
+                     type="radio"
+                     value='2'/>
+              <label class="k-radio-label"
+                     for="partiallyReachedCode'{{i}}'">{{'PARTIALLY_REACHED'|translate}}</label><br/>
+              <input [checked]="checkedCollaboratorNotReached(objective.controls.ObjectiveCollaboratorStatus.value)" class="k-radio"
+                     formControlName="ObjectiveCollaboratorStatus" id="notReachedCode'{{i}}'"
+                     type="radio"
+                     value='3'/>
+              <label class="k-radio-label" for="notReachedCode'{{i}}'">{{'NOT_REACHED'|translate}}</label>
+              <app-control-messages [control]="objective.controls.ObjectiveCollaboratorStatus"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <!--manager rating-->
+            <td style="vertical-align: left !important; line-height: 2.5em !important;min-width: 220px;">
+              <input [checked]="checkedManagerReached(objective.controls.ObjectiveManagerStatus.value)" class="k-radio"
+                     formControlName="ObjectiveManagerStatus" id="reachedManagerCode'{{i}}'"
+                     type="radio"
+                     value='1'/>
+              <label class="k-radio-label" for="reachedManagerCode'{{i}}'">{{'REACHED'|translate}}</label><br/>
+              <input [checked]="checkedManagerPartiallyReached(objective.controls.ObjectiveManagerStatus.value)" class="k-radio"
+                     formControlName="ObjectiveManagerStatus" id="partiallyReachedManagerCode'{{i}}'"
+                     type="radio"
+                     value='2'/>
+              <label class="k-radio-label"
+                     for="partiallyReachedManagerCode'{{i}}'">{{'PARTIALLY_REACHED'|translate}}</label><br/>
+              <input [checked]="checkedManagerNotReached(objective.controls.ObjectiveManagerStatus.value)" class="k-radio"
+                     formControlName="ObjectiveManagerStatus" id="notReachedManagerCode'{{i}}'"
+                     type="radio"
+                     value='3'/>
+              <label class="k-radio-label" for="notReachedManagerCode'{{i}}'">{{'NOT_REACHED'|translate}}</label>
+              <app-control-messages [control]="objective.controls.ObjectiveManagerStatus"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+  <!-- End Past objective -->
+
+  <!-- Future objective -->
+  <div style="margin-top: 10px;">
+    <p-accordion>
+      <p-accordionTab [selected]="true" header=" {{'FUTURE_OBJECTIVES'|translate}}" style="color: #4c9aae;">
+        <table *ngIf="FutureObjective.controls.length > 0" class="table table-responsive table-bordered">
+          <thead>
+          <tr>
+            <th style="text-align: center; vertical-align: middle;">{{'REVIEW_OBJECTIVES' | translate}}</th>
+            <th style="text-align: center; vertical-align: middle; width: 80%;">{{'TITLE' | translate}}</th>
+            <th style="text-align: center; vertical-align: middle; width: 100%;">{{'EXPECTED_DATE_TITLE' | translate}}
+            </th>
+            <th style="text-align: center;">{{'ACTION' | translate}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let objective of FutureObjective.controls; let i=index" [formGroup]="objective">
+            <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+            <td style="min-width: 220px;">
+                <textarea [ngClass]="{ 'textarea-has-error': (objective.controls.Label.touched || objective.controls.Label.dirty) && !objective.controls.Label.valid }" class="form-control text-area-style" cols="50"
+                          formControlName="Label"
+                          rows="2">
+                </textarea>
+              <app-control-messages [control]="objective.controls.Label"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <td style="vertical-align: middle;min-width: 220px;padding-left: 4%;">
+              <kendo-datepicker [format]="formatDate"
+                                [ngClass]="{ 'has-error': (objective.controls.ExpectedDate.touched || objective.controls.ExpectedDate.dirty) && !objective.controls.ExpectedDate.valid }" class="form-control table-datepicker"
+                                formControlName="ExpectedDate"
+                                style="width: 10em; vertical-align: middle; text-align: center; margin-left: 1.2em;height: 25px;">
+              </kendo-datepicker>
+              <app-control-messages [control]="objective.controls.ExpectedDate"
+                                    class="error-msg messages text-left text-danger date-error-message"></app-control-messages>
+            </td>
+            <td>
+              <button (click)="deleteFutureObjective(objective.getRawValue(), i)" *ngIf="hasUpdateReviewPermission && FutureObjective.controls.length > 1 &&
+                  ( employeeReviewPosition.IsManagement ||
+                    employeeReviewPosition.IsReviewManager ||
+                    employeeReviewPosition.IsCollaborator) && reviewState !== reviewEnum.Completed"
+                      [ngClass]="'delete-button-style'" class="noPadding btn-Add k-button" style="border: none"
+                      type="button">
+                <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+              </button>
+              <button (click)="addFutureObjective()" *ngIf="hasUpdateReviewPermission && FutureObjective.controls.length === i+1 &&
+                  ( employeeReviewPosition.IsManagement ||
+                    employeeReviewPosition.IsReviewManager ||
+                    employeeReviewPosition.IsCollaborator) && reviewState !== reviewEnum.Completed"
+                      [ngStyle]="FutureObjective.controls.length === 1 && { 'margin-top': '12px' }" class="noPadding btn-Add k-button add-button-style" dir="ltr" style="border: none;"
+                      type="button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+  <!-- End Future objective -->
+
+  <!-- Past ReviewFormation -->
+  <div style="margin-top: 10px;">
+    <p-accordion>
+      <p-accordionTab header="{{'PAST_FORMATION'|translate}}" style="color: #4c9aae;">
+        <div *ngIf="!pastReviewFormation" class="default-frame">
+          <div class="default-frame-text">
+            {{'NO_FORMATION_FOR_OLD_REVIEW' | translate}}
+          </div>
+        </div>
+        <table *ngIf="PastReviewFormation.controls.length > 0" class="table table-responsive table-bordered">
+          <thead>
+          <tr>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">{{'FORMATIONS' | translate}}</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle; width: 50%;">{{'TITLE' | translate}}
+            </th>
+            <th colspan="2" style="text-align: center; width: 50%;">{{'EVALUATION' | translate}}</th>
+          </tr>
+          <tr>
+            <th style="text-align: center;">{{'COLLABORATOR' | translate}}</th>
+            <th style="text-align: center;">{{'MANAGERS' | translate}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let reviewFormation of PastReviewFormation.controls; let i=index" [formGroup]="reviewFormation">
+            <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+            <td style="text-align: center; vertical-align: middle;min-width: 220px;">
+              {{pastReviewFormation[i].IdFormationNavigation.Label}}
+              <app-control-messages [control]="reviewFormation.controls.IdFormation"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <!--employee rating-->
+            <td style="vertical-align: left !important; line-height: 2.5em !important;min-width: 220px;">
+              <input [checked]="checkedCollaboratorSatisfying(reviewFormation.controls.FormationCollaboratorStatus.value)" class="k-radio"
+                     formControlName="FormationCollaboratorStatus" id="satisfyingCode'{{i}}'"
+                     type="radio"
+                     value='1'/>
+              <label class="k-radio-label" for="satisfyingCode'{{i}}'">{{'SATISFYING'|translate}}</label><br/>
+              <input [checked]="checkedCollaboratorPartiallySatisfying(reviewFormation.controls.FormationCollaboratorStatus.value)" class="k-radio"
+                     formControlName="FormationCollaboratorStatus" id="partiallySatisfyingCode'{{i}}'"
+                     type="radio"
+                     value='2'/>
+              <label class="k-radio-label"
+                     for="partiallySatisfyingCode'{{i}}'">{{'PARTIALLY_SATISFYING'|translate}}</label><br/>
+              <input [checked]="checkedCollaboratorNotSatisfying(reviewFormation.controls.FormationCollaboratorStatus.value)" class="k-radio"
+                     formControlName="FormationCollaboratorStatus" id="notSatisfyingCode'{{i}}'"
+                     type="radio"
+                     value='3'/>
+              <label class="k-radio-label" for="notSatisfyingCode'{{i}}'">{{'UNSATISFYING'|translate}}</label>
+              <app-control-messages [control]="reviewFormation.controls.FormationCollaboratorStatus"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <!--manager rating-->
+            <td style="vertical-align: left !important; line-height: 2.5em !important;min-width: 220px;">
+              <input [checked]="checkedManagerSatisfying(reviewFormation.controls.FormationManagerStatus.value)" class="k-radio"
+                     formControlName="FormationManagerStatus" id="satisfyingManagerCode'{{i}}'"
+                     type="radio"
+                     value='1'/>
+              <label class="k-radio-label" for="satisfyingManagerCode'{{i}}'">{{'SATISFYING'|translate}}</label><br/>
+              <input [checked]="checkedManagerPartiallySatisfying(reviewFormation.controls.FormationManagerStatus.value)" class="k-radio"
+                     formControlName="FormationManagerStatus" id="partiallySatisfyingManagerCode'{{i}}'"
+                     type="radio"
+                     value='2'/>
+              <label class="k-radio-label"
+                     for="partiallySatisfyingManagerCode'{{i}}'">{{'PARTIALLY_SATISFYING'|translate}}</label><br/>
+              <input [checked]="checkedManagerNotSatisfying(reviewFormation.controls.FormationManagerStatus.value)" class="k-radio"
+                     formControlName="FormationManagerStatus" id="notSatisfyingManagerCode'{{i}}'"
+                     type="radio"
+                     value='3'/>
+              <label class="k-radio-label" for="notSatisfyingManagerCode'{{i}}'">{{'UNSATISFYING'|translate}}</label>
+              <app-control-messages [control]="reviewFormation.controls.FormationManagerStatus"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+  <!-- End Past ReviewFormation -->
+
+  <!-- Future ReviewFormation -->
+  <div style="margin-top: 10px;">
+    <p-accordion>
+      <p-accordionTab header="{{'FUTURE_FORMATION'|translate}}" style="color: #4c9aae;">
+        <table class="table table-responsive table-bordered">
+          <thead>
+          <tr>
+            <th style="text-align: center; vertical-align: middle;">{{'FORMATIONS' | translate}}</th>
+            <th style="text-align: center; vertical-align: middle; width: 80%;">{{'TITLE' | translate}}</th>
+            <th style="text-align: center; vertical-align: middle; width: 20%;">{{'EXPECTED_DATE_TITLE' | translate}}
+            </th>
+            <th style="text-align: center; vertical-align: middle; widows: 10%;">{{'ACTION' | translate}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let reviewFormation of FutureReviewFormation.controls; let i=index"
+              [formGroup]="reviewFormation">
+            <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+            <td style="min-width: 350px;">
+              <div style="width: 50%;margin-left: 25%;margin-top: 5px;margin-bottom: 10px;">
+                <app-formation-combobox [group]="reviewFormation" [disabled] = "!hasUpdateReviewPermission"></app-formation-combobox>
+                <app-control-messages [control]="reviewFormation.controls.IdFormation"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </td>
+            <td style="vertical-align: middle;min-width: 220px;padding-left: 4%;">
+              <kendo-datepicker [format]="formatDate" [ngClass]="{ 'has-error': (reviewFormation.controls.Date.touched || reviewFormation.controls.Date.dirty) && !reviewFormation.controls.Date.valid }"
+                                class="form-control table-datepicker"
+                                formControlName="Date"
+                                style="width: 10em; vertical-align: middle;text-align: center;margin-left: 1.2em;height: 25px;">
+              </kendo-datepicker>
+              <app-control-messages [control]="reviewFormation.controls.Date"
+                                    class="error-msg messages text-left text-danger date-error-message"></app-control-messages>
+            </td>
+            <td>
+              <button (click)="deleteFutureReviewFormation(reviewFormation.getRawValue(), i)" *ngIf="hasUpdateReviewPermission && reviewState !== reviewEnum.Completed" [ngClass]="'delete-button-style'"
+                      class="noPadding btn-Add k-button" style="border: none"
+                      type="button">
+                <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+              </button>
+              <button (click)="addFutureReviewFormation()"
+                      *ngIf="hasUpdateReviewPermission && FutureReviewFormation.controls.length === i+1 && reviewState !== reviewEnum.Completed"
+                      [ngClass]="'add-button-style'" class="noPadding btn-Add k-button" dir="ltr" style="border: none;"
+                      type="button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div *ngIf="FutureReviewFormation.controls.length === 0 && reviewState !== reviewEnum.Completed"
+             class="skills-not-found-row-sytle">
+          <div class="row">
+            <div class="col-lg-10"></div>
+            <div style="margin-left: auto;margin-top: 2px;padding-right: 9px;">
+              <button (click)="addFutureReviewFormation()" class="noPadding btn-Add k-button" dir="ltr" *ngIf = "hasUpdateReviewPermission"
+                      style="border: none;font-size: small !important;" type="button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                <span>&nbsp;{{'ADD'|translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+  <!-- End Future ReviewFormation -->
+  <!-- reviewSkills -->
+  <div style="margin-top: 10px;">
+    <p-accordion>
+      <p-accordionTab header="{{'REVIEW_SKILLS'|translate}}" style="color: #4c9aae;">
+        <table class="table table-responsive table-bordered">
+          <thead>
+          <tr>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">{{'SKILLS' | translate}}</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle; width: 60%;">{{'TITLE' | translate}}
+            </th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle; width: 50%;">{{'OLD_RATE' | translate}}
+            </th>
+            <th colspan="2" style="text-align: center;">{{'EVALUATION' | translate}}</th>
+            <th rowspan="2" style="text-align: center; vertical-align: middle;">{{'ACTION' | translate}}</th>
+          </tr>
+          <tr>
+            <th style="text-align: center;">{{'COLLABORATOR' | translate}}</th>
+            <th style="text-align: center;">{{'MANAGERS' | translate}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!--skills rating-->
+          <tr *ngFor="let reviewSkills of PastReviewSkills.controls; let i=index" [formGroup]="reviewSkills">
+            <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+            <td style="text-align: center; vertical-align: middle;">
+              <div style="width: 30em; margin-left: 2em;">
+                <app-skills-dropdown [disabled]="!hasUpdateReviewPermission || reviewState === reviewEnum.Completed" [skillsForm]="reviewSkills">
+                </app-skills-dropdown>
+                <app-control-messages [control]="reviewSkills.controls.IdSkills"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </td>
+            <!--old rate-->
+            <td>
+              <bar-rating [max]="6" [theme]="'default'" formControlName="OldRate"></bar-rating>
+              <app-control-messages [control]="reviewSkills.controls.OldRate"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <!--collaborator rating-->
+            <td style="vertical-align: middle !important; line-height: 2.5em !important;">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="CollaboratorMark"></bar-rating>
+              <app-control-messages [control]="reviewSkills.controls.CollaboratorMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <!--manager rating-->
+            <td style="vertical-align: middle !important; line-height: 2.5em !important;">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="ManagerMark">
+              </bar-rating>
+              <app-control-messages [control]="reviewSkills.controls.ManagerMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <td>
+              <button
+                (click)="addFutureReviewSkills()"
+                *ngIf="hasUpdateReviewPermission && PastReviewSkills.controls.length === i+1 && FutureReviewSkills.controls.length === 0 && reviewState !== reviewEnum.Completed" class="noPadding btn-Add k-button" dir="ltr" style="border: none; margin-top: 1.1em;"
+                type="button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+              </button>
+            </td>
+          </tr>
+          <!--end skills rating-->
+          <tr *ngFor="let reviewSkills of FutureReviewSkills.controls; let i=index" [formGroup]="reviewSkills">
+            <th scope="row" style="text-align: center; vertical-align: middle;">
+              {{ PastReviewSkills.controls.length + i + 1}}</th>
+            <td style="min-width: 350px;">
+              <div style="width: 50%;margin-left: 25%;margin-top: 5px;margin-bottom: 10px;">
+                <app-skills-dropdown [disabled]="!hasUpdateReviewPermission || reviewState === reviewEnum.Completed" [skillsForm]="reviewSkills">
+                </app-skills-dropdown>
+                <app-control-messages [control]="reviewSkills.controls.IdSkills"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </td>
+            <td style="vertical-align: left; line-height: 2.5em;">
+              <label style="margin-top: 5px;">{{'N/A' | translate}}</label>
+            </td>
+            <td style="vertical-align: left !important;">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="CollaboratorMark"></bar-rating>
+              <app-control-messages [control]="reviewSkills.controls.CollaboratorMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <td>
+              <bar-rating [max]="6" [theme]="'default'" formControlName="ManagerMark">
+              </bar-rating>
+              <app-control-messages [control]="reviewSkills.controls.ManagerMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </td>
+            <!--add and delete review skills-->
+            <td>
+              <button (click)="deleteFutureReviewSkills(reviewSkills.getRawValue(), i)" *ngIf="hasUpdateReviewPermission && reviewState !== reviewEnum.Completed" [ngClass]="'delete-button-style'"
+                      class="noPadding btn-Add k-button" style="border: none"
+                      type="button">
+                <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+              </button>
+              <button (click)="addFutureReviewSkills()"
+                      *ngIf="hasUpdateReviewPermission && FutureReviewSkills.controls.length === i+1 && reviewState !== reviewEnum.Completed"
+                      [ngClass]="'add-button-style'" class="noPadding btn-Add k-button" dir="ltr" style="border: none;"
+                      type="button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div *ngIf="PastReviewSkills.controls.length === 0 && FutureReviewSkills.controls.length === 0"
+             class="skills-not-found-row-sytle">
+          <div class="row">
+            <div class="col-lg-10" style="text-align: center; font-size: 1.2em;margin-top: 4px;">
+              {{'NO_SKILLS_FOR_THIS_EMPLOYEE' | translate}}
+            </div>
+            <div *ngIf="reviewState !== reviewEnum.Completed"
+                 style="margin-left: auto;margin-top: 2px;padding-right: 9px;">
+              <button (click)="addFutureReviewSkills()" class="noPadding btn-Add k-button" dir="ltr" *ngIf = "hasUpdateReviewPermission"
+                      style="border: none;font-size: small !important;" type="button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                <span>&nbsp;{{'ADD'|translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </p-accordionTab>
+    </p-accordion>
+  </div>
+  <!-- End reviewSkills -->
+
+  <!-- Questions of each interview -->
+  <section *ngIf="canViewInterview">
+    <div *ngFor="let interview of Interview.controls" style="margin-top: 10px;">
+      <p-accordion>
+        <p-accordionTab>
+          <p-header>
+            <span>{{'PHYSICAL_INTERVIEW'|translate}} : {{'RESPONSIBLE'|translate}}
+              {{interview.get('FullName').value}}</span>
+            <span *ngIf="interview.get('Status').value === interviewStatus.InterviewRequestedToAllInterviewers"
+                  class="badge badge-danger interview-status">{{'WAITING_FOR_INTERVIEWERS_VALIDATION'|translate}}</span>
+            <span *ngIf="interview.get('Status').value === interviewStatus.AllInterviewersAvailabilityConfirmed"
+                  class="badge badge-warning interview-status">{{'ALL_INTERVIEWERS_AVAILABILITY_CONFIRMED'|translate}}</span>
+            <span *ngIf="interview.get('Status').value === interviewStatus.InterviewRequestedToCandidate"
+                  class="badge badge-primary interview-status">{{'WAITING_FOR_CANDIDATE_VALIDATION'|translate}}</span>
+            <span *ngIf="interview.get('Status').value === interviewStatus.InterviewConfirmedByCandidate"
+                  class="badge badge-success interview-status">{{'INTERVIEW_CONFIRMED'|translate}}</span>
+            <span *ngIf="interview.get('Status').value === interviewStatus.InterviewDone"
+                  class="badge badge-secondary interview-status">{{'INTERVIEW_DONE'|translate}}</span>
+            <span *ngIf="interview.get('Status').value === interviewStatus.InterviewRefused"
+                  class="badge badge-dark interview-status">{{'INTERVIEW_REFUSED'|translate}}</span>
+          </p-header>
+          <div>
+            <app-interview-form [IdSupervisor]="interview.get('IdSupervisor').value"
+                                [InterviewQuestion]="interview.get('Question')"
+                                [IsUserInSuperHierarchicalEmployeeList]="IsUserInSuperHierarchicalEmployeeList"
+                                [isCollaboratorConnected]="isCollaboratorConnected">
+            </app-interview-form>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+  </section>
+  <!-- End Questions of each interview -->
+</form>

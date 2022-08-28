@@ -1,0 +1,248 @@
+<div class="card">
+  <div class="card-header" style="background-color: white; border:none" *ngIf="!related">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_CLAIMS'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body" style="margin-block-end: 1%!important;">
+
+    <form class="col-12 form-horizontal" style="float: left">
+      <kendo-grid [data]="gridSettings.gridData"
+                  [pageSize]="gridSettings.state.take"
+                  [skip]="gridSettings.state.skip"
+                  [sortable]="{allowUnsort: true, mode: 'single'}"
+                  [pageable]="pagerSettings"
+                  [reorderable]="true"
+                  [columnMenu]="false"
+                  [sort]="gridSettings.state.sort"
+                  [filter]="gridSettings.state.filter"
+                  [filterable]="!isThereFilter"
+                  (filterChange)="filterChange()"
+                  (pageChange)="onPageChange($event)"
+                  (dataStateChange)="dataStateChange($event)"
+                  (remove)="removeHandler($event)"
+                  [selectedKeys]="claimsSelected"
+                  [kendoGridSelectBy]="selectKey"
+                  (sortChange)="sortChange($event)">
+        <!-- Head Start-->
+
+        <ng-template kendoGridToolbarTemplate *ngIf="!fromRelatedArchiving">
+          <div class="row" style="float :right; margin-right: 4px;">
+            <app-btn-grid *ngIf="this.claimsSelected.length > 1"
+                          [add]='false' [export]='false'
+                          [addLink]="'add'" [crmConfig]="crmConfig" (deleteSelectedItems)="deleteSelectedClaims()"
+                          (archiveSelectedItems)="archiveSelectedClaims()" (restoreSelectedItems)="restoreSelectedClaims()">
+
+            </app-btn-grid >
+            <a *ngIf="!isArchivingMode && this.authService.hasAuthorities([CRMPermissions.ADD_CLAIM])" style="background: transparent; margin-right: 8px;    margin-top: 6px;" (click)="setAddMode($event)">
+              <div >
+                <div class="btn btn-sm addBtn" type="button">
+                  <i aria-hidden="true" style="color: white;" class="fa fa-plus fa AddIcon"></i>
+                  <span>&nbsp; {{'ADD'|translate}}</span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </ng-template>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0]._width"
+                           [filter]="gridSettings.columnsConfig[0].filter"
+                           [filterable]="gridSettings.columnsConfig[0].filterable"
+                           [format]="gridSettings.columnsConfig[0].format"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="chosenFilterNumber!=claimsFilter.BY_TYPE"
+                           [field]="gridSettings.columnsConfig[1].field"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1]._width"
+                           [filter]="gridSettings.columnsConfig[1].filter"
+                           [filterable]="gridSettings.columnsConfig[1].filterable"
+                           [format]="gridSettings.columnsConfig[1].format"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="dataItem.category"><span>{{ dataItem.category | translate}} </span>
+            </div>
+          </ng-template>
+          <ng-template kendoGridFilterCellTemplate let-filter>
+            <kendo-combobox style="width: 100%;" [data]="claimsCategoriesList" [(ngModel)]="selectedCategory"
+                            [ngModelOptions]="{standalone: true}"
+                            [filterable]="true" (valueChange)="filterChange()">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column
+          *ngIf="chosenFilterNumber!=claimsFilter.BY_ORGANIZATION && !source"
+          [field]="gridSettings.columnsConfig[2].field"
+          [title]="gridSettings.columnsConfig[2].title | translate"
+          [width]="gridSettings.columnsConfig[2]._width"
+          [filter]="gridSettings.columnsConfig[2].filter"
+          [filterable]="gridSettings.columnsConfig[2].filterable"
+          [format]="gridSettings.columnsConfig[2].format"
+          [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFilterCellTemplate let-filter>
+            <kendo-combobox style="width: 200px" [data]="searchedOrganizationList"
+                            [(ngModel)]="selectedOrganization"
+                            [textField]="'name'" [valueField]="'id'" [ngModelOptions]="{standalone: true}"
+                            (filterChange)="handleOrganizationFilter($event)"
+                            [filterable]="true" (valueChange)="filterChange()">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column
+          [field]="gridSettings.columnsConfig[3].field"
+          [title]="gridSettings.columnsConfig[3].title | translate"
+          [width]="gridSettings.columnsConfig[3]._width"
+          [filter]="gridSettings.columnsConfig[3].filter"
+          [filterable]="gridSettings.columnsConfig[3].filterable"
+          [format]="gridSettings.columnsConfig[3].format"
+          [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[3].title | translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                           [title]="gridSettings.columnsConfig[4].title | translate"
+                           [width]="gridSettings.columnsConfig[4]._width"
+                           [filter]="gridSettings.columnsConfig[4].filter"
+                           [filterable]="gridSettings.columnsConfig[4].filterable"
+                           [format]="gridSettings.columnsConfig[4].format"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[4].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="dataItem.createdDate"><span>{{ dataItem.createdDate| date : formatDate }}</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+                           [title]="gridSettings.columnsConfig[5].title | translate"
+                           [width]="gridSettings.columnsConfig[5]._width"
+                           [filter]="gridSettings.columnsConfig[5].filter"
+                           [filterable]="gridSettings.columnsConfig[5].filterable"
+                           [format]="gridSettings.columnsConfig[5].format"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[5].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="dataItem.deadline"><span>{{ dataItem.deadline| date : formatDate }}</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="chosenFilterNumber!=claimsFilter.BY_GRAVITY"
+                           [field]="gridSettings.columnsConfig[6].field"
+                           [title]="gridSettings.columnsConfig[6].title | translate"
+                           [width]="gridSettings.columnsConfig[6]._width"
+                           [filter]="gridSettings.columnsConfig[6].filter"
+                           [filterable]="gridSettings.columnsConfig[6].filterable"
+                           [format]="gridSettings.columnsConfig[6].format"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[6].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[6].title | translate}}</span>
+          </ng-template>
+
+          <ng-template kendoGridFilterCellTemplate let-filter>
+            <kendo-combobox [data]="gravitiesList" [(ngModel)]="selectedGravity" style="width: 100%;"
+                            [ngModelOptions]="{standalone: true}"
+                            [filterable]="true" (valueChange)="filterChange()">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="chosenFilterNumber!=claimsFilter.BY_STATE"
+                           [field]="gridSettings.columnsConfig[7].field"
+                           [title]="gridSettings.columnsConfig[7].title | translate"
+                           [width]="gridSettings.columnsConfig[7]._width"
+                           [filter]="gridSettings.columnsConfig[7].filter"
+                           [filterable]="gridSettings.columnsConfig[7].filterable"
+                           [format]="gridSettings.columnsConfig[7].format"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[7].title | translate}}"
+                      theme="light">{{gridSettings.columnsConfig[7].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFilterCellTemplate let-filter>
+            <kendo-combobox [data]="stateList" [(ngModel)]="selectedState" style="width: 100%;"
+                            [ngModelOptions]="{standalone: true}"
+                            [filterable]="true" (valueChange)="filterChange()">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[8].field"
+                           [title]="gridSettings.columnsConfig[8].title | translate"
+                           [width]="gridSettings.columnsConfig[8]._width"
+                           [filter]="gridSettings.columnsConfig[8].filter"
+                           [filterable]="gridSettings.columnsConfig[8].filterable"
+                           [format]="gridSettings.columnsConfig[8].format">
+        </kendo-grid-column>
+        <kendo-grid-command-column [width]="150">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+            <i class="las la-pen cursor-pointer edit-pencil la-lg" *ngIf="authService.hasAuthorities([CRMPermissions.EDIT_CLAIM]) && !isArchivingMode && !isFromArchive" title="{{'SHOW'| translate }}" (click)="showDetails(dataItem)" ></i>
+            <i class="las la-pen cursor-pointer edit-pencil la-lg" *ngIf="isArchivingMode && !isFromArchive" title="{{'SHOW'| translate }}" (click)="showDetails(dataItem)" ></i>
+              <i class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true" *ngIf="!isArchivingMode && authService.hasAuthorities([CRMPermissions.DELETE_CLAIM])" (click)="removeHandler(dataItem)"   title="{{'DELETE'| translate }}"></i>
+
+            <!--archive -->
+            <button class="k-button btnKendoGrid archiveBtn"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="{{'ARCHIVE_ACTION_CONFIRM_BOUTON'| translate }}"
+                    *ngIf="!isArchivingMode && !fromRelatedArchiving && !isFromArchive && authService.hasAuthorities([CRMPermissions.ARCHIVE_CLAIM])"
+                    (click)="archiveSelected(dataItem.id)">
+              <i class="fa fa-archive"></i>
+            </button>
+            <button *ngIf="isArchivingMode && !fromRelatedArchiving && !isFromArchive && authService.hasAuthorities([CRMPermissions.RESTORE_ARCHIVED_CLAIM])"
+                    class="btnKendoGrid"
+                    (click)="restoreSelected(dataItem.id)"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="{{'RESTART_ACTION_CONFIRM_BOUTON'| translate }}"
+                    style="background: none;">
+              <i class="fa fa-refresh"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+      </kendo-grid>
+    </form>
+  </div>
+</div>
+<app-side-nav-claim *ngIf="showDetailClaim" [claimFromClaimsList]="claimToShowInSideNav && (authService.hasAuthorities([CRMPermissions.OWN_CLAIM])||authService.hasAuthorities([CRMPermissions.EDIT_CLAIM]))"
+                    [isArchivingMode]="isArchivingMode"
+                    [fromRelatedArchiving]="fromRelatedArchiving"
+                    (sideNavUpdateMode)="setSideNavUpdateMode($event)"
+                    (closeSidNav)="SidNavEvent()" [source]="source"></app-side-nav-claim>

@@ -1,0 +1,117 @@
+<fieldset [ngStyle]="{border:fieldsetBorderStyle }">
+  <legend>{{"ADVANCED_SEARCH"|translate}}
+    <i *ngIf="!isContentVisible" class="las la-angle-double-down la-angle-color" (click)="showContent()"></i>
+    <i *ngIf="isContentVisible" class="las la-angle-double-up la-angle-color" (click)="hideContent()"></i>
+  </legend>
+  <div class="row form-group" *ngIf="isContentVisible">
+    <div class="btn-group col-lg-2 col-md-8 col-sm-12 pl-0">
+      <button class="btn btn-primary dropdown-toggle btnColor" type="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="true">
+        {{selectedFilter|translate}}
+      </button>
+
+      <div class="dropdown-menu drop-resp-right" style="border: 1px solid rgb(200, 206, 211) !important;">
+        <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=campagnFilter.ALL_CAMPAIGNS,
+                    'dropdown-item-active':chosenFilterNumber==campagnFilter.ALL_CAMPAIGNS
+                    }"
+                (click)="filterCampaign(campagnFilter.ALL_CAMPAIGNS)"
+        >
+          {{'ALL_CAMPAIGN'|translate}}
+        </button>
+        <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=campagnFilter.MINE,
+                    'dropdown-item-active':chosenFilterNumber==campagnFilter.MINE
+                    }"
+                (click)="filterCampaign(campagnFilter.MINE)"
+        >
+          {{'MINE'|translate}}
+        </button>
+        <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=campagnFilter.STATE,
+                    'dropdown-item-active':chosenFilterNumber==campagnFilter.STATE
+                    }"
+                (click)="filterCampaign(campagnFilter.STATE)"
+        >
+          {{'STATE'|translate}}
+        </button>
+        <button  *ngIf="fromRh" [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=campagnFilter.TEAMS,
+                    'dropdown-item-active':chosenFilterNumber==campagnFilter.TEAMS
+                    }"
+                (click)="filterCampaign(campagnFilter.TEAMS)"
+        >
+          {{'TEAMS'|translate}}
+        </button>
+
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-8 col-sm-12 pl-0"
+         *ngIf="chosenFilterNumber == campagnFilter.STATE">
+      <div class="row">
+        <div class="col-2">
+      <label style="color: #000000">{{'STATE'| translate}}</label>
+        </div>
+        <div class="col">
+      <kendo-combobox [data]="campaignState"
+                      [valueField]="'enumValue'" [textField]="'enumText'" [valuePrimitive]="true"
+                      [filterable]="true"
+                      (valueChange)="filterByState($event)"
+                      style="width: 100%;">
+                      <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      </kendo-combobox>
+        </div>
+
+    </div>
+    </div>
+    <div class="col-lg-2 col-md-6 col-sm-12"
+         *ngIf="chosenFilterNumber == campagnFilter.TEAMS">
+      <div class="row" *ngIf="fromRh">
+        <div class="col-2">
+          <label style="color: #000000" > {{'TEAMS'|translate}} </label>
+
+        </div>
+        <div class="col">
+          <kendo-combobox [data]="listTeams"
+                          [valuePrimitive]="true"
+                          [textField]="'Name'"
+                          [valueField]="'Id'"
+                          (valueChange)="filterByTeams($event)"
+                          style="width: 100%;">
+                          <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+          </kendo-combobox>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+
+</fieldset>
+
+
+<div class="col-lg-3"></div>
+<div class="d-flex k-justify-content-start">
+
+  <div class="form-group row">
+    <div class="col-10">
+      <input (afterValueChanged)="search()" type="text" class="form-control"
+             placeholder="{{'SEARCH_CAMPAIGN'|translate}}" aria-describedby="addon-wrapping"
+             [(ngModel)]='searchValue'/>
+    </div>
+
+    <div class="col-2 p-1">
+      <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+    </div>
+  </div>
+
+</div>

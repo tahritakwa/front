@@ -1,0 +1,330 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{(isUpdateMode ? 'EDIT_USER' : 'ADD_USER')|translate}}</h3>
+      </div>
+    </div>
+  </div>
+  <hr color="#d9d9d9" class="mt-0">
+
+  <!--End Card header-->
+  <!--Begin Card body-->
+
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="userFormGroup">
+      <!-- Begin principal form -->
+      <div class="form-group row">
+        <div class="col-lg-10 col-sm-12 col-md-12">
+          <div class='row'>
+            <!--Employee-->
+            <!-- <div class="col-lg-4 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'EMPLOYEE'|translate}}</label>
+              <app-employee-dropdown [form]="userFormGroup" (Selected)="changeEmployeeDropdownValue($event)">
+              </app-employee-dropdown>
+              <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div> -->
+            <!--LastName-->
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <label> {{'LAST_NAME'|translate}}<span class="required">*</span></label><br>
+              <input class="form-control" formControlName="LastName" name="LastName" [ngClass]="{ 'has-error': (userFormGroup.controls.LastName.touched || userFormGroup.controls.LastName.dirty)&& !userFormGroup.controls.LastName.valid }">
+              <app-control-messages [control]="userFormGroup.controls.LastName"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+            <!--FirstName-->
+            <div class="col-lg-4 col-md-12 col-sm-12 ">
+              <label> {{'FIRST_NAME'|translate}}<span class="required">*</span></label><br>
+              <input class="form-control" type="text" formControlName="FirstName" name="FirstName" [ngClass]="{ 'has-error': (userFormGroup.controls.FirstName.touched || userFormGroup.controls.FirstName.dirty) && !userFormGroup.controls.FirstName.valid}">
+              <app-control-messages [control]="userFormGroup.controls.FirstName"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+          <br>
+          <div class="row">
+            <!--LANGUAGE-->
+            <div class="col-lg-4 col-md-12 col-sm-12 lang">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'LANGUAGE'|translate}}<span
+                class="required">*</span></label><br>
+              <app-user-languages-dropdown [form]="userFormGroup" (SelectedLanguage)="selectedLang($event)"></app-user-languages-dropdown>
+              <app-control-messages [control]="userFormGroup.controls.Lang"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div *ngIf="isUpdateMode" class="col-lg-4 col-md-12 col-sm-12" style="margin-top: auto;">
+              <input class="input-checkbox100" id="ckb1" formControlName="IsTecDoc" type="checkbox">
+              <label class="label-checkbox100" for="ckb1">{{'ACCES_TECDOC' | translate}}</label>
+            </div>
+
+            <!--PWD-->
+            <div class="col-lg-4 col-md-12 col-sm-12" *ngIf="!this.isUpdateMode">
+              <label> {{'PASSWORD'|translate}}<span class="required">*</span></label><br>
+              <input class="form-control" type="password" formControlName="Password" name="Password"  [ngClass]="{ 'has-error': (userFormGroup.controls.Password.touched || userFormGroup.controls.Password.dirty) && !userFormGroup.controls.Password.valid}">
+              <app-control-messages [control]="userFormGroup.controls.Password"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+            <!--Confirm PWD-->
+            <div class="col-lg-4 col-md-12 col-sm-12 " *ngIf="!this.isUpdateMode">
+              <label> {{'CONFIRM_PASSWORD'|translate}}<span class="required"
+                                                            *ngIf="!this.isUpdateMode">*</span></label><br>
+              <input class="form-control" type="password" formControlName="ConfirmPassword" name="ConfirmPassword" [ngClass]="{ 'has-error': (userFormGroup.controls.ConfirmPassword.touched || userFormGroup.controls.ConfirmPassword.dirty) && !userFormGroup.controls.ConfirmPassword.valid}">
+              <app-control-messages [control]="userFormGroup.controls.ConfirmPassword"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+              <span *ngIf="userFormGroup.get('ConfirmPassword')?.errors?.notEquivalent"
+                    style="color: #dd4b39;">{{ 'passwordsMatch' | translate }}</span>
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <div *ngFor="let userWarehouse of UserWarehouse.controls;">
+                <label>{{'WAREHOUSE'|translate}}</label>
+                <app-depot-dropdown #depoDropdown [FromComponent]='true' [parent] = "userWarehouse"
+                    [SelectedValue]="selectedIdWarehouse" [warehouseForInventoryDocument]="true" [disabled] = "false"
+                    (Selected)="warehouseSelected($event)"></app-depot-dropdown>
+              </div>
+            </div>
+            <div *ngIf="!isUpdateMode" class="col-lg-4 col-md-12 col-sm-12" style="margin-top: auto;">
+              <input class="input-checkbox100" id="ckb2" formControlName="IsTecDoc" type="checkbox">
+              <label class="label-checkbox100" for="ckb2">{{'ACCES_TECDOC' | translate}}</label>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+          <label class="img-border  d-flex justify-content-center mx-20 ml-10" for="file-input" #fileInput>
+            <img id="userPicture" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                 [src]="pictureUserSrc || 'assets/image/placeholder-logo.png'"/>
+            <i class="fa fa-camera fa-lg"></i>
+            <i *ngIf="pictureUserSrc" class="fa fa-close fa-xs" (click)="removeUserPicture($event)"></i>
+          </label>
+          <input *ngIf = "hasUpdatePermission || hasAddPermission" id="file-input" type='file' (change)="onSelectFile($event)" accept="image/*">
+        </div>
+
+        <!-- change password-->
+        <div *ngIf="hasChangePwdPermission && isUpdateMode" class="col-12 cursor-pointer init-pwd" (click)="showPwdInputs()">
+          {{'INIT_PWD' |translate}}
+        </div>
+        <div class="d-inline-flex" *ngIf="pwdInputsShowed">
+          <div class="col-lg-10 col-sm-12 col-md-12">
+            <form [formGroup]="changePasswordFormGroup" class="form-group" novalidate>
+              <div class="row">
+                <div class="col-lg-4 col-md-12 col-sm-12" *ngIf="true"
+                     [ngClass]="{'has-error':isValidProfileField(password)}">
+                  <div class="input-group">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'oldPassword'|translate}}</label>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input class="form-control" style="width: 80%" type="password" formControlName="Password"
+                           [ngClass]="{ 'has-error': (changePasswordFormGroup.controls.Password.touched ||
+           changePasswordFormGroup.controls.Password.dirty) && !changePasswordFormGroup.controls.Password.valid }"/>
+                  </div>
+                  <app-control-messages [control]="changePasswordFormGroup.controls.Password"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                  <div>
+          <span class="help-block" *ngIf=" isValidProfileField(password)">
+            <span *ngIf="changePasswordFormGroup.get(password).errors.minlength"
+                  style="color: #dd4b39;"> minimum 8 {{ 'character' | translate
+              }}.</span>
+          </span>
+                  </div>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12"
+                     [ngClass]="{'has-error':isValidProfileField('NewPassword')}">
+                  <div class="input-group">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'newPassword'|translate}}</label>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input class="form-control" style="width: 80%" type="password" formControlName="NewPassword"
+                           [ngClass]="{ 'has-error': (changePasswordFormGroup.controls.NewPassword.touched || changePasswordFormGroup.controls.NewPassword.dirty) && !changePasswordFormGroup.controls.NewPassword.valid }"/>
+                  </div>
+                  <app-control-messages [control]="changePasswordFormGroup.controls.NewPassword"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                  <span class="help-block" *ngIf="isValidProfileField(newPassword)">
+                <span *ngIf="changePasswordFormGroup.get(newPassword)?.errors?.pattern" style="color: #dd4b39;">
+                  {{ 'character' | translate }}.</span>
+                </span>
+                </div>
+                <div class="form-group col-lg-4 col-md-12 col-sm-12"
+                     [ngClass]="{'has-error':isValidProfileField(confirmNewPassword)}">
+                  <div class="input-group">
+                    <label class="col-lg-12 col-md-12 col-sm-12 k-text-nowrap">{{'confirmPassword'|translate}}</label>
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input class="form-control" style="width: 400px" type="password"
+                           formControlName="ConfirmNewPassword"
+                           [ngClass]="{ 'has-error': (changePasswordFormGroup.controls.ConfirmNewPassword.touched ||
+          changePasswordFormGroup.controls.ConfirmNewPassword.dirty) && !changePasswordFormGroup.controls.ConfirmNewPassword.valid }"/>
+                  </div>
+                  <div>
+          <span class="help-block" *ngIf=" isValidProfileField(confirmNewPassword)">
+            <span *ngIf="changePasswordFormGroup.get(confirmNewPassword)?.errors?.notEquivalent"
+                  style="color: #dd4b39;">{{ 'passwordsMatch' | translate }}</span>
+          </span>
+                  </div>
+                </div>
+                <div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-lg-2 col-sm-12 col-md-12 mt-4">
+            <i class="zoom save-icon fa fa-check fa-lg cursor-pointer" (click)='saveChangePassword()'></i>
+          </div>
+        </div>
+      </div>
+      <p-accordion [multiple]="true" class="w-100">
+        <p-accordionTab header="{{'COLLAPSE_CORDINATION_TITLE'| translate}}"
+                        (selectedChange)="openCordinationDetailsCollapse = !openCordinationDetailsCollapse"
+                        [selected]="!openCordinationDetailsCollapse">
+          <div class="form-group row">
+            <div class="col-lg-10 col-sm-12 col-md-12">
+              <div class='row'>
+                <!--Email-->
+                <div class="col-lg-4 col-md-12 col-sm-12 mt-2">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMAIL'|translate}}<span
+                    class="required">*</span></label><br>
+                  <input class="form-control" type="text" formControlName="Email" name="Email"[ngClass]="{ 'has-error': (userFormGroup.controls.Email.touched ||
+                  userFormGroup.controls.Email.dirty) && !userFormGroup.controls.Email.valid  && !isUpdateMode}"/>
+                  <app-control-messages [control]="userFormGroup.controls.Email"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <!--Phone-->
+                <div class="col-lg-4 col-md-12 col-sm-12 mt-2" formGroupName="IdPhoneNavigation">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'PHONE'|translate}}</label>
+                  <div class="input-group">
+                    <input ng2TelInput type="text"
+                           class="form-control w-100"
+                           formControlName="Number"
+                           oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                           [ng2TelInputOptions]="{initialCountry:loadPhoneCountryFlag(),
+                            preferredCountries:[defaultPhoneCountryTn,defaultPhoneCountryFr,defaultPhoneCountryGb]}"
+                           (hasError)="isValidPhone($event)" (countryChange)="onCountryPhoneChange($event)"
+                           [ngClass]="{'has-error':tiersPhoneHasError}"/>
+                    <span class="wrong-pattern mt-2" *ngIf="tiersPhoneHasError">{{"WRONG_PATERN"|translate}}</span>
+                  </div>
+                </div>
+                <!--Fax-->
+                <div class="col-lg-4 col-md-12 col-sm-12 mt-2">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'FAX'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="number" formControlName="Fax" [value]="userFormGroup.value.Fax"
+                    [ngClass]="{ 'has-error': (userFormGroup.controls.Fax.touched ||
+                  userFormGroup.controls.Fax.dirty) && !userFormGroup.controls.Fax.valid }"/>
+                    <div class="input-group-append">
+                            <span class="input-group-text" style="background-color: white;">
+                              <i class="fa fa-fax"></i>
+                            </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="userFormGroup.controls.Fax"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+              <div class='row'>
+                <div class="col-lg-4 col-md-12 col-sm-12 mt-3">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'LINKEDIN'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" formControlName="Linkedin"
+                           [value]="userFormGroup.value.Linkedin">
+                    <div class="input-group-append">
+                                    <span class="input-group-text" style="background-color: white;">
+                                      <i class="fa fa-linkedin"></i>
+                                    </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="userFormGroup.controls.Linkedin"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12 mt-3">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'FACEBOOK'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" formControlName="Facebook"
+                           [value]="userFormGroup.value.Facebook">
+                    <div class="input-group-append">
+                                    <span class="input-group-text" style="background-color: white;">
+                                      <i class="fa fa-facebook"></i>
+                                    </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="userFormGroup.controls.Facebook"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-lg-4 col-md-12 col-sm-12 mt-3">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'TWITTER'|translate}}</label>
+                  <div class="input-group">
+                    <input class="form-control" type="text" formControlName="Twitter"
+                           [value]="userFormGroup.value.Twitter">
+                    <div class="input-group-append">
+                                    <span class="input-group-text" style="background-color: white;">
+                                      <i class="fa fa-twitter"></i>
+                                    </span>
+                    </div>
+                  </div>
+                  <app-control-messages [control]="userFormGroup.controls.Twitter"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-accordionTab>
+        <!-- Collapse AUTHORIZATION details -->
+        <p-accordionTab header="{{'COLLAPSE_AUTHRIZATION_ACCES_TITLE'| translate}}"
+                        (selectedChange)="openAuthAccesCollapse = !openAuthAccesCollapse"
+                        [selected]="!openAuthAccesCollapse" (click)="openAuthAccessCollapse()">
+          <div class="form-group row">
+            <div class="col-lg-10 col-sm-12 col-md-12">
+              <div class="row">
+                <div class="col-lg-4 col-md-12 col-sm-12 mt-2">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'ROLE'|translate}}<span
+                    class="required">*</span></label><br>
+
+                  <!--Role-->
+                  <app-multiselect-dropdown [myForm]='userFormGroup'
+                                            [listOfInputs]='roleFiltredDataSource'
+                                            [isDisabled]=false
+                                            [placeholder]="'CHOOSE_ROLE'"
+                                            [limitSelection]=3
+                                            [selectedIdItems]="selectedIdItems"
+                  ></app-multiselect-dropdown>
+                  <app-control-messages
+                    [control]="MasterRoleUser"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div *ngIf="hasShowUserPrivilege">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'PRIVILEGES'|translate}}</label><br>
+            <app-privilege [form]="userFormGroup" [privilegesLoaded]="initialListPrivilege"
+                           [isUpdateMode]="isUpdateMode">
+            </app-privilege>
+          </div> -->
+
+        </p-accordionTab>
+      </p-accordion>
+    </form>
+
+  </div>
+  <!--End Card body-->
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer mx-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="{{USER_LIST_URL}}">
+                  <span class="btn btn-sm btn-back-to-list btn-primary">
+                    <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                  </span>
+            </a>
+            <button *ngIf = "hasUpdatePermission || hasAddPermission" (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

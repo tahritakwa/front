@@ -1,0 +1,30 @@
+<div class="col-auto">
+  <div class="row">
+    <div *ngIf="!canUpdateFile">
+      <input type="file" id="File" multiple (change)="onFileChange($event)" #File hidden [disabled]="canUpdateFile"
+        [accept]="authorisedTypes">
+      <button class="btn btn-sm" (click)="File.click()" type="button">
+        <img src="../../../../assets/image/upload-file-cloud.png" width="50" height="50"/>
+      </button>
+    </div>
+    <div *ngIf="!(fileToUpload?.length > 0) && showLabel && !isFromTiers && !canUpdateFile" style="margin-top: 16px;">
+      <label>{{'NO_FILE_CHOSEN'|translate}}</label>
+    </div>
+    <div *ngIf="fileToUpload?.length > 0 && !isFromTiers">
+     <ng-container *ngFor="let file of fileToUpload; let i = index">
+          <a style=" cursor:pointer" (click)="downloadFile(i)">
+            <u tooltip="{{file.Name}}">
+              <label class = "resp-file">
+                {{(fileNameCharactersToShow && fileNameCharactersToShow > 0 ?  getShortFileName(file) : file.Name)}}
+              </label>
+            </u>
+          </a>
+          <button class="noPadding btn-Add k-button" *ngIf="!canUpdateFile" type="button" dir="ltr"
+            style="border: none!important;" (click)="deleteFile(i)">
+            <i class="fa fa-close fa-lg " style="color: #E91E63;"></i>
+          </button>
+          <span style="padding-left: 10px;" *ngIf="showSeparator(i)"> /</span>
+        </ng-container>
+    </div> 
+  </div>
+</div>

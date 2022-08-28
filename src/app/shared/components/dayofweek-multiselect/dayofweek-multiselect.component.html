@@ -1,0 +1,10 @@
+<kendo-multiselect 
+  [filterable]="true"
+  [data]="dayofweekFiltredDataSource" 
+  (valueChange)="onSelect(this)" 
+  [textField]="'name'"
+  [valuePrimitive]="true" 
+  [valueField]="'value'"
+  [(ngModel)]="selectedValueMultiSelect"
+  (filterChange)="handleFilter($event)">
+</kendo-multiselect>

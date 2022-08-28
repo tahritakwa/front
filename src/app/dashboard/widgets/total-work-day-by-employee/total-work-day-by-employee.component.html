@@ -1,0 +1,38 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-8">
+      <h4 class="card-title mb-0"> {{'TOTAL_WORK_DAYS' | translate}} </h4>
+      <div *ngIf="hasTotalWorkedData" class="small text-muted">
+        {{'LAST_MONTH' |translate}}
+      </div>
+      <div *ngIf="!hasTotalWorkedData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+
+      <div class="period-filter dropdown">
+        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {{'TEAM'| translate}}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a *ngFor="let team of teamData" class="dropdown-item pointer-cursor"
+            (click)="ChangeTotalWorkedDayChart(team.Name)">{{team.Name}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card-body">
+  <canvas *ngIf="hasTotalWorkedData && TotalWorkDayChart" baseChart [datasets]="TotalWorkDayChart.barChartData"
+    [labels]="TotalWorkDayChart.barChartLabels" [colors]="TotalWorkDayChart.barChartColors"
+    [options]="TotalWorkDayChart.barChartOptions" [legend]="TotalWorkDayChart.barChartLegend"
+    [chartType]="TotalWorkDayChart.barChartType"></canvas>
+  <div *ngIf="!hasTotalWorkedData && !TotalWorkedDaysDataLoading">
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NODATAFOUND' | translate}} </h5>
+  </div>
+  <div *ngIf="TotalWorkedDaysDataLoading && !hasTotalWorkedData">
+    <app-spinner></app-spinner>
+  </div>
+</div>

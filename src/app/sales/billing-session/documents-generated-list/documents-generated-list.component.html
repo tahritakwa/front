@@ -1,0 +1,207 @@
+<div class="card">
+  <!--Begin Card header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'BILLING_SESSION'|translate}}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin Card body-->
+  <div class="card-body">
+    <form class="form-horizontal">
+      <!-- Form Start -->
+      <div class="col-lg-12 col-sm-12 col-md-12 ">
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-4 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}</label>
+            <input class="form-control" [(value)]="billingSession.Code" disabled>
+          </div>
+          <div class="col-sm-12 col-md-5 col-lg-5">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}</label>
+            <input class="form-control" [(value)]="billingSession.Title" disabled>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'MONTH'|translate}} <span class="required">*</span></label>
+            <kendo-datepicker disabled [(value)]="billingSession.Month" [bottomView]="'year'" [topView]="'decade'"
+              [format]="'MMMM yyyy'" class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+      </div>
+      <!-- form End -->
+      <!-- Grid Start-->
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div *ngIf="showProgressBar">
+          <app-progress-bar [progress]="progression"></app-progress-bar>
+        </div>
+        <div align="right" class="col-lg-12 col-md-12 col-sm-12 col-sx-12" *ngIf="!isClosed">
+          <button *ngIf="hasGeneratePermission && !showGrid && !showProgressBar" class="generate ml-3 mr-2" (click)="onClickGenerate()">
+            <i class="fa fa-cogs fa-sm AddIcon"></i>
+            <span>&nbsp; {{'GENERATE'|translate}}</span>
+          </button>
+          <button *ngIf="hasGeneratePermission && showGrid && !showProgressBar" class="generate ml-3 mr-2"
+            (click)="onClickRegenerate()">
+            <i class="fa fa-refresh fa-sm AddIcon"></i>
+            <span>&nbsp; {{'REGENERATE'|translate}}</span>
+          </button>
+        </div>
+      </div>
+      <br>
+      <div class="col-lg-12 col-sm-12 col-md-12" *ngIf="showGrid">
+        <kendo-grid [data]="successeFullyGeneratedDocuments">
+          <ng-template kendoGridToolbarTemplate>
+            <div style="margin-bottom: 5px;" *ngIf="billingSession.NumberOfNotGeneratedDocuments > 0">
+              <div class="col-lg-4 col-md-6 col-sm-12" style="float: left;">
+                <label style="font-size: 16px; color: #4c9aae;" tooltip="{{checkedEmployeeWithNotValidatedTimeSheets}} {{'NOT_GENERATED_TIMESHEETS'| translate }}">
+                  {{billingSession.NumberOfNotGeneratedDocuments}} &nbsp; {{'NOT_GENERATED_INVOICE' | translate}}
+                </label>
+              </div>
+            </div>
+          </ng-template>
+          <!-- client -->
+          <kendo-grid-column [field]="columnsConfig[0].field" title="{{'CLIENT'| translate }}"
+            [width]="columnsConfig[0]._width" [filter]="columnsConfig[0].filter"
+            [filterable]="columnsConfig[0].filterable" [format]="columnsConfig[0].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{'CLIENT'| translate }}"
+                theme="light">{{'CLIENT'| translate }}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Date-->
+          <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate"
+            [width]="columnsConfig[1]._width" [filter]="columnsConfig[1].filter"
+            [filterable]="columnsConfig[1].filterable" [format]="columnsConfig[1].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[1].title|translate}}"
+                theme="light">{{columnsConfig[1].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.DocumentDate|date: columnsConfig[1].format}}
+            </ng-template>
+          </kendo-grid-column>
+
+          <!--Numéro-->
+          <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate"
+            [width]="columnsConfig[2]._width" [filter]="columnsConfig[2].filter"
+            [filterable]="columnsConfig[2].filterable" [format]="columnsConfig[2].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[2].title|translate}}"
+                theme="light">{{columnsConfig[2].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!--Montant HT-->
+          <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate"
+            [width]="columnsConfig[3]._width" [filter]="columnsConfig[3].filter"
+            [filterable]="columnsConfig[3].filterable" [format]="columnsConfig[3].format" [style]='{"font-family": "Roboto, serif", "color": "#505253", "text-align":"right",
+                "padding-right": "4%"}'>
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[3].title|translate}}"
+                theme="light">{{columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+              <span>
+                {{dataItem.DocumentHtpriceWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.IdUsedCurrencyNavigation.Precision,
+                    style: 'currency', currency: dataItem.IdUsedCurrencyNavigation.Code, currencyDisplay:'code'})}}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!--Montant TTC-->
+          <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate"
+            [width]="columnsConfig[4]._width" [filter]="columnsConfig[4].filter"
+            [filterable]="columnsConfig[4].filterable" [format]="columnsConfig[4].format" [style]='{"font-family": "Roboto, serif", "color": "#505253", "text-align":"right",
+                "padding-right": "4%"}'>
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[4].title|translate}}"
+                theme="light">{{columnsConfig[4].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+              <span>
+                {{dataItem.DocumentTtcpriceWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.IdUsedCurrencyNavigation.Precision,
+                  style: 'currency', currency: dataItem.IdUsedCurrencyNavigation.Code, currencyDisplay:'code'})}}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!--Etat-->
+          <kendo-grid-column [field]="columnsConfig[5].field" [title]="columnsConfig[5].title | translate"
+            [width]="columnsConfig[5]._width" [filter]="columnsConfig[5].filter"
+            [filterable]="columnsConfig[5].filterable" [format]="columnsConfig[5].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[5].title|translate}}"
+                theme="light">{{columnsConfig[5].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional"><span
+                  class="badge badge-warning">{{'PROVISOIRE'|translate}}</span></div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Printed">
+                <span class="badge"
+                  [ngStyle]="{'color': '#ffffff', 'background-color': '#4608a0'}">{{'PRINTED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Valid"><span
+                  class="badge badge-success">{{'VALID'|translate}}</span></div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Balanced">
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;">{{'BALANCED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.TotallySatisfied">
+                <span class="badge"
+                  style="color: #ffffff; background-color: #816fa5;">{{'TOTALLY_PAID'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Accounted">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'ACCOUNTED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.PartiallySatisfied">
+                <span class="badge badge-primary" style="color: #ffffff;">
+                  {{ (documentType !== documentEnumerator.PurchaseOrder? 'PARTIALLY_PAID' : 'PARTIALLY_DELIVERED' )
+                    |translate}}
+                </span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.DRAFT">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'DRAFT'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.EditedAfterValidation">
+                <span class="badge badge-danger">{{'EDITED_AFTER_VALIDATION'|translate}}</span>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!-- command-->
+          <kendo-grid-command-column [width]="130">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a *ngIf="hasShorOrUpdateInvoicePermission" class="btnKendoGrid k-button k-primary" style="color: white" target="_blank"
+                [routerLink]="['/main/sales/invoice/edit/',dataItem.Id, dataItem.IdDocumentStatus]">
+                <i class="fa fa-chevron-circle-right"></i>
+              </a>
+            </ng-template>
+          </kendo-grid-command-column>
+        </kendo-grid>
+      </div>
+      <!-- Grid End-->
+    </form>
+  </div>
+  <!-- End card body-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="/main/sales/billingSession">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button class="btn btn-sm btn-primary mx-1" (click)="onPreviousClik()">
+              <i class="fa fa-angle-left"></i> {{'PREVIOUS'|translate}}
+            </button>
+            <button *ngIf="hasClosePermission && !isClosed" class="btn btn-sm btn-primary next mx-1" (click)="closeSessionClick()" type="submit">
+              <i class="fa fa-floppy-o"></i> {{'CLOSEANYSESSION'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="btn-group w-100" [formGroup]="itemForm">
+  <kendo-combobox [data]="itemFiltredDataSource" class="form-control dropdown-item w-100" [textField]="'Code'"
+                  (filterChange)="handleFilter($event)" [valueField]="'Id'" (valueChange)="onSelect(this)" [allowCustom]="allowCustom"
+                  [placeholder]="placeholder|translate" [valuePrimitive]="true" name="IdItem" [formControlName]="IdItem"
+                  [popupSettings]="{ width: 300 }" (focus)="onFocus(this)" (focusout)="focusOut(this)" [filterable]="true"
+                  [disabled]="disabled" #Dropdown>
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Code}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.Description}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+
+    <!--footer template-->
+    <ng-template kendoComboBoxFooterTemplate>
+      <div class="container" *ngIf='showFilter'>
+        <hr>
+        <div class="row">
+          <div class="col-12">
+            <input (click)='selectFilter()' aria-controls="collapseBasic" class="input-checkbox100" id="dsa"
+                   name="remember-me" type="checkbox" [checked]='filtersItemDropdown.constaines'>
+            <label class="label-checkbox100" for="dsa" style="font-size: 13.5px !important">
+              {{'EQUAL'|translate}}&nbsp;
+            </label>
+          </div>
+        </div>
+      </div>
+      <app-drop-down-footer [addNew]="addNew.bind(this)" [nextPage]="nextPage.bind(this)" [Pager]="Pager.bind(this)"
+                            [skip]="gridState.skip" [take]="gridState.take" [total]="total" [hideBtn]='true'></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+  <i #searchButton class="fa fa-search fa-lg m-2" [class.disabled]="disabled" (click)="onSearchClicked()"
+     *ngIf='!hideSearch'></i>
+</div>

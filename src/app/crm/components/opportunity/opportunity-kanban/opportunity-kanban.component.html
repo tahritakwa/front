@@ -1,0 +1,150 @@
+<div style="width: 100% !important;">
+  <div style="max-width: 100%; margin-top: 10px" *ngIf="positionMap && allStatus && size">
+
+    <br/>
+    <div id="container" style="float: left; margin-top: 2%"
+         [ngStyle]="checkMediaQuery()?{'overflow-x':'auto','white-space':'nowrap'}:''">
+      <div *ngFor='let s of allStatus ; let i = index' style="margin-left: 5%;"
+           [ngStyle]="checkMediaQuery()?{'width':getWidhtToDisplay()}:{'width':'100%'}">
+        <div class="column" [style.width.%]="size" id={{positionMap[s]}}>
+          <button [ngStyle]="setMyStyles(statusColors[s],0)"></button>
+          <div style="background-color:#cccccc94;padding:8px;display: flow-root;">
+            <span class="opportunity-title">{{s}}</span>
+            <div style="float: right;">
+            <span tooltip="{{'ADD' | translate}}" (click)="showPopUp(i)" style="float: right" *ngIf="authService.hasAuthorities([CRMPermissions.ADD_TIERS])">
+              <i class="fa fa-plus blue fa-2x"></i>
+            </span>
+            <span *ngIf="showTotalInKanban"
+              class="totalEstimatedIncomeByStatus">{{opportunitiesByStatusToShow[s]?.totalOpportunitesByStatus | currency: currencyCodeTotale:'symbol':'1.0-0': 'fr'}}</span>
+          </div>
+          </div>
+          <div  *ngIf="hasEditPermission" [dragula]=" MANY_ITEMS" [(dragulaModel)]='opportunitiesByStatusToShow[s]' style="min-height: 100px;">
+            <div *ngFor='let itemOpp of opportunitiesByStatusToShow[s]' style="background-color:#cccccc94;padding: 10px;">
+              <div class="card-header px-3 py-2">
+                <span class="text-muted" style="font-size: 120%; font-weight: 400;white-space: pre-line;">  {{itemOpp.title}}  </span>
+              </div>
+              <div class="card" style="margin-bottom: 0px; !important;">
+                <div class="text-muted mt-1" style="padding-left: 15px;">
+                  <span class="estimatedIncome">
+                       {{itemOpp.estimatedIncome | currency: itemOpp.currencyFormat ? itemOpp.currencyFormat.currency : defaultCurrancyCode:'symbol':'1.0-0' :'fr'}}</span>
+                </div>
+                <div class="text-muted mt-1" style="padding-left: 15px;">
+                  {{'ORGANISM_LABEL' | translate}}: <span class="text-detail">
+                   {{getOpportunityClientName(itemOpp)}}</span>
+                </div>
+                <div *ngIf="itemOpp.employeeFullName!== undefined "
+                     class="text-muted mt-1" style="padding-left: 15px;">
+                  {{'EMPLOYEE' | translate}}: <span class="text-detail">
+                   {{itemOpp.employeeFullName}}</span>
+                </div>
+                <div *ngIf="itemOpp.responsableFullName!== undefined "
+                     class="text-muted mt-1" style="padding-left: 15px;">
+                  {{'RESPONSIBLE' | translate}}: <span class="text-detail">
+                   {{itemOpp.responsableFullName}}</span>
+                </div>
+                <div *ngIf="itemOpp.productIdList!== undefined">
+                  <div *ngFor='let product of itemOpp.productIdList' class="text-muted mt-1"
+                       style="padding-left: 15px;">
+                    {{'PRODUCT' | translate}}: <span class="text-detail">
+                   {{product.Descreption}}</span>
+                  </div>
+                </div>
+                <div class="text-muted mt-1" style="padding-left: 15px;display: block;">
+                  {{'PROBABILITY_OF_OCCURENCE' | translate}}:
+                  <bar-rating [readOnly]="true" style="float: right;margin-top: -6%;margin-left: 2%;"
+                              [(rate)]="itemOpp.probabiltyOccurecnce" [max]="5"></bar-rating>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span style="float: right;margin: 3px;" (click)="removeHandler(itemOpp)" *ngIf="authService.hasAuthorities([CRMPermissions.DELETE_OPPORTUNITY])"
+                      tooltip="{{'DELETE' | translate}}"><i
+                  class="fa fa-trash-o fa-2x addIcon"></i></span>
+                <span style="float: right;margin: 3px;" (click)="archiveAction(itemOpp.id)"  *ngIf="authService.hasAuthorities([CRMPermissions.ARCHIVE_OPPORTUNITY])"
+                      tooltip="{{'ARCHIVE' | translate}}"><i
+                  class="fa fa-archive fa-2x addIcon"></i></span>
+              </div>
+            </div>
+          </div>
+          <div  *ngIf="!hasEditPermission"  style="min-height: 100px;">
+            <div *ngFor='let itemOpp of opportunitiesByStatusToShow[s]' style="background-color:#cccccc94;padding: 10px;">
+              <div class="card-header px-3 py-2">
+                <span class="text-muted" style="font-size: 120%; font-weight: 400;white-space: pre-line;">  {{itemOpp.title}}  </span>
+              </div>
+              <div class="card" style="margin-bottom: 0px; !important;">
+                <div class="text-muted mt-1" style="padding-left: 15px;">
+                  <span class="estimatedIncome">
+                       {{itemOpp.estimatedIncome | currency: itemOpp.currencyFormat ? itemOpp.currencyFormat.currency : defaultCurrancyCode:'symbol':'1.0-0' :'fr'}}</span>
+                </div>
+                <div class="text-muted mt-1" style="padding-left: 15px;">
+                  {{'ORGANISM_LABEL' | translate}}: <span class="text-detail">
+                   {{getOpportunityClientName(itemOpp)}}</span>
+                </div>
+                <div *ngIf="itemOpp.employeeFullName!== undefined "
+                     class="text-muted mt-1" style="padding-left: 15px;">
+                  {{'EMPLOYEE' | translate}}: <span class="text-detail">
+                   {{itemOpp.employeeFullName}}</span>
+                </div>
+                <div *ngIf="itemOpp.responsableFullName!== undefined "
+                     class="text-muted mt-1" style="padding-left: 15px;">
+                  {{'RESPONSIBLE' | translate}}: <span class="text-detail">
+                   {{itemOpp.responsableFullName}}</span>
+                </div>
+                <div *ngIf="itemOpp.productIdList!== undefined">
+                  <div *ngFor='let product of itemOpp.productIdList' class="text-muted mt-1"
+                       style="padding-left: 15px;">
+                    {{'PRODUCT' | translate}}: <span class="text-detail">
+                   {{product.Descreption}}</span>
+                  </div>
+                </div>
+                <div class="text-muted mt-1" style="padding-left: 15px;display: block;">
+                  {{'PROBABILITY_OF_OCCURENCE' | translate}}:
+                  <bar-rating [readOnly]="true" style="float: right;margin-top: -6%;margin-left: 2%;"
+                              [(rate)]="itemOpp.probabiltyOccurecnce" [max]="5"></bar-rating>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span style="float: right;margin: 3px;" (click)="removeHandler(itemOpp)" *ngIf="authService.hasAuthorities([CRMPermissions.DELETE_OPPORTUNITY])"
+                      tooltip="{{'DELETE' | translate}}"><i
+                  class="fa fa-trash-o fa-2x addIcon"></i></span>
+                <span style="float: right;margin: 3px;" (click)="archiveAction(itemOpp.id)"  *ngIf="authService.hasAuthorities([CRMPermissions.ARCHIVE_OPPORTUNITY])"
+                      tooltip="{{'ARCHIVE' | translate}}"><i
+                  class="fa fa-archive fa-2x addIcon"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<app-side-nav-opportunity-details *ngIf="showSidNav" (closeSidNav)="hideSidNav($event)"
+                                  (componentUpdated)="detailUpdatedSucess($event)"
+                                  [data]="opportunityDetailsToShow"></app-side-nav-opportunity-details>
+
+
+<div class="modal fade" role="alertdialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" tabindex="-1"
+     id="generatePopup" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>{{'REASON_FOR_CHANGE'|translate}}</h5>
+        <button id="closeModal" type="button" class="close icon-close close-icon ng-star-inserted" data-dismiss="modal" aria-label="Close"
+                (click)="closeModal()">
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-popup-add-opportinity *ngIf="dragOpp" [dataOpp]="opportunityData"
+                                   (closeModalPopup)="closeModal($event)"></app-popup-add-opportinity>
+      </div>
+    </div>
+  </div>
+</div>
+
+<span class="k-button btnKendoGrid" id="openPopup"
+      style="background: #607D8B;    display: none;  color: white;" data-toggle="modal"
+      data-target="#generatePopup" type="button" href="#generatePopup">
+              <span><i class="fa fa-plus"></i>&nbsp;
+                {{'QUOTATION'|translate}}&nbsp;-&nbsp;BL</span>
+</span>

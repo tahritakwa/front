@@ -1,0 +1,77 @@
+<div class="card h-100">
+  <!-- Card header Start-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(isUpdateMode ? 'EDIT_KIT': 'ADD_KIT') | translate}}</h3>
+    </div>
+  </div>
+  <!-- Card Header End-->
+  <!-- Card Body Start -->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="kitFormGroup">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'NAME_KIT' | translate}}<span class="required">*</span>
+              </label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <input type="text" class="form-control" formControlName="Name" [ngClass]="{ 'has-error': (kitFormGroup.controls.Name.touched 
+                      || kitFormGroup.controls.Name.dirty) && !kitFormGroup.controls.Name.valid }" />
+                <app-control-messages [control]="kitFormGroup.controls.Name"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Begin accordion -->
+      <p-accordion [multiple]="true" class="w-100">
+        <!-- Operations grid Start -->
+        <p-accordionTab header="{{'OPERATIONS'| translate}}"
+          (selectedChange)="openOperationFirstCollapse = !openOperationFirstCollapse"
+          [selected]="openOperationFirstCollapse">
+          <div class="row">
+            <app-operation-for-kit-operation *ngIf="!isUpdateMode || (isUpdateMode && operationKitToUpdate)"
+              #operationKitOperationViewChild [listOperation]="operationsAssociated"
+              [operationListIdsToIgnore]="operationListIdsToIgnore" [idOperationKit]="id"
+              [isFromItem]="isFromItem" [hasUpdatePermission]="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+            </app-operation-for-kit-operation>
+          </div>
+        </p-accordionTab>
+
+        <!-- items grid Start -->
+        <p-accordionTab header="{{'NECESSARY_PARTS'| translate}}"
+          (selectedChange)="openItemFirstCollapse = !openItemFirstCollapse" [selected]="openItemFirstCollapse">
+          <div class="row">
+            <app-grid-spare-parts *ngIf="!isUpdateMode || (isUpdateMode && operationKitToUpdate)" #sparePartsViewChild
+              [listItems]="itemsAssociated" [idOperationKit]="id"
+              (sendFromItem)= "receiveDataFromItem($event)" [hasUpdatePermission]="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+            </app-grid-spare-parts>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+    </form>
+  </div>
+  <!-- Card Body End -->
+  <!--Begin Card footer Start-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="listUrl">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Begin Card footer End-->
+</div>

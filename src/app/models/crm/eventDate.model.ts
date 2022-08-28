@@ -1,0 +1,28 @@
+import {Address} from './address.model';
+
+export class EventDateModel {
+  id: number;
+  name: string;
+  type: string;
+  startDate: any;
+  reminderDate: any;
+  endDate: any;
+  duration: number;
+  deadLine: Date;
+  progress: string;
+  priority: string;
+  state: string;
+  associatedOpportunityId: number;
+  organizationId: number;
+  description: string;
+  address: Address;
+  contactConcernedId: number;
+  associatedOppClientId: number;
+  contactClientId: number;
+  concernedOrgClientId: number;
+  reminders: any[];
+  frequency: any;
+  lat: number;
+  lng: number;
+  commercialAssignedToId: number;
+}

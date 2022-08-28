@@ -1,0 +1,148 @@
+<div class="card">
+  <div *ngIf="!isModal" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 *ngIf="!isUpdateMode" class="card-title mb-0">{{'ADD_LEAVE_TYPE'|translate}}</h3>
+      <h3 *ngIf="isUpdateMode" class="card-title mb-0">{{'UPDATE_LEAVE_TYPE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="leaveTypeFormGroup" class="form-horizontal">
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+          <div class="form-group row">
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}<span class="required">*</span></label>
+              <input class="form-control" formControlName="Code" type="text">
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'LABEL'|translate}}<span class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (Label.touched || Label.dirty) && !Label.valid }" class="form-control" formControlName="Label"
+                     type="text">
+              <app-control-messages [control]="Label" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'MAXIMIM_NUMBER_OF_DAYS'|translate}}<span
+                class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (MaximumNumberOfDays.touched || MaximumNumberOfDays.dirty) && !MaximumNumberOfDays.valid }" class="form-control"
+                     formControlName="MaximumNumberOfDays" min="1" type="text"
+                     type="number">
+              <app-control-messages [control]="MaximumNumberOfDays" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PERIOD'|translate}}<span
+                class="required">*</span></label>
+              <kendo-combobox (valueChange)="updateValue()"
+                              [data]="unitDataSource" [valuePrimitive]="true" formControlName="Period" name="Period"
+                              style="padding-bottom: 0.18em;" textField="name" valueField="value"></kendo-combobox>
+              <app-control-messages [control]="Period" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+              <textarea [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }" class="form-control" formControlName="Description"
+                        type="text"></textarea>
+              <app-control-messages [control]="Description" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3 col-md-3 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" class="input-checkbox100" formControlName="Paid" id="Paid" name="Paid"
+                     type="checkbox">
+              <label class="label-checkbox100" for="Paid" style="margin-top: 2%;">
+                {{'PAID'|translate}}&nbsp;
+              </label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" class="input-checkbox100" formControlName="Calendar" id="Calendar" name="Calendar"
+                     type="checkbox">
+              <label class="label-checkbox100" for="Calendar" style="margin-top: 2%;">
+                {{'CALENDAR_LEAVE'|translate}}&nbsp;
+              </label>
+            </div>
+            <div class="ccol-lg-3 col-md-3 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" (click)='clickCumulable()' [checked]="isCumulable ? 'checked': null" class="input-checkbox100"
+                     formControlName="Cumulable" id="Cumulable" name="Cumulable"
+                     type="checkbox">
+              <label class="label-checkbox100" for="Cumulable" style="margin-top: 2%;">
+                {{'CUMULABLE'|translate}}&nbsp;
+              </label>
+            </div>
+            <div *ngIf="isCumulable" class="col-lg-3 col-md-3 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'EXPIRY_DATE'|translate}}
+                <i class="fa fa-info-circle fa-lg"
+                   style="text-align: center;padding: 0; color: #4c9aae;cursor: pointer;margin-right: 15px;"
+                   tooltip="{{'EXPIRY_DATE_VALIDITY'|translate}}"></i> </label>
+              <kendo-datepicker [format]="'dd/MM'" [max]="maxDate" [min]="minDate"
+                                class="form-control" formControlName="ExpiryDate" formatPlaceholder="formatDate"
+                                onkeydown="return false;">
+                <ng-template kendoCalendarNavigationItemTemplate let-date="date" let-title let-view="activeView">
+                  {{view === 'month' && date.getMonth() === 0 ? 'Jan' : title}}
+                </ng-template>
+                <ng-template kendoCalendarHeaderTitleTemplate let-title>
+                </ng-template>
+                <kendo-datepicker-messages today="" toggle="Cambiar calendario"></kendo-datepicker-messages>
+              </kendo-datepicker>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-3 col-md-3 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" class="input-checkbox100" formControlName="AuthorizedOvertaking"
+                     id="AuthorizedOvertaking" name="AuthorizedOvertaking" type="checkbox">
+              <label class="label-checkbox100" for="AuthorizedOvertaking" style="margin-top: 2%;">
+                {{'AUTHORIZEDOVERTAKING'|translate}}&nbsp;
+              </label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" class="input-checkbox100" formControlName="Worked"
+                     id="Worked" name="Worked" type="checkbox">
+              <label class="label-checkbox100" for="Worked" style="margin-top: 2%;">
+                {{'WORKED'|translate}}&nbsp;
+              </label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" class="input-checkbox100" formControlName="RequiredDocument"
+                     id="RequiredDocument" name="RequiredDocument" type="checkbox">
+              <label class="label-checkbox100" for="RequiredDocument" style="margin-top: 2%;">
+                {{'REQUIRED_DOCUMENT'|translate}}&nbsp;
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End principal menu  part -->
+      <br/>
+      <button (click)="save()" *ngIf="isModal && (hasUpdateLeaveTypePermission && isUpdateMode || hasAddLeaveTypePermission && !isUpdateMode)" class="btn btn-sm btn-danger" type="submit">
+        <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+      </button>
+    </form>
+  </div>
+  <div class="fixed-card-footer" *ngIf="!isModal">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a *ngIf="!isModal" (click)="backToList()" >
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button *ngIf="!isModal && (hasUpdateLeaveTypePermission && isUpdateMode || hasAddLeaveTypePermission && !isUpdateMode)"
+                (click)="save()" class="btn btn-sm btn-success" type="submit">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="save()" type="submit" 
+              *ngIf="isModal && (hasUpdateLeaveTypePermission && isUpdateMode || hasAddLeaveTypePermission && !isUpdateMode)">
+                <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'ADD') |translate}}
+              </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<div [formGroup]="group">
+  <kendo-dropdownlist [data]="interviewTypeFiltredDataSource"
+                      [disabled]="disabled"
+                      [ngClass]="{ 'has-error': (IdInterviewType.touched || IdInterviewType.dirty) && !IdInterviewType.valid }"
+                      [textField]="'Label'"
+                      [valueField]="'Id'"
+                      [valuePrimitive]="true"
+                      class="form-control"
+                      formControlName="IdInterviewType">
+
+    <!--footer template-->
+    <ng-template *ngIf="hasAddInterviewTypePermission" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-dropdownlist>
+</div>

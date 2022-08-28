@@ -1,0 +1,42 @@
+input[type="file"] {
+  display: none;
+}
+
+.imgSize {
+  border: 3px groove #b4d78a4d;
+  padding: 3px;
+  height: 200px;
+}
+
+@media only screen and (min-width: 1450px) {
+  .imgSize {
+    width: 200px;
+  }
+  #imagemachinediv{
+    height: 85%;
+  }
+}
+
+@media screen and (max-width: 1450px) and (min-width: 1200px) {
+  .imgSize {
+    width: 150px;
+  }
+  #imagemachinediv{
+    height: 75%;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+  .imgSize {
+    width: 120px;
+  }
+  #imagemachinediv{
+    height: 60%;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .imgSize {
+    width: 200px;
+  }
+}

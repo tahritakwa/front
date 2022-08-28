@@ -1,0 +1,168 @@
+<div class="card">
+  <div class="card-header" *ngIf="!isModal">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_LEAVE_TYPE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sortable]="true" filterable="menu" [reorderable]="true" [columnMenu]="true" (remove)="removeHandler($event)"
+        [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter" [selectable]="true"
+        (dataStateChange)="dataStateChange($event)" (edit)="editHandler($event)" [pageable]="pagerSettings">
+        <!-- Head Start-->
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row" style="float :right; margin-right: 40px;">
+            <app-btn-grid [advencedAdd]="hasAddLeaveTypePermission" [export]="true" [addLink]="'add'"
+              style="margin-top: -5%;    display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!-- Head end-->
+        <!--Code-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+          [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+          [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+          [format]="gridSettings.columnsConfig[0].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Label -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [format]="gridSettings.columnsConfig[1].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--MaximumNumberOfDays-->
+        <kendo-grid-column [field]=gridSettings.columnsConfig[2].field
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+          [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+          [format]="gridSettings.columnsConfig[2].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Paid -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+          [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+          [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+          [format]="gridSettings.columnsConfig[3].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[3].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Paid == 1"><span class="badge badge-success"><i
+                  class="fa fa-check"></i></span></div>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Paid == 0">
+              <span class="badge badge-danger" style="text-align:center">
+                <i class="fa fa-close" style="width: 13px;height:11px;"></i>
+              </span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--RequiredDocument-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+          [title]="gridSettings.columnsConfig[4].title| translate" [width]="gridSettings.columnsConfig[4]._width"
+          [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+          [format]="gridSettings.columnsConfig[4].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[4].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div style="padding-right: 20%;" *ngIf="dataItem.RequiredDocument == 1"><span class="badge badge-success"><i
+                  class="fa fa-check"></i></span></div>
+            <div style="padding-right: 20%;" *ngIf="dataItem.RequiredDocument == 0">
+              <span class="badge badge-danger" style="text-align:center">
+                <i class="fa fa-close" style="width: 13px;height:11px;"></i>
+              </span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--DayOffAndWeekend-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+          [title]="gridSettings.columnsConfig[5].title| translate" [width]="gridSettings.columnsConfig[5]._width"
+          [filter]="gridSettings.columnsConfig[5].filter" [filterable]="gridSettings.columnsConfig[5].filterable"
+          [format]="gridSettings.columnsConfig[5].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[5].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[5].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Calendar == 1"><span class="badge badge-success"><i
+                  class="fa fa-check"></i></span></div>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Calendar == 0">
+              <span class="badge badge-danger" style="text-align:center">
+                <i class="fa fa-close" style="width: 13px;height:11px;"></i>
+              </span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Cumulable-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+          [title]="gridSettings.columnsConfig[6].title| translate" [width]="gridSettings.columnsConfig[6]._width"
+          [filter]="gridSettings.columnsConfig[6].filter" [filterable]="gridSettings.columnsConfig[6].filterable"
+          [format]="gridSettings.columnsConfig[6].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[6].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[6].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Cumulable == 1"><span class="badge badge-success"><i
+                  class="fa fa-check"></i></span></div>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Cumulable == 0">
+              <span class="badge badge-danger" style="text-align:center">
+                <i class="fa fa-close" style="width: 13px;height:11px;"></i>
+              </span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Worked-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[7].field"
+          [title]="gridSettings.columnsConfig[7].title| translate" [width]="gridSettings.columnsConfig[7]._width"
+          [filter]="gridSettings.columnsConfig[7].filter" [filterable]="gridSettings.columnsConfig[7].filterable"
+          [format]="gridSettings.columnsConfig[7].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[7].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[7].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Worked == 1"><span class="badge badge-success"><i
+                  class="fa fa-check"></i></span></div>
+            <div style="padding-right: 20%;" *ngIf="dataItem.Worked == 0">
+              <span class="badge badge-danger" style="text-align:center">
+                <i class="fa fa-close" style="width: 13px;height:11px;"></i>
+              </span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Command-->
+        <kendo-grid-command-column [width]="130" [columnMenu]="false">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button (click)="goToAdvancedEdit(dataItem.Id)"  style="background-color: transparent;" *ngIf="hasShowLeaveTypePermission || hasUpdateLeaveTypePermission"
+            tooltip="{{'UPDATE'|translate}}">
+              <i class="las la-pen edit-pencil cursor-pointer la-lg"></i>
+            </button>
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button kendoGridRemoveCommand style="background-color: transparent;" *ngIf="hasDeleteLeaveTypePermission" tooltip="{{'DELETE'|translate}}">
+              <i class="fa fa-trash-o la-lg mx-2 text-danger"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" fileName="{{'LIST_LEAVE_TYPE'|translate}}" pdf="true"
+          excel="true" [service]="leaveTypeService" [predicate]="predicate">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<div [formGroup]="form">
+  <kendo-multiselect class="form-control"
+                     [data]="roleFiltredDataSource"
+                     [textField]="'RoleName'"
+                     [valueField]="'Id'"
+                     placeholder="Role"
+                     formControlName="UserRole"
+                     [(ngModel)]="selectedValues"
+                     [valuePrimitive]="true"
+                     [ngClass]="{ 'has-error': (UserRole.touched || UserRole.dirty) && !UserRole.valid }"
+                     [filterable]="true"
+                     [disabled]="isDisabled"
+                     (filterChange)="handleFilter($event)">
+  </kendo-multiselect>
+  <ng-template kendoMultiSelectCustomItemTemplate let-dataItem>
+    <span class="template">{{ dataItem?.Code }}</span>&nbsp;{{ dataItem?.RoleName }}
+  </ng-template>
+  <!--footer template-->
+  <ng-template kendoMultiSelectFooterTemplate>
+    <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+  </ng-template>
+  <!--end footer template-->
+</div>

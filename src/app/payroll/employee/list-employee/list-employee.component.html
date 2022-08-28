@@ -1,0 +1,164 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_EMPLOYEE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="row" style="margin-left: 10px;margin-bottom: -10px;margin-top: 20px;">
+    <div class="dropdown-width">
+      <kendo-combobox  (valueChange)="onCheckAllEmployees($event)" [data]="employeeStates"
+      [valuePrimitive]="true" class="form-control" name="State"
+      textField="text" valueField="value" [(ngModel)]="stateValue">
+    </kendo-combobox>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-12">
+      <app-search-employee (sendData)="receiveData($event)"></app-search-employee>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row" style="margin-right: 40px;">
+      <div class="row" style="margin-left: auto;">
+        <div style="margin-top: 12px;margin-right: 5px;">
+          <i class="fa fa-history fa-lg cursor-pointer"  (click)="synchronizeEmployees()"
+            tooltip="{{'SYNCHRONIZE_EMPLOYEE' | translate}}" style="color: #20a8d8;"></i>
+        </div>
+        <a routerLink="/main/payroll/employee/organizationChart"
+          style="background: transparent; margin-right: 7px; margin-top: 2px;">
+          <div class='favourite' style="box-shadow: none; font-size: 18px;">
+            <div class='favourite_heart'>
+              <i aria-hidden="true" style="margin-left:-2px;color: #20a8d8;" class="fa fa-sitemap" tooltip="{{'ORGANIZATION_CHART' | translate}}"></i>
+            </div>
+          </div>
+        </a>
+        <div style="margin-top: 11px;margin-right: 14px;">
+            <i class="fa fa-refresh fa-lg cursor-pointer"  (click)="calculateLeaveBalanceRemaining()" *ngIf="hasCalculatePermission"
+            tooltip="{{'UPDATE_LEAVE_REMAINING_BALANCE_DATA' | translate}}" style="color: #20a8d8;"></i>
+            </div>
+        <app-btn-grid class="d-inline-flex float-right"
+        [fileName]="'LIST_EMPLOYEE'|translate" [advencedAdd]='hasAddPermission' [addLink]='"add"' [predicate]="predicate"
+          [isExportExcel]='true' [isExportModel]="true" [isImportFile]="true" [model]='true' [gridSettings]="gridSettings"
+          [relativeStyle]='hasAddPermission' [service]="employeeService"
+          (incomingFileEvent)="incomingFile($event)" (downLoadFileEvent)="downLoadFile($event)"
+          [cardView]='!isCardView' [listView]='isCardView' (cardViewEvent)="changeViewToCard()" (listViewEvent)="changeViewToList()"></app-btn-grid>
+      </div>
+    </div>
+    <div *ngIf="!isCardView">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sortable]="true" [pageable]="pagerSettings" filterable="menu" [reorderable]="true" [columnMenu]="true"
+        (remove)="removeHandler($event)" (sortChange)="sortChange($event)" [sort]="gridSettings.state.sort"
+        [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)" [selectable]="true">
+        <!-- Head end-->
+        <kendo-grid-column [title]="gridSettings.columnsConfig[0].title | translate"
+          [width]="gridSettings.columnsConfig[0]._width" [filter]="gridSettings.columnsConfig[0].filter"
+          [filterable]="gridSettings.columnsConfig[0].filterable"
+          [format]="gridSettings.columnsConfig[0].format" [tooltip]="gridSettings.columnsConfig[0].title"
+          [field]="gridSettings.columnsConfig[0].field" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'EMPLOYEE' | translate}}"
+              theme="light">{{'EMPLOYEE' | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="row cursor-pointer"
+              (click)="goToProfil(dataItem)">
+              <div class="col-auto">
+                <div class="customer-photo d-flex justify-content-center">
+                  <img id="ThumbnailEmployee" class="imgSize" alt="Illustration des problèmes de suddation" border="0" [src]="dataItem.image"/>
+                </div>
+              </div>
+              <span style="margin-top: 5px;margin-left: 10px;"> {{dataItem.FirstName}} {{dataItem.LastName}} </span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+              
+        <!--Réfèrence-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [format]="gridSettings.columnsConfig[1].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Email-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+          [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+          [format]="gridSettings.columnsConfig[2].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <a href="mailto:{{dataItem.Email}}">{{dataItem.Email}}</a>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Num Telephone-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+        [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+        [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+        [format]="gridSettings.columnsConfig[3].format" [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[3].title|translate}}"
+            theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+        </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <span *ngIf="dataItem.PersonalPhone">{{dataItem.PersonalPhone}}</span>
+            <span *ngIf="!dataItem.PersonalPhone">-</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--IsActive-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+          [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+          [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+          [format]="gridSettings.columnsConfig[4].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[4].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="dataItem.Status == employeeState.Active"><span
+                class="badge badge-success">{{'ACTIVE'|translate}}</span></div>
+            <div *ngIf="dataItem.Status == employeeState.Resigning"><span
+                class="badge badge-warning">{{'RESIGNING'|translate}}</span></div>
+            <div *ngIf="dataItem.Status == employeeState.Resigned"><span
+                class="badge badge-danger">{{'RESIGNED'|translate}}</span></div>
+          </ng-template>
+        </kendo-grid-column> 
+         <!--Actions-->
+         <kendo-grid-command-column [width]="90" [title]="'ACTIONS'| translate" [columnMenu]="false">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!--Open advanced edit form -->
+            <i class="las la-pen cursor-pointer edit-pencil la-lg" aria-hidden="true" 
+            *ngIf="(dataItem.Status === employeeStateEnumerator.Resigned && (hasShowEmployeePermission || hasUpdatePermission) && hasShowResignedEmployeePermission) ||
+              (dataItem.Status !== employeeStateEnumerator.Resigned && (hasShowEmployeePermission || hasUpdatePermission))"
+              (click)="goToAdvancedEdit(dataItem)"></i>
+              <i class="fa fa-trash-o la-lg mx-2 text-danger" aria-hidden="true" *ngIf="hasDeletePermission && dataItem.Status !== employeeStateEnumerator.Resigned"
+          (click)="removeHandler(dataItem)"></i>
+          </ng-template>
+        </kendo-grid-command-column>     
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" fileName="{{'LIST_EMPLOYEE'|translate}}" pdf="true" excel="true"
+          [service]="employeeService" [predicate]="predicate">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+    </div>
+    <div class="mb-3" *ngIf="isCardView && gridSettings && gridSettings.gridData">
+        <div *ngIf="hasCalculatePermission && showProgress">
+          <app-progress-bar [progress]="progression"></app-progress-bar>
+        </div>
+      <app-card-employee [employees]="gridSettings.gridData.data" [isCardView]="isCardView" [gridSettings]="gridSettings" (DoPaginte)="paginate($event)">
+    </app-card-employee>
+    </div>
+  </div>
+</div>
+<div class="overlay" style="z-index: 9999;"
+  [ngClass]="{'grid-importer-show':dataImported, 'grid-importer-hide': !dataImported}">
+  <a class="closebtn" (click)="onClosePopupImport()" style="z-index:999">&times;</a>
+  <div class="overlay-content" *ngIf="dataImported">
+    <app-grid-import [importResult]="importData" [saveImportedData]="saveImportedData.bind(this)"
+      [formGroup]="formGroup" [formGroupContract]="formGroupContract" [importColumnsConfig]="importColumnsConfig"
+      [importColumnsContractConfig]="importColumnsContractConfig"></app-grid-import>
+  </div>
+</div>

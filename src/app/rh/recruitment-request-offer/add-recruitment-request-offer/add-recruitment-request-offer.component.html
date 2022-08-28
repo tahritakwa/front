@@ -1,0 +1,602 @@
+<!-- Begin principal menu  part-->
+<div class="card animated fadeIn">
+  <div [formGroup]="recruitmentNeedFormGroup" class="card-header">
+    <div class="row">
+      <div class="col-lg-8 col-md-8 col-sm-12">
+        <div class="row">
+          <div class="col-auto">
+            <h3 *ngIf="isRequest && !isUpdateMode" class="card-title mb-0">
+              {{ "ADD_RECRUITMENT_REQUEST" | translate }}
+            </h3>
+            <h3 *ngIf="isRequest && requestOfferToUpdate && requestOfferToUpdate.RequestStatus === statusCode.Waiting"
+                class="card-title mb-0">
+              {{ "UPDATE_RECRUITMENT_REQUEST" | translate }}
+            </h3>
+            <h3 *ngIf="isRequest && requestOfferToUpdate && requestOfferToUpdate.RequestStatus !== statusCode.Waiting"
+                class="card-title mb-0">
+              {{ "RECRUITMENT_REQUEST_TITLE" | translate }}
+            </h3>
+            <h3 *ngIf="isOffer && !isUpdateMode" class="card-title mb-0">
+              {{ "ADD_JOB_OFFER" | translate }}
+            </h3>
+            <h3 *ngIf="isOffer && requestOfferToUpdate && requestOfferToUpdate.OfferStatus !== offerStatus.Closed"
+                class="card-title mb-0">
+              {{ "EDIT_JOB_OFFER" | translate }}
+            </h3>
+            <h3 *ngIf="isOffer && requestOfferToUpdate && requestOfferToUpdate.OfferStatus === offerStatus.Closed"
+                class="card-title mb-0">
+              {{ "JOB_OFFER" | translate }}
+            </h3>
+          </div>
+          <div class="col-auto">
+            <input class="form-control " disabled formControlName='Code' style="background: transparent; border: none; margin-left: 5px !important; margin-top: 0.5px !important;
+                  font-size: 1.3125rem !important; color: #4c9aae !important;">
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isOffer" class="col-lg-4 col-md-4 col-sm-12" style="text-align:right">
+        <h4 *ngIf="requestOfferToUpdate && requestOfferToUpdate.OfferStatus === offerStatus.New"
+            class="statusAlignment">
+          <span class="badge badge-warning">{{"NEW" | translate}}</span>
+        </h4>
+        <h4 *ngIf="requestOfferToUpdate && requestOfferToUpdate.OfferStatus === offerStatus.Opened"
+            class="statusAlignment">
+          <span class="badge badge-success">{{"OPEN" | translate }}</span>
+        </h4>
+        <h4 *ngIf="requestOfferToUpdate && requestOfferToUpdate.OfferStatus === offerStatus.Closed"
+            class="statusAlignment">
+          <span class="badge badge-danger">{{ "CLOSED" | translate}}</span>
+        </h4>
+      </div>
+      <div *ngIf="isRequest" class="col-lg-4 col-md-4 col-sm-12" style="text-align:right">
+        <h4 *ngIf="requestOfferToUpdate &&requestOfferToUpdate.RequestStatus === statusCode.Waiting "
+            class="statusAlignment">
+          <span class="badge badge-warning">{{"WAITING" | translate }}</span>
+        </h4>
+        <h4 *ngIf="requestOfferToUpdate && requestOfferToUpdate.RequestStatus === statusCode.Refused"
+            class="statusAlignment">
+          <span class="badge badge-danger">{{"REFUSED" | translate }}</span>
+        </h4>
+        <h4 *ngIf=" requestOfferToUpdate && requestOfferToUpdate.RequestStatus === statusCode.Accepted"
+            class="statusAlignment">
+          <span class="badge badge-success">{{ "ACCEPTED" | translate }}</span>
+        </h4>
+        <h4 *ngIf="isRequest && requestOfferToUpdate && requestOfferToUpdate.RequestStatus === statusCode.Canceled "
+            class="statusAlignment">
+          <span class="badge badge-primary">{{"CANCELED" | translate}}</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+
+  <!--Begin First Card body-->
+  <div class="card-body">
+    <div [formGroup]="recruitmentNeedFormGroup" class="form-group row">
+      <div class="col-lg-10 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <!--Job title-->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'JOB'|translate}}<span class="required">*</span></label>
+              <div class="col-lg-8 col-md-10 col-sm-10">
+                <app-job-dropdown [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)"
+                  [group]="recruitmentNeedFormGroup">
+                </app-job-dropdown>
+                <app-control-messages [control]="IdJob" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!--End Job-->
+          <!-- office -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{ "OFFICE" | translate
+                }}<span class="required">*</span></label>
+              <div class="col-lg-8 col-md-10 col-sm-10">
+                <app-office-dropdownlist [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)"
+                  [group]="recruitmentNeedFormGroup">
+                </app-office-dropdownlist>
+                <app-control-messages [control]="IdOffice" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End office -->
+        </div>
+        <br/>
+        <div class="form-group row">
+          <!-- Priority -->
+          <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">
+                {{ "PRIORITY_TITLE" | translate
+                }}<span class="required">*</span>
+              </label>
+              <div class="col-lg-8 col-md-10 col-sm-10">
+                <app-priority-dropdwon [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)"
+                  [group]="recruitmentNeedFormGroup">
+                </app-priority-dropdwon>
+                <app-control-messages [control]="Priority" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Priority -->
+          <!-- Candidate Number -->
+          <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{ "EXPECTED_CANDIDATE_NUMBER" | translate }}
+                <span class="required">*</span></label>
+              <div class="col-lg-8 col-md-10 col-sm-10">
+                <input [attr.disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission) ? '' : null" [max]="100" [min]="1"
+                  [ngClass]="{'has-error': (ExpectedCandidateNumber.touched || ExpectedCandidateNumber.dirty) && !ExpectedCandidateNumber.valid}"
+                  class="form-control" formControlName="ExpectedCandidateNumber"
+                  type="number"/>
+                <app-control-messages [control]="ExpectedCandidateNumber" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End candidate number  -->
+          <!--Job Descritption-->
+          <div *ngIf="isOffer" class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">
+                {{'DESCRIPTION'|translate}} <span class="required">*</span>
+              </label>
+              <div class="col-lg-8 col-md-10 col-sm-10">
+                <textarea [attr.disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission) ? '' : null"
+                  [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }" class="form-control"
+                  formControlName="Description" rows="3" type="text"></textarea>
+                <app-control-messages [control]="recruitmentNeedFormGroup.controls.Description" class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Job Descrition -->
+          <!-- Reason of recruitment-->
+          <div *ngIf="isRequest" class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{ "REASON" | translate}}<span
+                class="required">*</span></label>
+              <div class="col-lg-8 col-md-10 col-sm-12">
+                <textarea [attr.disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission) ? '' : null"
+                  [ngClass]="{'has-error':(RequestReason.touched ||RequestReason.dirty) && !RequestReason.valid }"
+                  class="form-control" formControlName="RequestReason" rows="3" type="text">
+                </textarea>
+                <app-control-messages [control]="RequestReason" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Reason of recruitment -->
+        </div>
+        <br/>
+      </div>
+      <!-- Job offer picture -->
+      <div *ngIf="isOffer" class="col-lg-2 col-sm-12 col-md-12">
+        <input #fileInput (change)="uploadPictureFile($event);" accept="image/x-png,image/gif,image/jpeg" type='file'/>
+        <span (click)="deleteOfferPicture()" *ngIf="OfferPicture" class="close"
+              title="{{'DELETE' | translate}}">&times;</span>
+        <img (click)="fileInput.click()" [src]="OfferPicture || '../../../../assets/image/placeholder-logo.png'" border="0" class="imgSize" id="blah"
+             style="margin-top: -3px;"/>
+      </div>
+      <!-- End Job offer picture -->
+    </div>
+  </div>
+  <!--End Fist Card body-->
+
+  <!--Begin Second Card body-->
+  <div class="card-body">
+    <div>
+      <p-accordion [multiple]="true" class="w-100" (onClose)="onContractTabClose()">
+        <p-accordionTab *ngIf="isOffer" [formGroup]="contractFormGroup" [selected]="contractSelected"
+          header="{{'CONTRACT'|translate}}">
+          <div class="row" style="margin-top:25px; margin-left:15px">
+            <!-- Contract type-->
+            <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">
+                  {{ "CONTRACT_TYPE" | translate }}
+                  <span class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <app-contract-type-dropdown [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                      || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                      || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)"
+                    [group]="contractFormGroup">
+                  </app-contract-type-dropdown>
+                  <app-control-messages [control]="IdContractType" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Contract type -->
+            <!-- Start date -->
+            <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{'START_DATE'|translate}}
+                  <span class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <kendo-datepicker [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                      || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                      || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)" class="form-control"
+                    formControlName="StartDate">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="contractFormGroup.controls.StartDate" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Start date -->
+          </div>
+          <div class="row" style="margin-top:25px; margin-left:15px">
+            <!-- Working hours per day -->
+            <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{'WORKING_HOURS_PER_DAYS'|translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <input [attr.disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                      || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                      || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission) ? '' : null"
+                    [max]="10" [min]="1" [ngClass]="{ 'has-error': (WorkingHoursPerDays.touched || WorkingHoursPerDays.dirty) && !WorkingHoursPerDays.valid }" class="form-control"
+                    formControlName="WorkingHoursPerDays"
+                    type="number"/>
+                  <app-control-messages [control]="contractFormGroup.controls.WorkingHoursPerDays" class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Working hours per day -->
+          </div>
+          <br/>
+        </p-accordionTab>
+        <br/>
+      </p-accordion>
+      <p-accordion (onClose)="onProfilTabClose()">
+        <p-accordionTab [formGroup]="profilFormGroup" [selected]="profilSelected" header="{{'PROFIL'|translate}}">
+          <br/>
+          <div class="row" style="margin-top:25px; margin-left:15px">
+            <!-- Grade-->
+            <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">
+                  {{ "QUALIFICATION_TYPE" | translate }}
+                  <span class="required">*</span>
+                </label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <app-qualification-type-dropdown [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)" [group]="profilFormGroup">
+                  </app-qualification-type-dropdown>
+                  <app-control-messages [control]="IdQualificationType" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Grade -->
+            <!-- Experience year -->
+            <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{ "YEAR_OF_EXPERIENCE" | translate}}
+                  <span class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <input [attr.disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                      || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                      || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission) ? '' : null"
+                    [max]="10" [min]="0" [ngClass]="{'has-error':(YearOfExperience.touched || YearOfExperience.dirty) &&!YearOfExperience.valid }" class="form-control"
+                    formControlName="YearOfExperience" type="number"/>
+                  <app-control-messages [control]="YearOfExperience" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Experience year -->
+          </div>
+          <div class="row" style="margin-top:25px; margin-left:15px">
+            <!-- Gender-->
+            <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:15px">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{ "GENDER" | translate }}
+                  <span class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <app-sex-dropdown [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                      || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                      || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)" [group]="profilFormGroup"
+                    [undetermined]="true">
+                  </app-sex-dropdown>
+                  <app-control-messages [control]="Sex" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Gender -->
+
+          </div>
+          <br/>
+        </p-accordionTab>
+        <br/>
+      </p-accordion>
+      <p-accordion [multiple]="true">
+        <!-- RequiredSkills -->
+        <p-accordionTab [formGroup]="recruitmentNeedFormGroup" header="{{ 'SKILLS_REQUIRED' | translate }}">
+          <table class="table table-responsive table-bordered">
+            <thead>
+            <tr>
+              <th rowspan="2" style="text-align: center; vertical-align: middle;">
+                {{ "SKILLS" | translate }}
+              </th>
+              <th rowspan="2" style="text-align: center; vertical-align: middle; width: 60%;">
+                {{ "TITLE" | translate }}
+              </th>
+              <th rowspan="2" style="text-align: center; vertical-align: middle; width: 50%;">
+                {{ "LEVEL" | translate }}
+              </th>
+              <th rowspan="2" style="text-align: center; vertical-align: middle;">
+                {{ "ACTION" | translate }}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor=" let recruitmentSkill of RecruitmentSkills.controls; let i = index"
+                [formGroup]="recruitmentSkill">
+              <th scope="row" style="text-align: center; vertical-align: middle;">
+                {{ i + 1 }}
+              </th>
+
+              <td style="text-align: center !important; vertical-align: middle !important;">
+                <div style="width: 30em; margin-left: 2em;">
+                  <app-skills-dropdown (selected)='onSelectSkill($event)' [skillsForm]="recruitmentSkill"
+                    [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)">
+                  </app-skills-dropdown>
+                  <div *ngIf="SkillHasError && RecruitmentSkills.controls.length === i + 1"
+                       class="col-lg-12 col-md-12 col-sm-12 col-12 error-msg messages text-left text-danger">
+                    {{errorValidationSkill}}
+                  </div>
+
+                  <app-control-messages [control]="recruitmentSkill.controls.IdSkills"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </td>
+              <td>
+                <bar-rating [max]="6" [theme]="'default'" formControlName="Rate"
+                  [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)">
+                </bar-rating>
+                <app-control-messages [control]="recruitmentSkill.controls.Rate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </td>
+              <td>
+                <button *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode && requestOfferToUpdate
+                    && ((isOffer && (requestOfferToUpdate.OfferStatus === offerStatus.New || requestOfferToUpdate.OfferStatus === offerStatus.Opened))
+                      || (isRequest && requestOfferToUpdate.RequestStatus === statusCode.Waiting)))" (click)="deleteRequestSkills(recruitmentSkill.getRawValue(), i)"
+                  [ngClass]="'delete-button-style'" class="noPadding btn-Add k-button" style="border: none" type="button">
+                  <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                </button>
+                <button (click)="addRequestSkills()" *ngIf="!SkillHasError && RecruitmentSkills.controls.length === i + 1
+                  && ((hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode && requestOfferToUpdate
+                  && ((isOffer && (requestOfferToUpdate.OfferStatus === offerStatus.New || requestOfferToUpdate.OfferStatus === offerStatus.Opened))
+                    || (isRequest && requestOfferToUpdate.RequestStatus === statusCode.Waiting))))" [ngClass]="'add-button-style'"
+                  class="noPadding btn-Add k-button" dir="ltr" style="border: none;" type="button">
+                  <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div *ngIf="RecruitmentSkills.controls.length === 0" class="skills-not-found-row-sytle">
+            <div class="row">
+              <div class="col-lg-9" style="text-align: center; font-size: 1.2em; margin-top: 0.3em;">
+                {{ "NO_SKILLS_FOR_THIS_REQUEST" | translate }}
+              </div>
+              <div style="margin-left: 13em;">
+                <button *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode && requestOfferToUpdate
+                  && ((isOffer && (requestOfferToUpdate.OfferStatus === offerStatus.New || requestOfferToUpdate.OfferStatus === offerStatus.Opened))
+                    || (isRequest && requestOfferToUpdate.RequestStatus === statusCode.Waiting)))"
+                  (click)="addRequestSkills()" class="noPadding btn-Add k-button" dir="ltr" style="border: none;" type="button">
+                  <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                  <span>&nbsp;{{ "ADD" | translate }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </p-accordionTab>
+        <br/>
+        <!-- End RequiredSkills -->
+        <!--LinguisticKnowledge-->
+        <p-accordionTab [formGroup]="recruitmentNeedFormGroup" header="{{'LINGUISTIC_KNOWLEDGE'|translate }}">
+          <table class="table table-responsive table-bordered">
+            <thead>
+            <tr>
+              <th rowspan="2" style="text-align: center; vertical-align: middle;">
+                {{ "LANGUAGES" | translate }}
+              </th>
+              <th rowspan="2" style="text-align: center; vertical-align: middle; width: 60%;">
+                {{ "TITLE" | translate }}
+              </th>
+              <th rowspan="2" style="text-align: center; vertical-align: middle; width: 50%;">
+                {{ "LEVEL" | translate }}
+              </th>
+              <th rowspan="2" style="text-align: center; vertical-align: middle;">
+                {{ "ACTION" | translate }}
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let recruitmentLanguage of RecruitmentLanguage.controls;
+                              let i = index" [formGroup]="recruitmentLanguage">
+              <th scope="row" style="text-align: center; vertical-align: middle;">
+                {{ i + 1 }}
+              </th>
+              <td style="text-align: center !important; vertical-align: middle !important;">
+                <div style="width: 30em; margin-left: 2em;">
+                  <app-language-knowledge-dropdown (selected)='onSelectLanguage($event)' [group]="recruitmentLanguage"
+                    [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                      || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                      || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)">
+                  </app-language-knowledge-dropdown>
+                  <div *ngIf="LanguageHasError && RecruitmentLanguage.controls.length === i + 1"
+                       class="col-lg-12 col-md-12 col-sm-12 col-12 error-msg messages text-left text-danger">
+                    {{errorValidationSkill}}
+                  </div>
+
+                  <app-control-messages [control]="recruitmentLanguage.controls.IdLanguage"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </td>
+              <td>
+                <bar-rating [max]="6" [theme]="'default'" formControlName="Rate"
+                  [disabled]="requestOfferToUpdate && (requestOfferToUpdate.OfferStatus === offerStatus.Closed
+                    || requestOfferToUpdate.RequestStatus === statusCode.Accepted || requestOfferToUpdate.RequestStatus === statusCode.Refused  
+                    || requestOfferToUpdate.RequestStatus === statusCode.Canceled || !hasUpdatePermission)">
+                </bar-rating>
+                <app-control-messages [control]="recruitmentLanguage.controls.Rate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </td>
+              <td>
+                <button *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode && requestOfferToUpdate
+                    && ((isOffer && (requestOfferToUpdate.OfferStatus === offerStatus.New || requestOfferToUpdate.OfferStatus === offerStatus.Opened))
+                      || (isRequest && requestOfferToUpdate.RequestStatus === statusCode.Waiting)))" (click)="deleteRequestLanguage(recruitmentLanguage.getRawValue(),i)"
+                  [ngClass]="'delete-button-style'" class="noPadding btn-Add k-button" style="border: none" type="button">
+                  <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                </button>
+                <button (click)="addRequestLanguage()" *ngIf="RecruitmentLanguage.controls.length === i + 1 && !LanguageHasError
+                  && ((hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode && requestOfferToUpdate
+                    && ((isOffer && (requestOfferToUpdate.OfferStatus === offerStatus.New || requestOfferToUpdate.OfferStatus === offerStatus.Opened))
+                      || (isRequest && requestOfferToUpdate.RequestStatus === statusCode.Waiting))))"
+                  [ngClass]="'add-button-style'" class="noPadding btn-Add k-button" dir="ltr" style="border: none;" type="button">
+                  <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div *ngIf="RecruitmentLanguage.controls.length === 0" class="skills-not-found-row-sytle">
+            <div class="row">
+              <div class="col-lg-9" style="text-align: center; font-size: 1.2em; margin-top: 0.3em;">
+                {{ "NO_LINGUISTIC_KNOWLEDGE_FOR_THIS_REQUEST" | translate }}
+              </div>
+              <div style="margin-left: 13em;">
+                <button *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode && requestOfferToUpdate
+                    && ((isOffer && (requestOfferToUpdate.OfferStatus === offerStatus.New || requestOfferToUpdate.OfferStatus === offerStatus.Opened))
+                      || (isRequest && requestOfferToUpdate.RequestStatus === statusCode.Waiting)))" (click)="addRequestLanguage()"
+                  class="noPadding btn-Add k-button" dir="ltr" style="border: none;" type="button">
+                  <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                  <span>&nbsp;{{ "ADD" | translate }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </p-accordionTab>
+      </p-accordion>
+      <!--End LinguisticKnowledge-->
+    </div>
+    <br/>
+    <div>
+
+    </div>
+    <br/>
+
+    <!-- Comment Section Start -->
+    <div *ngIf="isUpdateMode && isRequest && connectedUser.IdEmployee" [formGroup]="recruitmentNeedFormGroup"
+         class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 30px">
+      <h4 class="card-title mb-0">{{'COMMENT'|translate}}</h4>
+      <div [ngStyle]="{'max-height': '400px', 'overflow-y': 'auto'}" class="col-lg-12 col-md-12 col-sm-12">
+        <app-comment (deletedComment)="deletecomment($event)" (editedComment)="editcomment($event)"
+                     [comments-data]="commentsData"></app-comment>
+      </div>
+      <hr/>
+      <div class="row">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <textarea class="k-input" formControlName="Message" placeholder="{{'TYPE_COMMENT'|translate}}"
+                  rows="2"></textarea>
+        <button (click)="addComment()" [disabled]="validCommentary()" class="k-button k-flat k-button-icon k-button-send"
+                type="button">
+          <i class="fa fa-send-o"></i>
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+    <!-- Comment Section end -->
+
+  </div>
+  <!--End SecondCard body-->
+  <!--Begin Card footer-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a *ngIf="isRequest" routerLink="/main/rh/recruitment-request">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i>
+                  {{ "BACK_TO_LIST" | translate }}
+                </span>
+              </a>
+              <a *ngIf="isOffer" routerLink="/main/rh/recruitment-offer">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i>
+                  {{ "BACK_TO_LIST" | translate }}
+                </span>
+              </a>
+
+              <button (click)="save()" *ngIf="!isUpdateMode" class="btn btn-sm btn-save mx-1">
+                <i class="fa fa-floppy-o"></i> {{ "SUBMIT" | translate }}
+              </button>
+              <button (click)="save()"
+                      *ngIf="showUpdateButton && isUpdateMode && !requestAlreadyValidate && !offerAlreadyClosed" class="btn btn-sm btn-save mx-1">
+                <i class="fa fa-floppy-o"></i> {{ "UPDATE" | translate }}
+              </button>
+              <span *ngIf="isUpdateMode && requestOfferToUpdate && requestOfferToUpdate.RequestStatus === statusCode.Waiting && showValidateButton">
+                <button (click)="setRequestState(statusCode.Accepted)"
+                        class="btn btn-sm btn-success mx-1">
+                  <i class="fa fa-check-square-o"></i> {{'VALIDATE'|translate }}
+                </button>
+                <button (click)="setRequestState(statusCode.Refused)" *ngIf="showRefuseButton" class="btn btn-sm mx-1"
+                        style="color: #fff; background-color: #73818f;">
+                  <i class="fa fa-times"></i> {{'REFUSE'|translate}}
+                </button>
+              </span>
+              <span
+                *ngIf="showValidateButton && requestOfferToUpdate && requestOfferToUpdate.RequestStatus === statusCode.Accepted && isRequest">
+                <button (click)="setRequestState(statusCode.Canceled)" class="btn btn-sm mx-1"
+                        style="background: #63c2de;color:white">
+                  <i class="fa fa-times"></i> {{'CANCEL'|translate }}
+                </button>
+              </span>
+              <span
+                *ngIf="showPublishButton && isUpdateMode  && isOffer && requestOfferToUpdate && requestOfferToUpdate.OfferStatus === offerStatus.New">
+                <button (click)="setOfferState(offerStatus.Opened)" class="btn btn-sm btn-success mx-1">
+                  <i class="fa fa-check-square-o"></i> {{'START_RECRUITMENT_SESSION'|translate }}
+                </button>
+              </span>
+              <span
+                *ngIf="showCloseButton && isUpdateMode  && isOffer && requestOfferToUpdate && requestOfferToUpdate.OfferStatus === offerStatus.Opened">
+                <button (click)="setOfferState(offerStatus.Closed)" class="btn btn-sm btn-success mx-1">
+                  <i class="fa fa-check-square-o"></i> {{'CLOSE'|translate }}
+                </button>
+              </span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  <!--End Card footer-->
+</div>
+<!-- End principal menu  part -->

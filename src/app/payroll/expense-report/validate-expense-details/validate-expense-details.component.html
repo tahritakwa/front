@@ -1,0 +1,81 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_EXPENSE_REPORT_TO_VALIDATE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- details expense -->
+    <div>
+      <p-accordion>
+        <span *ngFor="let leave of listOfExpenses">
+        <p-accordionTab [selected]="true" header={{leave.IdEmployeeNavigation.FullName}} style="color: #4c9aae;">
+
+        <div class="row my-3">
+            <!-- first part-->
+          <div class="col-2 ml-3"><img (click)="fileInput.click()" [src]="UserPicture || '../../../../assets/image/placeholder-logo.png'" border="0" id="blah"
+                                       style="width: 100%;"/>
+          </div>
+          <!-- end first part-->
+          <!-- second part-->
+          <div class="col mx-3">
+       <span class="text">{{'FULLNAME'|translate}} :</span> {{leave.IdEmployeeNavigation.FullName}} <br/>
+       <span class="text">{{'SUBMISSION_DATE'|translate}} :</span> {{leave.SubmissionDate | date: dateFormat}} <br/>
+       <span class="text">{{'PURPOSE'|translate}} :</span> {{leave.Purpose}} <br/>
+       <span class="text">{{'TOTAL_EXPENSE_REPORT'|translate}} :</span> {{leave.TotalAmount}} {{companyCurrency}} <br/>
+
+
+
+          </div>
+          <!-- end second part-->
+          <!-- third part-->
+          <div class="col mx-6">
+              <span *ngFor="let expense of leave.ExpenseReportDetails">
+            <ul>
+                <li> <span class="text">{{'TYPE'|translate}}
+                  :</span> {{expense.IdExpenseReportDetailsTypeNavigation.Label}} <br/></li>
+                <li> <span class="text">{{'DESCRIPTION'|translate}} :</span> {{expense.Description}} <br/></li>
+                <li> <span class="text">{{'DATE'|translate}} :</span> {{expense.Date | date: dateFormat}} <br/></li>
+                <li> <span class="text">{{'AMOUNT'|translate}}
+                  :</span> {{expense.Amount}}{{expense.IdCurrencyNavigation.Code}} <br/></li>
+              <li> <span class="text">{{'VOUCHERS'|translate}} :</span>
+                 <app-upload-file [canUpdateFile]=true [fileToUpload]="expense.FilesInfos"
+                                  [service]="expenseReportService"></app-upload-file>
+              </li>
+            </ul>
+            <hr>
+              </span>
+            </div>
+          <!-- end third part-->
+          <!-- button part-->
+          <div class="col">
+            <button (click)="deleteUserFromListUsersId(leave.Id)"
+                    class="noPadding btn-Add k-button  pull-right" dir="ltr"
+                    style="border: none!important;" type="button">
+                            <i class="fa fa-close fa-lg AddIcon"></i>
+                          </button>
+            </div>
+          <!--end button part-->
+      </div>
+
+          <!---->
+      </p-accordionTab>
+      </span>
+      </p-accordion>
+    </div>
+
+    <!-- End details users-->
+  </div>
+  <!--Begin Card footer Start-->
+  <div class="card-footer">
+    <div align="left" class="col-lg-4 col-md-12">
+      <button [routerLink]="['/main/payroll/expenseReport']" class="btn btn-sm btn-primary">
+        <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+      </button>
+      <button (click)="validateMassiveExpenses(listOfExpenses)" class="btn btn-sm btn-danger" type="submit">
+        {{'VALIDATE'|translate}}
+      </button>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

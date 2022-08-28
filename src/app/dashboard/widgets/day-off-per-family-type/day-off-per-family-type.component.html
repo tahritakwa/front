@@ -1,0 +1,24 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-9">
+      <h4 class="card-title mb-0">{{'DAYS_OFF_PER_FAMILY'|translate}}</h4>
+      <div *ngIf="hasDayOffData" class="small text-muted">
+        {{'DU'|translate}} {{startDate|date: dateFormat}}
+        {{'AU'|translate}} {{endDate|date: dateFormat}}
+      </div>
+      <div *ngIf="!hasDayOffData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="changeChart($event)"></app-period-filter>
+    </div>
+  </div>
+</div>
+
+<div class="card-body">
+  <div class="chartContainer" id="dayOffPerFamilyChart" [hidden]="!hasDayOffData" #dayOffPerFamilyChart></div>
+  <div *ngIf="!hasDayOffData && !dataLoading">
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_DATA_FOUND' | translate}} </h5>
+  </div>
+</div>

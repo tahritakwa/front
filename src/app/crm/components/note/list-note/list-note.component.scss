@@ -1,0 +1,59 @@
+.k-grid .k-grid-content td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.my-class * {
+  font-size: 1.1em;
+  color: black;
+  background: white;
+}
+
+.content {
+  -webkit-tap-highlight-color: transparent;
+  background: none;
+  border: #4c9aae;
+  border-radius: 0;
+  box-sizing: border-box;
+  color: var(--cr-primary-text-color);
+  font: inherit;
+  min-height: 32px;
+  padding: 0 24px;
+  text-align: start;
+  user-select: none;
+  width: 100%;
+  position: relative;
+}
+
+.k-icon {
+  width: 1em;
+  height: 1em;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-size: 16px;
+  font-family: "WebComponentsIcons";
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  speak: none;
+  text-transform: none;
+  text-decoration: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.wrapper div {
+  flex-basis: 50%;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.k-button {
+  color: #212529;
+  background-color: #ced3db;
+  border-color: #c7cdd5;
+  position: center;
+}
+

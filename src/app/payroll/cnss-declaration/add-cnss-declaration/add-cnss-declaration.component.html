@@ -1,0 +1,244 @@
+<div class="card">
+  <!--Begin Card eader-->
+  <div *ngIf="!isModal" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0,00">
+        {{ (isUpdateMode ? 'CNSS_DECLARATION' : 'GENERATE_CNSS_DECLARATION') |translate }}
+      </h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <form [formGroup]="cnssDeclarationForm" class="form-horizontal">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" disabled formControlName="Code">
+          </div>
+          <div class="col-lg-5 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'TITLE'|translate}}<span class="required">*</span></label>
+            <input [ngClass]="{ 'has-error': (Title.touched || Title.dirty) && !Title.valid }" autocomplete="off" class="form-control" formControlName="Title"
+                   type="text">
+            <app-control-messages [control]="Title" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'YEAR'|translate}}<span class="required">*</span></label>
+            <kendo-datepicker (valueChange)="receivedMessage($event)" [bottomView]="'decade'" [format]="'yyyy'"
+                              class="form-control" formControlName="Year">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="Year"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'TRIMESTER'|translate}}<span
+              class="required">*</span></label>
+            <app-trimester-dropdown (Selected)="receivedMessage($event)" [group]="cnssDeclarationForm">
+            </app-trimester-dropdown>
+            <app-control-messages [control]="Trimester" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CNSS_TYPE'|translate}}<span
+              class="required">*</span></label>
+            <app-cnss-dropdown [group]="cnssDeclarationForm"></app-cnss-dropdown>
+            <app-control-messages [control]="IdCnss" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div *ngIf="isUpdateMode" align="right" class="col-lg-12 col-md-12 col-sm-12 col-sx-12">
+          <button (click)="save()" *ngIf="hasRegeneratePermission && State" class="k-button btn-secondary ml-1">
+            <i class="fa fa-refresh fa-sm AddIcon"></i>
+            <span>&nbsp; {{'REGENERATE'|translate}}</span>
+          </button>
+          <a (click)="onPrintDeclarationClick()" *ngIf="hasPrintPermission" class="k-button btn-secondary ml-1">
+            <i class="fa fa-file-pdf-o fa-sm AddIcon"></i>
+            <span>&nbsp; {{'CNSS_DECLARATION'|translate}}</span>
+          </a>
+          <a *ngIf="hasPrintSummuryPermission" (click)="onPrintSummaryClick()" class="k-button btn-secondary ml-1">
+            <i class="fa fa-file-pdf-o fa-sm AddIcon"></i>
+            <span>&nbsp; {{'CNSS_DECLARATION_SUMMARY'|translate}}</span>
+          </a>
+          <a *ngIf="hasPrintTeledeclarationPermission" (click)="getTeleDeclaration()" class="k-button btn-secondary ml-1">
+            <i class="fa fa-download fa-sm AddIcon"></i>
+            <span>&nbsp; {{'TELE_DECLARATION'|translate}}</span>
+          </a>
+        </div>
+        <div *ngIf="hasAddPermission && !isUpdateMode" align="right" class="col-lg-12 col-md-12 col-sm-12 col-sx-12">
+          <button (click)="save()" class="k-button btn-secondary ml-1">
+            <i class="fa fa-cogs fa-sm AddIcon"></i>
+            <span>&nbsp; {{'GENERATE'|translate}}</span>
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:60px">
+        <kendo-grid (dataStateChange)="dataStateChange($event)" (selectedKeysChange)="onSelectedKeysChange($event)"
+                    [data]="gridSettings.gridData" [filter]="gridSettings.state.filter" [kendoGridSelectBy]="'Id'"
+                    [pageSize]="gridSettings.state.take"
+                    [pageable]="pagerSettings" [reorderable]="true"
+                    [selectable]="{enabled: true, checkboxOnly: true}"
+                    [selectedKeys]="sessionIdsSelected"
+                    [skip]="gridSettings.state.skip"
+                    [sort]="gridSettings.state.sort" [sortable]="true">
+          <kendo-grid-checkbox-column *ngIf="((hasUpdatePermission && isUpdateMode) || (hasAddPermission && !isUpdateMode)) && State" [width]="70">
+            <ng-template kendoGridHeaderTemplate>
+              <div class="checkbox-position">
+                <input (selectAllChange)="onSelectAllChange($event)" [state]="selectAllState" class="k-checkbox" id="selectAllCheckboxId"
+                       kendoGridSelectAllCheckbox>
+                <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+              </div>
+            </ng-template>
+          </kendo-grid-checkbox-column>
+          <!--Code-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                             [filter]="gridSettings.columnsConfig[0].filter"
+                             [filterable]="gridSettings.columnsConfig[0].filterable"
+                             [format]="gridSettings.columnsConfig[0].format"
+                             [title]="gridSettings.columnsConfig[0].title | translate"
+                             [width]="gridSettings.columnsConfig[0]._width">
+            <ng-template kendoGridHeaderTemplate>
+              <span theme="light"
+                    tooltip="{{gridSettings.columnsConfig[0].title|translate}}">{{gridSettings.columnsConfig[0].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Title -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                             [filter]="gridSettings.columnsConfig[1].filter"
+                             [filterable]="gridSettings.columnsConfig[1].filterable"
+                             [format]="gridSettings.columnsConfig[1].format"
+                             [title]="gridSettings.columnsConfig[1].title | translate"
+                             [width]="gridSettings.columnsConfig[1]._width">
+            <ng-template kendoGridHeaderTemplate>
+              <span theme="light"
+                    tooltip="{{gridSettings.columnsConfig[1].title|translate}}">{{gridSettings.columnsConfig[1].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Month-->
+          <kendo-grid-column [field]=gridSettings.columnsConfig[2].field
+                             [filter]="gridSettings.columnsConfig[2].filter"
+                             [filterable]="gridSettings.columnsConfig[2].filterable"
+                             [format]="gridSettings.columnsConfig[2].format"
+                             [title]="gridSettings.columnsConfig[2].title | translate"
+                             [width]="gridSettings.columnsConfig[2]._width">
+            <ng-template kendoGridHeaderTemplate>
+              <span theme="light"
+                    tooltip="{{gridSettings.columnsConfig[2].title|translate}}">{{gridSettings.columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-column="column" let-filter>
+              <kendo-grid-date-filter-cell (click)="translateToday()" [bottomView]="'year'" [column]="column"
+                                           [filter]="filter"
+                                           [format]="'MMMM yyyy'" [operator]="equals" [topView]="'decade'">
+              </kendo-grid-date-filter-cell>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.Month | date: 'MMMM' | uppercase | translate}} {{dataItem.Month | date: 'yyyy'}}
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Depends on timesheet -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                             [filter]="gridSettings.columnsConfig[3].filter"
+                             [filterable]="gridSettings.columnsConfig[3].filterable"
+                             [format]="gridSettings.columnsConfig[3].format"
+                             [title]="gridSettings.columnsConfig[3].title | translate"
+                             [width]="gridSettings.columnsConfig[3]._width">
+            <!-- <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+             <kendo-combobox [data]="dependOnTimeSheetFilter" class="form-control HistoryCommandMargin" name="DependOnTimesheet"
+                 textField="name" valueField="id" [allowCustom]="allowCustom" [valuePrimitive]="true" (valueChange)="onValueChange($event)"
+                 [filterable]="true" (filterChange)="handleFilter($event)">
+             </kendo-combobox>
+           </ng-template> -->
+            <ng-template kendoGridHeaderTemplate>
+             <span theme="light"
+                   tooltip="{{gridSettings.columnsConfig[3].title|translate}}">{{gridSettings.columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.DependOnTimesheet == 1"><span>{{'YES'|translate}}</span></div>
+              <div *ngIf="dataItem.DependOnTimesheet == 0"><span>{{'NO'|translate}}</span></div>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Days of work -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                             [filter]="gridSettings.columnsConfig[4].filter"
+                             [filterable]="gridSettings.columnsConfig[4].filterable"
+                             [format]="gridSettings.columnsConfig[4].format"
+                             [title]="gridSettings.columnsConfig[4].title | translate"
+                             [width]="gridSettings.columnsConfig[4]._width">
+            <ng-template kendoGridHeaderTemplate>
+              <span theme="light"
+                    tooltip="{{gridSettings.columnsConfig[4].title|translate}}">{{gridSettings.columnsConfig[4].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- State -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+                             [filter]="gridSettings.columnsConfig[5].filter"
+                             [filterable]="gridSettings.columnsConfig[5].filterable"
+                             [format]="gridSettings.columnsConfig[5].format"
+                             [title]="gridSettings.columnsConfig[5].title | translate"
+                             [width]="gridSettings.columnsConfig[5]._width">
+            <ng-template kendoGridFilterCellTemplate let-column="column" let-filter>
+              <!-- <app-status-dropdown [isCnssDeclaration]="true" [form]="stateSearchDropdownFormGroup"
+                (selectedValue)="activateFilter($event)"></app-status-dropdown> -->
+            </ng-template>
+            <ng-template kendoGridHeaderTemplate>
+             <span theme="light"
+                   tooltip="{{gridSettings.columnsConfig[5].title|translate}}">{{gridSettings.columnsConfig[5].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.State == payrollSessionState.Attendance"><span
+                class="badge badge-success">{{'ATTENDANCE'|translate}}</span></div>
+              <div *ngIf="dataItem.State == payrollSessionState.Bonus"><span
+                class="badge badge-warning">{{'BONUS'|translate}}</span></div>
+              <div *ngIf="dataItem.State == payrollSessionState.Loan"><span
+                class="badge badge-secondary">{{'LOAN'|translate}}</span></div>
+              <div *ngIf="dataItem.State == payrollSessionState.Payslip"><span
+                class="badge badge-primary">{{'PAYSLIP'|translate}}</span></div>
+              <div *ngIf="dataItem.State == payrollSessionState.Closed"><span
+                class="badge badge-danger">{{'CLOSED'|translate}}</span>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+        <div *ngIf="showErrorMessage===true && sessionList.length === 0" class="error-message" style="color:red">
+          {{'NONE_SESSION_CORRESPONDING_TO_PERIOD'|translate}}
+        </div>
+        <div *ngIf="showErrorMessage===true && sessionList.length > 0" class="error-message" style="color:red">
+          {{'SESSION_MUST_BE_SELECTED'|translate}}
+        </div>
+      </div>
+      <!--End add form-->
+    </div>
+    <!--End Card body-->
+    <!--Begin Card footer-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer ml-0">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a *ngIf="!isModal" routerLink="/main/payroll/cnssdeclaration">
+                <span class="btn btn-sm btn-primary btn-back-to-list" #BackToList>
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button (click)="closeDeclarationClick()" *ngIf="hasClosePermission && isUpdateMode && State" class="btn btn-sm btn-danger mx-1"
+                  type="submit">
+                  <i class="fa fa-floppy-o"></i> {{'CLOSE_CNSS_DECLARATION'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </form>
+  <!--End Card footer-->
+</div>

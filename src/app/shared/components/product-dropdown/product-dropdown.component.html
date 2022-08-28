@@ -1,0 +1,33 @@
+<div *ngIf="itemForm" [formGroup]="itemForm">
+  <kendo-combobox [data]="productItemFiltredDataSource" formControlName="IdProductItem" name="IdProductItem"
+    [textField]="'LabelProduct'" valueField="Id" [allowCustom]="allowCustom" [valuePrimitive]="true"
+    class="form-control" [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="handleChange($event)" [placeholder]="placeholder|translate" [disabled]="disabled">
+    <ng-template kendoDropDownListFooterTemplate *ngIf="!isFromModal && !forSearch">
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+
+<div *ngIf="!itemForm">
+  <kendo-combobox [data]="productItemFiltredDataSource"  name="IdProductItem"
+    [textField]="'LabelProduct'" valueField="Id" [allowCustom]="allowCustom" [valuePrimitive]="true"
+    [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="handleChange($event)"  [disabled]="disabled">
+    <ng-template kendoDropDownListFooterTemplate *ngIf="!isFromModal && !forSearch">
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

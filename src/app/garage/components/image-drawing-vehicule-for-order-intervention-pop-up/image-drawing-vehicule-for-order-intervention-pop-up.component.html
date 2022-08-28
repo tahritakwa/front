@@ -1,0 +1,11 @@
+<div class="card">
+  <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+      <div class="img-border">
+        <image-drawing [src]="'assets/image/intervention.png'" [saveBtnText]="'SAVE' | translate"
+          [cancelBtnText]="'CANCEL' | translate" (onSave)="save($event)" (onCancel)="cancel()">
+        </image-drawing>
+      </div>
+    </div>
+  </div>
+</div>

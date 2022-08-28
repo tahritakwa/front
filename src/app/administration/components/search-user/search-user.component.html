@@ -1,0 +1,14 @@
+<div class="d-flex justify-content-center">
+  <!-- Search input -->
+  <div class="col-12">
+    <div class="form-group row">
+      <div class="col-10 pl-1">
+      <input type="text" class="form-control" autocomplete="off" placeholder="{{'SEARCH_USER'|translate}}" name='value'
+              aria-label="Search" aria-describedby="addon-wrapping" [(ngModel)]='value' (afterValueChanged)='filter()'>
+      </div>
+      <div class="col-2 p-1">
+        <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()' ></i>
+      </div>
+    </div>
+  </div>
+</div>

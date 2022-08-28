@@ -1,0 +1,62 @@
+<app-spinner *ngIf="showSpinner" style="
+padding-top: 20%;
+position: fixed;
+top:0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: #00000052;
+z-index: 9999;"></app-spinner>
+<div class="card">
+    <div class="card-body">
+        <form class="form-horizontal">
+            <div class="card-body">
+                <div class="form-group" [formGroup]="generateDocumentAccountForm">
+
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <label>{{'DOTATION_AMORTIZATION_ACCOUNT'|translate}}<span
+                                        class="required">*</span></label>
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <app-accounts-dropdown-component [group]="generateDocumentAccountForm"
+                                    [listAccount]="dotationAmortizationAccounts"
+                                    [fieldName]="'dotationAmortizationAccount'">
+                                </app-accounts-dropdown-component>
+                                <app-control-messages
+                                    [control]="generateDocumentAccountForm.controls.dotationAmortizationAccount"
+                                    class="error-msg messages text-left text-danger">
+                                </app-control-messages>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 col-sm-6">
+                            <label class="col-sm-12 col-md-12 col-lg-12">{{'JOURNAL'|translate}}<span
+                                    class="required">*</span></label>
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <kendo-combobox formControlName="journal" [data]="journalFiltredList"
+                                    [textField]="'label'" [valueField]="'id'" class="form-control"
+                                    [valuePrimitive]="true" [filterable]="true">
+                                    <ng-template kendoDropDownListNoDataTemplate>
+                                        <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                                    </ng-template>
+                                    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                                </kendo-combobox>
+                                <app-control-messages [control]="generateDocumentAccountForm.controls.journal"
+                                    class="error-msg messages text-left text-danger">
+                                </app-control-messages>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-sm btn-save mx-1 float-right" (click)="confirmGeneration()">
+            <i class="fa fa-floppy-o"></i> {{'SAVE'|translate }}
+        </button>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+<!--footer template-->
+<div align="right" >
+  <div class="k-pager-wrap k-grid-pager k-widget">
+    <ul class="k-pager-numbers k-reset">
+      <li>
+        <a (click)="Pager(-1)" tabindex="{{0}}" *ngIf="pageNumberFrom-10>=0" class="k-link ">
+          ...
+        </a>
+      </li>
+      <li *ngFor="let page of array">
+
+        <a (click)="nextPage($event)" tabindex="{{page}}" *ngIf="(skip/take+1)!=page" class="k-link">
+          {{page}}
+        </a>
+        <a (click)="nextPage($event)" tabindex="{{page}}" *ngIf="(skip/take+1)==page" class="k-link k-state-selected">
+          {{page}}
+        </a>
+      </li>
+      <li>
+        <a (click)="Pager(1)" tabindex="{{array.length}}" *ngIf="pageNumberFrom+10<nbPages" class="k-link ">
+          ...
+        </a>
+      </li>
+    </ul>
+
+
+  </div>
+  <div *ngIf="total>0" class="k-pager-info k-label">{{from}} - {{to}} de {{total}}
+    {{'PAGER_ITEMS'|translate}}</div>
+  <button type="button" class="btn btn-success btn-add-dropdown" (click)="addNew()" *ngIf='!hideBtn'>
+    <i class="fa fa-plus fix-btn"></i>
+  </button>
+</div>
+<!--end footer template-->

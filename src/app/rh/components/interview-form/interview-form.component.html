@@ -1,0 +1,55 @@
+<table class="table table-responsive table-bordered">
+  <thead>
+  <tr>
+    <th style="text-align: center; vertical-align: middle;">{{'QUESTION' | translate}}</th>
+    <th style="text-align: center; vertical-align: middle; width: 50%;">{{'LABEL' | translate}}</th>
+    <th style="text-align: center; vertical-align: middle; width: 50%;">{{'RESPONSE' | translate}}</th>
+    <th style="text-align: center; vertical-align: middle;">{{'ACTION' | translate}}</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let question of InterviewQuestion.controls; let i=index" [formGroup]="question">
+    <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+    <td style="min-width: 220px;">
+        <textarea [ngClass]="{ 'textarea-has-error': (question.controls.QuestionLabel.touched ||
+                  question.controls.QuestionLabel.dirty) && !question.controls.QuestionLabel.valid }" class="form-control text-area-style" cols="50" formControlName="QuestionLabel" rows="2">
+                </textarea>
+      <app-control-messages [control]="question.controls.QuestionLabel"
+                            class="error-msg messages text-left text-danger"></app-control-messages>
+    </td>
+    <td style="min-width: 280px;">
+        <textarea [ngClass]="{ 'textarea-has-error': (question.controls.ResponseLabel.touched ||
+                  question.controls.ResponseLabel.dirty) && !question.controls.ResponseLabel.valid }" class="form-control text-area-style" cols="50" formControlName="ResponseLabel" rows="2">
+                </textarea>
+      <app-control-messages [control]="question.controls.ResponseLabel"
+                            class="error-msg messages text-left text-danger"></app-control-messages>
+    </td>
+    <td>
+      <button (click)="deleteInterviewQuestion(question.getRawValue(), i)" *ngIf="canEdit" [ngClass]="'delete-button-style'" class="noPadding btn-Add k-button"
+              style="border: none"
+              type="button">
+        <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+      </button>
+      <button (click)="addInterviewQuestion()" *ngIf="(InterviewQuestion.controls.length === i+1 ) && canEdit"
+              [ngClass]="'add-button-style'" class="noPadding btn-Add k-button" dir="ltr" style="border: none;"
+              type="button">
+        <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div *ngIf="(InterviewQuestion.controls.length === 0) && canEdit" class="skills-not-found-row-sytle">
+  <div class="row">
+    <div class="col-lg-10"></div>
+    <div style="margin-left: auto;margin-top: 2px;padding-right: 9px;">
+      <button (click)="addInterviewQuestion()" class="noPadding btn-Add k-button" dir="ltr"
+              style="border: none;font-size: small !important;"
+              type="button">
+        <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+        <span>&nbsp;{{'ADD'|translate}}</span>
+      </button>
+    </div>
+
+  </div>
+</div>

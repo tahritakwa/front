@@ -1,0 +1,123 @@
+ <div [formGroup]="tiersFormGroup" class="tiersAddress">
+  <div class="form-group" formArrayName="Address" *ngFor="let address of address.controls; let i=index; let
+  isFirst=first">
+    <div *ngIf="isAddressRowVisible(address)">
+      <hr *ngIf="!isFirst">
+      <div class="col-lg-12 col-md-12 col-sm-12" [formGroupName]="i">
+        <div class="row py-1 d-flex justify-content-between">
+          <div *ngIf="adressLabelEditable[i]" class="col px-0">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col">
+                <input class="w-100 form-control" type="text" formControlName="Label" [value]="address.value.Label"
+                [attr.disabled]="((idTiers && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isOffice && !isCompanySetup)
+                || ((isOffice || isCompanySetup) && !hasUpdateAdressPermission)) && !hasUpdateCrmPermission? '' : null"
+                       (keydown.enter)="editAddressLabel(i,false)">
+              </div>
+              <div class="col-auto d-flex align-items-center">
+                <i class="fa fa-check fa-lg text-primary" (click)="editAddressLabel(i,false)"></i>
+              </div>
+              <div class="col-12">
+                <app-control-messages class="error-msg messages text-left text-danger"
+                                      [control]="address.controls.Label">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!adressLabelEditable[i]" class="col-auto px-0">
+            <div style=" white-space: nowrap;color:#4c9aae; padding: 8px 13px">
+              {{address.value.Label}} <span class="required">*</span>
+              <span *ngIf="!isUpdate[i]">{{i + 1}}</span>
+              <i *ngIf="((tiersFormGroup.value.Id === 0 || (tiersFormGroup.value.Id > 0 && (hasUpdateCustomerPermission && typeTier === 1
+              ||hasUpdateSupplierPermission && typeTier === 2 )  && !isOffice && !isCompanySetup) || ((isOffice || isCompanySetup) && hasUpdateAdressPermission)))|| hasUpdateCrmPermission "
+                class="las la-pen la-lg" (click)="editAddressLabel(i,true)"></i>
+            </div>
+          </div>
+          <i *ngIf="(!adressLabelEditable[i] && (tiersFormGroup.value.Id === 0 || (tiersFormGroup.value.Id > 0 && (hasUpdateCustomerPermission && typeTier === 1
+           ||hasUpdateSupplierPermission && typeTier === 2 ) && !isOffice && !isCompanySetup) || ((isOffice || isCompanySetup) && hasUpdateAdressPermission))) || hasUpdateCrmPermission "
+             type="button" (click)="deleteAddresse(address,i)"
+             class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"></i></div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-lg-4 col-md-6 col-sm-12" [formGroupName]="i">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'PRINCIPAL_ADDRESS'|translate}}<span
+            class="required">*</span></label>
+          <input class="form-control" type="text" formControlName="PrincipalAddress"
+          [attr.disabled]="((idTiers && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isOffice && !isCompanySetup)
+          || ((isOffice || isCompanySetup) && !hasUpdateAdressPermission)) && !hasUpdateCrmPermission ? '' :  null"
+                 [value]="address.value.PrincipalAddress">
+          <app-control-messages class="error-msg messages text-left text-danger"
+                                [control]="address.controls.PrincipalAddress"></app-control-messages>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12" [formGroupName]="i">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'COUNTRY'|translate}}<span *ngIf="isCountryAndCityRequired"
+            class="required">*</span></label>
+          <kendo-combobox  formControlName="IdCountry" [data]="countries" [filterable]="true"
+                          [disabled]="((idTiers && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 )) ||
+                           ((isOffice || isCompanySetup) && !hasUpdateAdressPermission)) && !hasUpdateCrmPermission"
+                          (filterChange)="handleFiltreCountry($event,i)" (valueChange)="fillRelatedCities($event,i)"
+                          (focus)="openCountryCombobox(i)"
+                          [valueField]="'Id'" [textField]="'NameFr'" [valuePrimitive]="true" style="width: 100%;">
+   <!--No data template-->
+   <ng-template kendoDropDownListNoDataTemplate>
+    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+  </ng-template>
+  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" > </kendo-combobox-messages>
+  </kendo-combobox>
+          <app-control-messages [control]="address.controls.IdCountry" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12" [formGroupName]="i">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'CITY'|translate}}<span *ngIf="isCountryAndCityRequired"
+            class="required">*</span></label>
+          <kendo-combobox formControlName="IdCity" [data]="cities[i]" [filterable]="true"
+                          [disabled]="((idTiers && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 )) ||
+                          ((isOffice || isCompanySetup) && !hasUpdateAdressPermission)) && !hasUpdateCrmPermission"
+                          (filterChange)="handleFiltreCity($event,i)" [valueField]="'Id'" [textField]="'Label'"
+                          (focus)="openCityCombobox(i)" (valueChange)="fillRelatedCitiesName($event,i)"
+                          [valuePrimitive]="true"
+                          style="width: 100%;">
+          <!--No data template-->
+          <ng-template kendoDropDownListNoDataTemplate>
+            <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+          </ng-template>
+          <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+        </kendo-combobox>
+          <app-control-messages [control]="address.controls.IdCity" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'EXTRA_ADDRESS'|translate}}</label>
+          <input class="form-control" type="text" formControlName="ExtraAdress" [value]="address.value.ExtraAdress"
+          [attr.disabled]="((idTiers && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 )&&
+          !isOffice && !isCompanySetup) || ((isOffice || isCompanySetup) && !hasUpdateAdressPermission)) && !hasUpdateCrmPermission ? '' : null">
+          <app-control-messages class="error-msg messages text-left text-danger"
+                                [control]="address.controls.ExtraAdress"></app-control-messages>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'REGION'|translate}}</label>
+          <input class="form-control" type="text" formControlName="Region" [value]="address.value.Region"
+          [attr.disabled]="((idTiers && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isOffice && !isCompanySetup)
+           || ((isOffice || isCompanySetup) && !hasUpdateAdressPermission)) && !hasUpdateCrmPermission? '' : null">
+          <app-control-messages class="error-msg messages text-left text-danger" [control]="address.controls.Region">
+          </app-control-messages>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'ZIPCODE'|translate}}</label>
+          <input class="form-control" type="text" formControlName="CodeZip" [value]="address.value.CodeZip"
+          [attr.disabled]="((idTiers && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 )
+          && !isOffice && !isCompanySetup) || ((isOffice || isCompanySetup) && !hasUpdateAdressPermission)) && !hasUpdateCrmPermission? '' : null">
+          <app-control-messages class="error-msg messages text-left text-danger" [control]="address.controls.CodeZip">
+          </app-control-messages>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="((tiersFormGroup.value.Id === 0 || (tiersFormGroup.value.Id > 0 && (hasUpdateCustomerPermission && typeTier === 1
+  ||hasUpdateSupplierPermission && typeTier === 2 ) && !isOffice && !isCompanySetup) || ((isOffice || isCompanySetup) && hasUpdateAdressPermission)) && isMultiple) || (hasUpdateCrmPermission && isMultiple)  "
+    class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+    <button class="btn-Add k-button btn btn-add" type="button" (click)='prepareAddress()'>
+      <i class="fa fa-plus fa AddIcon"></i>
+      <span>&nbsp; {{'ADD'|translate}}</span>
+    </button>
+  </div>
+</div>

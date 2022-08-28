@@ -1,0 +1,53 @@
+import { Resource } from '../shared/ressource.model';
+import { Employee } from '../payroll/employee.model';
+import { Job } from '../payroll/job.model';
+import { Candidacy } from './candidacy.model';
+import { QualificationType } from '../payroll/qualification-type.model';
+import { Grade } from '../payroll/grade.model';
+import { Office } from '../shared/office.model';
+import { Comment } from '../../models/shared/comment.model';
+import { RecruitmentLanguage } from './recruitment-language.model';
+import { RecruitmentSkills } from './recruitment-skills.model';
+import { FileInfo } from '../shared/objectToSend';
+import { ContractType } from '../payroll/contract-type.model';
+
+export class Recruitment extends Resource {
+  YearOfExperience: number;
+  WorkingHoursPerDays: number;
+  Priority: number;
+  Description: string;
+  State: number;
+  CreationDate: Date;
+  ClosingDate?: Date;
+  IdQualificationType: number;
+  IdJob: number;
+  IdEmployeeAuthor: number;
+  IdEmployeeValidator?: number;
+  IdOffice: number;
+  IdEmployeeAuthorNavigation?: Employee;
+  IdEmployeeValidatorNavigation?: Employee;
+  IdJobNavigation?: Job;
+  IdGradeNavigation?: Grade;
+  IdQualificationTypeNavigation?: QualificationType;
+  Candidacy?: Array<Candidacy>;
+  IdOfficeNavigation: Office;
+  RequestReason: string;
+  ExpectedCandidateNumber: number;
+  StartDate: Date;
+  IdContractType: number;
+  IdContractTypeNavigation?: ContractType;
+  Type: number;
+  Sex: number;
+  RequestStatus?: number;
+  RecruitmentLanguage?: Array<RecruitmentLanguage>;
+  RecruitmentSkills?: Array<RecruitmentSkills>;
+  Code: string;
+  Comments: Array<Comment>;
+  OfferStatus?: number;
+  TreatmentDate?: Date;
+  EndDate?: Date;
+  OfferPicture: string;
+  PictureFileInfo: FileInfo;
+  RecruitmentTypeCode: string;
+
+}

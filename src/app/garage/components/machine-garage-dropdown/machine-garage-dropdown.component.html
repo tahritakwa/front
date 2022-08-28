@@ -1,0 +1,29 @@
+<div *ngIf="form" [formGroup]="form">
+  <kendo-combobox 
+      [data]="machinesFilterDataSource"
+      class="form-control"
+      [formControlName]="fieldName"
+      name="fieldName"
+      textField="Name"
+      valueField="Id"
+      [valuePrimitive]="true" 
+      [allowCustom]="true" 
+      [filterable]="true"
+      (filterChange)="handleFilter($event)" 
+      (valueChange)="onSelectMachine($event)">
+      <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+        {{ dataItem?.Name | translate }} 
+      </ng-template>
+  </kendo-combobox >
+</div>
+
+<div *ngIf="!form" >
+  <kendo-combobox 
+    [data]="machinesFilterDataSource" 
+    class="form-control" name="Id"
+    (valueChange)="onSelectMachine($event)" 
+    [textField]="'Name'" [valueField]="'Id'" 
+    [valuePrimitive]="true"
+    [(ngModel)]="selectedValue">
+  </kendo-combobox>
+</div>

@@ -1,0 +1,539 @@
+<app-spinner *ngIf="spinner" style="
+padding-top: 20%;
+position: fixed;
+top:0;
+left: 0;
+width: 100vw;
+height: 100vh;
+background: #00000052;
+z-index: 9999;"></app-spinner>
+<div class="card full-screen-card mb-5">
+  <!--Begin Card header-->
+  <div class="card-header d-flex justify-content-between">
+    <div class="row pl-3">
+      <h3 class="card-title mb-0">
+        {{ (isUpdateMode ? 'PREVIEW_DOCUMENT_ACCOUNT' : 'NEW_DOCUMENT_ACCOUNT') |translate }}
+      </h3>
+      <div class="ml-3">
+        <span class="codeBar"> {{documentAccountCodeDocument.value}}</span>
+      </div>
+    </div>
+    <div class="row pl-3 mr-1">
+       <span class="badge badge-warning mr-5 mt-1 mb-1 pt-2" style="color: white !important; height:25px;">
+              {{'CURRENCY'|translate}} : {{currency.Code}}
+        </span>
+      <app-current-fiscal-year-header [currentFiscalYearId]="currentFiscalYear.id" [showHeaderClass]="false"></app-current-fiscal-year-header>
+    </div>
+  </div>
+
+    <!--Begin card body-->
+    <div class="card-body">
+      <div class="mb-3 mt-2">
+        <app-current-fiscal-year-dropdown
+          [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+      </div>
+      <form class="form-horizontal" [formGroup]="documentAccountFormGroup">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+          <div class="form-group">
+            <div class="row padding-lg">
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label>{{'BILLING_DATE'|translate}}<span class="required">*</span></label>
+                <kendo-datepicker #documentDateField (focusin)="focusOrUnfocusField('documentDate',true)" (focusout)="focusOrUnfocusField('documentDate',false)"
+                                  (valueChange)="generateRandomCodeDocument()" [format]="formatDate"
+                                  [max]="currentExerciceEndDate"
+                                  [min]="currentExerciceStartDate" class="form-control"
+                                  formControlName="documentDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                             toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="documentAccountFormGroup.controls.documentDate"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label>{{'CODE_DOCUMENT_ACCOUNT'|translate}}</label>
+                <input (change)="loadOriginCodeDocument()" class="form-control" formControlName="codeDocument" name="codeDocument"
+                       type="text">
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label>{{'LABEL'|translate}}<span class="required">*</span></label>
+                <div class="input-group">
+                  <div class="input-group-prepend h-100">
+                    <div class="input-group-text">
+                      <span data-placement="bottom" style=" margin-bottom: 0px;"
+                            theme="light" tooltip="{{'SHOW_THIS_LABEL_IN_THE_LINES'|translate}}">
+                        <input [(ngModel)]='isCheckedDocumentLabel' [disabled]="documentAccountFormGroup.disabled" [ngModelOptions]="{standalone:true}"
+                               id="isCheckedDocumentLabel"
+                               style="height:0" type="checkbox"/>
+                        <label for="isCheckedDocumentLabel" style=" margin-bottom: 0px; "></label>
+                      </span>
+                    </div>
+                  </div>
+                  <input (focusin)="focusOrUnfocusField('label',true)" (focusout)="focusOrUnfocusField('label',false)" class="form-control" formControlName="label"
+                         maxlength="{{maxLength}}" minlength="{{minLength}}"
+                         name="label">
+                  <button (click)="applyLabelToAllLines()" class="k-button btnKendoGrid editBtn"
+                          style="height: auto; margin: 0 !important;" title="{{'APPLY_TO_ALL_LINES'| translate }}">
+                    <i class="fa fa-list"></i>
+                  </button>
+                </div>
+                <app-control-messages [control]="documentAccountFormGroup.controls.label"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+                <label>{{'JOURNAL'|translate}}<span class="required">*</span></label>
+                <kendo-combobox #journalField (filterChange)="handleFilterJournal($event)" (focusin)="focusOrUnfocusField('journalId',true)"
+                                (focusout)="focusOrUnfocusField('journalId', false)" (valueChange)="handleChangeJournalAccounting($event)" [(value)]="journalValue" [data]="journalFiltredList"
+                                [filterable]="true" [textField]="'label'"
+                                [valueField]="'id'" [valuePrimitive]="true"
+                                class="form-control"
+                                formControlName="journalId">
+                  <ng-template kendoDropDownListFooterTemplate>
+                    <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ADD_JOURNALS)"
+                                          [addNew]="addNewJournal.bind(this)"></app-drop-down-footer>
+                  </ng-template>
+
+                  <!--No data template-->
+                  <ng-template kendoDropDownListNoDataTemplate>
+                    <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                  </ng-template>
+                  <!--end No data template-->
+                  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="documentAccountFormGroup.controls.journalId"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4 mt-3">
+                <label>{{'USE_A_TEMPLATE_ACCOUNTING'|translate}}</label>
+                <kendo-combobox (filterChange)="handleFilterTemplateAccounting($event)" (valueChange)="handleChangeTemplateAccounting($event)"
+                                [(value)]="templateAccountingValue" [data]="templateAccountingFiltredList" [filterable]="true" [textField]="'label'"
+                                [valueField]="'id'" [valuePrimitive]="true"
+                                class="form-control"
+                                formControlName="templateAccountingId">
+                  <ng-template kendoDropDownListFooterTemplate>
+                    <app-drop-down-footer
+                      *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ADD_ACCOUNTING_TEMPLATE)"
+                      [addNew]="addNewTemplateAccounting.bind(this)"></app-drop-down-footer>
+                  </ng-template>
+
+
+                  <!--No data template-->
+                  <ng-template kendoDropDownListNoDataTemplate>
+                    <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                  </ng-template>
+                  <!--end No data template-->
+                  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4 mt-4">
+                <br>
+                <span
+                  *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ADD_FILE_ATTACHMENT_TO_DOCUMENTS_ACCOUNTS) && !this.readOnlyMode && !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus">
+                  <input #File (change)="onFileChange($event)" hidden id="File" multiple type="file">
+                  <button (click)="File.click()" [tooltip]="upload" class="btn btn-sm" content-type="template"
+                          type="button">
+                    <i aria-hidden="true" class="fa fa-upload"></i>
+                  </button>
+                  <ng-template #upload>
+                    <span>{{'CHOOSE_FILE'|translate}}</span>
+                  </ng-template>
+                  <span *ngIf="!(attachementFilesToUpload?.length > 0) && !(attachementFilesUploaded?.length >0)"
+                        class="col-12">
+                    <label>{{'NO_FILE_CHOSEN'|translate}}</label>
+                  </span>
+                </span>
+                <div *ngIf="attachementFilesToUpload.length > 0">
+                  <div *ngFor="let file of attachementFilesToUpload  ; let i = index">
+                    <div style=" display:block; float:left; margin-right: 10px">
+                      <a (click)="downloadFile(file.name)" style=" cursor:pointer"><u>{{file.name}}</u></a>
+                      <button
+                        (click)="deleteFile(file,i,false)"
+                        *ngIf="this.authService.hasAuthority(this.AccountingPermissions.DELETE_FILE_ATTACHMENT_TO_DOCUMENTS_ACCOUNTS) && !this.readOnlyMode && !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus" class="noPadding btn-Add k-button" dir="ltr" style="border: none!important;"
+                        type="button">
+                        <i class="fa fa-close fa-lg AddIcon"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="attachementFilesUploaded.length > 0">
+                  <div *ngFor="let file of attachementFilesUploaded  ; let i = index">
+                    <div style=" display:block; float:left; margin-right: 10px">
+                      <a (click)="downloadFile(file.name)" style=" cursor:pointer"><u>{{file.name}}</u></a>
+                      <button
+                        (click)="deleteFile(file,i, true)"
+                        *ngIf="this.authService.hasAuthority(this.AccountingPermissions.DELETE_FILE_ATTACHMENT_TO_DOCUMENTS_ACCOUNTS) && !this.readOnlyMode && !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus" class="noPadding btn-Add k-button" dir="ltr" style="border: none!important;"
+                        type="button">
+                        <i class="fa fa-close fa-lg AddIcon"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+            <kendo-grid #grid [data]="gridSettings.gridData" [selectedKeys]="selectedDocumentAccountLines"
+                        [kendoGridSelectBy]="'id'" (cellClick)="lineClickHandler($event)"
+                        (cancel)="cancelHandler($event)"
+                        (save)="saveHandler($event)" (remove)="removeHandler($event)"
+                        (dataStateChange)="dataStateChange($event)"
+                        (pageChange)="onPageChange($event)" [pageable]="pagerSettings"
+                        [pageSize]="gridSettings.state.take" (add)="addHandler($event, this.documentAccountLineFormGroup)"
+                        [pageable]="pagerSettings" [resizable]="true"
+                        [selectedKeys]="selectedDocumentAccountLines" [skip]="gridSettings.state.skip" style="width: 100%;height:100%;">
+              <ng-template kendoGridNoRecordsTemplate></ng-template>
+              <ng-template kendoGridToolbarTemplate [position]="'top'">
+                <div class="col-12 d-flex justify-content-end">
+                  <app-btn-grid *ngIf="this.authService.hasAuthorities([this.AccountingPermissions.ADD_DOCUMENTS_ACCOUNTS,this.AccountingPermissions.UPDATE_DOCUMENTS_ACCOUNTS])
+                                                &&!this.isDocumentAccountCreatedByImport()
+                                                && !isDocumentAccountCreatedByGenerationFromAmortization()
+                                                && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear()
+                                                && !this.isDocumentDateInClosedPeriodStatus" [advencedAdd]='false' [add]='true'
+                    [title]="'ADD_LINE'">
+                  </app-btn-grid>
+                </div>
+              </ng-template>
+
+              <!-- accountId -->
+              <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                                 [footerStyle]="{'font-weight': 'bolder','background': 'white'}" [headerStyle]="{'padding' : '0.75rem 0'}"
+                                 [title]="gridSettings.columnsConfig[0].title | translate"
+                                 width="130">
+                <ng-template kendoGridHeaderTemplate>
+                  <span theme="light"
+                        tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}">{{gridSettings.columnsConfig[0].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  {{dataItem.codeAccount}}
+                </ng-template>
+
+                <ng-template kendoGridEditTemplate let-dataItem>
+
+                  <div [formGroup]="documentAccountLineFormGroup">
+                    <kendo-combobox #accountId (filterChange)=" handleFilterAccount($event)" (focusin)="focusOrUnfocusField('accountId',true)" (focusout)="focusOrUnfocusField('accountId', false)"
+                                    (open)="openAccountPopup($event)" (selectionChange)="selectionChangeAccountDropdown($event)" (valueChange)="setLabelOnSelectAccount($event)"
+                                    [data]="accountFiltredList"
+                                    [filterable]="true"
+                                    [textField]="'code'"
+                                    [valueField]="'id'"
+                                    [valuePrimitive]="true"
+                                    class="form-control"
+                                    formControlName="accountId">
+                      <ng-template kendoDropDownListFooterTemplate>
+                        <app-drop-down-footer
+                          *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS)"
+                          [addNew]="addNewAccount.bind(this)"></app-drop-down-footer>
+                      </ng-template>
+
+                      <ng-template kendoComboBoxItemTemplate let-dataItem>
+                        <div class="container">
+                          <div class="row">
+                            <b>{{dataItem.code}}</b>
+                          </div>
+                          <div class="row">
+                            <span class="small">{{dataItem.label}}</span>
+                          </div>
+                        </div>
+                      </ng-template>
+
+
+                      <!--No data template-->
+                      <ng-template kendoDropDownListNoDataTemplate>
+                        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                      </ng-template>
+                      <!--end No data template-->
+                      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-combobox>
+                  </div>
+
+                  <i #anchoraccountId></i>
+                  <app-control-message-grid-cell [anchor]="anchoraccountId" [group]="documentAccountLineFormGroup"
+                                                 controlName="accountId">
+                  </app-control-message-grid-cell>
+                </ng-template>
+
+                <ng-template kendoGridFooterTemplate>
+                  <div class="total-class"> {{'TOTAL'|translate}}</div>
+                </ng-template>
+
+              </kendo-grid-column>
+
+              <!-- nameAccount -->
+              <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                                 [footerStyle]="{'font-weight': 'bolder','background': 'white'}" [headerStyle]="{'padding' : '0.75rem 0'}"
+                                 [title]="gridSettings.columnsConfig[1].title | translate"
+                                 width="250">
+                <ng-template kendoGridHeaderTemplate>
+                  <span theme="light"
+                        tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}">{{gridSettings.columnsConfig[1].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridEditTemplate let-dataItem>
+                  <form [formGroup]="documentAccountLineFormGroup">
+                    <input class="form-control" formControlName="nameAccount" name="nameAccount" type="text">
+                  </form>
+                </ng-template>
+
+              </kendo-grid-column>
+
+              <!-- documentLineDate -->
+              <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [footerStyle]="{'font-weight': 'bolder','background': 'white'}"
+                                 [headerStyle]="{'padding' : '0.75rem 0'}"
+                                 [title]="gridSettings.columnsConfig[2].title | translate"
+                                 width="135">
+                <ng-template kendoGridHeaderTemplate>
+                  <span theme="light"
+                        tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}">{{gridSettings.columnsConfig[2].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  {{dataItem.documentLineDate | date: formatDate}}
+                </ng-template>
+                <ng-template kendoGridEditTemplate let-dataItem>
+                  <form [formGroup]="documentAccountLineFormGroup">
+                    <kendo-datepicker #documentLineDateField (focusin)="focusOrUnfocusField('documentLineDate',true)" (focusout)="focusOrUnfocusField('documentLineDate',false)"
+                                      [format]="formatDate" [max]="currentExerciceEndDate"
+                                      [min]="currentExerciceStartDate" [tabIndex]="-1"
+                                      class="form-control"
+                                      formControlName="documentLineDate">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                 toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+
+                  </form>
+                  <i #documentLineDate></i>
+                  <app-control-message-grid-cell [anchor]="documentLineDate" [group]="documentAccountLineFormGroup"
+                                                 controlName="documentLineDate">
+                  </app-control-message-grid-cell>
+                </ng-template>
+
+              </kendo-grid-column>
+
+              <!-- reference -->
+              <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                                 [footerStyle]="{'font-weight': 'bolder','background': 'white'}" [headerStyle]="{'padding' : '0.75rem 0'}"
+                                 [title]="gridSettings.columnsConfig[3].title | translate"
+                                 width="115">
+                <ng-template kendoGridHeaderTemplate>
+                  <span theme="light"
+                        tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}">{{gridSettings.columnsConfig[3].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridEditTemplate let-dataItem>
+                  <form [formGroup]="documentAccountLineFormGroup">
+                    <input #reference (focusin)="focusOrUnfocusField('reference',true)" (focusout)="focusOrUnfocusField('reference',false)" class="form-control" formControlName="reference"
+                           name="reference"
+                           type="text">
+                    <i #anchorReference></i>
+                  </form>
+                </ng-template>
+
+              </kendo-grid-column>
+
+              <!-- label -->
+              <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                                 [footerStyle]="{'font-weight': 'bolder','background': 'white'}" [headerStyle]="{'padding' : '0.75rem 0'}"
+                                 [title]="gridSettings.columnsConfig[4].title | translate"
+                                 width="250">
+                <ng-template kendoGridHeaderTemplate>
+                  <span theme="light"
+                        tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}">{{gridSettings.columnsConfig[4].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridEditTemplate let-dataItem>
+                  <form [formGroup]="documentAccountLineFormGroup">
+                    <input #labelDocumentAccountLine (focusin)="focusOrUnfocusField('labelDocumentAccountLine',true)" (focusout)="focusOrUnfocusField('labelDocumentAccountLine',false)" class="form-control"
+                           formControlName="label" name="label"
+                           type="text">
+                    <i #anchorLabel></i>
+                    <app-control-message-grid-cell [anchor]="anchorLabel" [group]="documentAccountLineFormGroup"
+                                                   controlName="label">
+                    </app-control-message-grid-cell>
+                  </form>
+                </ng-template>
+
+              </kendo-grid-column>
+
+              <!-- debitAmount -->
+              <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+                                 [footerStyle]="{'font-weight': 'bolder','background': 'white'}"
+                                 [format]="formatNumberOptions"
+                                 [headerStyle]="{'padding' : '0.75rem 0'}"
+                                 [style]="{'text-align': 'right', 'padding-right':'3rem !important'}"
+                                 [title]="gridSettings.columnsConfig[5].title | translate"
+                                 width="150">
+                <ng-template kendoGridHeaderTemplate>
+                  <span theme="light"
+                        tooltip="{{gridSettings.columnsConfig[5].tooltip|translate}}">{{gridSettings.columnsConfig[5].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridEditTemplate
+                             let-dataItem>
+                  <form [formGroup]="documentAccountLineFormGroup">
+                    <kendo-numerictextbox #debitAmount
+                                          (focusin)="focusOrUnfocusField('debitAmount',true)"
+                                          (focusout)="focusOrUnfocusField('debitAmount',false)"
+                                          (valueChange)="changeCreditAmount($event)"
+                                          [autoCorrect]=false
+                                          [decimals]=currency.Precision
+                                          [format]="formatNumberOptions"
+                                          [min]="minAmountNumber"
+                                          class="form-control"
+                                          formControlName="debitAmount"
+                                          (input)="onCreditOrDebitAmmountChange($event)">
+                    </kendo-numerictextbox>
+                    <i #anchorDebit></i>
+                    <app-control-message-grid-cell [anchor]="anchorDebit"
+                                                   [group]="documentAccountLineFormGroup"
+                                                   controlName="debitAmount">
+                    </app-control-message-grid-cell>
+                  </form>
+                </ng-template>
+              
+                <ng-template kendoGridFooterTemplate>
+                  <kendo-numerictextbox *ngIf="!spinner"
+                                        [format]="formatNumberOptions"
+                                        [readonly]="true"
+                                        class="totalNumericTextBox"
+                                        value="{{totalDebitAmount}}">
+                  </kendo-numerictextbox>
+                </ng-template>
+              </kendo-grid-column>
+              
+              <!-- creditAmount -->
+              <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+                                 [footerStyle]="{'font-weight': 'bolder','background': 'white'}"
+                                 [format]="formatNumberOptions"
+                                 [headerStyle]="{'padding' : '0.75rem 0'}"
+                                 [style]="{'text-align': 'right', 'padding-right':'3rem !important'}"
+                                 [title]="gridSettings.columnsConfig[6].title | translate"
+                                 width="150">
+                <ng-template kendoGridHeaderTemplate>
+                  <span theme="light"
+                        tooltip="{{gridSettings.columnsConfig[6].tooltip|translate}}">{{gridSettings.columnsConfig[6].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridEditTemplate
+                             let-dataItem>
+                  <form [formGroup]="documentAccountLineFormGroup">
+                    <kendo-numerictextbox #creditAmount
+                                          (focusin)="focusOrUnfocusField('creditAmount',true)"
+                                          (focusout)="focusOrUnfocusField('creditAmount',false)"
+                                          (valueChange)="changeDebitAmount($event)"
+                                          [autoCorrect]=false
+                                          [decimals]=currency.Precision
+                                          [format]="formatNumberOptions"
+                                          [min]="minAmountNumber"
+                                          class="form-control"
+                                          formControlName="creditAmount"
+                                          (input)="onCreditOrDebitAmmountChange($event)">
+                    </kendo-numerictextbox>
+                    <i #anchorCredit></i>
+                    <app-control-message-grid-cell [anchor]="anchorCredit"
+                                                   [group]="documentAccountLineFormGroup"
+                                                   controlName="creditAmount">
+                    </app-control-message-grid-cell>
+                  </form>
+                </ng-template>
+              
+                <ng-template kendoGridFooterTemplate>
+                  <kendo-numerictextbox *ngIf="!spinner"
+                                        [format]="formatNumberOptions"
+                                        [readonly]="true"
+                                        class="totalNumericTextBox"
+                                        value="{{totalCreditAmount}}">
+                  </kendo-numerictextbox>
+                </ng-template>
+              
+              </kendo-grid-column>
+
+              <kendo-grid-command-column [footerStyle]="{'background-color':'#fff'}" [resizable]="false" width="60">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+                  <button *ngIf="!this.readOnlyMode && accountDropDownIsInEditingMode && !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus" [show-delay]="showDelay" [tooltip]="save" class='noPadding btn-Add'
+                          content-type="template" kendoGridSaveCommand
+                          tabIndex="-1"
+                          type="button">
+                    <i aria-hidden="true" class="fa fa-check fa-lg AddIcon"></i>
+                  </button>
+                  <ng-template #save>
+                    <span>{{ 'SAVE'|translate}}</span>
+                  </ng-template>
+                  <button *ngIf="!this.readOnlyMode && accountDropDownIsInEditingMode && !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus" [show-delay]="showDelay" [tooltip]="discard" class="noPadding btn-Add k-button"
+                          content-type="template" kendoGridCancelCommand
+                          tabIndex="-1"
+                          type="button">
+                    <i aria-hidden="true" class="fa fa-ban fa-lg" style="color: #E91E63;"></i>
+                  </button>
+                  <ng-template #discard>
+                    <span>{{ 'CANCEL'|translate}}</span>
+                  </ng-template>
+                  <button *ngIf="this.authService.hasAuthorities([this.AccountingPermissions.ADD_DOCUMENTS_ACCOUNTS,this.AccountingPermissions.UPDATE_DOCUMENTS_ACCOUNTS]) && !(dataItem.letter!=null && dataItem.letter.length>0) && !accountDropDownIsInEditingMode && !dataItem.close && !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus && !this.readOnlyMode" [show-delay]="showDelay" [tooltip]="remove" class="noPadding btn-Add k-button"
+                          content-type="template" dir="ltr"
+                          kendoGridRemoveCommand
+                          style="border: none; color: #E91E63 !important;" tabIndex="-1" type="button">
+                    <i class="fa fa-times fa-lg"></i>
+                  </button>
+                  <ng-template #remove>
+                    <span>{{ 'DELETE'|translate}}</span>
+                  </ng-template>
+
+                  <div style="text-align: center; margin-right: -17%; margin-left: 12%;" tabIndex="-1">
+                    <span *ngIf="dataItem.letter!=null && dataItem.letter.length>0" class="badge"
+                          style="color: #ffffff; background-color: red; width: 35% "
+                          tooltip="{{'LETTERED'|translate}}">L</span>
+                    <span *ngIf="dataItem.close" class="badge" style="color: #ffffff; background-color: #0d35a3; width: 35%"
+                          tooltip="{{'CLOSE_RECONCILIATION_BANK'|translate}}">R</span>
+                  </div>
+
+                </ng-template>
+              </kendo-grid-command-column>
+
+              <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                                   pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+              </kendo-grid-messages>
+            </kendo-grid>
+
+      </form>
+    </div>
+<!--Begin Card footer-->
+        <div class="card-footer d-flex justify-content-end p-3 footer-content">
+          <button type="button" class="btn btn-sm btn-back-to-list mr-2" [tooltip]="returnList" [show-delay]="showDelay"
+                  content-type="template" routerLink="/main/accounting/documentAccount">
+            <i class="fa fa-reply"></i> {{'BACK_TO_LIST'|translate}}
+          </button>
+          <button class="btn btn-sm btn-save dropdown-toggle mr-2" type="button"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                  *ngIf="hasReadWritePermission && !this.readOnlyMode &&
+                  !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() &&
+                   !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus">
+            <i class="fa fa-print"></i> {{'SAVE'|translate}}
+          </button>
+          <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <a class="dropdown-item cursor-pointer" (click)="save(this.documentAccountLineFormGroup, true)"
+               *ngIf="!isUpdateMode">
+              {{'SAVE_AND_CONTINUE' | translate}}
+            </a>
+            <a class="dropdown-item cursor-pointer" (click)="save(this.documentAccountLineFormGroup, false)"
+               >
+              {{'SAVE_AND_RETURN' | translate}}
+            </a>
+          </div>
+          <button type="button" class="btn btn-sm btn-special" [tooltip]="totalValidationShortcut"
+                  [show-delay]="showDelay"
+                  content-type="template"
+                  *ngIf="hasReadWritePermission && !this.readOnlyMode && !this.isDocumentAccountCreatedByImport() && !isDocumentAccountCreatedByGenerationFromAmortization() && !this.isDocumentAccountCreatedByConcludingCurrentFiscalYear() && !this.isDocumentDateInClosedPeriodStatus"
+                  (click)="totalAmountValidation()">
+            <i class="fa fa-floppy-o"></i> {{ 'VALIDATE_DOCUMENT' |translate }}
+          </button>
+          <ng-template #returnList>
+            <span>{{ 'BACK_TO_LIST'|translate}}</span>
+          </ng-template>
+          <ng-template #saveShortcut>
+            <span>{{ 'SAVE_SHORTCUT' |translate }}</span>
+          </ng-template>
+          <ng-template #totalValidationShortcut>
+            <span>{{ 'TOTAL_VALIDAITON_SHORTCUT' |translate }}</span>
+          </ng-template>
+      </div>
+  </div>

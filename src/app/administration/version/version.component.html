@@ -1,0 +1,125 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 style=" float:left;" class="card-title mb-0">
+        {{ 'ABOUT'  |translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5 mb-3">
+        <div class="form-group row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <label>
+              {{'ABOUT_VERSION'|translate}}
+            </label>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="accountingBuildProperties">
+            <label>{{'ACCOUNTING_VERSION'|translate}}</label>
+            <div>
+              {{accountingBuildProperties ? accountingBuildProperties.buildVersion : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="crmProperties">
+            <label>{{'CRM_VERSION'|translate}}</label>
+              <div>
+                {{crmProperties ? crmProperties.buildVersion : 'N A'}}
+              </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="manufacturingProperties">
+            <label>{{'MANUFACTURING_VERSION'|translate}}</label>
+            <div>
+              {{manufacturingProperties ? manufacturingProperties.buildVersion : ''}}
+            </div>
+          </div>
+          <!-- <div class="col-lg-3 col-md-6 col-sm-12">
+            <label>{{'MAILING_VERSION'|translate}}</label>
+            <div>
+              {{mailingProperties ? mailingProperties.buildVersion : 'N A'}}
+            </div>
+          </div> -->
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="commProperties">
+            <label>{{'COMMERCIAL_VERSION'|translate}}</label>
+            <div>
+              {{commProperties ? commProperties.Version : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="rhPayrollProperties">
+            <label>{{'HR_VERSION'|translate}}</label>
+            <div>
+              {{rhPayrollProperties ? rhPayrollProperties.Version : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="garageProperties">
+            <label>{{'GARAGE_VERSION'|translate}}</label>
+            <div>
+              {{garageProperties ? garageProperties.Version : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label>{{'AUTH_VERSION'|translate}}</label>
+            <div>
+              {{authEnvironment ? authEnvironment.buildVersion : 'N A'}}
+            </div>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 mt-3 mb-3">
+            <label>
+              {{'ABOUT_URL_BACKEND'|translate}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="accountingBuildProperties">
+            <label>{{'ACCOUNTING_URL_SERVER'|translate}}</label>
+            <div>
+              {{accountingBuildProperties ? accountingBuildProperties.accountingUrl : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="crmProperties">
+            <label>{{'CRM_URL_SERVER'|translate}}</label>
+            <div>
+              {{crmProperties ? crmProperties.crmUrl : 'N A'}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="manufacturingProperties">
+            <label>{{'MANUFACTURING_URL_SERVER'|translate}}</label>
+            <div>
+              {{manufacturingProperties ? manufacturingProperties.manufacturingUrl : ''}}
+            </div>
+          </div>
+          <!-- <div class="col-lg-3 col-md-6 col-sm-12">
+            <label>{{'MAILING_URL_SERVER'|translate}}</label>
+            <div>
+              {{mailingProperties ? mailingProperties.mailingUrl : 'N A'}}
+            </div>
+          </div> -->
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="commProperties">
+            <label>{{'COMMERCIAL_URL_SERVER'|translate}}</label>
+            <div>
+              {{commProperties ? commProperties.BaseURL : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="rhPayrollProperties">
+            <label>{{'HR_URL_SERVER'|translate}}</label>
+            <div>
+              {{rhPayrollProperties ? rhPayrollProperties.BaseURL : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12" *ngIf="garageProperties">
+            <label>{{'GARAGE_URL_SERVER'|translate}}</label>
+            <div>
+              {{garageProperties ? garageProperties.GarageUrl : ''}}
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label>{{'AUTH_URL_SERVER'|translate}}</label>
+            <div>
+              {{authEnvironment ? authEnvironment.authServerUrl : 'N A'}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+
+  </div>
+</div>

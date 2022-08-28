@@ -1,0 +1,173 @@
+<div class="col-12 mt-2" *ngIf='idItem && showGrid'>
+  <div class="row" *ngIf='!isFromDocument'>
+    <div class="col-12">
+      <h5 style="color: #4c9aae;">{{'EQUIVALENT_PRODUCT'|translate}}</h5>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12 mb-2">
+      <app-quick-search-item (sendData)="receiveData($event)"></app-quick-search-item>
+    </div>
+  </div>
+  <div class="row" *ngIf='isFromDocument'>
+    <div class="col-sm-5 mb-2">
+      <div class="row mb-0">
+        <h5 style="color: #336699">{{'EQUIVALENT_PRODUCT_FOR_ORDER' | translate}}</h5> &nbsp; <label
+        class="text-warning">{{description}}</label>
+      </div>
+    </div>
+  </div>
+  <kendo-grid #grid [data]="gridSettings.gridData" (selectionChange)="selectRow($event)" [style.maxHeight.px]="700"
+              [selectable]="selectableSettings" (pageChange)="pageChange($event)" [pageSize]="pageSize" [skip]="skip"
+              [filterable]="false" (dataStateChange)="dataStateChange($event)" [pageable]="pagerSettings"
+              [filter]="gridSettings.state.filter">
+    <kendo-grid-checkbox-column [width]='80' *ngIf='!isFromDocument'></kendo-grid-checkbox-column>
+
+
+    <kendo-grid-column field="IdItem" title="Id" [width]='200' hidden="hidden">
+    </kendo-grid-column>
+    <kendo-grid-column field="IdLine" title="IdLine" [width]='200' hidden="hidden">
+    </kendo-grid-column>
+    <kendo-grid-column [width]='220'>
+      <ng-template kendoGridHeaderTemplate>
+                    <span tooltip="{{'ITEM' | translate}}"
+                          theme="light">{{'ITEM' | translate}}
+                    </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <div class="row d-flex align-items-center mb-1 mt-1">
+          <div class="col-3 pl-3">
+            <img id="itemImage" class="rounded-circle card-avatar"
+                 [src]="'assets/image/placeholder-logo.png'" alt="avatar"/>
+          </div>
+          <div class="col-9 pl-3">
+            <div class="row">
+              <b (click)="onClickGoToDetails(dataItem.IdItem)"
+                 class="hoverText">{{dataItem.IdItemNavigation.Description}}</b>
+            </div>
+            <div class="row mt-1">
+              <span class="small"> {{dataItem.IdItemNavigation.Code}}</span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="IdItemNavigation.AllAvailableQuantity" title="{{'STOCK_QTY'|translate}}" [width]='100'
+                       filter="numeric">
+      <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+        <span tooltip="{{'AVAILABLEQUANTITY' | translate}}" theme="light">
+          {{column.title}}
+        </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        {{dataItem.IdItemNavigation.AllAvailableQuantity}}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="MvtQty" title="{{'A_CMD'|translate}}" [width]='100' [format]='"###"'
+                       *ngIf='!isFromDocument' filter="numeric">
+      <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+        <span tooltip="{{column.title | translate}}" theme="light">
+          {{column.title}}
+        </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <div class="row">
+          <div class="col-4">
+            {{dataItem.MvtQty}}
+          </div>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="OnOrderQuantity" title="{{'CMD'|translate}}" [width]='100' editor="numeric"
+                       filter="numeric">
+      <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+        <span tooltip="{{'QTE_CMD' | translate}}" theme="light">
+          {{column.title}}
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="RemainingQty" title="{{'QTE_RELIQUAT'|translate}}" [width]='100' editor="numeric"
+                       filter="numeric">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{'BALANCE_QTY'|translate}}" theme="light">{{'QTE_RELIQUAT'|translate}}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="LastePurchasePrice" title="{{'LAST_ORDER_PRICE'|translate}}" [width]='100'
+                       filter="numeric">
+      <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+        <span tooltip="{{column.title | translate}}" theme="light">
+          {{column.title}}
+        </span>
+      </ng-template>
+      <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+        <kendo-numerictextbox [spinners]="false" [format]="dataItem.formatOptions" [step]="1"
+                              class="form-control inputEnabled text-box-style"
+                              [value]="dataItem.LastePurchasePrice" *ngIf='dataItem.LastePurchasePrice'
+                              [disabled]="true">
+        </kendo-numerictextbox>
+        <span *ngIf="!dataItem.LastePurchasePrice" style="float: right;">-</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" style="background: transparent !important">
+        <kendo-numerictextbox [spinners]="false" [format]="dataItem && dataItem.IdTiersNavigation && dataItem.IdTiersNavigation.FormatOption ? dataItem.IdTiersNavigation.FormatOption : null"  [step]="1"
+                              class="form-control inputEnabled text-box-style"
+                              [value]="dataItem.LastePurchasePrice" *ngIf='dataItem.LastePurchasePrice'
+                              [disabled]="true">
+        </kendo-numerictextbox>
+        <span *ngIf="!dataItem.LastePurchasePrice" style="float: right;">-</span>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column field="LastSalesPrice" title="{{'LAST_SALES_AMOUNT_HT_FOR_PUCRHASE'|translate}}" [width]='100'
+                       filter="numeric">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{'SALES_PRICE'|translate}}" theme="light">{{'LAST_SALES_AMOUNT_HT_FOR_PUCRHASE'|translate}}
+          ({{salescurrency}})</span>
+      </ng-template>
+      <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+        <kendo-numerictextbox [spinners]="false" [format]="dataItem.formatOptions" [step]="1"
+                              class="form-control inputEnabled text-box-style"
+                              [value]="dataItem.LastSalesPrice ? dataItem.LastSalesPrice.value : '-'" *ngIf='dataItem.LastSalesPrice' [disabled]="true">
+        </kendo-numerictextbox>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" style="background: transparent !important">
+        <div *ngIf='dataItem.LastSalesPrice && dataItem.LastSalesPrice.value' style="text-align: right;">
+          {{dataItem.LastSalesPrice.toLocaleString(language,{minimumFractionDigits: dataItem.CurrencyPrecision})}}
+        </div>
+        <span *ngIf="!dataItem.LastSalesPrice || (dataItem.LastSalesPrice && !dataItem.LastSalesPrice.value)" style="float: right;">-</span>
+      </ng-template>
+    </kendo-grid-column>
+
+
+    <kendo-grid-column field="IdTiersNavigation.Id" title="{{'TO_ORDER_QUANTITY'|translate}}" hidden="hidden">
+    </kendo-grid-column>
+    <kendo-grid-column field="IdTiersNavigation.Name" title="{{'SUPPLIER'|translate}}" [width]='200'>
+      <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+        <span tooltip="{{column.title | translate}}" theme="light">
+          {{column.title}}
+        </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate>
+        <span *ngIf='IdTiersNavigation'> {{IdTiersNavigation.Name}} </span>
+        <span *ngIf='!IdTiersNavigation' style="margin-left: 50px;"> - </span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column field="IdItemNavigation.EquivalenceItem" title="{{'SUPPLIER'|translate}}" hidden="hidden">
+    </kendo-grid-column>
+
+    <kendo-grid-column field="DeleveryDelay" title="{{'SUPPLIER'|translate}}" hidden="hidden">
+    </kendo-grid-column>
+    <kendo-grid-column field="formatOptions" title="{{'formatOptions'|translate}}" hidden="hidden">
+    </kendo-grid-column>
+    <kendo-grid-column field="LabelVehicule" title="{{'PRODUCT_BAND'|translate}}" [width]='250'>
+      <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+        <span tooltip="{{column.title | translate}}" theme="light">
+          {{column.title}}
+        </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate>
+        <span *ngIf='LabelVehicule'> {{LabelVehicule}} </span>
+        <span *ngIf='!LabelVehicule'> - </span>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</div>

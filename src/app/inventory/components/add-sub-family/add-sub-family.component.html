@@ -1,0 +1,138 @@
+<div *ngIf="isModal">
+  <div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card body-->
+  <div class="card-body">
+    <form [formGroup]="subFamilyFormGroup" class="container-fluid">
+        <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+                <div class="col-lg-9 col-sm-12 col-md-12 mt-4">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+                          <input class="form-control" formControlName="Code" type="text" name="Code">
+                          <app-control-messages [control]="subFamilyFormGroup.controls.Code"
+                                                class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESIGNATION'|translate}}<span class="required">*</span></label>
+                          <input class="form-control" formControlName="Label" type="text" name="Label">
+                          <app-control-messages [control]="subFamilyFormGroup.controls.Label"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FAMILY'|translate}}<span class="required">*</span></label>
+                          <app-family-combo-box [itemForm]="subFamilyFormGroup" [forSearch]="true">
+                          </app-family-combo-box>
+                          <app-control-messages [control]="subFamilyFormGroup.controls.IdFamily"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                          </div>
+                </div>
+              <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+                <label class="img-border  d-flex justify-content-center" for="file-input" #fileInput>
+                  <img id="subfamilyPicture" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                       [src]="pictureSubFamilySrc || 'assets/image/placeholder-logo.png'"/>
+                  <i class="fa fa-camera fa-lg"></i>
+                  <i *ngIf="pictureSubFamilySrc" class="fa fa-close fa-xs" (click)="removeSubFamilyPicture($event)"></i>
+                </label>
+                <input id="file-input" type='file' (change)="onSelectFile($event)" accept="image/*">
+              </div>
+            </div>
+        </div>
+    </form>
+    </div>
+  <!--End Card body-->
+    <!--Begin Card footer-->
+    <div>
+      <div class="isShowedModalSideBar">
+        <footer class="app-footer mx-0">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button (click)="onSubFamilyClick()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasAddSubFamilyPermission">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!--End Card footer-->
+  </div>
+</div>
+<div *ngIf="!isModal">
+  <div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+    <!--Begin Card eader-->
+    <div class="card-header ng-star-inserted" >
+      <div class="row pl-3" >
+        <div class="col-auto d-flex align-items-end">
+            <h3 class="card-title mb-0">{{ (isUpdateMode? 'EDIT_SUBFAMILY' : 'ADD_SUB_FAMILY') |translate }}</h3>
+        </div>
+      </div>
+    </div>
+    <hr class="mt-0">
+  <!--End Card header-->
+  <!--Begin Card body-->
+  <div class="card-body">
+    <form [formGroup]="subFamilyFormGroup" class="container-fluid">
+        <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+                <div class="col-lg-9 col-sm-12 col-md-12 mt-4">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+                          <input class="form-control" formControlName="Code" type="text" name="Code">
+                          <app-control-messages [control]="subFamilyFormGroup.controls.Code"
+                                                class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESIGNATION'|translate}}<span class="required">*</span></label>
+                          <input class="form-control" formControlName="Label" type="text" name="Label">
+                          <app-control-messages [control]="subFamilyFormGroup.controls.Label"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FAMILY'|translate}}<span class="required">*</span></label>
+                          <app-family-combo-box [itemForm]="subFamilyFormGroup" [forSearch]="true">
+                          </app-family-combo-box>
+                          <app-control-messages [control]="subFamilyFormGroup.controls.IdFamily"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                          </div>
+                </div>
+              <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+                <label class="img-border  d-flex justify-content-center" for="file-input" #fileInput>
+                  <img id="subfamilyPicture" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                       [src]="pictureSubFamilySrc || 'assets/image/placeholder-logo.png'"/>
+                  <i class="fa fa-camera fa-lg"></i>
+                  <i *ngIf="pictureSubFamilySrc" class="fa fa-close fa-xs" (click)="removeSubFamilyPicture($event)"></i>
+                </label>
+                <input id="file-input" type='file' (change)="onSelectFile($event)" accept="image/*">
+              </div>
+            </div>
+        </div>
+    </form>
+    </div>
+  <!--End Card body-->
+    <!--Begin Card footer-->
+    <div class="fixed-card-footer">
+      <div [ngClass]="getFooterClass()">
+        <footer class="app-footer mx-0">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="{{SUB_FAMILY_LIST_URL}}">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button (click)="onSubFamilyClick()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateSubFamilyPermission && isUpdateMode || hasAddSubFamilyPermission && !isUpdateMode">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!--End Card footer-->
+  </div>
+</div>
+

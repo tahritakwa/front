@@ -1,0 +1,9 @@
+<ul class="heroes" *ngIf="gridView">
+  <li *ngFor="let dataItem of gridView.data" [class.selected]="IsSelected(dataItem)" (click)="onSelect(dataItem)">
+    <span class="badge">
+      <i class="fa fa-check-circle" aria-hidden="true" *ngIf="IsSelected(dataItem)"></i>
+      <i class="fa fa-circle-thin" aria-hidden="true" *ngIf="!IsSelected(dataItem)"></i>
+      {{dataItem.Code}}</span>
+    <span class="badg-info">{{dataItem.DocumentDate | date:'dd/MM/yyyy'}}</span>
+  </li>
+</ul>

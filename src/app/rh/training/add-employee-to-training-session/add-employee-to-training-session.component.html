@@ -1,0 +1,83 @@
+<div *ngIf="!showBody">
+  {{'ALL_EMPLOYEE_ASSIGNED_TO_TRAINING'|translate}}
+</div>
+<div *ngIf="showBody" class="card">
+  <div class="card-body">
+    <form class="form-horizontal">
+      <kendo-grid (cellClick)="cellClickHandler($event)"
+                  (cellClose)="cellCloseHandler($event)"
+                  (dataStateChange)="dataStateChange($event)"
+                  (selectedKeysChange)="onSelectedKeysChange($event)"
+                  [columnMenu]="true"
+                  [data]="gridSettings.gridData"
+                  [filter]="gridSettings.state.filter"
+                  [kendoGridSelectBy]="'IdEmployeeCollaborator'"
+                  [pageSize]="gridSettings.state.take"
+                  [pageable]="pagerSettings"
+                  [reorderable]="false"
+                  [resizable]="true"
+                  [selectable]="{enabled: true, checkboxOnly: true}"
+                  [selectedKeys]="employeeListIdSelected"
+                  [skip]="gridSettings.state.skip"
+                  [sort]="gridSettings.state.sort"
+                  [sortable]="false"
+                  filterable="menu"
+      >
+        <!-- Begin Kendo grid checkbox -->
+        <kendo-grid-checkbox-column [width]="100">
+          <ng-template kendoGridHeaderTemplate>
+            <input (selectAllChange)="onSelectAllChange($event)" [state]="selectAllState" class="k-checkbox" id="selectAllCheckboxIds"
+                   kendoGridSelectAllCheckbox>
+            <label class="k-checkbox-label" for="selectAllCheckboxIds"></label>
+          </ng-template>
+        </kendo-grid-checkbox-column>
+        <!-- End Kendo grid checkbox -->
+        <!--Prénom-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                           [filter]="gridSettings.columnsConfig[0].filter"
+                           [filterable]="gridSettings.columnsConfig[0].filterable"
+                           [format]="gridSettings.columnsConfig[0].format"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0]._width">
+        </kendo-grid-column>
+        <!-- Nom -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                           [filter]="gridSettings.columnsConfig[1].filter"
+                           [filterable]="gridSettings.columnsConfig[1].filterable"
+                           [format]="gridSettings.columnsConfig[1].format"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1]._width">
+        </kendo-grid-column>
+        <!--Expected date-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                           [format]="formatDate()"
+                           [title]="gridSettings.columnsConfig[2].title | translate" editor="date" width="250">
+          <ng-template kendoGridHeaderTemplate>
+            <kendo-datepicker
+              (valueChange)="onChange($event)"
+              [(value)]="dateNow"
+              [format]="formatDate"
+              (valueChange)="onChange($event)">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+    </form>
+  </div>
+  <div class="card-footer">
+    <div *ngIf="showErrorMessage" class="error-message" style="color:red">
+      {{'EMPLOYEE_MUST_BE_SELECTED'|translate}}
+    </div>
+    <!-- Validate  -->
+    <button (click)="onClickAddEmployeesToTrainingSession()" class="btn btn-sm btn-success"
+            style="margin-top: 10px;"
+            type="submit">
+      <i class="fa fa-floppy-o"></i> {{'VALIDATE'|translate}}
+    </button>
+    <!-- End Validate  -->
+
+  </div>
+</div>
+

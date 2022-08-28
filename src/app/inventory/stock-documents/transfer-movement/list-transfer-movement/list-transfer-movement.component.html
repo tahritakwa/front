@@ -1,0 +1,161 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card card full-screen-card">
+      <div class="card-content">
+        <div class="card-header" *ngIf="!isModalHtml">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'LIST_TRANSFERT_MOVEMENT'|translate}}</h3>
+          </div>
+        </div>
+        <div class="card-body" *ngIf="!isModalHtml">
+          <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+            (predicateOperator)="getOperatorPredicate($event) " (searchClickEvent)="searchClick()"
+            (resetClickEvent)="resetClickEvent()" (filtrePredicateToSend)="getFiltrePredicate($event)">
+          </app-advanced-search>
+          <div class="row d-flex justify-content-between mt-3">
+            <!-- search div-->
+            <div class="col-lg-3 col-md-3 col-sm-3 d-flex justify-content-center">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-10">
+                    <input type="text" class="form-control" placeholder="{{'SEARCH'|translate}}"
+                      aria-describedby="addon-wrapping" [(ngModel)]='transferMovment' (afterValueChanged)='filter()'>
+                  </div>
+                  <div class="col-2 p-1">
+                    <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End search div-->
+            <app-btn-grid class="col" [advencedAdd]='hasAddPermission' [add]='false' [export]='true'
+              [addLink]='"advancedAdd"' [fileName]="'LIST_TRANSFERT_MOVEMENT'|translate" [model]='true'
+              [relativeStyle]='true' [gridSettings]="excelGridSettings" [service]="stockDocumentsService"
+              [predicate]="predicateTransferMvnt[0]" [isExportExcel]="true"></app-btn-grid>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sortable]="true" [pageable]="pagerSettings" filterable="false"
+            [reorderable]="true" [columnMenu]="false" [sort]="gridSettings.state.sort"
+            [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)" [selectable]="true">
+
+            <!--Code-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+              [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+              [format]="gridSettings.columnsConfig[0].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Date -->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+              [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+              [format]="gridSettings.columnsConfig[1].format" [style]='{"text-align": "right", "padding-right": "2%"}'>
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{(isModalHtml? dataItem.IdStockDocumentNavigation.DocumentDate: dataItem.DocumentDate)|date: gridSettings.columnsConfig[1].format}}
+              </ng-template>
+            </kendo-grid-column>
+            <!--Warehouse Source-->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[2].field
+              [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+              [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+              [format]="gridSettings.columnsConfig[2].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Warehouse Destination -->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+              [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+              [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+              [format]="gridSettings.columnsConfig[3].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[3].title | translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--Status-->
+            <kendo-grid-column *ngIf="!isModalHtml" [field]="gridSettings.columnsConfig[4].field"
+              [title]="gridSettings.columnsConfig[4].title| translate" [width]="gridSettings.columnsConfig[4]._width"
+              [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+              [format]="gridSettings.columnsConfig[4].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[4].title | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <div *ngIf="dataItem.IdDocumentStatusNavigation.Id === 1"><span
+                    class="badge badge-warning">{{'PROVISOIRE'|translate}}</span></div>
+                <div *ngIf="dataItem.IdDocumentStatusNavigation.Id === 2"><span
+                    class="badge badge-success">{{'VALID'|translate}}</span></div>
+                <div *ngIf="dataItem.IdDocumentStatusNavigation.Id === 9"><span
+                    class="badge badge-danger">{{'TRANSFERRED'|translate}}</span></div>
+                <div *ngIf="dataItem.IdDocumentStatusNavigation.Id === 10"><span
+                    class="badge badge-primary">{{'RECEIVED'|translate}}</span></div>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Quantity -->
+            <kendo-grid-column *ngIf="isModalHtml" [field]="gridSettings.columnsConfig[4].field"
+              [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+              [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+              [format]="gridSettings.columnsConfig[4].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+                  theme="light">{{gridSettings.columnsConfig[4].title | translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+             <!--Status-->
+             <kendo-grid-column *ngIf="isModalHtml" [field]="gridSettings.columnsConfig[5].field"
+             [title]="gridSettings.columnsConfig[5].title| translate" [width]="gridSettings.columnsConfig[5]._width"
+             [filter]="gridSettings.columnsConfig[5].filter" [filterable]="gridSettings.columnsConfig[5].filterable"
+             [format]="gridSettings.columnsConfig[5].format">
+             <ng-template kendoGridHeaderTemplate>
+               <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+                 theme="light">{{gridSettings.columnsConfig[5].title | translate}}</span>
+             </ng-template>
+             <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+               <div *ngIf="dataItem.IdStockDocumentNavigation.IdDocumentStatus === 1"><span
+                   class="badge badge-warning">{{'PROVISOIRE'|translate}}</span></div>
+               <div *ngIf="dataItem.IdStockDocumentNavigation.IdDocumentStatus === 2 "><span
+                   class="badge badge-success">{{'VALID'|translate}}</span></div>
+               <div *ngIf="dataItem.IdStockDocumentNavigation.IdDocumentStatus === 9 "><span
+                   class="badge badge-danger">{{'TRANSFERRED'|translate}}</span></div>
+               <div *ngIf="dataItem.IdStockDocumentNavigation.IdDocumentStatus === 10"><span
+                   class="badge badge-primary">{{'RECEIVED'|translate}}</span></div>
+             </ng-template>
+           </kendo-grid-column>
+            <!-- Command-->
+            <kendo-grid-command-column *ngIf="!isModalHtml" [width]="170" [title]="'ACTIONS'| translate "
+              [columnMenu]="false">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <!-- edit command directive, will be visible when not in edit mode -->
+                <i *ngIf="dataItem.IdDocumentStatus == 1 && (hasShowPermission || hasUpdatePermission)"
+                  class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true"
+                  (click)="goToAdvancedEdit(dataItem)"></i>
+                <i *ngIf="dataItem.IdDocumentStatus !== 1 && (hasShowPermission || hasUpdatePermission)"
+                  class="las la-pen cursor-pointer edit-pencil la-lg mx-3" [routerLink]="['show', dataItem.Id]"></i>
+
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--grid pdf & excel-->
+            <app-grid-export *ngIf="!isModalHtml" [gridSettings]="gridSettings"
+              fileName="{{'LIST_TRANSFERT_MOVEMENT'|translate}}" pdf="true" excel="true"
+              [service]="stockDocumentsService" [predicate]="predicateQuickSearch">
+            </app-grid-export>
+            <!--end grid pdf & excel-->
+          </kendo-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

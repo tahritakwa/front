@@ -1,0 +1,27 @@
+<div [formGroup]="group">
+  <kendo-combobox class="form-control HistoryCommandMargin" [data]="fiscalYearsFilteredDataSource" [textField]="'name'"
+    (valueChange)="onSelect(this)" [valueField]="'id'" [formControlName]="form" [valuePrimitive]="true"
+    [(ngModel)]="selectedValue" [filterable]="true" (filterChange)="handleFilterFiscalYears($event)"
+    [allowCustom]="true">
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.name}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.startDate | date: formatDate}} -
+            {{dataItem.endDate  | date: formatDate}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template kendoDropDownListFooterTemplate *ngIf="this.authService.hasAuthority(AccountingPermissions.ADD_FISCAL_YEARS)">
+      <app-drop-down-footer [addNew]="addNewFiscalYears.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

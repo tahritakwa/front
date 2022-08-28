@@ -1,0 +1,136 @@
+<div class="card">
+  <!--Begin Card eader-->
+  <div class="card-header">
+    <div class="row">
+      <div class="col-lg-8 col-md-8 col-sm-12">
+        <h3 class="card-title mb-0">{{'REQUEST_DOCUMENT' |translate }}</h3>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-12" style="text-align:right">
+        <h4 *ngIf="documentToUpdate && documentToUpdate.Status=== statusCode.Waiting" class="statusAlignment">
+          <span class="badge badge-warning">{{'WAITING'|translate}}</span>
+        </h4>
+        <h4 *ngIf="documentToUpdate && documentToUpdate.Status === statusCode.Refused" class="statusAlignment">
+          <span class="badge badge-danger">{{'REFUSED'|translate}}</span>
+        </h4>
+        <h4 *ngIf="documentToUpdate && documentToUpdate.Status === statusCode.Accepted" class="statusAlignment">
+          <span class="badge badge-success">{{'ACCEPTED'|translate}}</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <form [formGroup]="documentRequestAddFormGroup" class="form-horizontal">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <!--Employee-->
+          <div class="col-lg-4 col-md-4 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'EMPLOYEE'|translate}}<span class="required">*</span></label>
+            <div *ngIf="canValidate; then thenAllEmployeeBlock else elseHierrarchyEmployee"></div>
+            <ng-template #thenAllEmployeeBlock>
+              <app-employee-dropdown #allEmployeeDropdown
+                                     (Selected)="changeEmployeeDropdownValue($event)"
+                                     [form]="documentRequestAddFormGroup"></app-employee-dropdown>
+            </ng-template>
+            <ng-template #elseHierrarchyEmployee>
+              <app-employee-dropdown (Selected)="changeEmployeeDropdownValue($event)" [form]="documentRequestAddFormGroup"
+                                     [hierarchy]="!allEmployee" [withTheSuperior]="!allEmployee">
+              </app-employee-dropdown>
+            </ng-template>
+            <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!--Label-->
+          <div class="col-lg-8 col-md-8 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span class="required">*</span></label>
+            <input [ngClass]="{ 'has-error': (Label.touched || Label.dirty) && !Label.valid }" class="form-control"
+                   formControlName="Label">
+            <app-control-messages [control]="Label" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE'|translate}}<span class="required">*</span></label>
+            <app-document-request-type-dropdown [group]="documentRequestAddFormGroup">
+            </app-document-request-type-dropdown>
+            <app-control-messages [control]="IdDocumentRequestType" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+            <label class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 15px;">{{'DEADLINE'|translate}}<span
+              class="required">*</span></label>
+            <kendo-datepicker [format]="formatDate" [min]="minDate" class="form-control" formControlName="DeadLine">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="Cambiar calendario"></kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="DeadLine" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}<span
+              class="required">*</span></label>
+            <textarea [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }" class="col-lg-12 col-md-12 col-sm-12 form-control" formControlName="Description"
+                      rows="5"></textarea>
+            <app-control-messages [control]="Description" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+
+        <!-- Comment Section Start -->
+        <div *ngIf="isUpdateMode" style="margin-top: 30px">
+          <h3 class="card-title mb-0"><b>{{'COMMENT'|translate}}</b></h3>
+          <div [ngStyle]="{'max-height': '400px', 'overflow-y': 'auto'}" class="col-lg-12 col-md-12 col-sm-12">
+            <app-comment (deletedComment)="deletecomment($event)" (editedComment)="editcomment($event)"
+                         [comments-data]="commentsData"></app-comment>
+          </div>
+          <hr/>
+          <div class="row">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <textarea class="k-input" formControlName="Message" placeholder="{{'TYPE_MESSAGE'|translate}}"
+                      rows="2"></textarea>
+            <button (click)="addComment()" [disabled]="validCommentary()" class="k-button k-flat k-button-icon k-button-send"
+                    type="button">
+              <i class="fa fa-send-o"></i>
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End add form-->
+  </form>
+  <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a  routerLink="/main/payroll/document">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i>
+                  {{ "BACK_TO_LIST" | translate }}
+                </span>
+              </a>
+              <button (click)="save()" *ngIf="!isUpdateMode && hasAddPermission"
+                      class="btn btn-sm btn-save mx-1"
+                      type="button">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate }}
+              </button>
+              <button (click)="save()" *ngIf="isUpdateMode && canUpdate && !documentAlreadyValidate && hasUpdateDocumentsPermission" class="btn btn-sm btn-save mx-1" type="button">
+                <i class="fa fa-floppy-o"></i> {{'UPDATE'|translate }}
+              </button>
+              <span *ngIf="!documentAlreadyValidate && canValidate && hasUpdateDocumentsPermission">
+                <button (click)="acceptDocumentRequest()" class="btn btn-sm btn-success mx-1">
+                  <i class="fa fa-check-square-o"></i> {{'VALIDATE'|translate }}
+                </button>
+                <button (click)="refuseDocumentRequest()" *ngIf="hasRefusePermission && hasUpdateDocumentsPermission" class="btn btn-sm mx-1"
+                        style="color: #fff; background-color: #73818f;">
+                  <i class="fa fa-times"></i> {{'REFUSE'|translate}}
+                </button>
+              </span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+</div>

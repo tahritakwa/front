@@ -1,0 +1,386 @@
+<div class="row">
+  <div class="col-1">
+    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+      <a class="nav-link navigation-btn active" id="v-pills-details-tab" data-toggle="pill" href="#v-pills-details"
+        role="tab" aria-controls="v-pills-details" aria-selected="true">
+        <i class="fa fa-info fa-3x" aria-hidden="true"></i>
+      </a>
+      <a class="nav-link navigation-btn {{isBrandInfoOpen? '': 'disabled'}}" id="v-pills-supplier-info-tab"
+        data-toggle="pill" href="#v-pills-supplier-info" role="tab" aria-controls="v-pills-supplier-info"
+        aria-selected="false">
+        <i class="fa fa-address-book-o fa-3x" aria-hidden="true" *ngIf="isBrandInfoOpen"></i>
+        <i class="fa fa-spinner fa-pulse fa-3x" aria-hidden="true" *ngIf="!isBrandInfoOpen"></i>
+      </a>
+      <a class="nav-link navigation-btn" id="v-pills-oem-tab" data-toggle="pill" href="#v-pills-oem" role="tab"
+        aria-controls="v-pills-oem" aria-selected="false">
+        <i class="fa fa-list-ol fa-3x" aria-hidden="true"></i>
+      </a>
+      <a class="nav-link navigation-btn" id="v-pills-vehicles-tab" data-toggle="pill" href="#v-pills-vehicles"
+        role="tab" aria-controls="v-pills-vehicles" aria-selected="false" (click)="getTopPassengerCars()">
+        <i class="fa fa-car fa-3x" aria-hidden="true"></i>
+      </a>
+      <a class="nav-link navigation-btn" id="v-pills-engines-tab" data-toggle="pill" href="#v-pills-engines" role="tab"
+        aria-controls="v-pills-engines" aria-selected="false" (click)="getEngines()">
+        <i class="fa fa-cogs fa-3x" aria-hidden="true"></i>
+      </a>
+      <a class="nav-link navigation-btn" id="v-pills-images-tab" data-toggle="pill" href="#v-pills-images" role="tab"
+        aria-controls="v-pills-images" aria-selected="false" (click)="getMedia()">
+        <i class="fa fa-picture-o fa-3x" aria-hidden="true"></i>
+      </a>
+      <a class="nav-link navigation-btn" id="v-pills-documents-tab" data-toggle="pill" href="#v-pills-documents"
+        role="tab" aria-controls="v-pills-documents" aria-selected="false" (click)="getDocument()">
+        <i class="fa fa-file-pdf-o fa-3x" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+  <div class="col-11">
+    <div class="tab-content overflow-auto p-3" style="height: 760px;" id="v-pills-tabContent">
+      <!-- DETAILS -->
+      <div class="tab-pane fade show active h-100" id="v-pills-details" role="tabpanel"
+        aria-labelledby="v-pills-details-tab">
+        <div class="row h-100">
+          <div class="col-6">
+            <div class="row mb-3">
+              <div class="col-4">
+                <div class="mini-card h-100">
+                  <h5>{{'TECDOC_ID'|translate}}</h5>
+                  <p *ngIf="tecdocDetails.GenericArticles">{{tecdocDetails.GenericArticles[0].legacyArticleId}}</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="mini-card h-100">
+                  <h5>{{'TECDOC_REFERENCE'|translate}}</h5>
+                  <p>{{tecdocDetails.ArticleNumber}}</p>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="mini-card h-100">
+                  <h5>{{'BRAND'|translate}}</h5>
+                  <p>{{tecdocDetails.MfrName}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <div class="mini-card">
+                  <h5>{{'NAME'|translate}}</h5>
+                  <p *ngIf="tecdocDetails.GenericArticles">
+                    {{description}}</p>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-6">
+                <div class="mini-card">
+                  <h5>{{'TECDOC_PACKUNIT'|translate}}</h5>
+                  <p *ngIf="tecdocDetails.Misc">{{tecdocDetails.Misc.quantityPerPackage}}</p>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="mini-card">
+                  <h5>{{'TECDOC_QTY_PER_UNIT'|translate}}</h5>
+                  <p *ngIf="tecdocDetails.Misc">
+                    {{tecdocDetails.Misc.quantityPerPartPerPackage ?tecdocDetails.Misc.quantityPerPartPerPackage : '-'}}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row " style="min-height: 135px;max-height: 400px;">
+              <div class="col h-100">
+                <div class="mini-card h-100">
+                  <h5>{{'INFORMATION'|translate}}</h5>
+                  <div *ngIf="!(tecdocDetails.ArticleText)">{{'NOT_AVAILABLE'|translate}}</div>
+
+                  <div class="mb-4" *ngFor="let Information of tecdocDetails.ArticleText">
+                    <h6>{{Information.informationTypeDescription}} :</h6>
+                    <p>
+                      <span *ngFor="let value of Information.text">{{value}}</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="mini-card h-100">
+              <h5>{{'CRITERIA'|translate}}</h5>
+              <div *ngIf="!tecdocDetails.ArticleCriteria">{{'NOT_AVAILABLE'|translate}}</div>
+              <div class="row" *ngFor="let Criteria of tecdocDetails.ArticleCriteria">
+                <div class="col">
+                  <b>{{Criteria.criteriaDescription}} : </b>{{Criteria.formattedValue}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- OEM -->
+      <div class="tab-pane fade h-100" id="v-pills-oem" role="tabpanel" aria-labelledby="v-pills-oem-tab">
+        <h2>{{'OEM_NUMBERS'|translate}}</h2>
+        <div class="card mb-2" *ngFor="let brand of tecdocDetails.OemNumbers | groupBy: 'mfrName' | pairs">
+          <div class="card-body p-1">
+            <h4 class="card-title">
+              <span class="badge badge-brand">
+                {{brand[0]}}
+
+              </span>
+            </h4>
+
+            <div class="row">
+              <div class="col">
+                <div class="row ml-0">
+                  <div class="col-auto px-0" *ngFor="let Oem of brand[1]">
+                    <div class="badge badge-secondary mr-1 mb-1" style="font-size: 15px;">{{Oem.articleNumber}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- supplier-info -->
+      <div class="tab-pane fade h-100" id="v-pills-supplier-info" role="tabpanel"
+        aria-labelledby="v-pills-supplier-info-tab">
+        <h2>{{'BRAND_INFO'|translate}}</h2>
+        <div class="card mb-2 col-6" *ngIf="BrandInfo">
+          <div class="card-body">
+
+            <div class="btn-group dropright">
+              <button class="btn btn-light btn-lg" style="color: black; background-color: white; border: none;"
+                type="button" disabled>
+                {{BrandInfo.AddressName}}
+              </button>
+              <button *ngIf="ListBrands.length >1" type="button"
+                class="btn btn-lg btn-link dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+              <div class="dropdown-menu">
+                <div class="dropdown-item" *ngFor="let address of ListBrands; let i=index" (click)="selectbrand(i)">
+                  {{address.AddressName}}</div>
+              </div>
+            </div>
+            <table class="table table-borderless">
+              <tbody>
+                <tr *ngIf="BrandInfo.Name">
+                  <td class="tab-header">{{'NAME'|translate}} </td>
+                  <td>{{BrandInfo.Name}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.Name2">
+                  <td class="tab-header"></td>
+                  <td>{{BrandInfo.Name2}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.wwwURL">
+                  <td class="tab-header">{{'HOMEPAGE'|translate}}</td>
+                  <td>{{BrandInfo.wwwURL}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.Email">
+                  <td class="tab-header">{{'EMAIL'|translate}}</td>
+                  <td>{{BrandInfo.Email}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.Fax">
+                  <td class="tab-header">{{'FAX'|translate}}</td>
+                  <td>{{BrandInfo.Fax}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.Phone">
+                  <td class="tab-header">{{'TELEPHONE'|translate}}</td>
+                  <td>{{BrandInfo.Phone}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.Street">
+                  <td class="tab-header">{{'STREET'|translate}} </td>
+                  <td>{{BrandInfo.Street}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.City">
+                  <td class="tab-header">{{'CITY'|translate}} </td>
+                  <td>{{BrandInfo.City}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.Street2">
+                  <td class="tab-header">{{'STREET'|translate}} 2</td>
+                  <td>{{BrandInfo.Street2}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.City2">
+                  <td class="tab-header">{{'CITY'|translate}} 2</td>
+                  <td>{{BrandInfo.City2}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.Zip">
+                  <td class="tab-header">{{'POSTAL_CODE_POB'|translate}}</td>
+                  <td>{{BrandInfo.Zip}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.ZipCountryCode">
+                  <td class="tab-header">{{'POSTAL_COUNTRY_CODE'|translate}}</td>
+                  <td>{{BrandInfo.ZipCountryCode}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.ZipMailbox">
+                  <td class="tab-header">{{'POSTAL_CODE_BOX'|translate}}</td>
+                  <td>{{BrandInfo.ZipMailbox}}</td>
+                </tr>
+                <tr *ngIf="BrandInfo.ZipSpecial">
+                  <td class="tab-header">{{'POSTAL_CODE_WHOLESALER'|translate}}</td>
+                  <td>{{BrandInfo.ZipSpecial}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!--<button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false"
+          (click)="getAllBrandInfo()">
+          <i class="fa fa-address-book" aria-hidden="true"></i>
+          {{'SHOW_ALL'|translate}}
+        </button> -->
+      </div>
+      <!-- voiture -->
+      <div class="tab-pane fade h-100" id="v-pills-vehicles" role="tabpanel" aria-labelledby="v-pills-vehicles-tab">
+        <h2>{{'VEHICLES_LIST'|translate}}</h2>
+        <kendo-grid [data]="tecdocCarDetails" [height]=675 #cargrid>
+
+          <!-- car Col-->
+          <kendo-grid-column field="Type" title="{{'VEHICLE'|translate}}" width="400">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip=" {{'VEHICLE'|translate}}" theme="light">{{'VEHICLE'|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.VehicleDetails.ManuName}} {{dataItem.VehicleDetails.ModelName}}
+              {{dataItem.VehicleDetails.TypeName}}
+            </ng-template>
+          </kendo-grid-column>
+
+          <!-- BodyType Col-->
+          <kendo-grid-column field="VehicleDetails.ConstructionType" title="{{'BODY_TYPE'|translate}}" width="200">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip=" {{'BODY_TYPE'|translate}}" theme="light">{{'BODY_TYPE'|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!-- EngineCodeList Col-->
+          <kendo-grid-column field="EngineCodeList" title="{{'ENGINE_CODES'|translate}}" width="150">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip=" {{'ENGINE_CODES'|translate}}" theme="light">{{'ENGINE_CODES'|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div *ngIf="dataItem.MotorCodes">
+                {{dataItem.MotorCodes.Array[0].MotorCode}}
+                <span tooltip="{{getMotorList(dataItem.MotorCodes.Array)}}" *ngIf="dataItem.MotorCodes.Array.length > 1"
+                  placement="top" theme="light" class="badge badge-secondary">
+                  <i class="fa fa-ellipsis-h fa-lg"></i>
+                </span>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!-- motorType -->
+          <kendo-grid-column field="VehicleDetails.MotorType" title="{{'MOTOR_TYPE'|translate}}" width="70">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip=" {{'MOTOR_TYPE'|translate}}" theme="light">{{'MOTOR_TYPE'|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- PowerKW Col-->
+          <kendo-grid-column field="VehicleDetails.PowerKwFrom" title="{{'POWERKW'|translate}}" width="70">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip=" {{'POWER_KW'|translate}}" theme="light">{{'KW'|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- PowerPS Col-->
+          <kendo-grid-column field="VehicleDetails.PowerHpFrom" title="{{'POWERPS'|translate}}" width="70">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip=" {{'POWER_PS'|translate}}" theme="light">{{'HP'|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- CapacityTech Col-->
+          <kendo-grid-column field="VehicleDetails.CylinderCapacityCcm" title="{{'cc'|translate}}" width="70">
+          </kendo-grid-column>
+
+          <!-- start date Col-->
+          <kendo-grid-column field="VehicleDetails.ConstructionStartInterval" title="{{'CONSTR_YEARS'|translate}}"
+            width="100">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip=" {{'CONSTRUCTION_YEARS'|translate}}" theme="light">{{'CONSTR_YEARS'|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div>
+                {{getYear(dataItem.VehicleDetails.YearOfConstrFrom)}}
+                <span *ngIf="dataItem.VehicleDetails.YearOfConstrTo !== 0 ">
+                  -
+                  {{getYear(dataItem.VehicleDetails.YearOfConstrTo)}}
+                </span>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+
+          <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+            <div class="row">
+              <div class="col-lg-4">
+                <button kendoGridAddCommand class="noPadding btn-Add k-button" dir="ltr" style="border: none"
+                  type="button" (click)="getPassengerCars()" *ngIf="!showAll">
+                  <i class="fa fa-car fa-lg text-primary"></i>
+                  <span>&nbsp; {{'SHOW_ALL'|translate}}</span>
+                </button><br style="line-height: 2.5em;">
+              </div>
+
+            </div>
+
+          </ng-template>
+          <ng-template kendoGridNoRecordsTemplate>
+          </ng-template>
+        </kendo-grid>
+      </div>
+      <!-- engines -->
+      <div class="tab-pane fade h-100" id="v-pills-engines" role="tabpanel" aria-labelledby="v-pills-engines-tab">
+        <h2>{{'ENGINES'|translate}}</h2>
+        <div class="row">
+          <div class="col">
+            <div class="row">
+              <div class="col-auto">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="exampleFormControlInput1" [(ngModel)]="enginesearch"
+                    placeholder="{{'SEARCH'|translate}}">
+                </div>
+              </div>
+            </div>
+            <div class="row ml-0">
+              <div class="col-auto px-0" *ngFor="let engine of tecdocEngines">
+                <div class="badge badge-{{updateClass(engine)}} mr-1 mb-1" style="font-size: 15px;">{{engine}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- images -->
+      <div class="tab-pane fade h-100" id="v-pills-images" role="tabpanel" aria-labelledby="v-pills-images-tab">
+        <h2>{{'IMAGES'|translate}}</h2>
+        <div *ngIf="tecdocMedia.length===0">
+          {{'NOT_AVAILABLE'|translate}}
+        </div>
+        <ngb-carousel #carousel [interval]='7000' class="d-flex" *ngIf="tecdocMedia.length>0"
+          style="background-color: black;height: 93%;align-items: center !important; padding: 50px;">
+          <ng-template ngbSlide *ngFor="let image of tecdocMedia; index as i">
+            <div class="picsum-img-wrapper d-flex justify-content-center h-100">
+              <img [src]="image.Source" alt="image.Info">
+            </div>
+          </ng-template>
+        </ngb-carousel>
+      </div>
+      <!-- docs -->
+      <div class="tab-pane fade h-100" id="v-pills-documents" role="tabpanel" aria-labelledby="v-pills-documents-tab">
+        <h2>{{'DOCUMENTS'|translate}}</h2>
+        <div *ngIf="!tecdocDocuments || tecdocDocuments.length === 0">
+          {{'NOT_AVAILABLE'|translate}}
+        </div>
+        <div *ngIf="tecdocDocuments && tecdocDocuments.length>0" class="row mb-3">
+          <div class="col-2" *ngFor="let doc of tecdocDocuments">
+            <div class="card mb-0 h-100 cursor-pointer" (click)="OpenDocumentLink(doc.url)">
+              <img src="/assets/image/pdf.png" class="card-img-top" alt="{{doc.headerDescription}}">
+              <div class="card-body py-0 px-3" style="margin-top: -10px;">
+                <p class="card-text">{{doc.headerDescription}}</p>
+              </div>
+              <div class="card-footer p-1">
+                <small class="text-muted"><i class="fa fa-file-pdf-o text-danger mr-1"
+                    aria-hidden="true"></i>{{doc.fileName}}</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

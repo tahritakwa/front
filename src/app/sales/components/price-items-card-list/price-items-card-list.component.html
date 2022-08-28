@@ -1,0 +1,37 @@
+<div class="row col-sm-12 col-md-12 col-lg-12 my-2" *ngIf="!isReadOnly && hasUpdatePermission">
+  <button class="btn-Add k-button btn btn-add" type="button" (click)='affectToItemsClick()'>
+    <span>&nbsp; {{'AFFECT_TO_ITEMS'|translate}}</span>
+  </button>
+</div>
+
+<div class="row">
+
+  <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6 col-xs-12 d-flex align-items-stretch"
+    *ngFor="let item of data; let i=index;">
+    <div class="card-item">
+
+      <div class="d-flex justify-content-end mr-2 mt-1" *ngIf="!isReadOnly && hasUpdatePermission">
+        <i (click)="unaffectItem(item)" class="fa fa-times fa-lg" style="color: #e91e63"></i>
+      </div>
+      <div class="card-body pt-1">
+        <div class="row d-flex align-items-center mb-3" style="width: 200px;">
+          <div class="col-2">
+            <img id="blah" class="rounded-circle card-avatar"
+              [src]="pictureItemSrc(item) || 'assets/image/placeholder-logo.png'" alt="avatar" />
+          </div>
+          <div class="col-8 ml-4">
+            <span class="tiers-title"> {{item.Code}} </span>
+            <div> {{item.Description}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Paginator start-->
+<app-kendo-pager *ngIf="gridSettings.gridData && gridSettings.gridData.total > minPageSize" [dataSource]="gridSettings"
+  [pagerSettingsInput]="pagerSettings" (pageChangeEvent)="paginate($event)"
+  (stateChangeEvent)="dataStateChange($event)">
+</app-kendo-pager>
+<!-- Paginator end-->

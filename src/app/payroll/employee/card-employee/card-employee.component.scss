@@ -1,0 +1,77 @@
+.card-employee-avatar {
+    width: 240px;
+    height: 240px;
+    border: 2px solid #222850;
+}
+
+.btn-position {
+    font-size: 1.19em;
+    float: right;
+}
+
+.name-style {
+    text-align: center;
+    font-size: x-large;
+}
+.date-style {
+    font-size: medium;
+    color: gray;
+    width: 50%;
+}
+.rounded-element-cell{
+    font-size: 15px;
+    border: 2px solid #4dbd74 !important;
+}
+.description-title-style {
+    font-size: medium;
+    margin-left: 33px;
+    color: #222850;
+    width: 150px;
+    text-align: justify;
+}
+.description-title {
+    color: #4dbd74;
+    float: right;
+    font-weight: bold;
+}
+.description-value-style {
+    font-size: medium;
+    color: #222850;
+    margin-left: 20px;
+}
+
+.badge-position {
+    font-size: 13px;
+    position: absolute;
+    top: 81%;
+    left: 67%;
+    transform: translate(-50%, -50%);
+}
+.badge-position-popup {
+    font-size: 13px;
+    position: absolute;
+    top: 81%;
+    left: 75%;
+    transform: translate(-50%, -50%);
+}
+@media (min-width: 992px) {
+    .badge-position {
+        left: 69%;
+    }
+}
+@media (max-width: 767px) and (min-width: 477px) {
+    .badge-position {
+        left: 60%;
+    }
+}
+@media (max-width: 367px) {
+    .scroll-small {
+        overflow-x: scroll;
+    }
+}
+hr {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}

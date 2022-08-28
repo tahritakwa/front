@@ -1,0 +1,98 @@
+<div class="col-sm-12 col-md-12 col-lg-12">
+  <div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-3">
+      <div class="form-group row">
+      <div class="col-10">
+      <input (afterValueChanged)="filter()" type="text" class="form-control"
+               placeholder="{{searchPlaceHolder|translate}}" aria-describedby="addon-wrapping"
+               [(ngModel)]='itemWarehouseSearched'/>
+               </div>
+               <div class="col-2 p-1">
+                <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+              </div>
+    </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-5">
+      <div class="card card-content warehouse w-100 ml-2" theme="light"
+        placement="top" >
+        <div class="row">
+          <div class="col-auto ml-3 mt-2">
+            <div>
+              <i class="{{warehouseCentralIcon}} fa-lg"></i>
+              <span class="font-weight-bold">{{warehouseCentral.WarehouseName}}</span>
+            </div>
+            <div class="d-flex justify-content-center">
+              <span class="light-reference ml-2">{{warehouseCentral.WarehouseCode}}</span>
+            </div>
+          </div>
+          <div class="col mt-3 ml-3">
+            <div>
+              <span class="font-weight-bold">{{'RESPONSABLE_OF'|translate}}
+                {{warehouseCentral.IdUserResponsableNavigation?.FullName}}</span>
+            </div>
+            <div>
+              <span class="light-reference">{{'ADRESS'|translate}} : {{warehouseCentral.WarehouseAdresse}}</span>
+            </div>
+            <div (click)="showAllShelfAndStorage($event)" *ngIf="!isVisibleAllShelf && (hasShowPermission || hasUpdatePermission)">
+              <i class="las la-chevron-down"></i> <span
+                class="font-weight-bold m-2">{{'SHELF_AND_STORAGE'|translate}}</span>
+            </div>
+            <div class="central-storage-card" *ngIf="isVisibleAllShelf && (hasShowPermission || hasUpdatePermission)" (click)="showAllShelfAndStorage($event)">
+
+              <div>
+                <i class="las la-chevron-up"></i> <span
+                  class="font-weight-bold m-2">{{'SHELF_AND_STORAGE'|translate}}</span>
+              </div>
+
+              <div class="row" *ngIf="isVisibleAllShelf">
+                <div class="col-auto mt-1 pr-0 " *ngFor="let shelfAndStroage of listShelfsAndStorages;let i=index;">
+                  <div class="shelf-storage">
+                    <span class="badge badge-shelf" style="font-size: small;"
+                      (click)="editShelf(shelfAndStroage,$event)">
+                      <span tooltip="{{'EDIT_CLICK_TOOLTIP'|translate}}" theme="light"
+                        placement="bottom">{{shelfAndStroage.Label}}</span>
+                      <span *ngIf = "hasDeleteShelfPermission">
+                        <i class="fa fa-trash-o ml-2" tooltip="{{'DELETE_SHELF_TOOLTIP'|translate}}" theme="light"
+                          placement="bottom" (click)="deleteShefAndStorage(shelfAndStroage,$event)"></i>
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <i *ngIf="hasShowPermission || hasUpdatePermission" class="d-flex fa fa-pencil py-3 pr-4" (click)="editWarehouseTypeCentral(warehouseCentral,$event)"></i>
+            <i *ngIf="hasDeletePermission" class="d-flex fa fa-trash-o py-3 pr-4" (click)="deleteWarehouseTypeCentral(warehouseCentral,$event)"></i>
+            <i *ngIf="hasShowDetailsPermission" class="d-flex fa fa-info-circle py-3 pr-4" (click)="redirectToWarehouseCentralItems(warehouseCentral)"  tooltip="{{'SHOW_ITEMS_TOOLTIP'|translate}}" [ngClass]="{'disabled-search':!hasShowListItemPermission}"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div  class="col-sm-12 col-md-12 col-lg-4 mb-4">
+      <div class="row d-flex justify-content-center mt-5 mb-2">
+        <div class="col-auto mt-2" *ngIf = "hasAddZonePermission">
+          <button class="btn btn-sm mr-1 w-100" type="button" style="background-color: #ed5565  !important;">
+            <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+            <span (click)="addNewWarehouse(isNotWarehouse)" style="color: white">&nbsp;
+              {{'ADD_ZONE'|translate}}</span>
+          </button>
+        </div>
+
+        <div class="col-auto mt-2" *ngIf = "hasAddPermission">
+          <button class="btn btn-sm mr-1 w-100" type="button" style="background-color: #f2be22  !important;">
+            <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+            <span (click)="addNewWarehouse(isWarehouse)" style="color: white">&nbsp; {{'ADD_DEPOT'|translate}}</span>
+          </button>
+        </div>
+        <div class="col-auto mt-2"*ngIf = "hasAddShelfPermission">
+          <button class="btn btn-sm mr-1 w-100" type="button" style="background-color: #4dbd74  !important;">
+            <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+            <span tooltip="{{'ADD_SHELF_STORAGE'|translate}}" theme="light" placement="bottom"
+              (click)="addNewWarehouse(isShelfAndStorage)" style="color: white;">&nbsp; {{'ADD_S&S'|translate}}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

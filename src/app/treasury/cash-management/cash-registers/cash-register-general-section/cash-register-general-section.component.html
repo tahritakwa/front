@@ -1,0 +1,196 @@
+<div style="padding-left: 20px;">
+  <form class="form-horizontal" [formGroup]="cashRegisterFormGroup" style="padding-top: 30px;">
+    <!-- 1 row start-->
+    <div class="row col-lg-12 col-md-12 col-sm-12 spacing">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row justify-content-between">
+          <label class="col-lg-4 col-md-12 col-sm-12" style="padding-top:5px">{{'CASH_REGISTER_CODE'|translate}}</label>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row justify-content-between">
+          <label class="col-lg-auto col-md-12 col-sm-12" style="padding-top:5px">{{'NAME'|translate}}</label>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 1 row end-->
+    <!-- 2 row start-->
+    <div class="row col-lg-12 col-md-12 col-sm-12 spacing">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row justify-content-between">
+          <label class="col-lg-auto col-md-12 col-sm-12" style="padding-top:5px">{{'TYPE'|translate}}</label>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <kendo-combobox class="form-control" [data]="[]"> </kendo-combobox>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row justify-content-between">
+          <label class="col-lg-4 col-md-12 col-sm-12" style="padding-top:5px">{{'PARENT_CRATE'|translate}}</label>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <kendo-combobox class="form-control" [data]="[]"> </kendo-combobox>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 2 row End-->
+    <!-- 3 row start-->
+    <div class="row col-lg-12 col-md-12 col-sm-12 spacing">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row justify-content-between">
+          <label class="col-lg-auto col-md-12 col-sm-12" style="padding-top:5px">{{'ZONE'|translate}}</label>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row justify-content-between">
+          <label class="col-lg-4 col-md-12 col-sm-12" style="padding-top:5px">{{'RESPONSIBLE'|translate}}</label>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 3 row End-->  
+    <!-- 4 row start-->
+    <div class="row spacing">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <label class="col-lg-4 col-md-12 col-sm-12" style="padding-top:5px">{{'ADRESS'|translate}}</label>
+        <div class="col-lg-12 col-md-12 col-sm-12"  style="padding-right: 45px;">
+          <textarea class="form-control" rows="3"></textarea>
+        </div>
+      </div>
+    </div>
+    <!-- 4 row End-->    
+    <!-- 5 row Start-->
+    <div class="row col-lg-12 col-md-12 col-sm-12">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+            <label style="padding-top:5px; color: #4c9aae;">{{'EXPENSE_CRATES'|translate}}: </label>
+            <!-- Depence start-->
+            <div class="col-lg-12 col-md-12 col-sm-12 div-style">
+                <div class="row" style="margin-top: 20px; margin-bottom: 20px;">
+                    <div class="col pl-4 pr-0">
+                        <div class="input-group flex-nowrap">
+                          <input aria-describedby="addon-wrapping" class="form-control" type="text" placeholder="Rechercher">
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                      <div id="divButtonAdd">
+                        <div class="favourite">
+                          <div class="favourite_heart"> <i aria-hidden="true" class="fa fa-plus"></i></div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 ">
+                    <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                      <div class="col-lg-9"> Caisse N° CA000001 </div>
+                      <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                      <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                      </div>
+                    </div>
+                    <hr>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 ">
+                    <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                      <div class="col-lg-9"> Caisse N° CA000002 </div>
+                      <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                      <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                      </div>
+                    </div>
+                    <hr>
+                  </div>
+                </div>
+            </div>
+            <!-- depence end-->
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label style="padding-top:5px; color: #4c9aae;">{{'RECIPE_CRATES'|translate}}: </label>
+          <!-- recette start-->
+          <div class="col-lg-12 col-md-12 col-sm-12 div-style">
+            <div class="row" style="margin-top: 20px;margin-bottom: 20px;">
+              <div class="col pl-4 pr-0">
+                  <div class="input-group flex-nowrap">
+                     <input aria-describedby="addon-wrapping" class="form-control" type="text" placeholder="Rechercher">
+                  </div>
+              </div>
+              <div class="col-auto">
+                    <div id="divButtonAdd">
+                      <div class="favourite">
+                        <div class="favourite_heart"> <i aria-hidden="true" class="fa fa-plus"></i></div>
+                      </div>
+                    </div>
+              </div>
+            </div>
+            <div class="row" style="height:250px;overflow-y: auto;">
+              <div class="col-lg-12 col-md-12 col-sm-12 ">
+                <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                  <div class="col-lg-9"> Caisse N° CA000003 </div>
+                  <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                  <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                  </div>
+                </div>
+                <hr>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 ">
+                <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                  <div class="col-lg-9"> Caisse N° CA000004 </div>
+                  <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                  <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                  </div>
+                </div>
+                <hr>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 ">
+                <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                  <div class="col-lg-9"> Caisse N° CA000005 </div>
+                  <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                  <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                  </div>
+                </div>
+                <hr>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 ">
+                <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                  <div class="col-lg-9"> Caisse N° CA000006 </div>
+                  <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                  <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                  </div>
+                </div>
+                <hr>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 ">
+                <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                  <div class="col-lg-9"> Caisse N° CA000007 </div>
+                  <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                  <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                  </div>
+                </div>
+                <hr>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 ">
+                <div class="row col-lg-12 col-md-12 col-sm-12 ">
+                  <div class="col-lg-9"> Caisse N° CA000008 </div>
+                  <div class="col-lg-3" style="text-align:right;"> <i class="fa fa-pencil " style="color: #55a3aa;"></i>&nbsp;
+                  <i class="fa fa-times fa-lg" style="color: #E91E63;"></i> 
+                  </div>
+                </div>
+                <hr>
+              </div>
+            </div>
+          </div>
+        <!-- recette end-->
+      </div>
+    </div>
+    <!-- 5 row End-->
+  </form>
+</div>

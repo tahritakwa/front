@@ -1,0 +1,131 @@
+<div class="card border-0">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 class="card-title mb-0">{{'STANDARD_REPORT_CONFIGURATION'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="standardAccountingReportForm">
+      <div class="row">
+        <div class="col-lg-10 col-sm-10 col-md-12 mr-5">
+          <div class="form-group row">
+            <div class="col-lg-5 col-md-5 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'REPORT_TYPE'|translate}}<span
+                  class="required">*</span></label>
+              <kendo-combobox class="form-control" [data]="reportTypeData" formControlName="reportType"
+                [valueField]="'reportType'" [textField]="'text'" [valuePrimitive]="true" required [filterable]="true"
+                (filterChange)="handleFilterChange($event)">
+
+                <!--No data template-->
+                <ng-template kendoDropDownListNoDataTemplate>
+                  <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                </ng-template>
+                <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                <!--end No data template-->
+              </kendo-combobox>
+              <app-control-messages [control]="standardAccountingReportForm.controls.reportType"
+                class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-6 mt-2">
+              <br>
+              <a class="btn btn-sm btn-primary" style="color: white" (click)="previewReportInGrid()">
+                <i class="fa fa-search fa-lg"></i> {{'PREVIEW'|translate}}
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>
+<div class="card" style="border-bottom: none;
+border-bottom-left-radius: 0px;
+border-bottom-right-radius: 0px;
+border-top-left-radius: 0px;
+border-top-right-radius: 0px;
+border-top: none;">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 class="card-title mb-0">{{'REPORT_DEFAULT_FORMULAS_PREVIEW'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <kendo-grid #grid [data]="gridSettings.gridData" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
+      (dataStateChange)="dataStateChange($event)" (cellClick)="lineClickHandler($event)" [rowClass]="rowClassCallback"
+      (keypress)="keyEnterAction(grid,this.reportConfigFormGroup,$event)">
+
+      <kendo-grid-column-group [locked]="false" [columnMenu]="false">
+        <kendo-grid-column [width]="80" [footerStyle]="{'background-color':'#fff'}" [columnMenu]="false">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <button kendoGridSaveCommand title="{{'SAVE_REPORT_LINE' | translate}}" *ngIf="editedRowIndex!==undefined"
+              class='noPadding btn-Add'>
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <button kendoGridCancelCommand title="{{'CANCEL' | translate}}" *ngIf="editedRowIndex!==undefined"
+              class="noPadding btn-Add k-button">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}"
+          [field]="gridSettings.columnsConfig[0].field" [editable]="false"
+          [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0].width"
+          [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [editable]="false"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1].width"
+          [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2].width"
+          [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+          [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3].width"
+          [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+            <div [formGroup]="reportConfigFormGroup">
+              <kendo-combobox class="form-control" [data]="signValues" [textField]="'status'" [valueField]="'negative'"
+                formControlName="negative" [valuePrimitive]="true" [filterable]="true">
+
+                <!--No data template-->
+                <ng-template kendoDropDownListNoDataTemplate>
+                  <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                </ng-template>
+                <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                <!--end No data template-->
+              </kendo-combobox>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+          [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4].width"
+          [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid-column-group>
+
+    </kendo-grid>
+  </div>
+</div>

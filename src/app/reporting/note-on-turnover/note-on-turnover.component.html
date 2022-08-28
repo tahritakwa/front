@@ -1,0 +1,217 @@
+<div class="card full-screen-card animated fadeIn">
+    <div class="row">
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <form class="form-horizontal" [formGroup]="noteOnTurnoverForm">
+          <div class="card-content">
+            <div class="card-header">
+              <div class="col-sm-5 mt-1">
+                <h3 class="card-title mb-0">{{'NOTE_ON_TURNOVER'|translate}}</h3>
+              </div>
+            </div>
+            <div class="card-body">
+              <fieldset [ngStyle]="{border:fieldsetBorderStyle }">
+                <legend>{{"NOTE_ON_TURNOVER"|translate}}
+                  <i *ngIf="isDetailsContentVisible" class="las la-angle-double-up la-angle-color"
+                    (click)="hideDetailsContent()"></i>
+                  <i *ngIf="!isDetailsContentVisible" class="las la-angle-double-down la-angle-color"
+                    (click)="showDetailsContent()"></i>
+                </legend>
+                <div class="col-lg-12 col-sm-12 col-md-12">
+                  <div class="form-group row">
+                    <div class="col-lg-12 col-sm-12 col-md-12 " *ngIf="isDetailsContentVisible">
+                      <div class="form-group row">
+                        <div class="col-sm-12 col-md-6 col-lg-3">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">
+                              {{'START_DATE'|translate}}<span class="required">*</span>
+                            </label>
+                            <div class="col-lg-12 col-md-12  col-sm-12">
+                              <kendo-datepicker class="form-control" formControlName="StartDocumentDate"
+                                (valueChange)="onChangeStartDate($event)" [format]="formatDate"
+                                (focusout)='changeDate()'>
+                                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                  toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                                </kendo-datepicker-messages>
+                              </kendo-datepicker>
+                              <app-control-messages [control]="noteOnTurnoverForm.controls.StartDocumentDate"
+                                class="error-msg messages text-left text-danger">
+                              </app-control-messages>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-3">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE'|translate}}<span class="required">*</span></label>
+                            <div class="col-lg-12 col-md-12  col-sm-12">
+                              <kendo-datepicker class="form-control" formControlName="EndDocumentDate"
+                                (valueChange)="onChangeEndDate($event)" [format]="formatDate" (focusout)='changeDate()'>
+                                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                  toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                                </kendo-datepicker-messages>
+                              </kendo-datepicker>
+                              <app-control-messages [control]="noteOnTurnoverForm.controls.EndDocumentDate"
+                                class="error-msg messages text-left text-danger">
+                              </app-control-messages>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-3">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{'ITEMS'|translate}}</label>
+                            <div class="col-lg-12 col-md-12  col-sm-12">
+                              <ng-container>
+                              <app-item-dropdown [itemForm]="noteOnTurnoverForm"
+                              [showFilter]='true' [hideSearch]='true' [parentViewContainerRef]="viewRef" [activeKeyPress]='true'>
+                              </app-item-dropdown>
+                              <app-control-messages [control]="noteOnTurnoverForm.controls.IdItem"
+                                class="error-msg messages text-left text-danger">
+                              </app-control-messages>
+                            </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-2">
+                          <div class="form-group row">
+                            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-bottom: 1rem;"><br></div>
+                            <div class="col-sm-12 col-md-12 col-lg-12 k-text-center">
+                              <button class="generate" type="button" tabindex="0" (click)="generateNoteOnTurnover()">
+                                <i class="fa fa-cogs fa-lg AddIcon"></i>
+                                {{'GENERATE'|translate}}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+              <br/>
+              <div *ngIf="isGeneratedNoteOnTurnover ">
+                <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+  
+                  <kendo-grid id="productsGrid" [data]="gridSettings.gridData" [style.maxHeight.px]="800"
+                    [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+                    (dataStateChange)="dataStateChange($event)" [sort]="gridSettings.state.sort" [reorderable]="true"
+                    [filterable]="false" [filter]="gridSettings.state.filter" [columnMenu]="false"
+                    [pageable]="pagerSettings" [selectable]="true" [sortable]="true">
+  
+  
+                    <kendo-grid-column [title]="'CODE'| translate " [width]="gridSettings.columnsConfig[0]._width"
+                      [filter]="gridSettings.columnsConfig[0].filter"
+                      [filterable]="gridSettings.columnsConfig[0].filterable"
+                      [format]="gridSettings.columnsConfig[0].format" [tooltip]="gridSettings.columnsConfig[0].title"
+                      [field]="gridSettings.columnsConfig[0].field" [columnMenu]="false">
+                      <ng-template kendoGridFooterTemplate>
+                        <div style=" font-weight:bold;color: #4c9aae; font-size: 16px; padding-top: 7px;
+                        padding-bottom: 7px;"> {{'TOTAL'| translate}}</div>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[1].title | translate"
+                      [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.columnsConfig[1].filter"
+                      [filterable]="gridSettings.columnsConfig[1].filterable"
+                      [format]="gridSettings.columnsConfig[1].format" [field]="gridSettings.columnsConfig[1].field"
+                      [columnMenu]="false">
+  
+                    </kendo-grid-column>
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[2].title | translate"
+                      [width]="gridSettings.columnsConfig[2]._width" [filter]="gridSettings.columnsConfig[2].filter"
+                      [filterable]="gridSettings.columnsConfig[2].filterable"
+                      [format]="gridSettings.columnsConfig[2].format" [field]="gridSettings.columnsConfig[2].field"
+                      [columnMenu]="false">
+                    </kendo-grid-column>
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[3].title | translate"
+                      [width]="gridSettings.columnsConfig[3]._width" [filter]="gridSettings.columnsConfig[3].filter"
+                      [filterable]="gridSettings.columnsConfig[3].filterable"
+                      [format]="gridSettings.columnsConfig[3].format" [field]="gridSettings.columnsConfig[3].field"
+                      [columnMenu]="false">
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[3].title|translate}}"
+                          theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[4].title | translate"
+                      [width]="gridSettings.columnsConfig[4]._width" [filter]="gridSettings.columnsConfig[4].filter"
+                      [filterable]="gridSettings.columnsConfig[4].filterable"
+                      [format]="gridSettings.columnsConfig[4].format" [field]="gridSettings.columnsConfig[4].field"
+                      [columnMenu]="false" [style]='{"text-align": "right", "padding-right": "4%"}'>
+                      <ng-template kendoGridCellTemplate let-dataItem>
+                        {{dataItem.Cost.toLocaleString(language, {minimumFractionDigits:
+                          formatNumberOptions.minimumFractionDigits})}}  {{symbole}}
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[5].title | translate"
+                    [width]="gridSettings.columnsConfig[5]._width" [filter]="gridSettings.columnsConfig[5].filter"
+                    [filterable]="gridSettings.columnsConfig[5].filterable"
+                    [format]="gridSettings.columnsConfig[5].format" [field]="gridSettings.columnsConfig[5].field"
+                    [columnMenu]="false" [style]='{"text-align": "right"}'>
+                    <ng-template kendoGridHeaderTemplate>
+                      <span tooltip="{{gridSettings.columnsConfig[5].title|translate}}"
+                        theme="light">{{gridSettings.columnsConfig[5].title|translate}}</span>
+                    </ng-template>
+                     <ng-template kendoGridCellTemplate let-dataItem>
+                    {{dataItem.SalePriceAfterDelivery.toLocaleString(language, {minimumFractionDigits:
+                      formatNumberOptions.minimumFractionDigits})}}  {{symbole}}
+                  </ng-template>
+                  </kendo-grid-column>
+                  <kendo-grid-column [title]="gridSettings.columnsConfig[6].title | translate"
+                    [width]="gridSettings.columnsConfig[6]._width" [filter]="gridSettings.columnsConfig[6].filter"
+                    [filterable]="gridSettings.columnsConfig[6].filterable"[tooltip]="gridSettings.columnsConfig[6].title | translate"
+                    [format]="gridSettings.columnsConfig[6].format" [field]="gridSettings.columnsConfig[6].field"
+                    [columnMenu]="false" [style]='{"text-align": "right"}'>
+                  </kendo-grid-column>
+                  <kendo-grid-column [title]="gridSettings.columnsConfig[7].title | translate"
+                  [width]="gridSettings.columnsConfig[7]._width" [filter]="gridSettings.columnsConfig[7].filter"
+                  [filterable]="gridSettings.columnsConfig[7].filterable" [tooltip]="gridSettings.columnsConfig[7].title | translate"
+                  [format]="gridSettings.columnsConfig[7].format" [field]="gridSettings.columnsConfig[7].field"
+                  [columnMenu]="false" [style]='{"text-align": "right"}'>
+                  <ng-template kendoGridHeaderTemplate>
+                    <span tooltip="{{gridSettings.columnsConfig[7].title|translate}}"
+                      theme="light">{{gridSettings.columnsConfig[7].title|translate}}</span>
+                  </ng-template>
+                  <ng-template kendoGridCellTemplate let-dataItem>
+                    {{dataItem.GainInAmountHT.toLocaleString(language, {minimumFractionDigits:
+                      formatNumberOptions.minimumFractionDigits})}}  {{symbole}}
+                  </ng-template>
+                  <ng-template kendoGridFooterTemplate>
+                    <div class="total-with-currency">
+                      {{totalLine.toLocaleString(language, {minimumFractionDigits:
+                        formatNumberOptions.minimumFractionDigits})}}  {{symbole}}
+                    </div>
+                  </ng-template>
+                </kendo-grid-column>
+  
+                    <div>
+                      <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+  
+                      </ng-template>
+                      <kendo-grid-messages noRecords="">
+                      </kendo-grid-messages>
+                    </div>
+                  </kendo-grid>
+  
+                </div>
+              </div>
+            </div>
+  
+            <!--Begin Card footer-->
+            <div *ngIf="hasPrintPermission && isGeneratedNoteOnTurnover" class="card-footer">
+  
+              <div class="row">
+                <div class="col-lg-12 col-md-12">
+                  <span>
+                    <button type="button" class="btn btn-sm btn-primary float-right"
+                    (click)="PrintJasperNoteOnTurnoverReport()">
+                      <span>
+                        <i class="fa fa-print"></i> {{ 'PRINT_NOTE_ON_TURNOVER' |translate }}
+                      </span>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

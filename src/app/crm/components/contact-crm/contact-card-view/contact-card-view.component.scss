@@ -1,0 +1,41 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100% !important;
+}
+
+.imgSize {
+  border-radius: 50%;
+  width: 100%;
+}
+
+.color-blue{
+  color:#13688c;
+}
+.square {
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+}
+.user-icon {
+  color:#8ddcf7;
+}
+
+.AddIcon {
+  color: #028fb9 !important;
+}
+.card {
+  width: 100% !important;
+}
+.imgSize {
+  border: 3px groove #b4d78a4d;
+  padding: 3px;
+  height: 200px;
+}
+
+.card .tiers-title {
+  color: #4c9aae;
+  font-size: 16px;
+  font-weight: bold;
+}

@@ -1,0 +1,145 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row form-group">
+    <div class="col-lg-4 col-sm-12 col-md-12 ">
+      <app-inventory-detail-search (sendData)="filter($event)"></app-inventory-detail-search>
+    </div>
+  </div>
+
+  <form class="form-horizontal">
+
+    <kendo-grid #grid [data]="stockDocumentsService.inventoryGridSettings.gridData"
+                [pageSize]="stockDocumentsService.inventoryGridSettings.state.take"
+                [skip]="stockDocumentsService.inventoryGridSettings.state.skip" [filterable]="false"
+                [filter]="stockDocumentsService.inventoryGridSettings.state.filter" [pageable]="pagerSettings"
+                [selectable]="true"
+                (cancel)="cancelHandler()" (dataStateChange)="dataStateChange($event)"
+                (dblclick)="lineClickHandler($event)"
+                [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection" (cellClick)="lineClickHandler($event)"
+                (save)="SaveCurrentInventoryLine($event, true)" [style.max-height.px]="650">
+      <kendo-grid-column field="Description" title="{{'ITEM'|translate}}" [width]="240">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="row">
+            <div class="col-auto">
+              <div class="customer-photo d-flex justify-content-center">
+                <img id="ThumbnailSupplier" class="imgSize" alt="Illustration des problèmes de suddation"
+                     border="0" [src]="pictureTierSrc(dataItem) ||'assets/image/placeholder-logo.png'"/>
+              </div>
+            </div>
+            <div class="col">
+              <div class="row p-2" *ngIf='dataItem.Code && dataItem.Description'>
+                <span>{{dataItem.Code}}{{'-'}}{{dataItem.Description}}</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="Shelf" *ngIf="stockDocumentsService.stockDocument.IdTiers"
+        title="{{'SHELF_STORAGE'|translate}}"
+        [width]="140">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span *ngIf='dataItem.Shelf'> {{dataItem.Shelf}}{{dataItem.Storage}} </span>
+          <span *ngIf='!dataItem.Shelf'> - </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <span *ngIf='dataItem.Shelf'> {{dataItem.Shelf}}{{dataItem.Storage}} </span>
+          <span *ngIf='!dataItem.Shelf'> - </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="Storage" *ngIf="stockDocumentsService.stockDocument.IdWarehouseSource"
+                         title="{{'STORAGE'|translate}}" [width]="80">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf='dataItem.Shelf'> {{dataItem.Shelf}}{{dataItem.Storage}} </div>
+          <div *ngIf='(dataItem.Shelf === undefined || dataItem.Shelf === null) && dataItem.Storage'> {{dataItem.Storage}} </div>
+          <div *ngIf='!dataItem.Shelf && !dataItem.Storage'> - </div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div *ngIf='dataItem.Shelf'> {{dataItem.Shelf}}{{dataItem.Storage}} </div>
+          <div *ngIf='(dataItem.Shelf === undefined || dataItem.Shelf === null) && dataItem.Storage'> {{dataItem.Storage}} </div>
+          <div *ngIf='!dataItem.Shelf && !dataItem.Storage'> - </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="ActualQuantity" [filterable]="false" title="{{'AVAILABLEQUANTITY'|translate}}"
+                         [width]="100" [style]='{"text-align-last": "center"}'>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <kendo-numerictextbox [spinners]="false" [format]="FormatNumber" [step]="1" style="border: none !important;"
+                                class="form-control inputEnabled as-label"
+                                [value]="dataItem.ActualQuantity?dataItem.ActualQuantity:'0'"
+                                [disabled]="true">
+          </kendo-numerictextbox>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column  field="ForecastQuantity" [filterable]="false"
+                         title="{{'REAL_QTY'|translate}}" [width]="100" 
+                         *ngIf="validDocumentRole || (UserId==IdUserInput1)"
+                         [headerStyle]='{"text-align-last": "center"}'
+                         [style]='{"text-align-last": "center"}'>
+                         <ng-template kendoGridHeaderTemplate>
+                          <span [tooltip]="firstUserName"
+                                theme="light">{{'REAL_QTY'|translate}}</span>
+                        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf='dataItem.ForecastQuantity === null || dataItem.ForecastQuantity === undefined'>
+          </div>
+          <div *ngIf='dataItem.ForecastQuantity || dataItem.ForecastQuantity === 0 '
+               [ngStyle]="{'color':dataItem.ForecastQuantity === dataItem.ActualQuantity ? 'lightslategray' : 'orange' }">
+            {{dataItem.ForecastQuantity}}
+          </div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template [group]="formGroup" controlName="ForecastQuantity" inputType="number"
+                                        [stopInputCounter]='true' (keydown.arrowdown)='SaveCurrentInventoryLine($event)'
+                                        (keydown.arrowup)='SaveCurrentInventoryLine($event)'
+                                        (keydown.enter)='SaveCurrentInventoryLine($event, true)'
+                                        (setFocused)='setSelectQty()' [disabled]="UserId !== IdUserInput1">
+          </app-grid-cell-input-template>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column *ngIf="(IdUserInput2 && ((UserId==IdUserInput2) || validDocumentRole))"
+                         field="ForecastQuantity2"
+                         [filterable]="false"
+                         title="{{'REAL_QTY'|translate}}" 
+                         [headerStyle]='{"text-align-last": "center"}'
+                         [width]="100" [style]='{"text-align-last": "center"}'>
+                         <ng-template kendoGridHeaderTemplate>
+                          <span [tooltip]="secondUserName"
+                                theme="light">{{'REAL_QTY'|translate}}</span>
+                        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf='dataItem.ForecastQuantity2 === null || dataItem.ForecastQuantity2 === undefined'>
+          </div>
+          <div *ngIf='dataItem.ForecastQuantity || dataItem.ForecastQuantity === 0'
+               [ngStyle]="{'color':dataItem.ForecastQuantity2 === dataItem.ActualQuantity ? 'lightslategray' : 'orange' }">
+            {{dataItem.ForecastQuantity2}}
+          </div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template [group]="formGroup" controlName="ForecastQuantity2" inputType="number"
+                                        [stopInputCounter]='true' (keydown.arrowdown)='SaveCurrentInventoryLine($event)'
+                                        [disabled]="UserId !== IdUserInput2"
+                                        (keydown.arrowup)='SaveCurrentInventoryLine($event)'
+                                        (keydown.enter)='SaveCurrentInventoryLine($event, true)'
+                                        (setFocused)='setSelectQty()'>
+          </app-grid-cell-input-template>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-command-column [title]="'ACTIONS' | translate" [width]="80" *ngIf="isInEditingMode ">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div style="display: flex; margin-top: 5%;">
+            <button class='noPadding btn-Add' *ngIf="isInEditingMode " kendoGridSaveCommand type="button">
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <button kendoGridCancelCommand *ngIf="isInEditingMode" class="noPadding btn-Add k-button"
+                    (click)="cancelHandler($event)" type="button">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </div>
+        </ng-template>
+      </kendo-grid-command-column>
+    </kendo-grid>
+  </form>
+</div>

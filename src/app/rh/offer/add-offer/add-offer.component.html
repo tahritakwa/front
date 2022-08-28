@@ -1,0 +1,437 @@
+<div class="card">
+  <!-- Begin form -->
+  <form [formGroup]="offerFormGroup" class="form-horizontal">
+    <div class="card-body">
+      <!--Begin Rénumération -->
+      <!--New line-->
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!-- Contract type -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">
+                {{'CONTRACT_TYPE'|translate}}<span class="required">*</span>
+              </label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <app-contract-type-dropdown (Selected)="changeRequired($event)" [group]="offerFormGroup">
+                </app-contract-type-dropdown>
+                <app-control-messages [control]="offerFormGroup.controls.IdContractType"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Contract type -->
+          <!-- Working hours per week -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-5 col-md-12 col-sm-12">{{'WORKING_HOURS_PER_WEEK'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <input [ngClass]="{ 'has-error': (WorkingHoursPerWeek.touched || WorkingHoursPerWeek.dirty) && !WorkingHoursPerWeek.valid }" class="form-control" formControlName="WorkingHoursPerWeek"
+                       type="number">
+                <app-control-messages [control]="offerFormGroup.controls.WorkingHoursPerWeek"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Working hours per week -->
+        </div>
+      </div>
+      <!--End new line-->
+      <!--New line-->
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!--StartDate -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'START_DATE'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <kendo-datepicker (valueChange)=" updateEndDateValidity($event)" class="form-control"
+                                  formControlName="StartDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="offerFormGroup.controls.StartDate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!--End StartDate-->
+          <!--EndDate -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-5 col-md-12 col-sm-12">{{'END_DATE'|translate}}<span *ngIf="required"
+                                                                                        class="required">*</span></label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <kendo-datepicker (valueChange)="updateStartDateValidity($event)" class="form-control"
+                                  formControlName="EndDate">
+                </kendo-datepicker>
+                <app-control-messages [control]="offerFormGroup.controls.EndDate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!--End EndDate-->
+        </div>
+      </div>
+      <!--End new line-->
+      <!--New line-->
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!--Salary structure-->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'SALARY_STRUCTURE'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <app-salary-structure-dropdown [group]="offerFormGroup" [notWithRoot]="true">
+                </app-salary-structure-dropdown>
+                <app-control-messages [control]="offerFormGroup.controls.IdSalaryStructure"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!--End Salary structure-->
+          <!-- CNSS Type -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-5 col-md-12 col-sm-12">{{'CNSS_TYPE'|translate}}<span
+                class="required">*</span></label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <app-cnss-dropdown [group]="offerFormGroup"></app-cnss-dropdown>
+                <app-control-messages [control]="offerFormGroup.controls.IdCnss"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!--End CNSS Type-->
+        </div>
+      </div>
+      <!--End new line-->
+      <!-- End rénumération -->
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!--Salary -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'SALARY'|translate}}<span class="required">*</span></label>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <input [ngClass]="{ 'has-error': (Salary.touched || Salary.dirty) && (!Salary.valid && !Salary.pending) }" class="form-control" formControlName="Salary"
+                       type="number">
+                <app-control-messages [control]="offerFormGroup.controls.Salary"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!--End Salary-->
+        </div>
+      </div>
+      <!--  Tab beginning  -->
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <ul class="nav nav-tabs" role="tablist">
+            <li [ngClass]='{"Error-Form-tab": !offerFormGroup.get("OfferBonus").valid && !offerFormGroup.get("OfferBonus").pending &&
+            (offerFormGroup.get("Id").value === 0 ||
+              (offerToUpdate && (offerToUpdate.State === offerState.Sended || offerToUpdate.State === offerState.Draft)))}' class="nav-item">
+              <a #bonusNav [ngClass]='{"Error-Form-tab-text": !offerFormGroup.get("OfferBonus").valid && !offerFormGroup.get("OfferBonus").pending &&
+                (offerFormGroup.get("Id").value === 0 ||
+                 (offerToUpdate && (offerToUpdate.State === offerState.Sended || offerToUpdate.State === offerState.Draft)))}'
+                 aria-controls="home" aria-selected="false" class="nav-link" data-toggle="tab" href="#bonusTab"
+                 role="tab">
+                <i class="icon-calculator"></i> &nbsp;{{'BONUS'|translate}}
+              </a>
+            </li>
+            <li [ngClass]='{"Error-Form-tab": !offerFormGroup.get("OfferBenefitInKind").valid && !offerFormGroup.get("OfferBenefitInKind").pending &&
+              (offerFormGroup.get("Id").value === 0 ||
+                (offerToUpdate && (offerToUpdate.State === offerState.Sended || offerToUpdate.State === offerState.Draft)))}' class="nav-item">
+              <a #benefitNav [ngClass]='{"Error-Form-tab-text": !offerFormGroup.get("OfferBenefitInKind").valid && !offerFormGroup.get("OfferBenefitInKind").pending &&
+                 (offerFormGroup.get("Id").value === 0 ||
+                  (offerToUpdate && (offerToUpdate.State === offerState.Sended || offerToUpdate.State === offerState.Draft)))}'
+                 aria-controls="home" aria-selected="false" class="nav-link" data-toggle="tab" href="#benefitinkindTab"
+                 role="tab">
+                <i class="fa fa-plus-square-o"></i> &nbsp;{{'BENEFIT_IN_KIND'|translate}}
+              </a>
+            </li>
+            <li [ngClass]='{"Error-Form-tab": !advantagesFormGroup.valid && !advantagesFormGroup.pending &&
+            (offerFormGroup.get("Id").value === 0 ||
+              (offerToUpdate && (offerToUpdate.State === offerState.Sended || offerToUpdate.State === offerState.Draft)))}' class="nav-item">
+              <a #otherNav [ngClass]='{"Error-Form-tab-text": !advantagesFormGroup.valid && !advantagesFormGroup.pending &&
+                (offerFormGroup.get("Id").value === 0 ||
+                  (offerToUpdate && (offerToUpdate.State === offerState.Sended || offerToUpdate.State === offerState.Draft)))}'
+                 aria-controls="home" aria-selected="true" class="nav-link" data-toggle="tab" href="#otheradvantages"
+                 role="tab">
+                <i class="fa fa-plus-square"></i> {{'OTHER_ADVANTAGES'|translate}}
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <!-- BONUSES validity Section Start -->
+            <div #bonusDiv class="tab-pane" id="bonusTab" role="tabpanel">
+              <div [formGroup]="offerFormGroup" class="card-body" style="height: 450px; overflow-y: scroll;">
+                <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+                  <div [ngStyle]="(!isUpdateMode || canUpdate || (!canUpdate && OfferBonus.length > 0))?
+                           {'padding': '20px', 'border-style': 'dashed', 'border-color': '#F0F0F0'} : ''"
+                       class="form-group row">
+                    <div *ngIf="!isUpdateMode || canUpdate" class="col-lg-12 col-md-12 col-sm-12">
+                      <button (click)="addOfferBonus()" class="noPadding btn-Add k-button" dir="ltr"
+                              style="border: none; margin-bottom: 20px" type="button">
+                        <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                        <span>&nbsp;{{'ADD_BONUS'|translate}}</span>
+                      </button>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12" style="overflow-x: hidden ">
+                      <div *ngFor="let offerBonus of OfferBonus.controls; let i=index" formArrayName="OfferBonus">
+                        <div *ngIf="isOfferBonusRowVisible(i)" class="row">
+                          <app-contract-bonus-validity [ValidityFormGroup]="offerBonus"
+                                                       [contractEndDate]="EndDate.value"
+                                                       [contractStartDate]="StartDate.value"
+                                                       class="col-lg-11 col-sm-11 col-md-11"></app-contract-bonus-validity>
+                          <div *ngIf="!isUpdateMode || canUpdate" class="col-sm-1 "
+                               style="margin-top: 32px !important; margin-left:-20px">
+                            <button (click)="deleteOfferBonus(i)" class="noPadding btn-Add k-button" style="border: none"
+                                    type="button">
+                              <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- BONUSES validity Section End -->
+            <!-- Benefits in kind section start -->
+            <div #benefitDiv class="tab-pane" id="benefitinkindTab" role="tabpanel">
+              <div [formGroup]="offerFormGroup" class="card-body" style="height: 450px; overflow-y: scroll;">
+                <div style="display: flex; flex-direction: column;">
+                  <!-- Offer benefit in kind -->
+                  <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+                    <div class="tab-pane" role="tabpanel">
+                      <div [ngStyle]="(!isUpdateMode || canUpdate || (!canUpdate && OfferBenefitInKind.length > 0))?
+                        {'padding': '20px', 'border-style': 'dashed', 'border-color': '#F0F0F0'} : ''"
+                           class="form-group row">
+                        <div *ngIf="!isUpdateMode || canUpdate" class="col-lg-12 col-md-12 col-sm-12">
+                          <button (click)="addOfferBenefitInKind()" class="noPadding btn-Add k-button" dir="ltr"
+                                  style="border: none; margin-bottom: 20px" type="button">
+                            <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                            <span>&nbsp;{{'ADD_BENEFIT_IN_KIND'|translate}}</span>
+                          </button>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12" style="overflow-x: hidden ">
+                          <div *ngFor="let offerBenefitInKind of OfferBenefitInKind.controls; let i=index"
+                               [formGroup]="offerBenefitInKind">
+                            <div *ngIf="isOfferBenefitInKindRowVisible(i)" class="row" style="margin-top: 5px;">
+                              <app-benefit-in-kind-validity [ValidityFormGroup]="offerBenefitInKind"
+                                                            class="col-lg-11 col-sm-11 col-md-11">
+                              </app-benefit-in-kind-validity>
+                              <div *ngIf="!isUpdateMode || canUpdate"
+                                   class="col-lg-1 col-md-12 col-sm-12"
+                                   style="margin-top: 32px !important; margin-left:-20px">
+                                <button (click)="deleteOfferBenefitInKind(i)" class="noPadding btn-Add k-button" style="border: none"
+                                        type="button">
+                                  <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End Offer benefit in kind -->
+                </div>
+              </div>
+            </div>
+            <!-- Benefits in kind section End -->
+            <!-- Other advantages section -->
+            <div #otherDiv class="tab-pane" id="otheradvantages" role="tabpanel">
+              <div [formGroup]="advantagesFormGroup" class="card-body" style="height: 450px; overflow-y: scroll;">
+                <div style="display: flex; flex-direction: column;">
+                  <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+                    <div class="form-group row">
+                      <!--AvailableCar-->
+                      <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="row">
+                          <label class="col-lg-4 col-md-12 col-sm-12"
+                                 for="AvailableCar">{{'AVAILABLE_CAR'|translate}}</label>
+                          <span class="col-lg-6 col-md-12 col-sm-12" style="margin-top: 17px;">
+                              <input aria-expanded="false" class="input-checkbox100 "
+                                     formControlName="AvailableCar" id="AvailableCar" type="checkbox">
+                              <label class="label-checkbox100" for="AvailableCar"></label>
+                            </span>
+                        </div>
+                      </div>
+                      <!--End AvailableCar-->
+                      <!--AvailableHouse-->
+                      <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="row">
+                          <label class="col-lg-5 col-md-12 col-sm-12"
+                                 for="AvailableHouse">{{'AVAILABLE_HOUSE'|translate}}</label>
+                          <div class="col-lg-6 col-md-12 col-sm-12">
+                            <span>
+                              <input aria-expanded="false" class="input-checkbox100"
+                                     formControlName="AvailableHouse" id="AvailableHouse" type="checkbox">
+                              <label class="label-checkbox100" for="AvailableHouse"></label>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <!--End AvailableHouse-->
+                    </div>
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+                    <div class="form-group row">
+                      <div class="col-lg-6 col-md-12 col-sm-12">
+                        <!-- Thirteenth month bonus -->
+                        <div class="row">
+                          <label class="col-lg-4 col-md-12 col-sm-12"
+                                 for="ThirteenthMonthBonus">{{'THIRTEENTH_MONTH_BONUS'|translate}}</label>
+                          <span class="col-lg-6 col-md-12 col-sm-12" style="margin-top: 17px;">
+                            <input aria-expanded="false" class="input-checkbox100"
+                                   formControlName="ThirteenthMonthBonus"
+                                   id="ThirteenthMonthBonus" type="checkbox">
+                            <label class="label-checkbox100" for="ThirteenthMonthBonus"></label>
+                          </span>
+                        </div>
+                        <!-- End Thirteenth month bonus -->
+                      </div>
+                      <!--MealVoucher-->
+                      <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="row">
+                          <label class="col-lg-5 col-md-12 col-sm-12"
+                                 for="AvailableMealVoucher">{{'MEAL_VOUCHER'|translate}}</label>
+                          <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="row">
+                              <div class="col-lg-2 col-md-12 col-sm-12" style="margin-top: 13px;">
+                                <input (change)="mealVoucherSelectedFunction($event)" aria-expanded="false"
+                                       class="input-checkbox100" formControlName="AvailableMealVoucher" id="AvailableMealVoucher"
+                                       type="checkbox">
+                                <label class="label-checkbox100" for="AvailableMealVoucher"></label>
+                              </div>
+                              <div *ngIf="mealVoucherShow" class="col-lg-10 col-md-12 col-sm-12"
+                                   style="margin-left: -2px;">
+                                <input [ngClass]="{ 'has-error': (MealVoucher.touched || MealVoucher.dirty) && (!MealVoucher.valid && !MealVoucher.pending) }" class="form-control"
+                                       formControlName="MealVoucher"
+                                       placeholder="{{'MEAL_VOUCHER_VALUE' | translate}}"
+                                       type="number">
+                                <app-control-messages [control]="advantagesFormGroup.controls.MealVoucher"
+                                                      class="error-msg messages text-left text-danger"></app-control-messages>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!--End MealVoucher-->
+                    </div>
+                  </div>
+                  <div style="margin-top: 23px;">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                      <!-- Commission -->
+                      <div class="form-group row">
+                        <label class="col-lg-2 col-md-12 col-sm-12" for="Commission">{{'COMMISSION'|translate}}</label>
+                        <div class="col-lg-10 col-md-12 col-sm-12">
+                          <div class="row">
+                            <div class="col-lg-1 col-md-12 col-sm-12" style="margin-top: 13px;">
+                              <input (change)="commissionSelectedFunction($event)" aria-expanded="false"
+                                     class="input-checkbox100" formControlName="Commission" id="Commission"
+                                     type="checkbox">
+                              <label class="label-checkbox100" for="Commission"></label>
+                            </div>
+                            <div *ngIf="commissionShow" class="col-lg-3 col-md-12 col-sm-12">
+                              <app-commission-type-dropdown (commissionTypeChange)="commisionTypeChange($event)"
+                                                            [group]="advantagesFormGroup">
+                              </app-commission-type-dropdown>
+                              <app-control-messages [control]="advantagesFormGroup.controls.CommissionType"
+                                                    class="error-msg messages text-left text-danger"></app-control-messages>
+                            </div>
+                            <div *ngIf="commissionShow" class="col-lg-4 col-md-12 col-sm-12" style="margin-left: 10px;">
+                              <div class="col-lg-10 col-md-12.col-sm-12 row">
+                                <input [ngClass]="{ 'has-error': (CommissionValue.touched || CommissionValue.dirty) && (!CommissionValue.valid && !CommissionValue.pending) }" class="form-control col-lg-7"
+                                       formControlName="CommissionValue"
+                                       placeholder="{{'COMMISSION_VALUE' | translate}}"
+                                       type="number">
+                                <span *ngIf="commissionTypeValue == 1" class="input-group-append input-group-text"
+                                      style="margin-left: 10px;">%</span>
+                              </div>
+                              <app-control-messages [control]="advantagesFormGroup.controls.CommissionValue"
+                                                    class="error-msg messages text-left text-danger"></app-control-messages>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- End commision -->
+                    </div>
+                  </div>
+                  <!-- Other Advantages -->
+                  <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+                    <div *ngIf="!isUpdateMode || canUpdate || (!canUpdate && Advantages.length > 0)" class="row">
+                      <label class="col-lg-4 col-md-12 col-sm-12">{{'OTHER_ADVANTAGES' | translate}}</label>
+                    </div>
+                    <!--Add Other advantages-->
+                    <div class="tab-pane" role="tabpanel">
+                      <div style="display: flex; flex-direction: column;">
+                        <div [ngStyle]="!isUpdateMode || canUpdate || (!canUpdate && Advantages.length > 0)?
+                            {'padding': '20px', 'border-style': 'dashed', 'border-color': '#F0F0F0'} : ''"
+                             class="form-group row">
+                          <div class="col-lg-12 col-md-12 col-sm-12">
+                            <button (click)="addOtherAdvantages()" *ngIf="!isUpdateMode || canUpdate" class="noPadding btn-Add k-button"
+                                    dir="ltr" style="border: none; margin-bottom: 20px"
+                                    type="button">
+                              <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                              <span>&nbsp;{{'ADD_OTHER_ADVANTAGES'|translate}}</span>
+                            </button>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12" style="max-height: 195px; overflow-x: hidden ">
+                            <div *ngFor="let advantage of Advantages.controls; let i=index" [formGroup]="advantage">
+                              <div *ngIf="isOtherAdvantabesRowVisible(i)" class="row" style="margin-top: 5px;">
+                                <label class="col-lg-3 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}<span
+                                  class="required">*</span></label>
+                                <div class="col-lg-5 col-md-12 col-sm-12">
+                                  <textarea [ngClass]="{ 'has-error': (advantage.controls.Description.touched || advantage.controls.Description.dirty) &&
+                                        !advantage.controls.Description.valid }" class="form-control" formControlName="Description">
+                                    </textarea>
+                                  <app-control-messages [control]="advantage.controls.Description"
+                                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                                </div>
+                                <div class="col-lg-2 col-md-12 col-sm-12">
+                                  <button (click)="deleteOtherAdvantages(i)" *ngIf="!isUpdateMode || canUpdate" class="noPadding btn-Add k-button"
+                                          style="border: none"
+                                          type="button">
+                                    <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--End Add Other advantages-->
+                  </div>
+                  <!-- End Other Advantages -->
+                </div>
+              </div>
+            </div>
+            <!-- Other advantages section end -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="fixed-card-footer" *ngIf="canUpdate">
+        <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button class="btn btn-sm btn-save mx-1" (click)="save()">
+                <i class="fa fa-floppy-o"></i> {{ 'SAVE' |translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- End form -->
+</div>

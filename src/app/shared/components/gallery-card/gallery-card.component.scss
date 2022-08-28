@@ -1,0 +1,44 @@
+.fixed-height {
+  height: 350px;
+}
+.add-pic {
+  background-color: #ecf0f1;
+  color: ghostwhite;
+  height: 160px;
+  width: 220px;
+}
+.add-pic:hover {
+  background-color: #b2bec3;
+  opacity: 0.5;
+}
+input[type="file"] {
+  display: none;
+}
+
+.pic:hover {
+  .removePicture {
+    visibility: visible;
+  }
+}
+
+.removePicture {
+  visibility: hidden;
+}
+
+.gallery-card  {
+  max-width: 220px;
+  max-height: 160px;
+  height: 160px;
+}
+
+i.fa.fa-close.fa-xs {
+  right: 2px;
+  top: 5px;
+  position: absolute;
+  color: #cc2222;
+}
+i.fa.fa-close.fa-xs:hover {
+  -ms-transform: scale(1.5);
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+}

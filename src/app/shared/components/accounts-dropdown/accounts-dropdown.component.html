@@ -1,0 +1,26 @@
+<div [formGroup]="group">
+  <kendo-combobox #accountComboBox class="form-control HistoryCommandMargin" [data]="accountsFilteredDataSource" [textField]="'label'"
+    [valueField]="'id'" [formControlName]="fieldName" [valuePrimitive]="true" (focus)="openComboBox()"
+    [(ngModel)]="selectedValue" [filterable]="true" (filterChange)="handleFilter($event)" [allowCustom]="true"
+    [disabled]="disabled">
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.label}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.code}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+
+</div>

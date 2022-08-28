@@ -1,0 +1,53 @@
+<div [formGroup]="ValidityFormGroup" class="form-group row">
+  <div class="col-lg-3 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12" tooltip="{{'BENEFIT_IN_KIND'|translate}}">
+      {{'ADVANTAGE'|translate}}<span class="required">*</span></label>
+    <app-benefit-in-kind-dropdown [form]="ValidityFormGroup">
+    </app-benefit-in-kind-dropdown>
+    <app-control-messages [control]="IdBenefitInKind"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12" tooltip="{{'START_DATE'|translate}}"> {{'BEGINNING'|translate}}<span
+      class="required">*</span></label>
+    <kendo-datepicker (valueChange)="buildbenefitInKindValidators()" [format]="formatDate"
+                      class="form-control" formControlName="ValidityStartDate">
+      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+      </kendo-datepicker-messages>
+    </kendo-datepicker>
+    <app-control-messages [control]="ValidityStartDate"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12" tooltip="{{'END_DATE'|translate}}"> {{'END'|translate}}</label>
+    <kendo-datepicker (valueChange)="buildbenefitInKindValidators()" [format]="formatDate"
+                      class="form-control" formControlName="ValidityEndDate">
+      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+      </kendo-datepicker-messages>
+    </kendo-datepicker>
+    <app-control-messages [control]="ValidityEndDate"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12">{{'VALUE'|translate}}<span class="required">*</span></label>
+    <input [ngClass]="{ 'has-error': ((Value.touched || Value.dirty) && (!Value.valid && !Value.disabled && !Value.pending)) }" class="form-control" formControlName="Value" min="0" name=""
+           type="number">
+    <app-control-messages [control]="Value" class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+  <div class="col-lg-1 col-md-6 col-sm-12">
+      <span *ngIf="ValidityFormGroup.value.State == benefitInKindStateEnumerator.New"
+            class="badge badge-primary"
+            style="margin-left: 5% !important;margin-top: 38px;">{{'NEW'|translate}}</span>
+    <span *ngIf="ValidityFormGroup.value.State == benefitInKindStateEnumerator.InProgress"
+          class="badge badge-success"
+          style="margin-left: 5% !important;margin-top: 38px;">{{'IN_PROGESS'|translate}}</span>
+    <span *ngIf="ValidityFormGroup.value.State == benefitInKindStateEnumerator.Expired"
+          class="badge badge-danger"
+          style="margin-left: 5% !important;margin-top: 38px;">{{'EXPIREED'|translate}}</span>
+    <span *ngIf="ValidityFormGroup.value.State == benefitInKindStateEnumerator.UpComing"
+          class="badge badge-warning"
+          style="margin-left: 5% !important;margin-top: 38px;">{{'UPCOMING'|translate}}</span>
+  </div>
+</div>
+<hr>

@@ -1,0 +1,41 @@
+<div [formGroup]="reviewFormationFormGroup">
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <div class="row form-group">
+      <!-- Title -->
+      <div class="col-lg-5 col-md-12 col-sm-12">
+        <div class="row form-group">
+          <label class="col-lg-5 col-md-12 col-sm-12"> {{'TITLE'|translate}} <span class="required">*</span></label>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <app-formation-combobox [group]="reviewFormationFormGroup"></app-formation-combobox>
+            <app-control-messages [control]="reviewFormationFormGroup.controls.IdFormation"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+      </div>
+      <!-- End Title -->
+      <!-- Date -->
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="row form-group">
+          <label class="col-lg-5 col-md-12 col-sm-12"> {{'FORMATION_DATE'|translate}} <span
+            class="required">*</span></label>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <kendo-datepicker [format]="formatDate" class="form-control" formControlName="Date">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="reviewFormationFormGroup.controls.Date"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+      </div>
+      <!-- End Date -->
+      <!-- Delete button -->
+      <button (click)="deleteFutureReviewFormation(currentReviewFormation)" class="noPadding btn-Add k-button" style="border: none"
+              type="button">
+        <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+      </button>
+      <!-- End Delete button -->
+    </div>
+  </div>
+  <!-- End Future review formation -->
+</div>

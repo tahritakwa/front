@@ -1,0 +1,20 @@
+<div [formGroup]="skillsForm">
+  <kendo-combobox (filterChange)="handleFilter($event)" (valueChange)="skillsSelected($event)"
+                  [allowCustom]="allowCustom"
+                  [data]="skillsFiltredDataSource"
+                  [disabled]="disabled" [filterable]="true" [ngClass]="{ 'has-error': (IdSkills.touched || IdSkills.dirty) && !IdSkills.valid }" [textField]="'Label'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true" class="form-control" formControlName="IdSkills">
+    <!--footer template-->
+    <ng-template *ngIf="hasAddSkillPermission" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

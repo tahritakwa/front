@@ -1,0 +1,11 @@
+.valid-data{
+    border: 1px solid #e4e7ea !important; margin-bottom: 3px;
+}
+.invalid-data{
+    border: 1px solid red !important; margin-bottom: 3px;
+    color: red;
+}
+
+.error-msg{
+    position: absolute !important;
+}

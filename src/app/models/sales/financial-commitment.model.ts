@@ -1,0 +1,41 @@
+import { Resource } from '../shared/ressource.model';
+import { PaymentMethod } from '../payment-method/payment-method.model';
+import { SettlementCommitment } from '../payment/settlement-commitment.model';
+import { DocumentStatus } from './document-status.model';
+import { Currency } from '../administration/currency.model';
+import { Tiers } from '../achat/tiers.model';
+import { Document } from './document.model';
+
+export class FinancialCommitment extends Resource {
+  Code: string;
+  IdDocument?: number;
+  CommitmentDate: Date;
+  RemainingAmount: number;
+  RemainingAmountWithCurrency?: number;
+  WithholdingTaxWithCurrency: number;
+  WithholdingTax: number;
+  RemainingWithholdingTax: number;
+  RemainingWithholdingTaxWithCurrency: number;
+  RemainingVatWithholdingTaxWithCurrency: number;
+  AmountWithoutWithholdingTax: number;
+  PaidWithholdingTaxWithCurrency: number;
+  AmountWithoutWithholdingTaxWithCurrency: number;
+  IdPaymentMethod?: number;
+  DeletedToken: string;
+  IdStatus?: number;
+  Amount?: number;
+  AmountWithCurrency?: number;
+  BenefitPeriod?: number;
+  Direction: number;
+  IdCurrencyNavigation: Currency;
+  IdTiers: number;
+  IdCurrency: number;
+  ExchangeRate: number;
+  FinancialCommitmentDate: number;
+  WithholdingTaxHasBeenToken: boolean;
+  IdTiersNavigation: Tiers;
+  IdDocumentNavigation: Document;
+  IdPaymentMethodNavigation: PaymentMethod;
+  IdStatusNavigation: DocumentStatus;
+  SettlementCommitment: Array<SettlementCommitment>;
+}

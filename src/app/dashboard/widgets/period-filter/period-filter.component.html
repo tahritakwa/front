@@ -1,0 +1,16 @@
+<button mat-icon-button [matMenuTriggerFor]="periodMenu">
+  <mat-icon>date_range</mat-icon>
+</button>
+
+<mat-menu xPosition="before" [overlapTrigger]="false" #periodMenu="matMenu">
+  <button *ngIf="showCurrentMonth" [disabled]="periodEnum === 1 " (click)="changePeriod(1)"
+    mat-menu-item>{{'CURRENT_MONTH' | translate}}</button>
+  <button *ngIf="showLastMonth" [disabled]="periodEnum === 2 " (click)="changePeriod(2)"
+    mat-menu-item>{{'LAST_MONTH' | translate}}</button>
+  <button *ngIf="showLastSixMonths" [disabled]="periodEnum === 3 " (click)="changePeriod(3)"
+    mat-menu-item>{{'LAST_SIX_MONTH' | translate}}</button>
+  <button *ngIf="showCurrentYear" [disabled]="periodEnum === 4 " (click)="changePeriod(4)"
+    mat-menu-item>{{'CURRENT_YEAR' | translate}}</button>
+  <button *ngIf="showLastYear" [disabled]="periodEnum === 5 " (click)="changePeriod(5)"
+    mat-menu-item>{{'LAST_YEAR' | translate}}</button>
+</mat-menu>

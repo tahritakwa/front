@@ -1,0 +1,162 @@
+<div class="btn-group w-100" [formGroup]="itemForm"
+  *ngIf='!isMultiselect&&!isMultiselectWithPaginiation && !isFromProducts'>
+  <kendo-combobox [data]="itemFiltredDataSource" class="form-control dropdown-item w-100" [textField]="'Code'"
+    (filterChange)="handleFilter($event)" [valueField]="'Id'" (valueChange)="onSelect(this)" [allowCustom]="allowCustom"
+    [placeholder]="placeholder|translate" [valuePrimitive]="true" name="IdItem" [formControlName]="IdItem"
+    [popupSettings]="{ width: 300 }" (focus)="onFocus(this)" (focusout)="focusOut(this)" [filterable]="true"
+    [disabled]="disabled" #Dropdown>
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row" *ngIf="dataItem.Marque">
+          <b>{{dataItem.Code}} ({{dataItem.Marque}})</b>
+        </div>
+        <div class="row" *ngIf="!dataItem.Marque">
+          <b>{{dataItem.Code}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.Description}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+
+    <!--footer template-->
+    <ng-template kendoComboBoxFooterTemplate>
+      <div class="container" *ngIf='showFilter'>
+        <hr>
+        <div class="row">
+          <div class="col-12">
+            <input (click)='selectFilter()' aria-controls="collapseBasic" class="input-checkbox100" id="dsa"
+              name="remember-me" type="checkbox" [checked]='filtersItemDropdown.constaines'>
+            <label class="label-checkbox100" for="dsa" style="font-size: 13.5px !important">
+              {{'EQUAL'|translate}}&nbsp;
+            </label>
+          </div>
+        </div>
+      </div>
+      <app-drop-down-footer [addNew]="addNew.bind(this)" [nextPage]="nextPage.bind(this)" [Pager]="Pager.bind(this)"
+        [skip]="gridState.skip" [take]="gridState.take" [total]="total" [hideBtn]='true'></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+  <i #searchButton class="fa fa-search fa-lg m-2" [class.disabled]="disabled" (click)="onSearchClicked()"
+    *ngIf='!hideSearch'></i>
+</div>
+<div *ngIf='isMultiselect&&!isMultiselectWithPaginiation && !isFromProducts'>
+  <kendo-multiselect [data]="itemFiltredDataSource" [(ngModel)]="itemSelected" [valuePrimitive]="true"
+    [placeholder]="placeholder|translate" [textField]="'Code'" [valueField]="'Id'" (valueChange)="onSelect(this)"
+    [filterable]="true" (filterChange)="handleFilter($event)" [disabled]="disabled">
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Code}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.Description}}</span>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-multiselect>
+  <!--footer template-->
+  <ng-template kendoComboBoxFooterTemplate>
+    <app-drop-down-footer [addNew]="addNew.bind(this)" [nextPage]="nextPage.bind(this)" [Pager]="Pager.bind(this)"
+      [skip]="gridState.skip" [take]="gridState.take" [total]="total" [hideBtn]='true'></app-drop-down-footer>
+  </ng-template>
+  <!--end footer template-->
+</div>
+<div *ngIf='isMultiselectWithPaginiation&&!isMultiselect && !isFromProducts && !disabled'>
+  <kendo-multiselect [data]="itemFiltredDataSource" [(ngModel)]="itemSelected" [valuePrimitive]="true"
+    [placeholder]="placeholder|translate" [textField]="'Description'" [valueField]="'Id'" (valueChange)="onSelect(this)"
+    [filterable]="true" (filterChange)="handleFilterWithPager($event)" [readonly]="disabled">
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Code}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.Description}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--footer template-->
+    <ng-template kendoComboBoxFooterTemplate>
+      <div class="container" *ngIf='showFilter'>
+        <hr>
+        <div class="row">
+          <div class="col-12">
+            <input (click)='selectFilter()' aria-controls="collapseBasic" class="input-checkbox100" id="dsa"
+                   name="remember-me" type="checkbox" [checked]='filtersItemDropdown.constaines'>
+            <label class="label-checkbox100" for="dsa" style="font-size: 13.5px !important">
+              {{'EQUAL'|translate}}&nbsp;
+            </label>
+          </div>
+        </div>
+      </div>
+      <app-drop-down-footer [addNew]="addNew.bind(this)" [nextPage]="nextPage.bind(this)" [Pager]="Pager.bind(this)"
+        [skip]="gridState.skip" [take]="gridState.take" [total]="total" [hideBtn]='true'></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-multiselect>
+</div>
+
+<div *ngIf="isFromProducts" style="width: 360px; height: 72px;">
+  <kendo-dropdownlist [data]="customisedFilteredDropDownData" class="dropdown-list mt-3" [textField]="'Code'"
+    (filterChange)="onCustomisedDataFilter($event)" [valueField]="'Id'" (valueChange)="selectItem($event)"
+    [valuePrimitive]="true" name="IdItem" [popupSettings]="{ width: 300 }" [(ngModel)]="selectedItemInList"
+    (focus)="onFocus(this)" (focusout)="focusOut(this)" [filterable]="true" #Dropdown [disabled]="disabled">
+    <!--content template-->
+    <ng-template kendoDropDownListItemTemplate let-dataItem class="border-0">
+      <div class="row mt-1 w-100">
+        <div class="col-3">
+          <img class="rounded-circle card-avatar" [src]="dataItem.image" alt="avatar">
+        </div>
+        <div class="col-9" *ngIf="dataItem">
+          <div class="row">
+            <b>{{dataItem.Description}}</b>
+          </div>
+          <div class="row">
+            <span class="small"> {{dataItem.Code}}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+
+    <!--content template-->
+    <ng-template kendoDropDownListValueTemplate let-dataItem class="border-0">
+      <div class="row mt-1 w-100">
+        <div class="col-3" *ngIf="dataItem">
+          <img class="rounded-circle card-avatar" [src]="dataItem.image" alt="avatar">
+        </div>
+        <div class="col-9" *ngIf="dataItem">
+          <div class="row">
+            <b>{{dataItem.Description}}</b>
+          </div>
+          <div class="row">
+            <span class="small"> {{dataItem.Code}}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [nextPage]="nextPage.bind(this)" [Pager]="Pager.bind(this)" [skip]="gridState.skip"
+        [take]="gridState.take" [total]="total" [hideBtn]='true'></app-drop-down-footer>
+    </ng-template>
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-dropdownlist>
+</div>

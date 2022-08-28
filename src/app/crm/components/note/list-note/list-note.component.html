@@ -1,0 +1,83 @@
+<div class="card">
+  <div class="card-body">
+    <form class="form-horizontal">
+      <ng-template #template let-anchor>
+        <div class="card-header" style="background: #f4f4f4">
+          <h6 style="background: transparent">{{'NOTE_DETAILS' | translate}}</h6>
+        </div>
+        <br/>
+        <div style="margin-left: 20px; font-size: 1em;">
+          <span>{{ anchor.nativeElement.innerText }}</span>
+        </div>
+      </ng-template>
+      <div kendoTooltip
+           showOn="none"
+           [tooltipTemplate]="template"
+           filter=".k-grid td"
+           tooltipClass="my-class"
+           (mouseover)="showTooltip($event)">
+        <kendo-grid [data]="gridSettings.gridData"
+                    [pageSize]="gridSettings.state.take"
+                    [skip]="gridSettings.state.skip"
+                    [sortable]="true"
+                    (pageChange)="onPageChange($event)"
+                    [pageable]="pagerSettings"
+                    [reorderable]="true"
+                    [columnMenu]="false"
+                    (remove)="removeHandler($event)"
+                    [sort]="gridSettings.state.sort"
+                    [filter]="gridSettings.state.filter"
+                    (dataStateChange)="dataStateChange($event)">
+          <!-- Head Start-->
+          <ng-template kendoGridToolbarTemplate>
+            <div class="row" *ngIf="!fromRelatedArchiving" style="float :right; margin-right: 4px;">
+                <button  class="btn btn-sm addBtn" (click)="setAddMode($event)" type="button" tabindex="0" [disabled]="!this.authService.hasAuthorities(['ADD_NOTE_'+entityType])">
+                  <i class="fa fa-plus fa AddIcon" style="color: white"></i>
+                  <span style="color: white">&nbsp;{{'ADD'|translate}}</span>
+                </button>
+            </div>
+          </ng-template>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                             [title]="gridSettings.columnsConfig[0].title | translate"
+                             [width]="gridSettings.columnsConfig[0].width"
+                             [filter]="gridSettings.columnsConfig[0].filter"
+                             [filterable]="gridSettings.columnsConfig[0].filterable"
+                             [format]="gridSettings.columnsConfig[0].format">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.date"><span>{{ dataItem.date | date : formatDate }}</span>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                             [title]="gridSettings.columnsConfig[1].title | translate"
+                             [width]="gridSettings.columnsConfig[1].width"
+                             [filter]="gridSettings.columnsConfig[1].filter"
+                             [filterable]="gridSettings.columnsConfig[1].filterable"
+                             [format]="gridSettings.columnsConfig[1].format">
+          </kendo-grid-column>
+
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                             [title]="gridSettings.columnsConfig[2].title | translate"
+                             [width]="gridSettings.columnsConfig[2].width"
+                             [filter]="gridSettings.columnsConfig[2].filter"
+                             [filterable]="gridSettings.columnsConfig[2].filterable"
+                             [format]="gridSettings.columnsConfig[2].format">
+
+          </kendo-grid-column>
+          <kendo-grid-command-column [width]="130" [title]="'ACTION' | translate">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+              <!-- edit command directive-->
+              <i class="las la-pen cursor-pointer edit-pencil la-lg" tooltip="{{'SHOW' | translate}}"   *ngIf=" this.authService.hasAuthorities(['EDIT_NOTE_'+entityType])"
+                 (click)="setModeToModify(dataItem)"></i>
+              <!-- remove command directive -->
+              <i *ngIf="!fromRelatedArchiving && this.authService.hasAuthorities(['DELETE_NOTE_'+entityType])"
+                class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+                (click)="removeHandler(dataItem)" tooltip="{{'DELETE' | translate}}"></i>
+            </ng-template>
+          </kendo-grid-command-column>
+        </kendo-grid>
+      </div>
+
+    </form>
+  </div>
+</div>

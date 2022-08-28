@@ -1,0 +1,99 @@
+<div class="card">
+  <div class="card-body">
+    <div class="container-fluid">
+      <div class="card-body">
+        <form class="form-horizontal">
+          <kendo-grid [data]="gridSettings.gridData"
+                      [pageSize]="gridSettings.state.take"
+                      [skip]="gridSettings.state.skip"
+                      [sortable]="false"
+                      (pageChange)="onPageChange($event)"
+                      [pageable]="pagerSettings"
+                      [reorderable]="false"
+                      [columnMenu]="false"
+                      [sort]="gridSettings.state.sort"
+                      [filter]="gridSettings.state.filter"
+                      (dataStateChange)="dataStateChange($event)">
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                               [title]="gridSettings.columnsConfig[0].title | translate"
+                               [width]="gridSettings.columnsConfig[0]._width"
+                               [filter]="gridSettings.columnsConfig[0].filter"
+                               [filterable]="gridSettings.columnsConfig[0].filterable"
+                               [format]="gridSettings.columnsConfig[0].format">
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+          <span tooltip="{{gridSettings.columnsConfig[0].title |translate}}" theme="light">
+            {{gridSettings.columnsConfig[0].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span
+            tooltip="{{dataItem.createdDate | date : formatDateTime}}">{{dataItem.createdDate | date : formatDateTime}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                               [title]="'OPERATION_TYPE' | translate"
+                               [width]="gridSettings.columnsConfig[1]._width"
+                               [filter]="gridSettings.columnsConfig[1].filter"
+                               [filterable]="gridSettings.columnsConfig[1].filterable"
+                               [format]="gridSettings.columnsConfig[1].format">
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+          <span tooltip="{{'OPERATION_TYPE' |translate}}" theme="light">
+            {{'OPERATION_TYPE'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span tooltip="{{dataItem.entityField | translate}}">{{dataItem.entityField | translate }}</span>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                               [title]="gridSettings.columnsConfig[2].title | translate"
+                               [width]="gridSettings.columnsConfig[2]._width"
+                               [filter]="gridSettings.columnsConfig[2].filter"
+                               [filterable]="gridSettings.columnsConfig[2].filterable"
+                               [format]="gridSettings.columnsConfig[2].format">
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <span tooltip="{{'LETTER' |translate}}" theme="light">
+            {{'LETTER' |translate}}</span>
+
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span
+            tooltip="{{dataItem.fieldNewValue }}">{{dataItem.fieldNewValue }}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                               [title]="gridSettings.columnsConfig[3].title | translate"
+                               [width]="gridSettings.columnsConfig[3]._width"
+                               [filter]="gridSettings.columnsConfig[3].filter"
+                               [filterable]="gridSettings.columnsConfig[3].filterable"
+                               [format]="gridSettings.columnsConfig[3].format">
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+           <span tooltip="{{gridSettings.columnsConfig[2].title |translate}}" theme="light">
+            {{gridSettings.columnsConfig[2].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span tooltip="{{dataItem.createdByFullName}}" theme="light">{{dataItem.createdByFullName}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <ng-template kendoGridDetailTemplate let-dataItem="dataItem">
+              <app-historic-details-document-account
+                [formatNumberOptions]="formatNumberOptions" [historicItem]="dataItem">
+              </app-historic-details-document-account>
+            </ng-template>
+          </kendo-grid>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!--Begin Card footer-->
+  <div class="card-footer d-flex justify-content-end p-3 footer-content">
+    <button type="button" class="btn btn-sm btn-back-to-list mr-2" [tooltip]="returnList"
+            content-type="template" (click)="goToList()">
+      <i class="fa fa-reply"></i> {{'BACK_TO_LIST'|translate}}
+    </button>
+    <ng-template #returnList>
+      <span>{{ 'BACK_TO_LIST'|translate}}</span>
+    </ng-template>
+  </div>
+  <!--End Card footer-->
+</div>
+

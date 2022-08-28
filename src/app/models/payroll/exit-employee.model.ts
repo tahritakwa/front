@@ -1,0 +1,43 @@
+import { Resource } from '../shared/ressource.model';
+import { Employee } from './employee.model';
+import { ExitReason } from './exit-reason.model';
+import { Comment } from '../shared/comment.model';
+import { FileInfo } from '../shared/objectToSend';
+import { ActiveAssignment } from '../immobilization/active-assignment.model';
+import { ExitEmailForEmployee } from './ExitEmailForEmployee.model';
+import { Contract } from './contract.model';
+import { ExitAction } from './exit-action.model';
+import { ExitEmployeePayLine } from './exit-employee-pay-line.model';
+
+export class ExitEmployee extends Resource {
+  IdEmployee: number;
+  IdEmployeeNavigation: Employee;
+  ReleaseDate: Date;
+  IdExitReason: number;
+  IdExitReasonNavigation: ExitReason;
+  Comments: Array<Comment>;
+  ExitEmployeeAttachementFile: string;
+  ExitFileInfo: Array<FileInfo>;
+  Code: string;
+  CommentRh: string;
+  Status: number;
+  TreatmentDate?: Date;
+  TreatedBy?: number;
+  History: Array<ActiveAssignment>;
+  LegalExitDate: Date;
+  DamagingDeparture: boolean;
+  ExitDepositDate?: Date;
+  ExitEmailForEmployee: Array<ExitEmailForEmployee>;
+  Contract: Contract;
+  ListIdEmployeeMultiselect: Array<number>;
+  MinNoticePeriodDate?: Date;
+  MaxNoticePeriodDate?: Date;
+  ExitPhysicalDate?: Date;
+  IdActions: number;
+  IdActionsNavigation: ExitAction;
+  StatePay: number;
+  StateLeave: number;
+  CreationDate: Date;
+  RecoveredMaterial: boolean;
+  ExitEmployeePayLine: Array<ExitEmployeePayLine>;
+}

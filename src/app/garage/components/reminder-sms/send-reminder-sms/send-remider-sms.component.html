@@ -1,0 +1,93 @@
+<form class="form-horizontal" [formGroup]="smsFormGroup">
+  <div class="card">
+    <!-- card header -->
+    <div class="card-header" *ngIf="!isModal">
+      <div class="row">
+        <div class="col-lg-auto col-md-1 col-sm-12 primaryColor">
+          <i class="fa fa-envelope-o font-xm mt-2 fa-2x"></i>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-12 pl-0 pt-2">
+          <div class="col-lg-auto  md-8 sm-12">
+            <h3 class="card-title mb-0">{{ 'SEND_SMS' |translate}}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <!-- customer -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CUSTOMER' | translate}}<span
+              class="required">*</span></label>
+            <app-supplier-dropdown [itemForm]="smsFormGroup" [type]='customerTiers' [isMultiSelect]="true"
+              [isCheckboxMode]="true" [placeholder]="'CHOOSE_CUSTOMER_PLACEHOLDER' | translate" [hideAddBtn]="true"
+              (selectedValuesCheckbox)="selectedValuesCheckboxChange($event)"
+              [selectedValue]="selectedTiers"></app-supplier-dropdown>
+            <app-control-messages [control]="smsFormGroup.controls.ListTiers"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <!-- Message -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'SMS_BODY' | translate}}<span
+              class="required">*</span></label>
+            <textarea class="form-control" formControlName="Body" type="text" name="Body" [ngClass]="{ 'has-error': (smsFormGroup.controls.Body.touched || smsFormGroup.controls.Body.dirty) &&
+            !smsFormGroup.controls.Body.valid }"></textarea>
+            <app-control-messages [control]="smsFormGroup.controls.Body"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <!-- Date -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin" *ngIf="!isImmediateSend">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DATE' | translate}}<span
+              class="required">*</span></label>
+            <kendo-datepicker [format]="formatDate" formControlName="SendDate" class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="smsFormGroup.controls.SendDate"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- Hour -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin" *ngIf="!isImmediateSend">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'HOUR' | translate}}<span
+              class="required">*</span></label>
+            <kendo-timepicker formControlName="SendHour" class="form-control" [format]="'HH:mm'">
+            </kendo-timepicker>
+            <app-control-messages [control]="smsFormGroup.controls.SendHour"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <!-- Immediate -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin-immediate">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'IMMEDIATE' | translate}}</label>
+            <kendo-switch formControlName="Immediate" [checked]='true' (valueChange)="immediateSendChange($event)"
+            style="font-size: 0.5em !important">
+            </kendo-switch>
+            <app-control-messages [control]="smsFormGroup.controls.Immediate"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- footer -->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer" style="margin-left: 0;">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a (click)="goBackToList()" *ngIf="!isModal">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button style="height: fit-content;" (click)="sendAndSaveSms()" class="btn btn-sm btn-save mx-1"
+                type="button">
+                <i class="fa fa-paper-plane-o"></i> {{'SEND'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</form>

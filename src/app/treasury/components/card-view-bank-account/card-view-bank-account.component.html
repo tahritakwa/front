@@ -1,0 +1,61 @@
+<div class="col-lg-12 col-sm-12 col-md-12">
+  <div class="row">
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-3" styl="min-height: 225px;"
+         *ngFor="let account of data; let i=index;">
+      <div class="card-item">
+        <div class="card-body">
+          <div class="row d-flex align-items-center mb-3 pr-3">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-auto">
+                  <img id="blah" class="border border-secondary rounded-circle card-avatar"
+                        alt="avatar" [src]="getPictureItem(picturesSrc[i])"/>
+                </div>
+                <div class="col pl-0">
+                  <span class="tiers-title"><a> {{ account.BankName }}</a> </span>
+                  <div></div>
+                </div>
+                <div class="float-right">
+                  <i *ngIf="!isCallFromTreasury &&hasUpdatePermission" (click)="viewDetails(account)"
+                     class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+                  <i *ngIf="isCallFromTreasury && hasUpdatePermission" (click)="viewDetails(account)"
+                     class="fa fa-eye cursor-pointer" style="color: #20a8d8"></i>
+                  <i *ngIf="!isCallFromTreasury && hasDeletePermission" (click)="deleteAccount(account)"
+                     class="fa fa-trash-o fa-lg cursor-pointer AddIcon text-danger"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-home color-blue icon-from-label" aria-hidden="true"></i>
+                {{ "AGENCY" | translate }}: </span>
+                <span style="font-size: inherit;"> {{ account.Agency }}</span>
+              </div>
+              <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-clipboard color-blue icon-from-label" aria-hidden="true"></i>
+                {{ "RIB" | translate }}: </span>
+                <span style="font-size: inherit;"> {{ account.Rib }} </span>
+              </div>
+              <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-money color-blue icon-from-label" aria-hidden="true"></i>
+                {{ "CURRENT_BALANCE_BANK_ACCOUNT" | translate }}: </span>
+                <span style="font-size: inherit;">
+                {{account.CurrentBalance.toLocaleString(language,{minimumFractionDigits: account.Precision,
+                  style: 'currency', currency: account.CodeCurrency, currencyDisplay:'code'})}}
+              </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-pager *ngIf="showed" [dataSource]="this.gridSettings" (pageChangeEvent)="onPageChange($event)"
+    (stateChangeEvent)="dataStateChange($event)">
+  </app-pager>
+</div>

@@ -1,0 +1,22 @@
+<div [formGroup]="parent" *ngIf='parent'>
+  <label class="col-lg-12 col-md-12 col-sm-12" *ngIf='!FromComponent'>{{'WAREHOUSE'|translate}}</label>
+  <kendo-combobox [data]="warehouseDataSourceFiltred" class="form-control w-100" [formControlName]="WarehouseName"
+    name="WarehouseName" [textField]="'WarehouseName'" [valueField]="'Id'" [valuePrimitive]="true" [filterable]="true"
+    [disabled]='disabled' (valueChange)="onSelect($event)" (filterChange)="handleFilter($event)"
+    [allowCustom]="allowCustom" (focus)="onFocus(this)" [placeholder]="depotPlaceHolder|translate" #combobox>
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+
+<div *ngIf='!parent'>
+  <kendo-dropdownlist [data]="warehouseDataSourceFiltred" class="form-control" [textField]="'WarehouseName'"
+    [valueField]="'Id'" [valuePrimitive]="true" [filterable]="true" [disabled]='disabled'
+    (valueChange)="onSelect($event)" [(ngModel)]='WarehouseSeleted' (filterChange)="handleFilter($event)"
+    [ngClass]="{ 'has-error': Required}">
+  </kendo-dropdownlist>
+</div>

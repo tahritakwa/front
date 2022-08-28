@@ -1,0 +1,12 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="itemsList" class="form-control" formControlName="eventName"
+                  [(ngModel)]="selectedItem? selectedItem : selectedItemFromFG"
+                  [textField]="'name'" [valueField]="'name'" [valuePrimitive]="true"
+                  [filterable]="true"
+                  (filterChange)="handleFilter($event)" [allowCustom]="true" [readonly]="readonly"
+                  [disabled]="disabled">
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+  </kendo-combobox>
+</div>

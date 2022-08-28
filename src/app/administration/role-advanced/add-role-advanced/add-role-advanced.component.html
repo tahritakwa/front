@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_ROLE': 'ADD_ROLE') |translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <form class="form-horizontal" [formGroup]="roleFormGroup">
+        <!-- Begin principal form -->
+        <div class="card-body">
+          <div class='row'>
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <label>
+                {{'CODE'|translate}}<span class="required">*</span>
+                <input class="form-control" formControlName="Code" name="Code">
+                <app-control-messages [control]="roleFormGroup.controls.Code"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </label>
+            </div>
+            <div class="col-lg-6 col-md-12 col-sm-12 ">
+              <label>
+                {{'DESIGNATION'|translate}}<span class="required">*</span>
+                <input class="form-control" type="text" formControlName="RoleName" name="RoleName">
+                <app-control-messages [control]="roleFormGroup.controls.RoleName"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </label>
+            </div>
+          </div>
+        </div>
+        <app-role-treeview [moduleData]="moduleData" [functionnalityData]="functionnalityData" [allFunctionnalityData]="allFunctionnalityData"></app-role-treeview>
+      </form>
+    </div>
+
+    <!-- End principal  part -->
+  </div>
+  <div class="card-footer">
+    <a class="btn btn-sm btn-primary" routerLink='/main/administration/roleAdvanced'>
+      <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+    </a>
+    <button class="btn btn-sm btn-danger" type="submit" (click)="saveRole()">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+  </div>
+</div>

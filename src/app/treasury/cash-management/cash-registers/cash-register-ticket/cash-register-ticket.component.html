@@ -1,0 +1,210 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="col-lg-12">
+    <app-advanced-search  [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+      (filtrePredicateToSend)="getFiltrePredicate($event)" (filterFieldsInputsChange)="filterFieldsInputsChange($event)"
+      (resetClickEvent)="resetClickEvent()" (searchClickEvent)="searchClick()">
+    </app-advanced-search>
+
+    <div class="d-flex" style="margin-bottom: -15px;" *ngIf="openedSession">
+        <button class="btn btn-sm buttonStyle" type="button" (click)="printReportOnClickHandler()"  >
+          <i class="fa fa-print fa "></i>
+          <span>&nbsp; {{'PRINT_SESSION_PAYMENT_REPORT' | translate}}</span>
+        </button>
+    </div>
+    <div *ngIf="!isModal" class="col-lg-3 col-md-12">
+      <div class="d-flex float-left" style="margin-top: 25px;">
+        <input class="input-checkbox100" id="ckb1" type="checkbox" [(ngModel)]="currentSession"
+          (click)="currentSession = !currentSession; CheckCurrentSession()">
+        <label class="label-checkbox100 " for="ckb1"  >
+          {{'CURRENT_SESSION'|translate}}
+        </label>
+      </div>
+    </div>
+
+    <div class="row d-flex justify-content-between mt-3">
+      <!-- End search div-->
+      <app-btn-grid class="col" [export]='true'
+        [fileName]="'LIST_TICKETS'|translate" [model]='true' [relativeStyle]='true'
+        [gridSettings]="excelGridSettings" [service]="serviceTicket" [api]="'getDataWithSpecificFilter'"
+        [predicate]="predicate" [isExportExcel]="true">
+      </app-btn-grid>
+    </div>
+
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+      [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)"
+      [sortable]="true" [pageable]="pagerSettings" [filterable]="false" [reorderable]="true" >
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+        [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+        [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+        [tooltip]="gridSettings.columnsConfig[0].title" [columnMenu]="false"
+        [format]="gridSettings.columnsConfig[0].format">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+            theme="light">{{gridSettings.columnsConfig[0].title | translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span *ngIf="dataItem.Code" style="font-size: 0.9em;">&nbsp;{{dataItem.Code}}</span>
+          <span *ngIf="!dataItem.Code" style="font-size: 0.9em;">&nbsp; - </span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+        [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+        [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+        [tooltip]="gridSettings.columnsConfig[1].title" [columnMenu]="false"
+        [format]="gridSettings.columnsConfig[1].format">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{'CODE_SALES_DELIVERY' | translate | translate}}"
+            theme="light">{{gridSettings.columnsConfig[1].title | translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span class="pointer doc-code" style="font-size: 0.9em;" *ngIf="hasShowDeliveryFormPermission && dataItem.IdDeliveryFormNavigation && dataItem.IdDeliveryFormNavigation.Code"
+            (click)="showDocument(dataItem.IdDeliveryFormNavigation,documentTypeEnum.DELIVERY_FORM)">&nbsp;{{ dataItem.IdDeliveryFormNavigation.Code}}</span>
+          <span *ngIf="!hasShowDeliveryFormPermission && dataItem.IdDeliveryFormNavigation && dataItem.IdDeliveryFormNavigation.Code"
+            style="font-size: 0.9em;">&nbsp;{{dataItem.IdDeliveryFormNavigation.Code}}</span>
+            <div class="container grid-cell" *ngIf="dataItem.IdDeliveryFormNavigation && !dataItem.IdDeliveryFormNavigation.Code ">
+              -
+            </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+        [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+        [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+        [tooltip]="gridSettings.columnsConfig[2].title" [columnMenu]="false"
+        [format]="gridSettings.columnsConfig[2].format">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+            theme="light">{{gridSettings.columnsConfig[2].title | translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span class="pointer doc-code" style="font-size: 0.9em;"
+            *ngIf="hasShowSalesInvoicePermission && dataItem.IdInvoiceNavigation"
+            (click)="showDocument(dataItem.IdInvoiceNavigation, documentTypeEnum.SALES_INVOICE)">&nbsp;{{dataItem.IdInvoiceNavigation.Code}}</span>
+          <span *ngIf="!hasShowSalesInvoicePermission && dataItem.IdInvoiceNavigation"
+            style="font-size: 0.9em;">&nbsp;{{dataItem.IdInvoiceNavigation.Code}}</span>
+          <span *ngIf="!dataItem.IdInvoiceNavigation" style="font-size: 0.9em;">&nbsp; - </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- date-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+        [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+        [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+        [tooltip]="gridSettings.columnsConfig[3].title" [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+            theme="light">{{gridSettings.columnsConfig[3].title | translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div>
+            {{dataItem.CreationDate|date: gridSettings.columnsConfig[3].format}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!--tiers-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+        [title]="gridSettings.columnsConfig[4].title | translate" [filterable]="false"
+        [tooltip]="gridSettings.columnsConfig[4].title" [width]="gridSettings.columnsConfig[4]._width"
+        [columnMenu]="false" [style]="{'text-align': 'center'}">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+            theme="light">{{gridSettings.columnsConfig[4].title | translate}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+
+
+      <!--amount-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+        [title]="gridSettings.columnsConfig[5].title | translate" [filterable]="false"
+        [tooltip]="gridSettings.columnsConfig[5].title" [width]="gridSettings.columnsConfig[5]._width"
+        [columnMenu]="false" [style]="{'text-align':'center'}">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+            theme="light">{{gridSettings.columnsConfig[5].title | translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.IdDeliveryFormNavigation ? 
+            intl.formatNumber(dataItem.IdDeliveryFormNavigation.DocumentTtcpriceWithCurrency,
+            getDocumentCurrency(dataItem.IdDeliveryFormNavigation.IdUsedCurrencyNavigation?.Code,dataItem.IdDeliveryFormNavigation.IdUsedCurrencyNavigation?.Precision)): '-'}}
+        </ng-template>
+      </kendo-grid-column>
+
+      <!--Payment-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+        [filterable]="gridSettings.columnsConfig[6].filterable"
+        [title]="gridSettings.columnsConfig[6].title | translate" [width]="gridSettings.columnsConfig[6]._width"
+        [format]="gridSettings.columnsConfig[6].format" [hidden]="gridSettings.columnsConfig[6].hidden"
+        [headerStyle]="{'line-height': '1em'}" [class]="{'overflow-class': true}" [sortable]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip=" {{gridSettings.columnsConfig[6].title|translate}}"
+            theme="light">{{gridSettings.columnsConfig[6].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div class="row ml-1" *ngIf="dataItem.TicketPayment" style="overflow: initial;">
+            <span *ngIf="dataItem.TicketPayment[0]" tooltip="{{dataItem.TicketPayment[0].IdPaymentTypeNavigation.Code}}"
+              class="rounded-element-cell">
+              {{dataItem.TicketPayment[0].IdPaymentTypeNavigation.Code}}
+            </span>
+            <span *ngIf="dataItem.TicketPayment[1]" tooltip="{{dataItem.TicketPayment[1].IdPaymentTypeNavigation.Code}}"
+              class="rounded-element-cell">
+              {{dataItem.TicketPayment[1].IdPaymentTypeNavigation.Code}}
+            </span>
+            <span *ngIf="dataItem.TicketPayment && dataItem.TicketPayment.length > 2" class="dropdown">
+              <div class="show-more" type="button" id="payment" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                +{{dataItem.TicketPayment.length - 2}}
+              </div>
+              <div class="dropdown-menu border" aria-labelledby="payment">
+                <button class="dropdown-item disabled" *ngFor="let paymentTicket of dataItem.TicketPayment.slice(2)"
+                  type="button">{{paymentTicket.IdPaymentTypeNavigation.Code}}</button>
+              </div>
+            </span>
+          </div>
+
+          <div class="container grid-cell" *ngIf="!dataItem.TicketPayment">
+            -
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+   
+      <kendo-grid-command-column [width]="127" [title]="'ACTIONS' | translate"
+          [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate style="text-align: center;">
+            <span tooltip="{{'ACTIONS' | translate}}" theme="light" center>{{"ACTIONS" | translate}}</span>
+          </ng-template>
+
+          <ng-template  *ngIf="!isModal" kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+            <!--Generate invoice Button  -->
+            <i *ngIf="hasGenerateInvoicePermission && dataItem.IdInvoice == null"
+              (click)="generatePosInvoiceFromBl(dataItem)" class="cursor-pointer fa fa-cogs fa-lg AddIcon" style="color: #20a8d8">
+            </i>
+            <!--Print ticket Button  -->
+            <i *ngIf="hasPrintPermission"
+            (click)="printTicketClickHandler(dataItem)" class="cursor-pointer fa fa-print la-lg" style="color: #20a8d8">
+            </i>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem"> 
+            <!--Edit/show Button  -->
+            <i *ngIf="isModal"
+              (click)="showCounterSales(dataItem)" class="las la-pen cursor-pointer edit-pencil la-lg">
+            </i>
+          </ng-template>
+
+        </kendo-grid-command-column>
+    </kendo-grid>
+  </div>
+
+</div>

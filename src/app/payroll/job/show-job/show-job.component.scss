@@ -1,0 +1,64 @@
+.ui-grid-row {
+  text-align: center;
+}
+
+.ui-grid {
+  margin: 10px 0px;
+}
+
+
+.ui-widget-header {
+  border: 1px solid #d9d9d9;
+  background: #f6f7f9;
+  color: #4c9aae;
+  font-weight: normal;
+}
+
+.ui-widget-header a {
+  color: #4c9aae;
+}
+
+.ui-carousel .ui-carousel-header .ui-carousel-header-title {
+  display: inline-block;
+  overflow: hidden;
+  color: black;
+  font-weight: bold;
+}
+
+.ui-paginator .ui-paginator-page.ui-state-active {
+  background: #4c9aae;
+  color: #ffffff;
+  border-color: #4c9aae;
+}
+
+.text-header-grid {
+  color: black;
+  font-weight: bold;
+}
+
+.roundedImage {
+  overflow: hidden;
+  border-radius: 100%;
+  width: 85px;
+  height: 85px;
+}
+
+
+.text-bloc {
+  border: 1px solid #e4e7ea;
+  border-radius: 0.25rem;
+  height: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.text-bloc-skill {
+  border: 1px solid #e4e7ea;
+  border-radius: 0.25rem;
+  height: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-top: 15px;
+  text-align: center;
+}

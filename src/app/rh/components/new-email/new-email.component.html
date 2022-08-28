@@ -1,0 +1,81 @@
+<div class="card-body">
+  <form [formGroup]="emailFormGroup" class="form-horizontal">
+
+    <!-- Begin principal menu  part-->
+    <div class="form-group row">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <br/>
+        <div class="col-lg-12 col-md-12 col-sm-12 row">
+          <div class="col-lg-1 col-md-2 col-sm-2">
+            <label>{{'SENDER'| translate }}</label>
+          </div>
+          <div class="col-lg-11 col-md-10 col-sm-10">
+            <input class="form-control" formControlName="From" placeholder="{{'SENDER'| translate }}" readonly
+                   type="email">
+            <app-control-messages [control]="emailFormGroup.controls.From"></app-control-messages>
+          </div>
+        </div>
+        <br/>
+        <div class="col-lg-12 col-md-12 col-sm-12 row">
+          <div class="col-lg-1 col-md-2 col-sm-2">
+            <label>{{'RECEPIENT'| translate }}</label>
+          </div>
+          <div class="col-lg-11 col-md-10 col-sm-10">
+            <input class="form-control" formControlName="Receivers" placeholder="{{'RECEPIENT'| translate }}"
+                   type="email">
+            <app-control-messages [control]="emailFormGroup.controls.Receivers"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <br/>
+        <div class="col-lg-12 col-md-12 col-sm-12 row">
+          <div class="col-lg-1 col-md-2 col-sm-2">
+            <label>{{'SUBJECT'| translate }}</label>
+          </div>
+          <div class="col-lg-11 col-md-10 col-sm-10">
+            <input class="form-control" formControlName="Subject" placeholder="{{'SUBJECT' | translate}}" type="text">
+            <app-control-messages [control]="emailFormGroup.controls.Subject"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <br/>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p-editor [readonly]="emailFormGroup.controls.Body.disabled"
+                    [style]="{'height':'240px', 'overflow-y': 'auto', 'overflow-x': 'auto'}"
+                    formControlName="Body">
+          </p-editor>
+          <app-control-messages [control]="emailFormGroup.controls.Body"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+        <br/>
+      </div>
+    </div>
+    <!-- End principal menu  part -->
+    <button (click)="save()" *ngIf="originalEmailToUpdate && originalEmailToUpdate.Status === emailEnumerator.Draft" class="btn btn-sm btn-success"
+            type="submit">
+      <i class="fa fa-floppy-o"></i> {{'SAVE' | translate}}
+    </button>
+
+    <button (click)="sendEmail()" *ngIf="originalEmailToUpdate && (originalEmailToUpdate.Status === emailEnumerator.Draft || originalEmailToUpdate.CandidacyState)" [ngStyle]="{'float': 'right', 'margin-right' : '10px'}"
+            class="btn btn-sm btn-danger"
+            type="button">
+      <span>
+        <i class="cui-envelope-letter"></i> {{'SEND' | translate}}
+      </span>
+    </button>
+
+    <button (click)="sendEmail()" *ngIf="originalEmailToUpdate && originalEmailToUpdate.Status > emailEnumerator.Draft && !originalEmailToUpdate.CandidacyState" [ngStyle]="{'float': 'right', 'margin-right' : '10px'}"
+            class="btn btn-sm btn-danger"
+            type="button">
+      <span>
+        <i class="cui-envelope-letter"></i> {{'RE_SEND' | translate}}
+      </span>
+    </button>
+  </form>
+</div>
+
+
+
+
+
+

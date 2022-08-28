@@ -1,0 +1,38 @@
+<app-current-fiscal-year-header [currentFiscalYearId]="this.currentFiscalYearId" [fiscalYears]="this.fiscalYears"></app-current-fiscal-year-header>
+<nav class="navbar navbar-expand-lg" style="background-color: white !important; height: 50px;">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class=" las la-chevron-down fa-lg" style="   color: #607D8B"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
+    <ng-container>
+      <div class="dropdown">
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/accounting/reporting/financialStates/stateOfIncome']"
+           routerLinkActive="active-link">{{'STATE_OF_INCOME'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div class="dropdown">
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/accounting/reporting/financialStates/balancesheet']"
+           routerLinkActive="active-link">{{'BALANCE_SHEET'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div class="dropdown">
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/accounting/reporting/financialStates/intermediaryBalance']"
+           routerLinkActive="active-link">{{'INTERMEDIARY_BALANCE'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div class="dropdown">
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/accounting/reporting/financialStates/cashFlow']"
+           routerLinkActive="active-link">{{'CASH_FLOW'|translate}}</a>
+      </div>
+    </ng-container>
+
+  </div>
+</nav>

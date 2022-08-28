@@ -1,0 +1,175 @@
+
+  <div>
+    <div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+      <div class="card">
+      <div class="card-body">
+        <div class="row col-lg-12 col-md-12 col-sm-12" style="padding-left: 3%;">
+          <div class="col-lg-7 col-md-7 col-sm-7">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b class="CashRegisterInfo"> {{'CLOSING_DATE' | translate}}: </b>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <span> {{sessionCash?.openingDate | date : dateFormat}} </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b class="CashRegisterInfo"> {{'WAREHOUSE' | translate}}: </b>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <span> {{sessionCash?.warehouseName}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-7">
+            <div class="row">
+              <div class="col-lg-5 col-md-5 col-sm-5">
+                <b class="CashRegisterInfo"> {{'RESPONSIBLE' | translate}}: </b>
+              </div>
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <span> {{sessionCash?.responsibleName}} </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b class="CashRegisterInfo"> {{'TOTAL_CASH' | translate}}: </b>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <span>
+                  {{sessionCash?.totalCash.toLocaleString(language,
+                    { style: 'currency',  currency: companyCurrency?.Code, currencyDisplay: 'code',
+                      'minimumFractionDigits': companyCurrency?.Precision
+                  })}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-7">
+            <div class="row">
+              <div class="col-lg-5 col-md-5 col-sm-5">
+                <b class="CashRegisterInfo"> {{'CASHIER_SELLER' | translate}}: </b>
+              </div>
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <span>
+                  {{sessionCash?.cashierSeller}}
+                </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-lg-5 col-md-5 col-sm-5">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b class="CashRegisterInfo"> {{'TOTAL' | translate}}: </b>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <span>
+                  {{sessionCash?.total.toLocaleString(language,
+                    { style: 'currency',  currency: companyCurrency?.Code, currencyDisplay: 'code',
+                      'minimumFractionDigits': companyCurrency?.Precision
+                    })}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-7">
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <b class="CashRegisterInfo"> {{'OPENING_AMOUNT' | translate}}: </b>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <span>
+                  {{sessionCash?.openingAmount.toLocaleString(language,
+                    { style: 'currency',  currency: companyCurrency?.Code, currencyDisplay: 'code',
+                      'minimumFractionDigits': companyCurrency?.Precision
+                  })}}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      </div>
+      <div>
+          <!--Begin add form-->
+        <form class="form-horizontal" [formGroup]="sessionCashFormGroup" (keydown.enter)="onCloseSessionCashClick()">
+            <div class="col-lg-12 col-sm-12 col-md-12">
+              <div class="form-group row">
+                <div class="col-lg-12 col-sm-12 col-md-12">
+                  <div class="row">
+                    <!-- Closing date start -->
+                    <div class="col-lg-6 col-md-6 col-sm-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'CLOSING_DATE'|translate}}</label>
+                      <kendo-datepicker formControlName="ClosingDate" class="form-control">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                            toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                      </kendo-datepicker>
+                    </div>
+                    <!-- Closing date end -->
+                    <!-- Closing cash amount start -->
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'TOTAL_CASH'|translate}}<span class="required">*</span></label>
+                      <kendo-numerictextbox class="form-control" formControlName="ClosingCashAmount" [autoCorrect]=true
+                                      [format]="formatNumberOptions" [decimals]="companyCurrency?.Precision" [min]="0">
+                      </kendo-numerictextbox>
+                      <app-control-messages [control]="sessionCashFormGroup.controls.ClosingCashAmount"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <!-- Closing cash amount end -->
+                  </div>
+                  <div class="row">
+                    <!-- Closing amount start -->
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'TOTAL'|translate}}<span class="required">*</span></label>
+                      <kendo-numerictextbox class="form-control" formControlName="ClosingAmount" [autoCorrect]=true
+                                      [format]="formatNumberOptions" [decimals]="companyCurrency?.Precision" [min]="0"
+                                      (valueChange)="closingAmountChange($event)">
+                      </kendo-numerictextbox>
+                      <app-control-messages [control]="sessionCashFormGroup.controls.ClosingAmount"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <!-- Closing amount end -->
+                    <!-- Amount Gap start -->
+                    <div class="col-lg-6 col-md-6 col-sm-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'GAP'|translate}}</label>
+                      <kendo-numerictextbox class="form-control" formControlName="TotalAmountGap" [autoCorrect]=true
+                        [format]="formatNumberOptions" [decimals]="companyCurrency?.Precision">
+                      </kendo-numerictextbox>
+                    </div>
+                    <!-- Amount Gap end -->
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+      </div>
+
+      <!--Begin Card footer-->
+      <div>
+          <div class="isShowedModalSideBar">
+          <footer class="app-footer mx-0 footerModal">
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 footer-content">
+                <button class="btn btn-sm btn-back-to-list btn-primary" (click)="cancelDialog()">
+                  <i class="fa fa-ban"></i> {{'CANCEL'|translate}}
+                </button>
+                <button (click)="onCloseSessionCashClick()" class="btn btn-sm btn-save mx-1" type="button">
+                  <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                </button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <!--End Card footer-->
+  </div>
+</div>
+

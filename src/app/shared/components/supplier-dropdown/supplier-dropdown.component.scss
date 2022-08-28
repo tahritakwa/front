@@ -1,0 +1,11 @@
+.modal-body-scrolable {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+}
+.disabledInput {
+  background: transparent;
+  border: none;
+}
+.pointer {
+  cursor: pointer;
+}

@@ -1,0 +1,51 @@
+<form class="form-horizontal">
+  <kendo-grid (dataStateChange)="dataStateChange($event)"
+    [data]="gridSettings.gridData" [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take"
+    [pageable]="pagerSettings" [reorderable]="true" [selectable]="{enabled: true, checkboxOnly: true }"
+    [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [sortable]="true">
+
+    <!-- columns data -->
+    <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index"
+                       [field]="col.field"
+                       [filter]="col.filter"
+                       [filterable]="col.filterable"
+                       [format]="col.format"
+                       [title]="col.title | translate"
+                       [width]="col._width">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="col.field === 'IdCandidateNavigation.FirstName'" [ngStyle]="getLineThroughStyle(dataItem.State)">
+          <a [routerLink]="['/main/rh/candidate/edit/', dataItem.IdCandidateNavigation.Id]" class="candidate-link"
+             target="_blank">
+            {{dataItem.IdCandidateNavigation.FullName}}
+          </a>
+        </span>
+        <span *ngIf="col.field === 'IdCandidateNavigation.Email'" [ngStyle]="getLineThroughStyle(dataItem.State)">
+            <a href="mailto:{{dataItem.Email}}">{{dataItem.IdCandidateNavigation.Email}}</a>
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- End columns data -->
+    <!-- Columns Command-->
+    <kendo-grid-command-column [width]="100">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <!-- select command directive-->
+        <button (click)="preselectionneCandidacy(dataItem)" *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && dataItem.State <= recruitmentState.PreSelection" class="noPadding btn-Add k-button" data-placement="top"
+                data-toggle="tooltip"
+                kendoGridEditCommand
+                title="{{'SELECT' | translate}}">
+          <i aria-hidden="true" class="fa fa-check text-primary"></i>
+        </button>
+        <!-- end select command directive-->
+        <!-- unselect command directive-->
+        <button (click)="unPreselectionneCandidacy(dataItem)" *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && dataItem.State > recruitmentState.PreSelection" class="noPadding btn-Add k-button" data-placement="top"
+                data-toggle="tooltip"
+                kendoGridRemoveCommand
+                title="{{'UN_SELECT' | translate}}">
+          <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+        </button>
+        <!-- end unselect command directive-->
+      </ng-template>
+    </kendo-grid-command-column>
+    <!-- End Columns Command-->
+  </kendo-grid>
+</form>

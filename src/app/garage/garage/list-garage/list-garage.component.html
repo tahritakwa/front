@@ -1,0 +1,141 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+
+        <!--Begin card body-->
+        <div class="card-body">
+          <!-- Search Start -->
+          <div class="row d-flex justify-content-between mt-3">
+            <div class="d-flex justify-content-center" style="margin-left: 30px;">
+              <!-- Search input -->
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-10 pl-1">
+                    <input type="text" class="form-control" autocomplete="off"
+                      placeholder="{{'SEARCH_GARAGE'|translate}}" name='searchValue' aria-label="Search"
+                      style="width: 160px;" aria-describedby="addon-wrapping" [(ngModel)]='searchValue'
+                      (keyup)='filter()'>
+                  </div>
+                  <div class="col-2 p-1">
+                    <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Search End-->
+            <app-btn-grid class="col" [fileName]="'GARAGES_LIST'|translate" [advencedAdd]='true' [addLink]='"add"'
+              [cardView]="false" [relativeStyle]='true' [model]="true" [gridSettings]="gridSettings"
+              [service]="garageService" [predicate]="predicate" [isExportExcel]="true" *ngIf="hasAddPermission">
+            </app-btn-grid>
+          </div>
+          <!-- Search End -->
+          <!-- Grid Start -->
+          <kendo-grid [data]="gridSettings.gridData" [pageable]="pagerSettings" [pageSize]="gridSettings.state.take"
+          [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"  [reorderable]="true" [sortable]="true"
+          (dataStateChange)="dataStateChange($event)">
+
+            <!--Columns-->
+
+            <!-- Name Start -->
+            <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate"
+              [width]="200" [format]="columnsConfig[0].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Name End -->
+
+            <!-- Phone Start -->
+            <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate"
+              [width]="150" [format]="columnsConfig[1].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Phone End -->
+
+            <!-- Nb Post Start -->
+            <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate"
+              [width]="150" [format]="columnsConfig[2].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Nb Post End -->
+
+            <!-- Warehouse Start -->
+            <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate"
+              [width]="150" [format]="columnsConfig[3].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngIf="dataItem.IdWarehouseNavigation">{{dataItem.IdWarehouseNavigation.WarehouseName}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngIf="!dataItem.IdWarehouseNavigation">---</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Warehouse End -->
+
+
+            <!--City Start -->
+            <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate"
+              [width]="150" [format]="columnsConfig[4].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngIf="dataItem.IdCityNavigation">{{dataItem.IdCityNavigation.Label}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngIf="!dataItem.IdCityNavigation">---</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- City End -->
+
+            <!-- Responsible Start -->
+            <kendo-grid-column [field]="columnsConfig[5].field" [title]="columnsConfig[5].title | translate"
+              [width]="150" [format]="columnsConfig[5].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[5].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[5].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngIf="dataItem.IdResponsibleNavigation">
+                  {{dataItem.IdResponsibleNavigation.FirstName}} {{dataItem.IdResponsibleNavigation.LastName}}
+                </span>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Responsible End -->
+            <!--End Columns-->
+
+            <!--Actions-->
+            <kendo-grid-command-column [width]="100">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'ACTIONS' | translate}}" theme="light">{{'ACTIONS' | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <!--Open advanced edit form -->
+                <i class="las la-pen cursor-pointer edit-pencil la-lg ng-star-inserted" *ngIf="hasShowPermission || hasUpdatePermission"
+                  (click)="goToAdvancedEdit(dataItem)"></i>
+                <i class="fa fa-trash-o la-lg cursor-pointer text-danger ng-star-inserted" *ngIf="hasDeletePermission"
+                  (click)="removeHandler(dataItem)"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--End Actions-->
+
+          </kendo-grid>
+          <!-- Grid End -->
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

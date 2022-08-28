@@ -1,0 +1,13 @@
+<div [formGroup]="group">
+  <kendo-combobox (valueChange)="onSelect($event)" [data]="creditTypeDataSource" [disabled]="disabled"
+                  [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin" formControlName="CreditType" name="CreditType" textField="name"
+                  valueField="value">
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

@@ -1,0 +1,57 @@
+<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+  <div class="form-group row">
+    <div class=" col-lg-5 col-md-12 col-sm-12 border-style">
+      <div class="row">
+        <div class="col-lg-3 col-md-12 col-sm-12 ">
+          <p>{{'MODULES'|translate}}</p>
+        </div>
+        <br />
+        <div class="col-lg-9 col-md-12 col-sm-12" [ngStyle]="{'height': '500px', 'overflow-y': 'auto'}">
+          <kendo-treeview [nodes]="moduleData" 
+                          [children]="fetchChildren.bind(this)"
+                          childrenField="ChildrenModule" kendoTreeViewExpandable kendoTreeViewSelectable
+                          kendoTreeViewHierarchyBinding textField="IdModuleNavigation.ModuleName"
+                          [hasChildren]="hasChildren" (selectionChange)="handleSelectionModule($event)"
+                          [(selectedKeys)]="selectedKeyForModule">
+
+            <ng-template kendoTreeViewNodeTemplate let-dataItem>
+              <span>
+                <input class="k-checkbox" id="{{dataItem.IdModule}}"
+                       type="checkbox" checked="{{dataItem.IsToCheckModule}}" 
+                       indeterminate="{{dataItem.IsIndeterminate}}"
+                       (change)="checkModuleValue($event.target, dataItem)">
+                <label class="k-checkbox-label" for="{{dataItem.IdModule}}"></label>
+              </span>
+              <span class="{{dataItem.IdModuleNavigation.Class}}"></span>
+              &nbsp; {{dataItem.IdModuleNavigation.ModuleName}}
+            </ng-template>
+          </kendo-treeview>
+        </div>
+      </div>
+    </div>
+    <div class=" col-lg-1"></div>
+    <div class=" col-lg-6 col-md-12 col-sm-12 border-style">
+      <br />
+      <div class="row">
+        <div class="col-lg-3 col-md-12 col-sm-12 ">
+          <p>{{'FEATURES'|translate}}</p>
+        </div>
+        <div class="col-lg-9 col-md-12 col-sm-12 " [ngStyle]="{'height': '500px', 'overflow-y': 'auto'}">
+          <kendo-treeview [nodes]="functionnalityData" kendoTreeViewExpandable kendoTreeViewSelectable
+                          kendoTreeViewHierarchyBinding textField="IdFunctionalityNavigation.FunctionalityName">
+            <ng-template kendoTreeViewNodeTemplate let-dataItem let-index>
+              <span>
+                <input *ngIf="dataItem.IsActive" class="k-checkbox" id="{{dataItem.IdFunctionality}}"
+                       type="checkbox" checked="checked" (change)="checkFunctionnalityValue($event.target, dataItem)">
+                <input *ngIf="!dataItem.IsActive" class="k-checkbox" id="{{dataItem.IdFunctionality}}"
+                       type="checkbox" (change)="checkFunctionnalityValue($event.target, dataItem)">
+                <label class="k-checkbox-label" for="{{dataItem.IdFunctionality}}"></label>
+              </span>
+              &nbsp; {{dataItem.IdFunctionalityNavigation.FunctionalityName}}
+            </ng-template>
+          </kendo-treeview>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

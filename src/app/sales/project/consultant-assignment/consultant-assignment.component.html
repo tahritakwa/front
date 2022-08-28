@@ -1,0 +1,23 @@
+<p-pickList [source]="freeResources" [target]="assignResources" [responsive]="true" filterBy="IdEmployeeNavigation.FullName" dragdrop="true"
+  [showSourceControls]="false" [showTargetControls]="false"
+  [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}"
+  sourceHeader="{{'FREE_RESOURCES'|translate}}" targetHeader="{{'ASSIGNED_RESOURCES'|translate}}"
+  sourceFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}" targetFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}"
+  (onMoveToTarget)="onMoveToAssignResources($event)" (onMoveToSource)="onMoveToFreeResources($event)">
+  <ng-template let-employeeProject pTemplate="item">
+    <div class="ui-helper-clearfix">
+      <img [src]="employeeProject.IdEmployeeNavigation.pictureEmployesSrc || '../../../../assets/image/user-new-icon.png'" style="display:inline-block;margin:2px 0 2px 2px" width="48">
+      <span style="font-size:16px;padding-left:18px;">{{employeeProject.IdEmployeeNavigation.FullName}}</span>
+      <span class="info-icon" *ngIf="employeeProject.AssignmentDate && !employeeProject.UnassignmentDate"
+        (click)="setAssignementInformations(employeeProject)">
+        {{employeeProject.AssignmentDate|date: formatDate}} &nbsp;&nbsp;
+        <i class="fa fa-info-circle fa-1x" style="color: rgb(29, 204, 29);"></i>
+      </span>
+      <span class="info-icon" *ngIf="employeeProject.AssignmentDate && employeeProject.UnassignmentDate"
+        (click)="setUnAssignementInformations(employeeProject)">
+        {{employeeProject.UnassignmentDate|date: formatDate}} &nbsp;&nbsp;
+        <i class="fa fa-info-circle fa-1x" style="color: rgb(187, 39, 39)"></i>
+      </span>
+    </div>
+  </ng-template>
+</p-pickList>

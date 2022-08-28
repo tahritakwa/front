@@ -1,0 +1,63 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(isUpdateMode ? 'EDIT_WITHHOLDING_TAX' : 'ADD_WITHOLDING_TAX')|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="withholdingTaxFormGroup">
+      <!--Begin Card body-->
+      <div class="card-body">
+        <div class="form-group row">
+
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DESIGNATION'|translate}}<span class="required">*</span></label>
+            <input #labelInput class="form-control" formControlName="Designation" name="Designation">
+            <app-control-messages [control]="withholdingTaxFormGroup.controls.Designation"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'PERCENTAGE'|translate}}<span class="required">*</span></label>
+            <input #labelInput class="form-control" formControlName="Percentage" name="Percentage">
+            <app-control-messages [control]="withholdingTaxFormGroup.controls.Percentage"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="isRole">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'ACCOUNT'|translate}}</label>
+            <app-accounts-dropdown-component [fieldName]="'IdAccountingAccountWithHoldingTax'" [group]="withholdingTaxFormGroup"
+            (Selected)="receiveAccounts($event)">
+            </app-accounts-dropdown-component>
+          </div>
+          <div class="col-lg-2 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE'|translate}}</label>
+            <app-with-holding-tax-type  [group]="withholdingTaxFormGroup">
+            </app-with-holding-tax-type>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="urlList" >
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="onAddWithHoldingTax()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateWithHoldingTaxPermission && isUpdateMode || hasAddWithHoldingTaxPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Card footer End-->
+</div>

@@ -1,0 +1,191 @@
+<div *ngIf='searchItemService.idDocument && !searchItemService.hideDocumentDetail && !isModal'>
+  <div class="row" [ngStyle]="{'display':showBlDetail ? 'block' : 'none' }">
+    <div class="col-12">
+      <app-delivery-forms-add [idDocFromSearchItem]='searchItemService.idDocument'
+        *ngIf='searchItemService.idDocument && !searchItemService.hideDocumentDetail'></app-delivery-forms-add>
+    </div>
+  </div>
+  <div class="row">
+    <p (click)='displayDetails()' style="margin: auto; color: #4c9aae !important; z-index: 9;"
+      [ngStyle]="{'margin-top':showBlDetail ? '-23px' : '0px' }">
+      <i class="fa fa-arrow-circle-up fa-lg" aria-hidden="true" *ngIf='showBlDetail'></i>
+      <i class="fa fa-arrow-circle-down fa-lg" aria-hidden="true" *ngIf='!showBlDetail'></i>
+    </p>
+  </div>
+</div>
+
+<div [ngClass]="{
+  '':isModal,
+  'card':!isModal
+  }">
+  <div class="card-header" *ngIf="!isModal">
+    <h3>
+      {{'FASTE_SALES_MENU'|translate}}
+    </h3>
+  </div>
+  <div [ngClass]="{
+    '':isModal,
+    'card-body':!isModal
+    }">
+
+    <div class="" *ngIf='searchItemService.idSupplier'>
+      <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-12">
+          <div class="row">
+            <div class="col align-self-center d-flex justify-content-center" *ngIf="!isFastSalesRouting">
+              <span class="badge badge-multilines badge-primary"
+                style="font-size: medium; text-align: left;">{{searchItemService.supplierName}}</span>
+            </div>
+            <div class="col" *ngIf="isFastSalesRouting">
+              <label>{{tiersLabel}} </label>
+              <app-supplier-dropdown [selectedValue]="selectedValue" [type]='isPurchase?supplierTiers:customerTiers'
+                (Selected)='SelectedValue($event)' (blurEmmitter)="blur()" [hideAddBtn]="false"
+                [focusElementOnInit]='selectedTierDropDown' [forSearch]="false" [disabled]='clientsDropDownDisabled'
+                [focusElement]='true'>
+              </app-supplier-dropdown>
+              <br>
+            </div>
+            <div *ngIf="hasCustomerShowPermission || hasCustomerUpdatePermission"
+              class="col-auto align-self-center d-flex justify-content-center">
+              <a [routerLink]="[CUSTOMER_PROFILE_URL,selectedValue]" target="_blank">
+                <i class="pointer fa fa-info-circle fa-lg" aria-hidden="true" style="color: #607d8b;"
+                  data-toggle="modal" data-target="#detailsModal"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-8 col-md-8 col-sm-12">
+          <div *ngIf='(selectedValue && !(searchItemService.typeSupplier == 2) && !searchItemService.isForPurchase)'
+            class="row justify-content-center">
+            <div class="col-3 alert alert-secondary tiers-finance px-2 py-2" [ngClass]="{'pointer':hasBLListPermission}"
+              (click)="hasBLListPermission ? GetValidBl() : ''" data-toggle="modal" data-target="#ValidBlModal"
+              style="font-family: sans-serif;">
+              <b> {{'BL_NOT_VALID_INVOICED'|translate}}</b><br>
+              {{tiersDetailsViewModel.ValidBlNotInvoiced}}
+            </div>
+
+            <div class="col-3 alert alert-secondary tiers-finance px-2 py-2"
+              [ngClass]="{'pointer':hasInvoiceAssetListPermission}" style="font-family: sans-serif;"
+              *ngIf='!tiersDetailsViewModel.isGratherThan'
+              (click)="hasInvoiceAssetListPermission ? getValidAssetsAndInvoice() : ''" data-toggle="modal"
+              data-target="#NotPaidModal">
+              <b> {{'UNPAID_TOTAL'|translate}}</b><br>{{tiersDetailsViewModel.ImpaidTotal}}
+            </div>
+
+            <div class="col-3 alert alert-danger tiers-finance-danger px-2 py-2 pointer"
+              style="font-family: sans-serif;" *ngIf='tiersDetailsViewModel.isGratherThan'
+              (click)="getValidAssetsAndInvoice()" data-toggle="modal" data-target="#NotPaidModal">
+              <b> {{'UNPAID_TOTAL'|translate}}</b><br>{{tiersDetailsViewModel.ImpaidTotal}}
+            </div>
+
+            <div class="col-3 alert alert-secondary tiers-finance px-2 py-2" style="font-family: sans-serif;">
+              <b>{{'CURRENT_CIELING'|translate}}</b><br>{{tiersDetailsViewModel.MaxThreshold}}
+            </div>
+
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-12 align-self-center d-flex justify-content-center"
+          style="margin-top: 5px;">
+          <div *ngIf='searchItemService.code'
+            (click)="hasBLShowPermission || hasBLUpdatePermission ? getDocuemnt() : ''"
+            class="badge badge-danger document-link"
+            [ngStyle]="{'cursor' : hasBLShowPermission || hasBLUpdatePermission ? 'pointer' : 'none'}">
+            {{searchItemService.code}}
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="showVehicleDropDown && !isPurchase">
+        <div class="col-lg-2 col-md-2 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'VEHICLE'|translate}} </label>
+                <app-vehicle-dropdown class="error-msg messages text-left text-danger" [idTier]="idSelectedTier"
+                (selected)="vehicleSelected($event)" #vehicleDropDown>
+                </app-vehicle-dropdown>
+        </div>
+      </div>
+    </div>
+    <div *ngIf='!searchItemService.idSupplier && isFastSalesRouting'>
+      <div class="col-5 .m-auto">
+        <label>{{'CLIENT' | translate}} </label>
+        <app-supplier-dropdown [selectedValue]="selectedValue" [type]='isPurchase?supplierTiers:customerTiers'
+          (Selected)='SelectedValue($event)' [disabled]='!searchItemService.disableFields || clientsDropDownDisabled'
+          [hideAddBtn]="false" [focusElementOnInit]='selectedTierDropDown' [focusElement]='true' [forSearch]="false">
+        </app-supplier-dropdown>
+        <br>
+      </div>
+    </div>
+
+    <div *ngIf='searchItemService.isFromSearchItem_supplierInetrface'>
+      <br>
+      <app-fetch-products [isPurchase]="isPurchase" [isForGarage]="isForGarage"
+        [hasDefaultWarehouse]="hasDefaultWarehouse" [idWarehouse]="idWarehouse" [sendToDocument]="sendToDocument"
+        (isBLGenerated)="isBLGenerated()" [options]="options" [isModal]="isModal"
+        [isFromAddDocumentLine]='isFromAddDocumentLine' (itemSelectedForGarage)="itemSelectedForGarageEvent($event)"
+        (closeNotPaidModal)="CloseSubModal()"
+        [ignoreCharges]="true" [isSales]="!isPurchase" [valueToFind]="valueToFind" [isQuickSales]="isFastSalesRouting"
+        [allowRelationSupplierItems]="allowRelationSupplierItems" [NotPaidSubModal]="NotPaidSubModal" [isFromFetchProduct]="false">
+      </app-fetch-products>
+    </div>
+  </div>
+</div>
+
+<!-- total impayé Modal-->
+<div *ngIf="hasInvoiceAssetListPermission" class="modal fade search-item-add" id="NotPaidModal" tabindex="-1"
+  role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="false" data-keyboard='false'
+  style="box-shadow: 0px 0px 0px 800px rgba(0,0,0,0.75);">
+  <div class="modal-dialog modal-dialog-centered modal-xlg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="color: #607d8b !important;">
+
+        <div class="col">
+          <div class="row">
+            <div class="col-5">
+              <h5 class="modal-title" id="exampleModalLongTitle">{{'UNPAID_TOTAL' | translate}}</h5>
+            </div>
+            <h4 class="col-2 m-0" *ngIf="NotPaidSubModal">
+              {{tiersDetailsViewModel.ImpaidTotal}}
+            </h4>
+          </div>
+        </div>
+        <button (click)="CloseSubModal()" type="button" class="close" data-dismiss="modal" aria-label="Close" #closeBtn>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body search-item-add" style="color: black;">
+        <app-valid-invoice-asset-list *ngIf="NotPaidSubModal" [selectedValue]="selectedValue">
+        </app-valid-invoice-asset-list>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bl Valid Modal -->
+
+<div *ngIf="hasBLListPermission" class="modal fade search-item-add" id="ValidBlModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-backdrop="false" data-keyboard='false'
+  style="box-shadow: 0px 0px 0px 800px rgba(0, 0, 0, 0.616);">
+  <div class="modal-dialog modal-dialog-centered modal-md modal-specifique-md" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="color: #607d8b !important;">
+        <div class="col-11">
+          <div class="row">
+            <div class="col-lg-5 col-md-6 col-sm-12">
+              <h5 class="modal-title" id="exampleModalLongTitle">{{'VALID_BL' | translate}}</h5>
+            </div>
+            <h4 class="col-lg-2 col-md-4 col-sm-12" *ngIf="ValidBlSubModal">
+              {{tiersDetailsViewModel.ValidBlNotInvoiced}}
+            </h4>
+          </div>
+        </div>
+        <button (click)="CloseValidBlSubModal()" type="button" class="close col-1" data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body p-0 search-item-add" style="color: black;">
+        <app-delivery-forms-list [idClient]="selectedValue" *ngIf="ValidBlSubModal" [isFromDeliveryModal]="true">
+        </app-delivery-forms-list>
+      </div>
+    </div>
+  </div>
+</div>

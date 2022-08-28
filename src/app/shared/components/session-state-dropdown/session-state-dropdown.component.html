@@ -1,0 +1,8 @@
+<div [formGroup]="group">
+  <kendo-dropdownlist [data]="stateListData" textField="name" valueField="id"
+    (valueChange)="onStatusFilterChanged($event)" style="max-width: 170px;">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.name | translate }}
+    </ng-template>
+  </kendo-dropdownlist>
+</div>

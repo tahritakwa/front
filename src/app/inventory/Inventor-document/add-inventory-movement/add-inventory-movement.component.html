@@ -1,0 +1,284 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-1">{{ (isUpdateMode ? 'EDIT_INVENTORY' : 'ADD_INVENTORY') |translate
+          }}</h3>
+      </div>
+      <div class="col-auto d-flex align-items-end">
+        <span class="code">{{getCode()}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="stockDocumentsService.inventoryMovementForm">
+      <fieldset [ngStyle]="{border:fieldsetBorderStyle }">
+        <legend>{{"SHOW_DETAILS"|translate}}
+          <i *ngIf="isDetailsContentVisible" class="las la-angle-double-down la-angle-color"
+             (click)="hideDetailsContent()"></i>
+          <i *ngIf="!isDetailsContentVisible" class="las la-angle-double-up la-angle-color"
+             (click)="showDetailsContent()"></i>
+        </legend>
+        <div class="col-lg-12 col-sm-12 col-md-12">
+          <div class="form-group row">
+            <div class="col-lg-12 col-sm-12 col-md-12 " *ngIf="isDetailsContentVisible">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 col-lg-2 mb-2"
+                     [style.marginTop.px]="!isUpdateMode? 'margin-top: 5px' : '0'">
+                  <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isUpdateMode"><span></span></label>
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'DOCUMENT_DATE'|translate}} <span
+                    class="required">*</span></label>
+                  <div class="mt-1">
+                    <kendo-datepicker class="form-control" formControlName="DocumentDate" [disabled]="true"
+                                      [(value)]="SystemDate">
+                    </kendo-datepicker>
+                    <app-control-messages [control]="stockDocumentsService.inventoryMovementForm.controls.DocumentDate"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-5">
+                  <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isUpdateMode">
+                    <div class="form-group row" style="justify-content: left">
+                      <div class="col-sm-12 col-md-6 col-lg-4 mb-1">
+                        <button [ngClass]="searchPerWarehouse?
+                       'btn btn-pill btn-block btn-primary' : 'btn btn-pill btn-block btn-secondary' "
+                                (click)="showSearchWarehouse()">{{'PER_WAREHOUSE'|translate}}</button>
+                      </div>
+
+                      <div class="col-sm-12 col-md-6 col-lg-5">
+                        <button [ngClass]="searchPerWarehouse?
+                       ' btn btn-pill btn-block btn-secondary' : 'btn btn-pill btn-block btn-primary' "
+                                (click)="showSearchSupplier()">{{'PER_SUPPLIER'|translate}}</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12 col-md-12 col-sm-12 pl-0" *ngIf="searchPerWarehouse">
+                    <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="isUpdateMode">{{'WAREHOUSE'|translate}} <span
+                      class="required">*</span></label>
+                    <div class="form-group row">
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <app-depot-dropdown [parent]="stockDocumentsService.inventoryMovementForm"
+                                            [warehouseForInventoryDocument]="true"
+                                            (Selected)="warehouseSelect($event)"
+                                            [FromComponent]='true' [WarehouseName]="'IdWarehouseSource'"
+                                            [placeholder]="'WAREHOUSE'| translate">
+                        </app-depot-dropdown>
+                        <app-control-messages
+                          [control]="stockDocumentsService.inventoryMovementForm.controls.IdWarehouseSource"
+                          class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+                      <!-- <div class="col-sm-12 col-md-6 col-lg-6">
+                        <kendo-combobox class="form-control" formControlName="Shelf" [data]="shelfDataSourceFiltered"
+                                        [placeholder]="'SHELF'| translate" [filterable]="true"
+                                        (filterChange)="handleFilterShlef($event)">
+                         
+                          <ng-template kendoDropDownListNoDataTemplate>
+                            <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                          </ng-template>
+                       
+                        </kendo-combobox>
+                        <app-control-messages [control]="stockDocumentsService.inventoryMovementForm.controls.Shelf"
+                                              class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div> -->
+                      <div class="col-sm-12 col-md-6 col-lg-6">
+                        <app-shelf-dropdown  [parent]="stockDocumentsService.inventoryMovementForm" [shelfName]="'Shelf'"
+                        [idWarehouse]="selectedIdWarehouse" ></app-shelf-dropdown>
+                      
+                        <app-control-messages [control]="stockDocumentsService.inventoryMovementForm.controls.Shelf"
+                              class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12 col-md-12 col-sm-12 pl-0" *ngIf="searchPerSupplier">
+                    <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="isUpdateMode">{{'SUPPLIER'|translate}} <span
+                      class="required">*</span></label>
+                    <app-supplier-dropdown [forSearch]="forSearch" [type]=2
+                                           [itemForm]="stockDocumentsService.inventoryMovementForm"
+                                           [getRelationCurrency]='false'
+                                           class="error-msg messages text-left text-danger">
+                    </app-supplier-dropdown>
+                    <app-control-messages [control]="stockDocumentsService.inventoryMovementForm.controls.IdTiers"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-5 pl-0">
+                  <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isUpdateMode">
+                    <div class="form-group row" style="justify-content: left">
+                      <div class="col-sm-12 col-md-6 col-lg-4 mb-1">
+                        <button [ngClass]="isSimpleType?
+                             'btn btn-pill btn-block btn-primary' : 'btn btn-pill btn-block btn-secondary' "
+                                (click)="showSimpleInput()">{{'SIMPLE_INPUT'|translate}}</button>
+                      </div>
+
+                      <div class="col-sm-12 col-md-6 col-lg-4 mb-1">
+                        <button [ngClass]="isdoubleInput?
+                             'btn btn-pill btn-block btn-primary' : ' btn btn-pill btn-block btn-secondary' "
+                                (click)="showDoubleInput()">{{'DOUBLE_INPUT'|translate}}</button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="filter-type col-lg-12 col-md-12 col-sm-12" *ngIf="isUpdateMode">
+                    <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isdoubleInput">{{'SIMPLE_INPUT'|translate}}
+                      <span class="required">*</span></label>
+                    <label class="col-lg-12 col-md-12 col-sm-12" *ngIf="isdoubleInput">{{'DOUBLE_INPUT'|translate}}
+                      <span class="required">*</span></label>
+                  </div>
+                  <div class="row px-3">
+                    <div class="col">
+                      <app-user-dropdown #FirstuserComponent [form]="stockDocumentsService.inventoryMovementForm"
+                                         [idUserColName]="'IdInputUser1'" [disabled]='isUpdateMode' (Selected) = "SelectFirstUser($event)"
+                                         [isForInventory]="isForInventory" >
+                      </app-user-dropdown>
+                    </div>
+                    <div class="col-6" *ngIf="isdoubleInput">
+                      <app-user-dropdown #SeconduserComponent [form]="stockDocumentsService.inventoryMovementForm"
+                                         [idUserColName]="'IdInputUser2'" [disabled]='isUpdateMode' (Selected) = "SelectSecondUser($event)"
+                                         [isForInventory]="isForInventory"></app-user-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row form-group" style="margin-top: 20px;">
+                <div class="col-auto">
+                  <div class="form-check form-check-inline">
+                    <input type="checkbox" class="input-checkbox100" id="availablequantity"
+                           formControlName="IsOnlyAvailableQuantity">
+                    <label class="label-checkbox100" style="white-space: pre-line;"
+                           for="availablequantity">{{'DISPLAY_AVAILBEL_QUANTITY'|translate}}</label>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <div class="form-check form-check-inline">
+                    <input formControlName="IsDefaultValue" type="checkbox" class="input-checkbox100" id="defaultValue">
+                    <label style="white-space: pre-line;" class="label-checkbox100"
+                           for="defaultValue">{{'SET_DEFAULT_VALUE'|translate}}</label>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-lg-12 col-sm-12 col-md-12 " style="text-align: right">
+              <button data-toggle="tooltip" title="{{'ORDERPROJECTGENERATE' | translate}}"
+                      class="k-button btn-secondary ml-3 mr-2 generate-button" type="button" tabindex="0"
+                      (click)="generateInventory()"
+                      *ngIf="!isGeneratedInventory && !isAlreadyPlannedInventory"
+                      [disabled]='!disableGeneratedInventory'>
+                <i class="fa fa-cogs fa-lg AddIcon"></i>
+                <span>&nbsp;{{'GENERATE_INVENTORY' | translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="col-lg-12 col-sm-12 col-md-12 "
+           *ngIf="isGeneratedInventory && isUpdateMode" style="margin-top: 30px">
+        <app-inventory-details-list #detailsList (footerDisable)='disableFooter($event)'
+                                    (prepareList)="prepareList($event, true)"
+                                    [form]="stockDocumentsService.inventoryMovementForm"
+                                    [validDocumentRole]="hasValidatePermission" [firstUserName]="firstUserName"
+                                    [secondUserName]="secondUserName">
+        </app-inventory-details-list>
+      </div>
+    </form>
+  </div>
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+              <span class="btn btn-sm btn-back-to-list btn-primary" (click)="backToList()" style="margin-right: 4px;">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            <span style="margin-right: 4px;">
+              <kendo-dropdownbutton [data]="jasperAllTypes"
+                                    (itemClick)="onJasperPrintClick($event)"
+                                    *ngIf="isUpdateMode && hasPrintPermission"
+                                    [primary]="true">
+                <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}}&nbsp;<i class="k-icon k-i-arrow-s"></i>
+                <ng-template kendoDropDownButtonItemTemplate let-dataItem>
+                  <span>{{ dataItem.TemplateCode }}</span>
+                </ng-template>
+              </kendo-dropdownbutton>
+            </span>
+            <span style="margin-right: 4px;">
+              <button type="button" class="btn btn-sm btn-danger" *ngIf='isValidated && hasUnvalidatePermission'
+                      [disabled]='isInEditingMode  || !isGeneratedInventory || footerDisabled'
+                      (click)="unvalidateInventoryMovement()">
+                <span>
+                  <i class="fa fa-check-square-o"></i> {{'OF_CONFIRAMTION'|translate}}
+                </span>
+              </button>
+            </span>
+            <span style="margin-right: 4px;">
+              <button type="button" class="btn btn-sm btn-danger" *ngIf='inventoryPlanningFilter && hasUpdatePermission'
+                      (click)="savePlannedInventoryMovement()" [disabled]='footerDisabled'>
+                <span>
+                  <i class="fa fa-check-square-o"></i>&nbsp;{{'SAVE'|translate}}
+                </span>
+              </button>
+            </span>
+            <span style="margin-right: 4px;">
+              <button type="button" class="btn btn-sm btn-save mx-1"
+                      *ngIf='!isValidated && isUpdateMode && hasValidatePermission'
+                      [disabled]='isInEditingMode  || !isGeneratedInventory || footerDisabled'
+                      (click)="validateInventoryMovement()">
+                <span>
+                  <i class="fa fa-floppy-o"></i>&nbsp;{{'VALIDATE'|translate}}
+                </span>
+              </button>
+            </span>
+
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true" *ngIf='selectedRow' style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">{{'DETAILS_QANTITY_SALES'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p>
+            <strong class="sizeStyle">
+              {{'ITEMNAVIGATION_QUANTITY_IN_STORE_LOWER' | translate}} :
+            </strong>{{selectedRow.ActualQuantity - selectedRow.ForecastQuantity}}
+          </p>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p>
+            <strong class="sizeStyle">{{'TO_ORDER_QUANTITY_DAILY_SALES' | translate}} : </strong>
+            {{selectedRow.ForecastQuantity}}
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,138 @@
+<div *ngIf="selectedItem!=undefined">
+  <div [ngStyle]="{'margin-top':'10px', 'text-align': 'center'}" class="col-lg-12 col-md-12 col-sm-12 col-12">
+    <h5><b>{{selectedItem.Designation}}</b></h5>
+    <hr/>
+  </div>
+  <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-10">
+      <label>
+        <b> {{'DESIGNATION'|translate}} :</b>
+      </label>
+    </div>
+    <div class="col-lg-2 col-md-2 col-sm-1 col-2">
+      <canvas *ngIf="selectedItem.JobEmployee !=undefined &&  this.selectedItem.JobEmployee.length > 0" height="10"
+              id="myCanvas" style="border-radius: 100%; float: right; background-color:green;" title="{{'OCCUPIED_JOB'|translate}}"
+              width="10"></canvas>
+      <canvas *ngIf="!(selectedItem.JobEmployee !=undefined &&  this.selectedItem.JobEmployee.length > 0)" height="10"
+              id="myCanvas" style="border-radius: 100%; float: right; background-color:red;" title="{{'FREE_JOB'|translate}}"
+              width="10"></canvas>
+    </div>
+  </div>
+  <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+      &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;{{selectedItem.Designation}}<br/>
+    </div>
+  </div>
+  <br/>
+  <div class="row col-lg-12 col-md-12 col-sm-12 col-12" style="margin-top:14px">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+      <label>
+        <b> {{'FUNCTION_SHEET'|translate}} :</b>
+      </label>
+    </div>
+  </div>
+  <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+      <p-editor [style]="{'height':'150px'}" ngModel={{selectedItem.FunctionSheet}} readonly="true">
+      </p-editor>
+
+      <!--&nbsp;&nbsp;&nbsp;<div innerHTML={{selectedItem.FunctionSheet}}></div><br />-->
+
+    </div>
+  </div>
+  <br/>
+  <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+      <p-accordion [multiple]="true">
+        <p-accordionTab header="{{'SKILLS'|translate}}">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-12" style="display: flex;">
+            <div *ngFor="let skill of skills; let i=index">
+              <div class="text-bloc-skill">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12">{{skill.Name}}</div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                  <bar-rating [max]="6"
+                              [readOnly]="true"
+                              [theme]="'default'"
+                              class="col-lg-12 col-md-12 col-sm-12 col-12"
+                              rate={{skill.Rate}}>
+                  </bar-rating>
+                </div>
+              </div>
+              &nbsp;&nbsp;&nbsp;
+
+            </div>
+          </div>
+        </p-accordionTab>
+        <br/>
+        <p-accordionTab header="{{'EMPLOYEE'|translate}}">
+          <p-dataView #dv [paginator]="true" [rows]="5" [value]="employees" emptyMessage="{{'NO_RECORDS_FOUND'|translate}}"
+                      filterBy="FullName">
+            <p-header>
+              <div class="row ui-helper-clearfix">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-12" style="position:center;">
+                  <input (keyup)="dv.filter($event.target.value)" aria-describedby="addon-wrapping" class="form-control"
+                         placeholder="{{'SEARCHE'|translate}}" type="text">
+                </div>
+              </div>
+            </p-header>
+            <ng-template let-employee pTemplate="listItem">
+              <div class="ui-g-3 ui-md-3" style="padding:.5em">
+                <p-panel>
+                  <div class="row">
+                    <div class="roundedImage col-lg-2 col-md-2 col-sm-2 col-2">
+                      <img src="{{employee.SrcImg}}" style="width:90px; height:90px;">
+                    </div>
+                    <div class="col-md-10 col-sm-10 col-10">
+                      <div class="row">
+                        <div class="col-md-6 col-sm-6 col-6">
+                          <label>
+                            &nbsp; <b> {{'FIRST_NAME'|translate}} :</b> {{employee.FirstName}}<br/>
+                          </label>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-6">
+                          <label>
+                            &nbsp; <b> {{'LAST_NAME'|translate}} :</b> {{employee.LastName}}<br/>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 col-sm-6 col-6">
+                          <label>
+                            &nbsp; <b> {{'EMAIL'|translate}} :</b> {{employee.Email}}<br/>
+                          </label>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-6">
+                          <label>
+                            &nbsp; <b> {{'PHONE'|translate}} :</b> {{employee.ProfessionalPhone}}<br/>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6 col-sm-6 col-6">
+                          <label>
+                            &nbsp; <b> {{'FUNCTION'|translate}} :</b> {{selectedItem.Designation}}<br/>
+                          </label>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-6">
+                          <label *ngIf="employee.IdTeamNavigation !=undefined">
+                            &nbsp; <b> {{'TEAM'|translate}} :</b> {{employee.IdTeamNavigation.Name}}<br/>
+                          </label>
+
+                          <label *ngIf="employee.IdTeamNavigation == undefined">
+                            &nbsp; <b> {{'TEAM'|translate}} :</b> <br/>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </p-panel>
+              </div>
+            </ng-template>
+          </p-dataView>
+        </p-accordionTab>
+      </p-accordion>
+    </div>
+  </div>
+  <br/>
+  <br/>
+</div>

@@ -1,0 +1,9 @@
+export enum DropdownType {
+  ACTION ,
+  CLAIM ,
+  CONTACT,
+  ORGANIZATION ,
+  CALENDRAR ,
+  OPPORTUNITY,
+  ARCHIVING
+}

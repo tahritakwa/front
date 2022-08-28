@@ -1,0 +1,12 @@
+<div [formGroup]="group">
+  <kendo-combobox (valueChange)="onSelect(this)"
+                  [allowCustom]="allowCustom"
+                  [data]="formationTypeFiltredDataSource"
+                  [filterable]="true"
+                  [textField]="'Label'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control"
+                  formControlName="IdFormationType">
+  </kendo-combobox>
+</div>

@@ -1,0 +1,405 @@
+.chart {
+  display: block;
+  width: 100%;
+}
+
+.test:hover {
+  opacity: 0.5;
+}
+
+* {
+  overflow: hidden;
+}
+
+.ConfigDash {
+  -webkit-box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: -1px -1px 14px 0px rgba(0, 0, 0, 0.75);
+}
+
+.draggable-card {
+  padding-bottom: 30px;
+}
+
+.period-filter {
+  overflow: visible;
+}
+
+.pointer-cursor:hover {
+  cursor: pointer;
+}
+
+.with-shadow {
+  box-shadow: 5px 6px 9px 0px grey;
+}
+
+.card {
+  border-radius: 5px;
+  border: none;
+
+}
+
+.static-card {
+  margin-top: 30px;
+  margin-bottom: -30px;
+}
+
+body {
+  margin-top: 20px;
+  background: #FAFAFA;
+}
+
+.order-card {
+  color: #fff;
+}
+
+.bg-c-blue {
+  background: linear-gradient(45deg, #4099ff, #73b4ff);
+}
+
+.bg-c-purple-blue {
+  background-color: #5de6de;
+  background-image: linear-gradient(315deg, #5de6de 0%, #b58ecc 74%);
+}
+
+.bg-c-green {
+  background: linear-gradient(45deg, #2ed8b6, #59e0c5);
+}
+
+.bg-c-yellow {
+  background: linear-gradient(45deg, #FFB64D, #ffcb80);
+}
+
+.bg-c-pink {
+  background: linear-gradient(45deg, #FF5370, #ff869a);
+}
+
+.bg-c-vertical-card {
+  background: linear-gradient(45deg, #d4dbe0, #a8b1b9);
+}
+
+.bg-c-dark-blue-hr-cards {
+  background-color: #323d87;
+}
+
+.bg-c-light-blue-hr-cards {
+  background-color: #b8bfed;
+}
+
+.card .card-block {
+  padding: 25px;
+  height: 9.25rem;
+}
+
+.order-card i {
+  font-size: 26px;
+}
+
+.f-left {
+  float: left;
+}
+
+.f-right {
+  float: right;
+}
+
+.text-nowrap {
+  color: black;
+}
+
+
+.header {
+  padding: 20px 20px;
+}
+
+.title {
+  margin: 0;
+  color: #252422;
+  font-weight: 300;
+}
+
+
+.card .content {
+  padding: 15px 15px 10px 15px;
+}
+
+.list-unstyled {
+  padding-left: 0;
+  list-style: none;
+}
+
+.card ul.team-members li:not(:last-child) {
+  border-bottom: 1px solid #c3cad0;
+}
+
+.card ul.team-members li {
+  padding: 10px 0px;
+}
+
+.card .avatar {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.card .btn.btn-icon {
+  padding: 7px;
+}
+
+.card .btn-sm {
+  font-size: 12px;
+  border-radius: 26px;
+  padding: 4px 4px;
+}
+
+.card .btn {
+  box-sizing: border-box;
+  border-width: 2px;
+  background-color: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 7px 18px;
+  border-color: #66615B;
+  color: #66615B;
+  -webkit-transition: all 150ms linear;
+  -moz-transition: all 150ms linear;
+  -o-transition: all 150ms linear;
+  -ms-transition: all 150ms linear;
+  transition: all 150ms linear;
+}
+
+
+/*card user*/
+.card-user .image {
+  border-radius: 8px 8px 0 0;
+  height: 150px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card .image {
+  width: 100%;
+  overflow: hidden;
+  height: 260px;
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+.card-user .image img {
+  width: 100%;
+}
+
+.card-user .author {
+  text-align: center;
+  text-transform: none;
+  margin-top: -65px;
+}
+
+.card .author {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.card-user .avatar.border-white {
+  border: 5px solid #FFFFFF;
+}
+
+.card-user .avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.card-user .author .title {
+  color: #403D39;
+}
+
+.card-user .title {
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.card-user .author .title small {
+  color: #ccc5b9;
+}
+
+.card .description {
+  font-size: 16px;
+  color: #66615b;
+}
+
+.my-flex-card {
+  height: calc(100% - 15px);
+  margin-bottom: 15px;
+}
+
+.chart-pie {
+  position: relative;
+  height: 15rem;
+  width: 100%;
+}
+
+
+.my-card {
+  background: #f0f3f5;
+  border-radius: 100%;
+  padding: 10px;
+  border: 2px solid #63c2de
+
+}
+
+
+.widget-card-1 {
+  text-align: center;
+}
+
+.widget-card-1 .card1-icon {
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: -15px;
+  font-size: 35px;
+  border-radius: 8px;
+  display: flex;
+  color: #fff;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  transition: all 0.3s ease-in-out;
+}
+
+.widget-card-1:hover .card1-icon {
+  top: -25px;
+}
+
+
+.f-w-600 {
+  font-weight: 600;
+}
+
+
+.text-c-blue {
+  color: #4099ff;
+  font-size: 17px;
+}
+
+.text-c-pink {
+  color: #FF5370;
+  font-size: 17px;
+}
+
+.card .card-block-small {
+  padding: 15px 20px;
+}
+
+.donut-inner {
+  margin-top: -100px;
+  margin-bottom: 100px;
+}
+
+.donut-inner h5 {
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+
+.donut-inner span {
+  font-size: 12px;
+}
+
+
+.border-right-white {
+  border-right: 2px solid #f0f3f5 !important;
+}
+
+.currency {
+  font-size: x-small;
+}
+
+.top-filter-btn {
+  cursor: pointer;
+  display: block;
+  position: fixed;
+  top: 60px;
+  right: 7px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  opacity: 1;
+  padding: 2px;
+  background-color: aliceblue;
+}
+
+.filter-card {
+  right: 10px;
+  position: absolute;
+}
+
+.filter-label {
+  padding: 5px 15px;
+}
+
+.k-icon-20 {
+  font-size: 24px; /* Sets icon size to 24px */
+}
+
+.dashboard-tab {
+  min-height: fit-content;
+  padding-top: 0px !important;
+  padding-left: 10px !important;
+}
+
+.not-active {
+  color: #383a3c;
+  border-bottom-color: #222850;
+  border-bottom: solid;
+  background-color: lightgray;
+  margin-top: 10px;
+}
+
+.card-legend {
+  margin-left: 97%;
+  width: 30px;
+  margin-bottom: -10px;
+}
+
+.card-form {
+  padding: 5px 3px 15px;
+  width: 99%;
+  left: 0;
+  position: sticky;
+}
+
+.card-fieldset {
+  border: 3px solid #b8bfed;
+  padding: 0px 15px;
+  border-radius: 10px;
+}
+
+@media screen and (max-width: 650px) {
+  .card-legend {
+    margin-left: 91%;
+  }
+}
+
+.nav-tabs .nav-link.active {
+  border: solid 2px #222850 !important;
+  border-bottom-color: white !important;
+}
+
+.nav-link-new.active {
+  height: 50px;
+  border: solid 2px #222850;
+  border-bottom-color: #FFFFFF !important;
+}
+
+.candidate-card {
+  padding: 25px 10px !important;
+}

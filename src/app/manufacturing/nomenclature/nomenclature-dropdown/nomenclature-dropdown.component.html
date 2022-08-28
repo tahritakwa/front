@@ -1,0 +1,16 @@
+<div [formGroup]="form">
+  <kendo-combobox class="form-control" [data]="nomenclatureFiltredList" [textField]="'reference'" [valueField]="'id'"
+    formControlName="nomenclatureId" [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilterParentCode($event)"
+    (valueChange)="onSelect(this)">
+
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <span class="small">{{dataItem.reference}}</span>
+        </div>
+      </div>
+    </ng-template>
+
+  </kendo-combobox>
+</div>
+

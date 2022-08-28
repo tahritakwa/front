@@ -1,0 +1,106 @@
+<kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+            [sortable]="true"  [reorderable]="true" [pageable]="pagerSettings" [navigable]="true"
+            (dataStateChange)="dataStateChange($event)" (sortChange)="sortChange()" [filter]="gridSettings.state.filter"
+            (pageChange)="onPageChange($event)" [sort]="gridSettings.state.sort">
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountCode"
+                     [title]="'CODE_DOCUMENT'| translate" width="100px" [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+  <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'CODE_DOCUMENT'| translate}}" theme="light">{{'CODE_DOCUMENT'| translate}}</span>
+  </ng-template>
+    <ng-template kendoGridFooterTemplate>
+      <div> {{'TOTAL'|translate}}</div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountDate" [title]="'DATE'| translate"
+                     width="100px" [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{'DATE'| translate}}" theme="light">{{'DATE'| translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.documentAccountDate | date: formatDate}}
+    </ng-template>
+
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="label"
+                     [title]="'LABEL'| translate" width="180px"
+                     [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{'LABEL'| translate}}" theme="light">{{'LABEL'| translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountJournal"
+                     [title]="'JOURNAL'|translate" width="150px" [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+     <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{'JOURNAL'| translate}}" theme="light">{{'JOURNAL'| translate}}</span>
+     </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}"
+                     field="debit" [title]="'DEBIT'|translate" width="150px"
+                     [headerStyle]="{'color': 'black', 'text-align':'right', 'padding' : '0.75rem 0'}" [format]="formatNumberOptions">
+    <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{'DEBIT'| translate}}" theme="light">{{'DEBIT'| translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <kendo-numerictextbox [readonly]="true" style="text-align: right"
+                            [format]="formatNumberOptions" [value]="dataItem.debit">
+      </kendo-numerictextbox>
+    </ng-template>
+    <ng-template kendoGridFooterTemplate>
+      <kendo-numerictextbox [readonly]="true"
+                            [format]="formatNumberOptions" [value]="totalDebit">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}"
+                     field="credit" [title]="'CREDIT'|translate" width="150px"
+                     [headerStyle]="{'color': 'black', 'text-align':'right', 'padding' : '0.75rem 0'}" [format]="formatNumberOptions">
+     <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{'CREDIT'| translate}}" theme="light">{{'CREDIT'| translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <kendo-numerictextbox [readonly]="true" style="text-align: right"
+                            [format]="formatNumberOptions" [value]="dataItem.credit">
+      </kendo-numerictextbox>
+    </ng-template>
+    <ng-template kendoGridFooterTemplate>
+      <kendo-numerictextbox [readonly]="true"
+                            [format]="formatNumberOptions" [value]="totalCredit">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}"
+                     field="balance" [title]="'BALANCE'|translate" width="150px"
+                     [headerStyle]="{'color': 'black', 'text-align':'right', 'padding' : '0.75rem 0'}" [format]="formatNumberOptions">
+    <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{'BALANCE'| translate}}" theme="light">{{'BALANCE'| translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <kendo-numerictextbox [readonly]="true" style="text-align: right"
+                            [format]="formatNumberOptions" [value]="dataItem.balance">
+      </kendo-numerictextbox>
+    </ng-template>
+    <ng-template kendoGridFooterTemplate>
+      <kendo-numerictextbox [readonly]="true"
+                            [format]="formatNumberOptions" [value]="totalBalance">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-command-column width="100px">
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <a (click)="redirectTo(dataItem)">
+        <i class="las la-pen cursor-pointer edit-pencil la-lg ml-3"></i>
+      </a>
+    </ng-template>
+  </kendo-grid-command-column>
+  <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                       pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+  </kendo-grid-messages>
+ </kendo-grid>

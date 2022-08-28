@@ -1,0 +1,212 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <app-current-fiscal-year-header [showHeaderClass]="false" [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-header>
+    </div>
+      <div class="col-sm-12 mt-1" *ngIf="!this.isServiceDateEmpty">
+        <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+      </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="depreciationFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'IMMOBILIZATION_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+            <app-accounts-dropdown-component [disabled]="!this.authService.hasAuthority(SettingsAccountingPermissions.ACCOUNTING_ACCOUNTS) || isServiceDateEmpty"
+              [selectedValue]="immobilizationAccountSelected" [fieldName]="'ImmobilizationAccount'" [group]="depreciationFormGroup"
+              [listAccount]='immobilizationAccountList' (Selected)="changeAmortizationValue($event)">
+            </app-accounts-dropdown-component>
+            <app-control-messages [control]="depreciationFormGroup.controls.ImmobilizationAccount"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'AMORTIZATION_ACCOUNT'|translate}}<span
+                class="required">*</span></label>
+            <app-accounts-dropdown-component [disabled]="!this.authService.hasAuthority(SettingsAccountingPermissions.ACCOUNTING_ACCOUNTS) || isServiceDateEmpty"
+              [selectedValue]="amortizationAccountSelected" [fieldName]="'AmortizationAccount'" [group]="amortizationFormGroup" 
+              [listAccount]='amortizationAccountList' (Selected)="amortizationAccountChange()">
+            </app-accounts-dropdown-component>
+            <app-control-messages [control]="amortizationFormGroup.controls.AmortizationAccount"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12" [tooltip]="DeprecitionToolTipContent" [show-delay]=showDelay
+              content-type="template">{{'DEPRECIATION_PERIOD'|translate}}</label>
+            <input class="form-control" formControlName="depreciationPeriod" type="number" name="depreciationPeriod">
+            <ng-template #DeprecitionToolTipContent>
+              <strong>{{ 'DEPRECIATION_PERIOD_BY_YEAR' |translate }}</strong>
+            </ng-template>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'PERCENTAGE'|translate}}</label>
+            <input class="form-control" formControlName="rate" type="text" name="rate">
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="row">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active show" data-toggle="tab" href="#home1" role="tab" aria-controls="home1"
+            aria-selected="true">
+            <i class="cui-list"></i> {{'IMMOBILIZATION'|translate}}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" aria-selected="false">
+            <i class="fa fa-sitemap"></i> {{'ACCOUNTING_AMORTIZATION'|translate}}
+          </a>
+        </li>
+      </ul>
+
+      <div class="tab-content" style="width: 100%;">
+        <div class="tab-pane active show" id="home1" role="tabpanel"
+          [ngStyle]="{'min-height': '500px', 'max-height': '600px', 'overflow-y': 'auto'}">
+          <app-add-active [disabledField]="true"></app-add-active>
+        </div>
+        <div class="tab-pane" id="home2" role="tabpanel"
+          [ngStyle]="{'min-height': '200px', 'max-height': '300px', 'overflow-y': 'auto'}">
+          <div class="row">
+            <div class="col-lg-6 col-sm-12 col-md-12">
+              <form class="form-horizontal" [formGroup]="amortizationFormGroup">
+                <div class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'AQUISITION_VALUE'|translate}}</label>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <kendo-numerictextbox style="width: 100%;" formControlName="acquisitionValue"
+                        name="acquisitionValue" [readonly]="true" [value]="acquisitionValue"
+                        [format]="formatNumberOptions">
+                      </kendo-numerictextbox>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12"
+                      style="white-space: nowrap;">{{'PREVIOUS_DEPRECIATION'|translate}}</label>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <kendo-numerictextbox style="width: 100%;" formControlName="previousDepreciation"
+                        name="previousDepreciation" [readonly]="true" [value]="previousDepreciation"
+                        [format]="formatNumberOptions">
+                      </kendo-numerictextbox>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'ANNUITY_EXERCISE'|translate}}</label>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <kendo-numerictextbox style="width: 100%;" formControlName="annuityExercise"
+                        name="annuityExercise" [readonly]="true" [value]="annuityExercise"
+                        [format]="formatNumberOptions">
+                      </kendo-numerictextbox>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'VCN'|translate}}</label>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <kendo-numerictextbox style="width: 100%;" formControlName="vcn" name="vcn" [value]="vcn"
+                        [format]="formatNumberOptions">
+                      </kendo-numerictextbox>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-10 col-md-10 col-sm-12" style="display: inline-flex;place-content: center;">
+                    <button *ngIf="this.authService.hasAuthority(AccountingPermissions.AMORTIZATION_OF_IMMOBILIZATIONS)" 
+                      class="btn btn-validate mt-3" (click)="calculAmortization()">
+                      <i class="fa fa-floppy-o"></i> {{ 'CALCULATE' |translate }}
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="col-lg-6 col-sm-12 col-md-12">
+              <form class="form-horizontal" [formGroup]="cessionFormGroup">
+                <div class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'SERVICE_DATE'|translate}}</label>
+                    <kendo-datepicker class="col-lg-12 col-md-12 col-sm-12 form-control" formControlName="serviceDate"
+                      [format]="formatDate">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                        toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE_CESSION'|translate}}
+                      <span class="required">*</span></label>
+                    <kendo-combobox [disabled]="!this.authService.hasAuthority(AccountingPermissions.AMORTIZATION_OF_IMMOBILIZATIONS)" class="col-lg-12 col-md-12 col-sm-12 form-control" formControlName="cession"
+                      [data]="cessionList" [textField]="'name'" [valueField]="'value'" [value]="selectedCession"
+                      (selectionChange)="selectionChange($event)" [filterable]="true" (filterChange)="handleFilterChange($event)"
+                      [disabled]="!this.authService.hasAuthority(AccountingPermissions.AMORTIZATION_OF_IMMOBILIZATIONS)">
+                      <ng-template kendoDropDownListItemTemplate let-dataItem>
+                        <span class="template">{{ dataItem.value|translate }}</span> {{ dataItem.text|translate }}
+                      </ng-template>
+
+                      <!--No data template-->
+                      <ng-template kendoDropDownListNoDataTemplate>
+                        <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                      </ng-template>
+                      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                      <!--end No data template-->
+                    </kendo-combobox>
+                    <app-control-messages [control]="cessionFormGroup.controls.cession"
+                      class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+                <div *ngIf="cession" class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'DATE_CESSION'|translate}}</label>
+                    <kendo-datepicker class="col-lg-12 col-md-12 col-sm-12 form-control" formControlName="dateCession"
+                      [format]="formatDate" [min]="minDateCession">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                        toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                    <app-control-messages [control]="cessionFormGroup.controls.dateCession"
+                      class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+                <div *ngIf="cession" class="form-group">
+                  <div class="col-lg-6 col-md-6 col-sm-12" style="display: inline-flex;">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'VALUE_CESSION'|translate}}</label>
+                    <kendo-numerictextbox class="col-lg-12 col-md-12 col-sm-12 form-control input_align_end"
+                      formControlName="amountCession" [autoCorrect]=true [format]="formatNumberOptions"
+                      [decimals]=purchasePrecision [min]="minAmountCession">
+                    </kendo-numerictextbox>
+                    <app-control-messages [control]="cessionFormGroup.controls.amountCession"
+                      class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <button class="btn btn-sm btn-save float-right" (click)="saveOrUpdateAccount()" 
+      *ngIf="this.authService.hasAuthority(AccountingPermissions.AMORTIZATION_OF_IMMOBILIZATIONS)"
+      [disabled]="!this.cessionFormGroup.valid || !this.depreciationFormGroup.valid || !this.amortizationFormGroup.valid">
+      <i class="fa fa-floppy-o"></i> {{ 'SAVE_AMORTIZATION' |translate }}
+    </button>
+    <a class="btn btn-sm btn-back-to-list float-right" routerLink='/main/accounting/depreciationAssets'>
+      <i class="fa fa-reply"></i> {{'BACK_TO_LIST'|translate}}
+    </a>
+  </div>
+</div>

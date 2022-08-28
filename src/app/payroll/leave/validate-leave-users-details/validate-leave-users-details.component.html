@@ -1,0 +1,82 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_VALIDATE_LEAVE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- details leave -->
+    <div>
+      <p-accordion>
+        <span *ngFor="let leave of listOfLeaves">
+        <p-accordionTab [selected]="true" header={{leave.IdEmployeeNavigation.FullName}} style="color: #4c9aae;">
+
+        <div class="row my-3">
+            <!-- first part-->
+          <div class="col-2 ml-3"><img (click)="fileInput.click()" [src]="UserPicture || '../../../../assets/image/placeholder-logo.png'" border="0" id="blah"
+                                       style="width: 100%;"/>
+          </div>
+          <!-- end first part-->
+          <!-- second part-->
+          <div class="col mx-3">
+            <span class="text">{{'FULLNAME'|translate}} :</span> {{leave.IdEmployeeNavigation.FullName}} <br/>
+       <span class="text">{{'CREATION_DATE'|translate}} :</span> {{leave.CreationDate | date: dateFormat}} <br/>
+       <span class="text">{{'START_DATE'|translate}} :</span> {{leave.StartDate | date: dateFormat}} <br/>
+       <span class="text">{{'END_DATE'|translate}} :</span> {{leave.EndDate | date: dateFormat}} <br/>
+       <span class="text">{{'NUMBER_LEAVE_DAYS'|translate}}
+         :</span> {{leave.DaysNumber}} {{'DAYS_ABBREVIATED'|translate}}<br/>
+       <span class="text">{{'REASON_OF_LEAVE'|translate}} :</span> {{leave.Description}} <br/>
+
+
+          </div>
+          <!-- end second part-->
+          <!-- third part-->
+          <div class="col mx-6">
+            <ul>
+                <br/>
+                <li> <span class="text">{{'TYPE'|translate}} :</span> {{leave.IdLeaveTypeNavigation.Label}} <br/></li>
+                <li> <span class="text">{{'START_TIME'|translate}} :</span> {{leave.StartTime| time :timeFormat}} <br/></li>
+                <li> <span class="text">{{'END_TIME'|translate}} :</span> {{leave.EndTime | time :timeFormat}}
+                  <br/></li>
+                <li> <span class="text">{{'solde restant'|translate}}
+                  :</span> {{leave.IdLeaveTypeNavigation.MaximumNumberOfDays}}{{'DAYS_ABBREVIATED'|translate}}
+                  <br/></li>
+              <li> <span class="text">{{'VOUCHERS'|translate}} :</span>
+                 <app-upload-file [canUpdateFile]=true [fileToUpload]="leave.LeaveFileInfo"
+                                  [service]="leaveService"></app-upload-file>
+              </li>
+            </ul>
+            </div>
+          <!-- end third part-->
+          <!-- button part-->
+          <div class="col">
+            <button (click)="deleteUserFromListUsersId(leave.Id)"
+                    class="noPadding btn-Add k-button  pull-right" dir="ltr"
+                    style="border: none!important;" type="button">
+                            <i class="fa fa-close fa-lg AddIcon"></i>
+                          </button>
+            </div>
+          <!--end button part-->
+      </div>
+
+          <!---->
+      </p-accordionTab>
+      </span>
+      </p-accordion>
+    </div>
+
+    <!-- End details users-->
+  </div>
+  <!--Begin Card footer Start-->
+  <div class="card-footer">
+    <div align="left" class="col-lg-4 col-md-12">
+      <button [routerLink]="['/main/payroll/leave']" class="btn btn-sm btn-primary">
+        <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+      </button>
+      <button *ngIf="hasMassiveValidatePermission" (click)="validateMassiveLeaves(listOfLeaves)" class="btn btn-sm btn-danger" type="submit">
+        {{'VALIDATE'|translate}}
+      </button>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

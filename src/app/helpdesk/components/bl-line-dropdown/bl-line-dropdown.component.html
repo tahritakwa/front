@@ -1,0 +1,23 @@
+<div [formGroup]="parent" *ngIf='parent'>
+  <label class="col-lg-12 col-md-12 col-sm-12" *ngIf='!FromComponent'>{{'CLAIM'|translate}}</label>
+  <kendo-combobox [data]="documentLineFiltredDataSource" class="form-control" [formControlName]="DocumentLineName"
+    [textField]="'RefDesignation'" [valueField]="'Id'" [valuePrimitive]="true" [filterable]="true" [disabled]='disabled'
+    (valueChange)="onSelect(this)" (filterChange)="handleFilter($event)" [allowCustom]="allowCustom"
+    (focus)="onFocus(this)" style="border: 1px solid #e4e7ea !important;"
+    [placeholder]="'CHOOSE_DOCUMENT_LINE_FOR_CLAIM'|translate">
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+
+<div *ngIf='!parent'>
+  <kendo-dropdownlist [data]="documentLineFiltredDataSource" class="form-control" [textField]="'RefDesignation'"
+    [valueField]="'Id'" [valuePrimitive]="true" [filterable]="true" [disabled]='disabled' (valueChange)="onSelect(this)"
+    [(ngModel)]='DocumentLineSelected' (focus)="onFocus(this)" (filterChange)="handleFilter($event)">
+  </kendo-dropdownlist>
+</div>

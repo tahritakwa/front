@@ -1,0 +1,13 @@
+.modal-dialog {
+  max-width: 1000px !important;
+}
+
+::ng-deep .card {
+  border: 0 !important;
+}
+
+.modal-body {
+  overflow-x: hidden !important;
+  min-height: auto !important;
+  max-height: 500px !important;
+}

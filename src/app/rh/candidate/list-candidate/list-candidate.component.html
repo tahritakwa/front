@@ -1,0 +1,135 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card border-0 full-screen-card">
+      <div class="card-content">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_CANDIDATE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row d-flex justify-content-between mt-3 col-md-12">
+     
+      <app-search-candidate class="col-md-4" (sendData)="receiveData($event)"></app-search-candidate>
+      <div style="float :right; margin-right: 15px;">
+
+      <app-btn-grid class="col-md-2" [addLink]='"add"' [add]='false' [advencedAdd]='hasAddPermission' [export]='true'
+                      style="display: inline-flex;"></app-btn-grid>
+                      </div>
+  </div>
+  <div class="col-lg-12 col-md-12 col-sm-12 px-0 py-2">
+    <form class="form-horizontal">
+      <kendo-grid (dataStateChange)="dataStateChange($event)" (sortChange)="sortChange($event)" [data]="gridSettings.gridData"
+        [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+        [reorderable]="true" [selectable]="true" [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [sortable]="true">
+        <!--Prénom-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                           [filter]="gridSettings.columnsConfig[0].filter"
+                           [filterable]="gridSettings.columnsConfig[0].filterable"
+                           [format]="gridSettings.columnsConfig[0].format"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0]._width" 
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span theme="light"
+                  tooltip="{{gridSettings.columnsConfig[0].title|translate}}">{{gridSettings.columnsConfig[0].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Nom -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                           [filter]="gridSettings.columnsConfig[1].filter"
+                           [filterable]="gridSettings.columnsConfig[1].filterable"
+                           [format]="gridSettings.columnsConfig[1].format"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1]._width"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span theme="light"
+                  tooltip="{{gridSettings.columnsConfig[1].title|translate}}">{{gridSettings.columnsConfig[1].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Email-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                           [filter]="gridSettings.columnsConfig[2].filter"
+                           [filterable]="gridSettings.columnsConfig[2].filterable"
+                           [format]="gridSettings.columnsConfig[2].format"
+                           [title]="gridSettings.columnsConfig[2].title | translate"
+                           [width]="gridSettings.columnsConfig[2]._width"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span theme="light"
+                  tooltip="{{gridSettings.columnsConfig[2].title|translate}}">{{gridSettings.columnsConfig[2].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <a href="mailto:{{dataItem.Email}}">{{dataItem.Email}}</a>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Creation date-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                           [filter]="gridSettings.columnsConfig[3].filter"
+                           [filterable]="gridSettings.columnsConfig[3].filterable"
+                           [format]="gridSettings.columnsConfig[3].format"
+                           [title]="gridSettings.columnsConfig[3].title | translate"
+                           [width]="gridSettings.columnsConfig[3]._width"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span theme="light"
+                  tooltip="{{gridSettings.columnsConfig[3].title|translate}}">{{gridSettings.columnsConfig[3].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{dataItem.CreationDate | date:formatDate}}
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Creation user-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                           [filter]="gridSettings.columnsConfig[4].filter"
+                           [filterable]="gridSettings.columnsConfig[4].filterable"
+                           [format]="gridSettings.columnsConfig[4].format"
+                           [title]="gridSettings.columnsConfig[4].title | translate"
+                           [width]="gridSettings.columnsConfig[4]._width"
+                           [columnMenu]="false">
+
+          <ng-template kendoGridHeaderTemplate>
+            <span theme="light"
+                  tooltip="{{gridSettings.columnsConfig[4].title|translate}}">{{gridSettings.columnsConfig[4].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="dataItem.IdCreationUserNavigation; then thenBlock else elseBlock"></div>
+            <ng-template #thenBlock>
+              {{dataItem.IdCreationUserNavigation.FirstName}} {{dataItem.IdCreationUserNavigation.LastName}}
+            </ng-template>
+            <ng-template #elseBlock>
+              ---
+            </ng-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Command-->
+       
+
+        <kendo-grid-command-column [width]="130">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <i *ngIf="hasShowPermission|| hasUpdatePermission" class="las la-pen cursor-pointer edit-pencil la-lg" aria-hidden="true" 
+                  tooltip="{{'UPDATE' | translate}}" (click)="goToAdvancedEdit(dataItem.Id)"></i>
+                <i *ngIf="hasDeletePermission" class="fa fa-trash-o la-lg mx-2 text-danger cursor-pointer" aria-hidden="true"
+                  tooltip="{{'DELETE' | translate}}" (click)="removeHandler(dataItem)"></i>
+            </ng-template>
+          </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings"
+                         [predicate]="predicate"
+                         [service]="candidateService"
+                         excel="true"
+                         fileName="{{'LIST_CANDIDATE'|translate}}"
+                         pdf="true">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+    </form>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>

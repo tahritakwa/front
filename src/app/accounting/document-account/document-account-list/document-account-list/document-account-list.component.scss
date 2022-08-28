@@ -1,0 +1,22 @@
+.btn-search {
+  float: left;
+  padding: 6px;
+  width: 50px !important;
+  background: #4b9aad;
+  color: white;
+  border: 1px solid #e4e7ea !important;
+  border-radius: 0 5px 5px 0;
+}
+
+.journal-dropdown {
+  width: 90%;
+  height:35px;
+}
+:host ::ng-deep td {
+    padding: 0.25rem 0.25rem;
+}
+
+:host ::ng-deep .k-grouping-header-flex > .k-indicator-container {
+  padding: 0em 0.5em;
+  font-size: small;
+}

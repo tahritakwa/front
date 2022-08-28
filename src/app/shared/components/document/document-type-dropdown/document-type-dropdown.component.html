@@ -1,0 +1,24 @@
+<div [formGroup]="form">
+  <kendo-combobox #documentType [data]="documentTypeDataSource" class="form-control" name="DocumentCode" formControlName="DocumentCode"
+    textField="Description" (focus)="openComboBox()" valueField="Code" [allowCustom]="allowCustom" [(ngModel)]="selectedValue" [valuePrimitive]="true"
+    [filterable]="true" (valueChange)="onSelect(this)" (filterChange)="handleFilter($event)">
+     <!--content template-->
+     <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Description}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.Code}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

@@ -1,0 +1,81 @@
+<form [formGroup]="searchFormGroup">
+  <div class="row" style="margin-top:1em;margin-bottom: 2em;">
+    <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: 4em;"></div>
+
+    <!-- Type filter -->
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'BY_TYPE'|translate}}</label>
+        </div>
+        <div class="col">
+          <app-document-request-type-dropdown (selectedValue)="typeSelected($event)" [group]="searchFormGroup">
+          </app-document-request-type-dropdown>
+        </div>
+      </div>
+    </div>
+    <!-- End type filter -->
+
+    <!--Employee filter -->
+    <div *ngIf="showAllEmployee" class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'BY_EMPLOYEE'|translate}}</label>
+        </div>
+        <div class="col">
+          <app-employee-multiselect (selected)="employeeSelected($event)"></app-employee-multiselect>
+        </div>
+      </div>
+    </div>
+    <!-- End Employee filter -->
+
+
+    <!--Start date filter -->
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'START_DATE'|translate}}</label>
+        </div>
+        <div class="col">
+          <kendo-datepicker (valueChange)="onChangeStartDocumentDate()" [max]="maxDate"
+                            class="form-control" formControlName="StartDocumentDate">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+      </div>
+    </div>
+    <!-- End Start date filter -->
+
+    <!--End date filter -->
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'END_DATE'|translate}}</label>
+        </div>
+        <div class="col">
+          <kendo-datepicker (valueChange)="onChangeEndDocumentDate()" [min]="minDate"
+                            class="form-control" formControlName="EndDocumentDate">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+      </div>
+    </div>
+    <!-- End End date filter -->
+
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-end">
+        <div class="col-lg-12">
+          <label><br></label>
+        </div>
+        <div class="col">
+          <button (click)="onSearch()" class="btn btn-secondary" style="width:50px" type="button">
+            <i aria-hidden="true" class="fa fa-search fa-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</form>

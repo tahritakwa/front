@@ -1,0 +1,7 @@
+<div [formGroup]="form">
+  <kendo-datepicker [formControlName]="DateName" [format]="formatDate" class="form-control" (change)="change"
+    [max]="max" [min]="min">
+    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+    </kendo-datepicker-messages>
+  </kendo-datepicker>
+</div>

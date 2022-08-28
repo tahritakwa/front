@@ -1,0 +1,103 @@
+<div class="card full-screen-card">
+  <div class="card-header" style="background-color: white; border:none">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'CATEGORY_LIST'|translate}}</h3>
+    </div>
+  </div>
+
+  <br>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex flex-row mt-2">
+          <div class="col-auto float-left">
+            <div class="has-search col-auto">
+              <div class="form-group has-search">
+                <span class="fa fa-search form-control-feedback" ></span>
+                <input type="text" class="form-control input-text" placeholder="{{'SEARCH_CATEGORY'|translate}}"
+                       [(ngModel)]='searchValue' (afterValueChanged)="searchCategory()">
+              </div>
+            </div>
+          </div>
+          <div class="flex-grow-1 float-right">
+            <div>
+              <app-btn-grid [advencedAdd]='true' [add]='false' [export]='false' [addLink]='"AdvancedAdd"' *ngIf="authService.hasAuthorities([CRMPermissions.ADD_CATEGORY])"></app-btn-grid>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+                [sortable]="false" [pageable]="pagerSettings" [filterable]="false" [reorderable]="true"
+                [columnMenu]="false" (pageChange)="onPageChange($event)"
+                (remove)="removeHandler($event)" (sortChange)="sortChange($event)" [sort]="gridSettings.state.sort"
+                (dataStateChange)="dataStateChange($event)">
+      <!--Title-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                         [title]="gridSettings.columnsConfig[0].title | translate"
+                         [width]="gridSettings.columnsConfig[0]._width"
+                         [filter]="gridSettings.columnsConfig[0].filter"
+                         [filterable]="gridSettings.columnsConfig[0].filterable"
+                         [format]="gridSettings.columnsConfig[0].format">
+      </kendo-grid-column>
+      <!-- Responsable -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                         [title]="gridSettings.columnsConfig[1].title | translate" [width]="300"
+                         [filter]="gridSettings.columnsConfig[1].filter"
+                         [filterable]="gridSettings.columnsConfig[1].filterable"
+                         [format]="gridSettings.columnsConfig[1].format">
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+          <div *ngFor='let responsableUser of dataItem.responsablesUsersId'>
+            {{getResponsableOrEmployeeFullName(responsableUser)}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Concerned -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                         [title]="gridSettings.columnsConfig[2].title | translate"
+                         [width]="gridSettings.columnsConfig[2]._width"
+                         [filter]="gridSettings.columnsConfig[2].filter"
+                         [filterable]="gridSettings.columnsConfig[2].filterable"
+                         [format]="gridSettings.columnsConfig[2].format">
+
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+          <div *ngIf="dataItem.categoryType == categoriesType[0]">
+            <div *ngFor='let employee of dataItem.employeesId'>
+              {{getResponsableOrEmployeeFullName(employee)}}
+            </div>
+          </div>
+          <div *ngIf="dataItem.categoryType == categoriesType[1]">
+            <div *ngFor='let product of dataItem.idItems'>
+              {{getItemDescreption(product)}}
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Category Type -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                         [title]="gridSettings.columnsConfig[3].title | translate"
+                         [width]="gridSettings.columnsConfig[3]._width"
+                         [filter]="gridSettings.columnsConfig[3].filter"
+                         [filterable]="gridSettings.columnsConfig[3].filterable"
+                         [format]="gridSettings.columnsConfig[3].format">
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+          <div>
+            {{dataItem.categoryType | translate}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Command-->
+      <kendo-grid-command-column  [width]="130"
+                                  [title]="'ACTIONS' | translate">
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <!-- edit command directive-->
+          <i class="las la-pen cursor-pointer edit-pencil la-lg" *ngIf="authService.hasAuthorities([CRMPermissions.EDIT_CATEGORY])" (click)="goToAdvancedEdit(dataItem)"></i>
+          <!-- remove command directive -->
+          <i class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+             (click)="removeHandler(dataItem)"  *ngIf="authService.hasAuthorities([CRMPermissions.DELETE_CATEGORY])"></i>
+        </ng-template>
+      </kendo-grid-command-column>
+    </kendo-grid>
+  </div>
+</div>

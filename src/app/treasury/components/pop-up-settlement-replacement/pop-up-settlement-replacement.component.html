@@ -1,0 +1,110 @@
+<form class="form-horizontal">
+      <kendo-grid [data]="gridData" [pageSize]="gridState.take" [skip]="gridState.skip" [sort]="gridState.sort"
+        [reorderable]="true" [sortable]="true">
+
+        <!-- Type Start-->
+        <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate" [width]="150">
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[0].tooltip|translate}}"
+                theme="light">{{columnsConfig[0].title|translate}}</span>
+            </ng-template>
+            <span *ngIf="dataItem.IdDocumentNavigation">
+              <span *ngIf="dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.SalesInvoices || 
+                           dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.PurchaseInvoices">
+                <span class="badge badge-pill badge-primary" style="margin-right: 3px;">
+                  ECH
+                </span>
+                / {{'INVOICE'|translate}}
+              </span>
+              <span *ngIf="dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.SalesInvoiceAsset || 
+                          dataItem.IdDocumentNavigation.DocumentTypeCode === documentType.PurchaseAsset">
+                <span class="badge badge-pill badge-danger" style="margin-right: 3px;">
+                  ECH
+                </span>
+                / {{'ASSET'|translate}}
+              </span>
+            </span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div style="font-weight:bold; font-size: 16px; padding-top: 7px;
+              padding-bottom: 7px;"> {{'TOTAL'| translate}}</div>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Type End-->
+
+        <!-- Code bill Start -->
+        <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate" [width]="150">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[1].tooltip|translate}}"
+                theme="light">{{columnsConfig[1].title|translate}}</span>
+            </ng-template>
+            <span class="pointer doc-code" style="font-size: 1em;"
+              (click)="showDocument(dataItem.IdDocumentNavigation)">&nbsp;{{dataItem.IdDocumentNavigation.Code}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Code bill End -->
+        <!-- Code Financial Commitment Start -->
+        <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate" [width]="150">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[2].tooltip|translate}}"
+                theme="light">{{columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <span class="pointer doc-code" style="font-size: 1em;"
+              (click)="showDocument(dataItem.IdDocumentNavigation)">&nbsp;{{dataItem.Code}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Code Financial Commitment End -->
+        <!-- Settlement Date Start-->
+        <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate" [width]="150">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[3].tooltip|translate}}"
+                theme="light">{{columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            {{  dataItem.CommitmentDate |date : formatDate }}
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Settlement Date End-->
+
+        <!-- TTC Price Start-->
+        <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate" [width]="150"
+          [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+          [headerStyle]="{'text-align':'right'}">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{columnsConfig[4].tooltip|translate}}"
+              theme="light">{{columnsConfig[4].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{dataItem.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+              style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+          </ng-template>
+        </kendo-grid-column>
+        <!-- TTC Price End-->
+
+        <!-- amount to be paid Start-->
+        <kendo-grid-column [field]="columnsConfig[5].field" [title]="columnsConfig[5].title | translate" [width]="150"
+          [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+          [headerStyle]="{'text-align':'right'}">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{columnsConfig[5].tooltip|translate}}"
+              theme="light">{{columnsConfig[5].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{dataItem.RemainingAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div style="text-align: right;font-weight:bold;font-size: 16px;">
+              <span>
+                {{totalRemainingAmount.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                    style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- amount to be paid End-->
+      </kendo-grid>
+</form>

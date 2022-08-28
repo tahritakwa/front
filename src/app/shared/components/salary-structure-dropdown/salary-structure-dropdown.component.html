@@ -1,0 +1,33 @@
+<div *ngIf="!parent && group" [formGroup]="group">
+  <kendo-combobox [data]="salaryStructureFiltredDataSource" [disabled]="disabled" class="form-control HistoryCommandMargin"
+    name="IdSalaryStructure" formControlName="IdSalaryStructure" textField="SalaryStructureReference" valueField="Id"
+    [valuePrimitive]="true" [allowCustom]="allowCustom" [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="onValueChange($event)">
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<div *ngIf="parent" [formGroup]="group">
+  <kendo-combobox [data]="salaryStructureFiltredDataSource" [disabled]="disabled" class="form-control HistoryCommandMargin" name="IdParent"
+    formControlName="IdParent" textField="SalaryStructureReference" valueField="Id" [valuePrimitive]="true"
+    [allowCustom]="allowCustom" [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="onValueChange($event)">
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<div *ngIf='!group && !parent'>
+  <kendo-combobox name="IdSalaryStructure" [data]="salaryStructureFiltredDataSource" class="form-control"
+    [allowCustom]="allowCustom" textField="SalaryStructureReference" [valueField]="'Id'" [valuePrimitive]="true" [disabled]="disabled"
+    [filterable]="true" (filterChange)="handleFilter($event)" [(ngModel)]='selectedSalaryStructure'
+    (valueChange)="onValueChange($event)">
+  </kendo-combobox>
+</div>

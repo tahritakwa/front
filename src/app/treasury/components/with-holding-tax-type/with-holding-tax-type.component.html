@@ -1,0 +1,10 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="withHoldingTaxTypeFiltredDataSource" class="form-control" formControlName="Type"
+    textField="name" valueField="value" [valuePrimitive]="true" [allowCustom]="false" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="onValueChanged($event)">
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+  </kendo-combobox>
+</div>

@@ -1,0 +1,21 @@
+.active {
+  color: #336699 !important;
+  border-bottom: 2px solid #336699;
+}
+.sub-settings-menu .nav-item {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.sub-settings-menu .nav-item:last-child {
+  border-bottom: none;
+}
+.sub-settings-menu .nav-link {
+  font-family: "Roboto", "Segoe UI", "GeezaPro", "DejaVu Serif", "sans-serif", "-apple-system", "BlinkMacSystemFont";
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.54) !important;
+  text-transform: capitalize;
+}
+.sub-settings-menu .nav-link.active {
+  color: #336699 !important;
+  border-bottom-color: #336699;
+}

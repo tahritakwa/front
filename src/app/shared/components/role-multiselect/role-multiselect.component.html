@@ -1,0 +1,45 @@
+<div *ngIf='isMultiSelect' [formGroup]="form">
+    <kendo-multiselect
+                       [data]="roleFiltredDataSource"
+                       [textField]="'Label'"
+                       [valueField]="'Id'"
+                       placeholder="Role"
+                       formControlName="UserRole"
+                       [(ngModel)]="selectedValues"
+                       [valuePrimitive]="true"
+                       [ngClass]="{ 'has-error': (UserRole.touched || UserRole.dirty) && !UserRole.valid }"
+                       [filterable]="true"
+                       [disabled]="isDisabled"
+                       (valueChange)="handleValue($event)"
+                       (filterChange)="handleFilter($event)">
+    </kendo-multiselect>
+    <ng-template kendoMultiSelectCustomItemTemplate let-dataItem>
+      <span class="template">{{ dataItem?.Code }}</span>&nbsp;{{ dataItem?.RoleName }}
+    </ng-template>
+    <!--footer template-->
+    <ng-template kendoMultiSelectFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </div>
+  <div [formGroup]="form" *ngIf='!isMultiSelect'>
+    <kendo-combobox [data]="roleFiltredDataSource"
+    [textField]="'Label'"
+    [valueField]="'Id'"
+    placeholder="Role"
+    formControlName="MasterRoleUser"
+    [(ngModel)]="selectedValues"
+    [valuePrimitive]="true"
+    [filterable]="true"
+    [disabled]="isDisabled"
+    (valueChange)="handleValue($event)"
+    (filterChange)="handleFilter($event)">
+    <ng-template kendoMultiSelectCustomItemTemplate let-dataItem>
+      <span class="template">{{ dataItem?.Code }}</span>&nbsp;{{ dataItem?.RoleName }}
+    </ng-template>
+    <!--footer template-->
+    <ng-template kendoMultiSelectFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    </kendo-combobox>
+    </div>

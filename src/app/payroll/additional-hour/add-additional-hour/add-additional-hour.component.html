@@ -1,0 +1,95 @@
+<div class="card" style="border-radius: 10px;border-bottom: 1px solid #c8ced3 !important;">
+    <div class="card-body">
+        <form class="form-horizontal" [formGroup]="additionalHourFormGroup">
+            <!-- Begin principal menu  part-->
+            <div class="card-body">
+                <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                    <div class="form-group row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}<span class="required">*</span></label>
+                          <input class="form-control" formControlName="Code" type="text" [readonly]="true"
+                            [ngClass]="{ 'has-error': (Code.touched || Code.dirty) && !Code.valid && !Code.disabled && !Code.pending }">
+                          <app-control-messages [control]="Code"
+                            class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+                          <input class="form-control" formControlName="Name" type="text"
+                            [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && !Name.valid }">
+                          <app-control-messages [control]="Name"
+                            class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <label class="col-lg-12 col-md-12 col-sm-12"> {{'INCREASE_PERCENTAGE'|translate}}<span class="required">*</span></label>
+                            <div class="input-group mb-3">
+                              <input class="form-control" formControlName="IncreasePercentage" type="number"
+                                aria-describedby="basic-addon2">
+                              <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2">%</span>
+                              </div>
+                            </div>
+                            <app-control-messages [control]="IncreasePercentage" class="error-msg messages text-left text-danger">
+                            </app-control-messages>
+                          </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 contact100-form-checkbox">
+                          <br>
+                          <br>
+                            <input class="input-checkbox100" id="ckb1" formControlName="Worked" name="Worked" type="checkbox">
+                            <label class="label-checkbox100" for="ckb1" style="margin-top: 2%;margin-left: 3%;">
+                                {{'WORK_DAY' | translate}}&nbsp;
+                            </label>
+                         </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+                        <textarea class="form-control" formControlName="Description" type="text"
+                            [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }"></textarea>
+                        <app-control-messages [control]="Description"
+                        class="error-msg messages text-left text-danger"></app-control-messages>
+                        </div>
+                    </div>
+                    <!--additional hour slots section-->
+                    <div class="form-group" style="border-style: dashed;border-color:#F0F0F0; padding: 20px">
+                        <div class="row">
+                            <button class="noPadding btn-Add k-button" type="button" dir="ltr" *ngIf="hasUpdatePermission"
+                              style="border: none; margin-bottom: 20px" (click)="addAdditionalHourSlot()">
+                              <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                              <span>&nbsp;{{'ADD_ADDITIONAL_HOUR_SLOT'|translate}}</span>
+                            </button>
+                        </div>
+                        <div style="max-height: 195px; overflow-x: hidden ">
+                            <div formArrayName="AdditionalHourSlot"
+                              *ngFor="let Slot of AdditionalHourSlot.controls; let i=index">
+                              <div class="row" *ngIf="isRowVisible(i)">
+                                <app-additional-hour-slot class="col-lg-11 col-sm-11 col-md-11" [slotFormGroup]="Slot"></app-additional-hour-slot>
+                                <div class="col-sm-1 " style="margin-top: 5% !important; margin-left:-20px">
+                                  <button class="noPadding btn-Add k-button" type="button" style="border: none" *ngIf="hasUpdatePermission"
+                                    (click)="deleteAdditionalHourSlot(i)">
+                                    <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End principal menu  part -->
+            <br/>
+            <div class="fixed-card-footer">
+              <div class="footerStyle">
+                <div class="w-100">
+                  <div class="d-flex justify-content-end p-3 footer-content">
+                    <button class="btn btn-sm btn-success" (click)="save()" type="submit" *ngIf="hasUpdatePermission">
+                      <i class="fa fa-floppy-o"></i> {{ 'UPDATE' |translate}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+</div>

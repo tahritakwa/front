@@ -1,0 +1,15 @@
+<kendo-grid [data]="this.gridSettings.gridData" 
+            [pageable]="pagerSettings" 
+            [skip]="gridSettings.state.skip" 
+            [pageSize]="gridSettings.state.take"
+            (pageChange)="onPageChange($event)" 
+            (dataStateChange)="dataStateChange($event)">
+  <kendo-grid-span-column>
+    <ng-template kendoPagerTemplate let-totalPages="totalPages" let-currentPage="currentPage">
+      <kendo-pager-prev-buttons></kendo-pager-prev-buttons>
+      <kendo-pager-numeric-buttons [buttonCount]="pagerSettings.buttonCount"></kendo-pager-numeric-buttons>
+      <kendo-pager-next-buttons></kendo-pager-next-buttons>
+    </ng-template>
+
+  </kendo-grid-span-column>
+</kendo-grid>

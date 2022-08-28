@@ -1,0 +1,109 @@
+<div class="row px-3">
+  <div class="col-lg-5 col-md-6 col-sm-12">
+    <div class="row">
+      <div class="col"><span class="font-weight-bold">{{'TAX_REGISTRATION_NUMBER'|translate}}:</span>
+        {{tier.MatriculeFiscale}}</div>
+    </div>
+    <div class="row mt-2">
+      <div class="description col">{{tier.Description}}</div>
+    </div>
+    <div class="row mt-2">
+      <div class="font-weight-bold col ">{{'CONTACTS'|translate}}:</div>
+    </div>
+
+    <div class="row mt-2" *ngIf="tier.Contact.length > 0">
+      <div class="col-auto mb-2" *ngFor="let tiers of tier.Contact">
+        <div class="border rounded-pill">
+          <div class="row cursor-pointer px-3">
+            <div class="col-auto my-2 pr-0" style="align-self : center;">
+              <div class="customer-photo d-flex justify-content-center">
+                <img id="ThumbnailCostumer" class="imgSize w-100 border-0" alt="Contact Thumbnail"
+                  [src]="pictureTierSrc(tiers) ||'assets/image/placeholder-logo.png'" />
+              </div>
+            </div>
+            <div class="col-auto mr-2">
+              <div>
+                <span class="font-weight-bold">{{tiers.FirstName}} {{tiers.LastName}}</span>
+              </div>
+              <div>
+                <span class="light-reference">{{tiers.Fonction}}</span>
+              </div>
+              <div>
+                <span class="light-reference">{{tiers.Email}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-2 ml-1" *ngIf="tier.Contact.length == 0">
+      <label class="contact-message">{{contactNoDataFound}}</label>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="tierGeneral">
+    <div class="col-12">
+      <h5>{{'LAST_ACTION'|translate}}</h5>
+      <div class="row">
+        <div class="col-auto">
+          <div class="tick">
+            <i class="las la-lg la-check-circle"></i>
+          </div>
+        </div>
+        <div class="col p-0">
+          <p class="mb-2">
+            {{lastAction}}
+          </p>
+          <p class="blockquote-footer">
+            {{lastActionTime}}
+          </p>
+        </div>
+      </div>
+      <div class="my-3 row">
+        <div class="col-auto">
+          <div class="border rounded-pill p-2 border-danger text-danger">
+            <div class="row d-flex justify-content-center">
+              <div class="col-auto">
+                <i class="las la-3x la-money-bill-wave"></i>
+              </div>
+              <div class="col pl-0">
+                <div class="text-center h5 font-weight-bold">{{'LEFT_TO_PAY'|translate}}:</div>
+                <div class="text-center h6 m-0">{{LeftToPay}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-12 col-sm-12" *ngIf="tierGeneral">
+    <div class="row">
+      <div class="col-lg-12 col-md-4 col-sm-6">
+        <div class="row pb-4">
+          <div class="col-auto symbol-icon"><i class="las la-thumbs-up la-3x"></i></div>
+          <div class="col">
+            <div class="row important-number">{{TierRank ? '#'+TierRank:'UNRANKED'|translate}}</div>
+            <div class="row text-muted">{{topTierTitle|translate}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-4 col-sm-6">
+        <div class="row pb-4">
+          <div class="col-auto symbol-icon"><i class="las la-user-check la-3x"></i></div>
+          <div class="col">
+            <div class="row important-number">{{Revenue}}</div>
+            <div class="row text-muted">{{"Chiffre d'affaire"|translate}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-4 col-sm-6">
+        <div class="row pb-4">
+          <div class="col-auto symbol-icon"><i class="las la-clock la-3x"></i></div>
+          <div class="col">
+            <div class="row important-number">{{seniority ? seniority : '--'}}</div>
+            <div class="row text-muted">{{"SENIORITY"|translate}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

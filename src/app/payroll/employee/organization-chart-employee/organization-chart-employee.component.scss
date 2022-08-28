@@ -1,0 +1,146 @@
+.company.ui-organizationchart .ui-organizationchart-node-content.ui-person {
+  padding: 0;
+  border: 0 none;
+}
+
+.node-header, .node-content {
+  padding: .5em .7em;
+}
+
+.node-header {
+  background-color: #495ebb;
+  color: #ffffff;
+}
+
+.node-content {
+  text-align: center;
+  border: 1px solid #bcbcbc;
+  background-color: ghostwhite;
+  margin-right: 20px;
+  border-radius: 5%;
+  width: 260px;
+}
+
+.node-content-empty-employee {
+  border-color: red;
+  background-color: #ff000012;
+}
+
+.node-content-selected {
+  border-color: #4c9aae;
+  background-color: #4c9aae3d;
+}
+
+.node-content img {
+  border-radius: 50%;
+  border: 3px solid #ffffff;
+}
+
+.department-cfo {
+  background-color: #7247bc;
+  color: #ffffff;
+}
+
+.department-coo {
+  background-color: #a534b6;
+  color: #ffffff;
+}
+
+.department-cto {
+  background-color: #e9286f;
+  color: #ffffff;
+}
+
+.ui-person .ui-node-toggler {
+  color: #00abe7 !important;
+}
+
+.department-cto .ui-node-toggler {
+  color: #8a0a39 !important;
+}
+
+.ui-state-highlight {
+  border-color: #156090;
+  background-color: #c0c0c0;
+  border: 2px solid #bcbcbc;
+}
+
+.text-name {
+  color: #000000 !important;
+  font-size: 90%
+}
+
+.text-function {
+  color: #00abe7 !important;
+}
+
+.hidden-node {
+  visibility: hidden !important;
+}
+
+
+body .ui-fieldset {
+  border: 1px solid #4c9aae;
+  background-color: #ffffff;
+  color: #333333;
+}
+
+.ui-fieldset, .ui-fieldset .ui-fieldset-legend {
+  padding: .5em 1em;
+}
+
+.ui-fieldset-toggleable .ui-fieldset-legend {
+  padding: 0;
+  width: 200px;
+}
+
+body .ui-fieldset .ui-fieldset-legend a {
+  padding: 0.571em 1em;
+  border: 1px solid #c8c8c8;
+  color: #ffffff;
+  background-color: #4c9aae;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-transition: background-color 0.2s;
+  -o-transition: background-color 0.2s;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+  font-size: 15px;
+}
+
+.ui-fieldset-toggleable .ui-fieldset-legend a {
+  padding: .5em 1em;
+  cursor: pointer;
+  white-space: nowrap;
+  display: block;
+}
+
+body .ui-fieldset .ui-fieldset-legend a .ui-fieldset-toggler {
+  float: none;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.5em;
+  color: #ffffff;
+}
+
+.ui-tabview .ui-tabview-nav {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.ui-tabview .ui-tabview-nav li {
+  display: inline-block;
+  float: none;
+}
+
+.ui-tabview.ui-tabview-top>.ui-tabview-nav li {
+  background-color: white;
+  border-bottom: 0;
+  top: 1px;
+  border: none;
+}
+
+li.ui-state-default.ui-corner-top.ng-star-inserted.ui-tabview-selected.ui-state-active {
+  background-color: #575d862b;
+}

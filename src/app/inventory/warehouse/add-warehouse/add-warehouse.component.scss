@@ -1,0 +1,41 @@
+.multi-select-style {
+  border: 2px double #4c9aae78;
+}
+
+.disabledDiv {
+  pointer-events: none;
+  opacity: 0.4;
+}
+p {
+  display: inline-block;
+  margin-right: 5%;
+}
+.itemWarehouse {
+  border: 1px solid #4c9aae !important;
+  background-color: #e4e5e666;
+  border-left: 4px solid #3e787e !important;
+  margin: -1.4% -1.4% -1.4% -1%;
+}
+.itemWarehouseCentral {
+  margin-left: 1%;
+  margin-top: 1%;
+}
+.tabTitle {
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1250px) {
+  .sizeStyle {
+    font-size: 13px;
+  }
+}
+@media (min-width: 992px) {
+  .scroller {
+    min-width: 1659px;
+  }
+}
+::-webkit-scrollbar-track {
+  background: #ffffff !important;
+}
+

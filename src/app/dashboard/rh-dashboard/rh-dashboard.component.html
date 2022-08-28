@@ -1,0 +1,627 @@
+<!-- Emp Filter-->
+<mat-menu xPosition="before" [overlapTrigger]="false" #employeeFilters="matMenu">
+
+  <div class="filter-label">
+    {{'GENDER' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="genderList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearEmployeeSelectedFilters"
+                          (newItemSelectedEvent)="onSelectEmployeeGender($event)"></app-multiselect-filter>
+  <div class="filter-label">
+    {{'TEAM' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="employeeTeamList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearEmployeeSelectedFilters"
+                          (newItemSelectedEvent)="onSelectEmployeeTeam($event)"></app-multiselect-filter>
+  <div class="filter-label">
+    {{'SENIORITY' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="seniorityList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearEmployeeSelectedFilters"
+                          (newItemSelectedEvent)="onSelectSeniorityRange($event)"></app-multiselect-filter>
+
+  <div class="filter-label">
+    {{'OFFICE' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="employeeOfficeList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearEmployeeSelectedFilters"
+                          (newItemSelectedEvent)="onSelectEmployeeOffice($event)"></app-multiselect-filter>
+
+  <div class="filter-label">
+    {{'Contract' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="employeeContractList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearEmployeeSelectedFilters"
+                          (newItemSelectedEvent)="onSelectEmployeeContract($event)"></app-multiselect-filter>
+
+  <div class="filter-label">
+    {{'AGE_RANGE' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="employeeAgeList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearEmployeeSelectedFilters"
+                          (newItemSelectedEvent)="onSelectEmployeeAge($event)"></app-multiselect-filter>
+
+</mat-menu>
+
+<!-- Candidature Filter-->
+<mat-menu xPosition="before" [overlapTrigger]="false" #candidatureFilters="matMenu">
+
+  <div class="filter-label">
+    {{'GENDER' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="genderList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearCandidatureSelectedFilters"
+                          (newItemSelectedEvent)="onSelectCandidatureGender($event)"></app-multiselect-filter>
+  <div class="filter-label">
+    {{'RECRUITMENT_DESCRIPTION' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="candidatureRecruitmentDescriptionList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearCandidatureSelectedFilters"
+                          (newItemSelectedEvent)="onSelectCandidatureTeam($event)"></app-multiselect-filter>
+  <div class="filter-label">
+    {{'YEAR_OF_EXPERIENCE' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="yearOfExperienceList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearCandidatureSelectedFilters"
+                          (newItemSelectedEvent)="onSelectYearOfExperience($event)"></app-multiselect-filter>
+
+  <div class="filter-label">
+    {{'OFFICE' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="candidatureOfficeList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearCandidatureSelectedFilters"
+                          (newItemSelectedEvent)="onSelectCandidatureOffice($event)"></app-multiselect-filter>
+
+  <div class="filter-label">
+    {{'CONTRACT' | translate}} :
+  </div>
+  <app-multiselect-filter [dataList]="candidatureContractList" (click)="$event.stopPropagation()"
+                          [clearSelectedFilters]="clearCandidatureSelectedFilters"
+                          (newItemSelectedEvent)="onSelectCandidatureContract($event)"></app-multiselect-filter>
+
+</mat-menu>
+
+<div class="navItems col-lg-12 pr-0">
+  <ul class="nav nav-tabs" id="tab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link nav-link-new"
+         [ngClass]="{'active': showEmployeeTab,'not-active': !showEmployeeTab}" id="employees-tab"
+         data-toggle="tab"
+         href="#empCard" role="tab" (click)="showEmployeeCard()" aria-controls="items" aria-selected="true">
+        {{"EMPLOYEES"|translate}}
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link nav-link-new" [ngClass]="{'active':showCandidatureTab,'not-active': !showCandidatureTab}"
+         id="candidatures-tab" data-toggle="tab"
+         href="#candidatureCard" role="tab" (click)="showCandidaturesCard()" aria-controls="items" aria-selected="true">
+        {{"CANDIDATURES"|translate}}
+      </a>
+    </li>
+    <li *ngIf="showEmployeeTab" class="nav-item pt-3 ml-auto">
+      <a [matMenuTriggerFor]="employeeFilters">
+        <span class="k-icon k-i-filter k-icon-20"></span>
+      </a>
+    </li>
+    <li class="nav-item pt-3" style="right: 30px; position: absolute;">
+      <span
+        *ngIf="(!employeeFilterForm.pristine && showEmployeeTab) || (!candidatureFilterForm.pristine && showCandidatureTab) "
+        (click)="clearFilter()">
+          <span class="k-icon k-i-filter-clear k-icon-20"></span>
+        </span>
+    </li>
+  </ul>
+
+  <div class="tab-content border-0" id="tabContent">
+    <!--Employee tab-->
+    <div class="tab-pane fade  px-0 pt-0"
+         [ngClass]="{'show active': showEmployeeTab}" id="empCard"
+         role="tabpanel"
+         aria-labelledby="items-tab">
+
+      <div class="card-content">
+        <div class="card-body p-3 dashboard-tab">
+          <div class="period-filter dashboard-widget row" [dragula]="dragula">
+
+            <!---------Card 1 : active emp--------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20">{{'NUMBER_ACTIF_EMPLOYEE'|translate}}</h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="activeEmpLastYear" class="h4 font-weight-bold   mb-0 ">
+                            {{activeEmpLastYear}}
+                          </div>
+                          <div *ngIf="!activeEmpLastYear" class="h4 font-weight-bold   mb-0 ">-
+                          </div>
+                          <span class="small">{{'LAST_YEAR'|translate}} </span>
+                        </div>
+                        <div class="col-6">
+                          <div *ngIf="activeEmpCurrentYear" class="h4 font-weight-bold   mb-0">
+                            {{activeEmpCurrentYear}}
+                          </div>
+                          <div *ngIf="!activeEmpCurrentYear" class="h4 font-weight-bold   mb-0">-
+                          </div>
+                          <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-------- Card 2 : office leave----------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20">{{'EMPLOYEE_LEAVE'|translate}}</h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="officeLeaveLastYear" class="h4 font-weight-bold   mb-0 ">
+                            {{officeLeaveLastYear}}
+                          </div>
+                          <div *ngIf="!officeLeaveLastYear" class="h4 font-weight-bold   mb-0 ">-
+                          </div>
+                          <span class="small">{{'LAST_YEAR'|translate}} </span>
+                        </div>
+                        <div class="col-6">
+                          <div *ngIf="officeLeaveCurrentYear" class="h4 font-weight-bold   mb-0">
+                            {{officeLeaveCurrentYear}}
+                          </div>
+                          <div *ngIf="!officeLeaveCurrentYear" class="h4 font-weight-bold   mb-0">-
+                          </div>
+                          <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-------- Card 3 : turnover rate----------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20">{{'STAFF_TURNOVER_RATE'|translate}}</h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="staffTurnoverRateLastYear" class="h4 font-weight-bold   mb-0 ">
+                            {{staffTurnoverRateLastYear}}%
+                          </div>
+                          <div *ngIf="!staffTurnoverRateLastYear" class="h4 font-weight-bold   mb-0 ">-
+                          </div>
+                          <span class="small">{{'LAST_YEAR'|translate}} </span>
+                        </div>
+                        <div class="col-6">
+                          <div *ngIf="staffTurnoverRateCurrentYear" class="h4 font-weight-bold   mb-0">
+                            {{staffTurnoverRateCurrentYear}}%
+                          </div>
+                          <div *ngIf="!staffTurnoverRateCurrentYear" class="h4 font-weight-bold   mb-0">-
+                          </div>
+                          <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---------Card 4 : avg age--------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20">{{'AVERAGE_AGE'|translate}}</h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="averageAgeLastYear" class="h4 font-weight-bold   mb-0 ">
+                            {{averageAgeLastYear}}
+                          </div>
+                          <div *ngIf="!averageAgeLastYear" class="h4 font-weight-bold   mb-0 ">-
+                          </div>
+                          <span class="small">{{'LAST_YEAR'|translate}} </span>
+                        </div>
+                        <div class="col-6">
+                          <div *ngIf="averageAgeCurrentYear" class="h4 font-weight-bold   mb-0">
+                            {{averageAgeCurrentYear}}
+                          </div>
+                          <div *ngIf="!averageAgeCurrentYear" class="h4 font-weight-bold   mb-0">-
+                          </div>
+                          <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---------Card 5 : Total work days----------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-light-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20"> {{'TOTAL_DAYS_WORK'|translate}}
+                      </h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="totalWorkDaysYTD_1" class="h4  font-weight-bold text-white mb-0 ">
+                            {{totalWorkDaysYTD_1}}
+                          </div>
+                          <div *ngIf="!totalWorkDaysYTD_1" class="h4 font-weight-bold text-white mb-0 ">-
+                          </div>
+                          <span class="small text-dark">{{'LAST_YEAR'|translate}}</span>
+                        </div>
+                        <div class="col-6">
+                          <div *ngIf="totalWorkDaysYTD" class="h4 font-weight-bold text-white mb-0">
+                            {{totalWorkDaysYTD}}
+                          </div>
+                          <div *ngIf="!totalWorkDaysYTD" class="h4 font-weight-bold text-white mb-0">-
+                          </div>
+                          <span class="small text-dark">{{'CURRENT_YEAR'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---------Card 6 : Total days not work----------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-light-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20"> {{'TOTAL_DAYS_NOT_WORK'|translate}}
+                      </h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="totalDayOffYTD_1" class="h4  font-weight-bold text-white mb-0 ">
+                            {{totalDayOffYTD_1}}
+                          </div>
+                          <div *ngIf="!totalDayOffYTD_1" class="h4 font-weight-bold text-white mb-0 ">-
+                          </div>
+                          <span class="small text-dark">{{'LAST_YEAR'|translate}}</span>
+                        </div>
+                        <div class="col-6">
+                          <div *ngIf="totalDayOffYTD" class="h4 font-weight-bold text-white mb-0">
+                            {{totalDayOffYTD}}
+                          </div>
+                          <div *ngIf="!totalDayOffYTD" class="h4 font-weight-bold text-white mb-0">-
+                          </div>
+                          <span class="small text-dark">{{'CURRENT_YEAR'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---------Card 7 : taux conge--------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-light-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20">{{'LEAVES_RATE'|translate}}</h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="leaveRateLastYear" class="h4 font-weight-bold mb-0 ">
+                            {{leaveRateLastYear}}%
+                          </div>
+                          <div *ngIf="!leaveRateLastYear" class="h4 font-weight-bold mb-0 ">-
+                          </div>
+                          <span class="small text-dark">{{'LAST_YEAR'|translate}} </span>
+                        </div>
+                        <div class="col-6">
+                          <div *ngIf="leaveRateCurrentYear" class="h4 font-weight-bold   mb-0">
+                            {{leaveRateCurrentYear}}%
+                          </div>
+                          <div *ngIf="!leaveRateCurrentYear" class="h4 font-weight-bold   mb-0">-
+                          </div>
+                          <span class="small text-dark">{{'CURRENT_YEAR'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---------Card 8 : office leave--------->
+            <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+              <div class="row static-card">
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                  <div class="card with-shadow bg-c-light-blue-hr-cards order-card">
+                    <div class="card-block">
+                      <h4 class="m-b-20">{{'EMPLOYEE_ON_LEAVE'|translate}}</h4>
+                      <div class="row text-center mt-4">
+                        <div class="col-6  border-right-white">
+                          <div *ngIf="officeLeaveToday" class="h4 font-weight-bold mb-0 ">
+                            {{officeLeaveToday}}
+                          </div>
+                          <div *ngIf="!officeLeaveToday" class="h4 font-weight-bold mb-0 ">-
+                          </div>
+                          <span class="small text-dark">{{'TODAY'|translate}} </span>
+                        </div>
+                        <div class="col-6" style="padding-right: 10px;">
+                          <div *ngIf="officeLeaveCurrentWeek" class="h4 font-weight-bold mb-0">
+                            {{officeLeaveCurrentWeek}}
+                          </div>
+                          <div *ngIf="!officeLeaveCurrentWeek" class="h4 font-weight-bold mb-0">-
+                          </div>
+                          <span class="small text-dark">{{'CURRENT_WEEK'|translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---------Chart 1 : work state : KPITotalWorkDays/DayOffPerPeriod--------->
+            <div class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card">
+              <div class={{ClickedClass}}>
+                <app-work-state [dateFormat]="dateformat" [ageRange]="employeeFilterForm.controls.Age.value"
+                                [seniorityRange]="employeeFilterForm.controls.Seniority.value"
+                                [contract]="employeeFilterForm.controls.Contract.value"
+                                [gender]="employeeFilterForm.controls.Sex.value"
+                                [office]="employeeFilterForm.controls.Office.value"
+                                [teamName]="employeeFilterForm.controls.Team.value"
+                                class="period-filter"></app-work-state>
+              </div>
+            </div>
+
+            <!---------Chart 2 : DayOffPerFamily/Type--------->
+            <div class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card">
+              <div class={{ClickedClass}}>
+                <app-day-off-per-family-type [dateFormat]="dateformat"
+                                             [ageRange]="employeeFilterForm.controls.Age.value"
+                                             [seniorityRange]="employeeFilterForm.controls.Seniority.value"
+                                             [contract]="employeeFilterForm.controls.Contract.value"
+                                             [gender]="employeeFilterForm.controls.Sex.value"
+                                             [office]="employeeFilterForm.controls.Office.value"
+                                             [teamName]="employeeFilterForm.controls.Team.value"
+                                             class="period-filter"></app-day-off-per-family-type>
+              </div>
+            </div>
+
+            <!---------Chart 3 : Starters exits number--------->
+            <div class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card">
+              <div class={{ClickedClass}}>
+                <app-total-starters-exits [dateFormat]="dateformat"
+                                          [ageRange]="employeeFilterForm.controls.Age.value"
+                                          [seniorityRange]="employeeFilterForm.controls.Seniority.value"
+                                          [contract]="employeeFilterForm.controls.Contract.value"
+                                          [gender]="employeeFilterForm.controls.Sex.value"
+                                          [office]="employeeFilterForm.controls.Office.value"
+                                          [teamName]="employeeFilterForm.controls.Team.value"
+                                          class="period-filter"></app-total-starters-exits>
+              </div>
+            </div>
+
+            <!---------List : KPIDayOffPerFamily/Type/EmployeePerPeriod--------->
+            <div class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card">
+              <div class={{ClickedClass}}>
+                <app-top-employee-day-off [dateFormat]="dateformat"
+                                          [ageRange]="employeeFilterForm.controls.Age.value"
+                                          [seniorityRange]="employeeFilterForm.controls.Seniority.value"
+                                          [contract]="employeeFilterForm.controls.Contract.value"
+                                          [gender]="employeeFilterForm.controls.Sex.value"
+                                          [office]="employeeFilterForm.controls.Office.value"
+                                          [teamName]="employeeFilterForm.controls.Team.value"
+                                          class="period-filter"></app-top-employee-day-off>
+              </div>
+            </div>
+
+            <!---------Chart 4 : Staff turnover--------->
+            <div class="period-filter col-lg-12 col-md-12 col-sm-12 draggable-card">
+              <div class={{ClickedClass}}>
+                <app-staff-turnover [dateFormat]="dateformat"
+                                    [ageRange]="employeeFilterForm.controls.Age.value"
+                                    [seniorityRange]="employeeFilterForm.controls.Seniority.value"
+                                    [contract]="employeeFilterForm.controls.Contract.value"
+                                    [gender]="employeeFilterForm.controls.Sex.value"
+                                    [office]="employeeFilterForm.controls.Office.value"
+                                    [teamName]="employeeFilterForm.controls.Team.value"
+                                    class="period-filter"></app-staff-turnover>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--Candidate tab-->
+    <div class="tab-pane fade  px-0 pt-0" [ngClass]="{'show active':showCandidatureTab}" id="candidatureCard"
+         role="tabpanel"
+         aria-labelledby="items-tab">
+
+      <div class="card-content">
+        <div class="card-body p-3 dashboard-tab">
+          <div class="period-filter dashboard-widget row" [dragula]="dragula">
+            <form class="card-form">
+              <fieldset class="card-fieldset">
+                <legend class="card-legend">
+                  <a style="top: -5px; position: relative;" [matMenuTriggerFor]="candidatureFilters">
+                    <span class="k-icon k-i-filter k-icon-20"></span>
+                  </a>
+                </legend>
+                <div class="period-filter dashboard-widget row">
+                  <!---------Card 1 : Candidacy Number--------->
+                  <div class="period-filter draggable-card col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                    <div class="row static-card">
+                      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                          <div class="card-block candidate-card">
+                            <h4 class="m-b-20">{{'SUBMITTED_CANDIDATURES'|translate}}</h4>
+                            <div class="row text-center mt-4">
+                              <div class="col-6  border-right-white">
+                                <div *ngIf="candidacyNumberLastYear" class="h4 font-weight-bold   mb-0 ">
+                                  {{candidacyNumberLastYear}}
+                                </div>
+                                <div *ngIf="!candidacyNumberLastYear" class="h4 font-weight-bold   mb-0 ">-
+                                </div>
+                                <span class="small">{{'LAST_YEAR'|translate}} </span>
+                              </div>
+                              <div class="col-6">
+                                <div *ngIf="candidacyNumberCurrentYear" class="h4 font-weight-bold   mb-0">
+                                  {{candidacyNumberCurrentYear}}
+                                </div>
+                                <div *ngIf="!candidacyNumberCurrentYear" class="h4 font-weight-bold   mb-0">-
+                                </div>
+                                <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-------- Card 2 : NumberOfOffer/ExpectedCandidate----------->
+                  <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+                    <div class="row static-card">
+                      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                          <div class="card-block candidate-card">
+                            <h4 class="m-b-20">{{'NUMBER_OF_OFFER'|translate}}</h4>
+                            <div class="row text-center mt-4">
+                              <div class="col-6  border-right-white">
+                                <div *ngIf="numberOfOfferLastYear" class="h4 font-weight-bold   mb-0 ">
+                                  {{numberOfOfferLastYear}}
+                                </div>
+                                <div *ngIf="!numberOfOfferLastYear" class="h4 font-weight-bold   mb-0 ">-
+                                </div>
+                                <span class="small">{{'LAST_YEAR'|translate}} </span>
+                              </div>
+                              <div class="col-6">
+                                <div *ngIf="numberOfOfferCurrentYear" class="h4 font-weight-bold   mb-0">
+                                  {{numberOfOfferCurrentYear}}
+                                </div>
+                                <div *ngIf="!numberOfOfferCurrentYear" class="h4 font-weight-bold   mb-0">-
+                                </div>
+                                <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-------- Card 3 : NumberOfOffer/ExpectedCandidate----------->
+                  <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+                    <div class="row static-card">
+                      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                          <div class="card-block candidate-card">
+                            <h4 class="m-b-20">{{'EXPECTED_CANDIDATE'|translate}}</h4>
+                            <div class="row text-center mt-4">
+                              <div class="col-6  border-right-white">
+                                <div *ngIf="expectedCandidateLastYear" class="h4 font-weight-bold   mb-0 ">
+                                  {{expectedCandidateLastYear}}
+                                </div>
+                                <div *ngIf="!expectedCandidateLastYear" class="h4 font-weight-bold   mb-0 ">-
+                                </div>
+                                <span class="small">{{'LAST_YEAR'|translate}} </span>
+                              </div>
+                              <div class="col-6">
+                                <div *ngIf="expectedCandidateCurrentYear" class="h4 font-weight-bold   mb-0">
+                                  {{expectedCandidateCurrentYear}}
+                                </div>
+                                <div *ngIf="!expectedCandidateCurrentYear" class="h4 font-weight-bold   mb-0">-
+                                </div>
+                                <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-------Card 4 : office recruitment----------->
+                  <div class="period-filter col-sm-12 draggable-card col-xl-3 col-lg-3 col-md-6">
+                    <div class="row static-card">
+                      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                        <div class="card with-shadow bg-c-dark-blue-hr-cards order-card">
+                          <div class="card-block candidate-card">
+                            <h4 class="m-b-20"> {{'OFFICE_RECRUITMENT'|translate}}
+                            </h4>
+                            <div class="row text-center mt-4">
+                              <div class="col-6  border-right-white">
+                                <div *ngIf="officeRecruitmentLastYear" class="h4  font-weight-bold text-white mb-0 ">
+                                  {{officeRecruitmentLastYear}}
+                                </div>
+                                <div *ngIf="!officeRecruitmentLastYear" class="h4 font-weight-bold text-white mb-0 ">-
+                                </div>
+                                <span class="small">{{'LAST_YEAR'|translate}}</span>
+                              </div>
+                              <div class="col-6">
+                                <div *ngIf="officeRecruitmentCurrentYear" class="h4 font-weight-bold text-white mb-0">
+                                  {{officeRecruitmentCurrentYear}}
+                                </div>
+                                <div *ngIf="!officeRecruitmentCurrentYear" class="h4 font-weight-bold text-white mb-0">-
+                                </div>
+                                <span class="small">{{'CURRENT_YEAR'|translate}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </form>
+
+            <!---------Chart 1 : rateSuccessfulSubmittedCandidacies --------->
+            <div class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card">
+              <div class={{ClickedClass}}>
+                <app-rate-successful-submitted-candidacies [dateFormat]="dateformat"
+                                                           [contractList]="candidatureContractList"
+                                                           [genderList]="genderList"
+                                                           [officeList]="candidatureOfficeList"
+                                                           class="period-filter"></app-rate-successful-submitted-candidacies>
+              </div>
+
+            </div>
+
+            <!---------Chart 2 : KPIAverageTimeToFill  --------->
+            <div class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card">
+              <div class={{ClickedClass}}>
+                <app-avg-ttf [dateFormat]="dateformat"
+                             [genderList]="genderList"
+                             [officeList]="candidatureOfficeList"
+                             [recruitmentDescriptionList]="candidatureRecruitmentDescriptionList"
+                             class="period-filter"></app-avg-ttf>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+
+</div>

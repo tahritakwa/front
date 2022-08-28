@@ -1,0 +1,113 @@
+<div [formGroup]="tiersFormGroup" class="tiersContact">
+  <div class="form-group" formArrayName="Contact" *ngFor="let contact of contact.controls; let i=index; let
+  isFirst=first">
+    <div *ngIf="isContactRowVisible(contact)">
+      <hr *ngIf="!isFirst">
+      <div class="col-lg-12 col-md-12 col-sm-12" [formGroupName]="i">
+        <div class="row py-1 d-flex justify-content-between">
+          <div *ngIf="contactLabelEditable[i]" class="col px-0">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col">
+                <input class="w-100 form-control" type="text" formControlName="Label" [value]="contact.value.Label"
+                  (keydown.enter)="editContactLabel(i,false)">
+              </div>
+              <div class="col-auto d-flex align-items-center">
+                <i class="fa fa-check fa-lg text-primary" (click)="editContactLabel(i,false)"></i>
+              </div>
+              <div class="col-12">
+                <app-control-messages class="error-msg messages text-left text-danger"
+                  [control]="contact.controls.Label">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!contactLabelEditable[i]" class="col-auto px-0">
+            <div style=" white-space: nowrap;color:#4c9aae; padding: 8px 13px">
+              {{contact.value.Label}}
+              <span *ngIf="!isUpdate[i]">{{i + 1}}</span>
+              <i *ngIf="idTiers === 0 || (idTiers > 0 && hasUpdateCustomerPermission && typeTier === 1 ) || (idTiers > 0 && hasUpdateSupplierPermission && typeTier === 2 )  
+                || (idTiers > 0 && hasUpdateContactPermission)" class="las la-pen la-lg" (click)="editContactLabel(i,true)"></i>
+            </div>
+          </div>
+          <i *ngIf="!contactLabelEditable[i]  && tiersFormGroup.value.Id === 0 || (tiersFormGroup.value.Id > 0 && (hasUpdateCustomerPermission && typeTier === 1 ||hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && hasUpdateContactPermission)" type="button" (click)="deleteContact(contact,i)"
+            class="fa fa-close fa-2x AddIcon text-danger"></i>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-10 col-md-12 col-sm-12">
+          <div class="row mt-2">
+            <div class="col-lg-4 col-md-6 col-sm-12" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'FIRST_NAME'|translate}}</label>
+              <input class="form-control" type="text" formControlName="FirstName" [value]="contact.value.FirstName"
+                [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 )  && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && !hasUpdateContactPermission) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="contact.controls.FirstName">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'LAST_NAME'|translate}}</label>
+              <input class="form-control" type="text" formControlName="LastName" [value]="contact.value.LastName"
+                [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency && !isOffice &&  !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && !hasUpdateContactPermission) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="contact.controls.LastName">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'EMAIL'|translate}}</label>
+              <input class="form-control" type="text" formControlName="Email" [value]="contact.value.Email"
+              [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency  && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice|| isCompanySetup) && !hasUpdateContactPermission) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger" [control]="contact.controls.Email">
+                </app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'FAX'|translate}}</label>
+              <kendo-maskedtextbox class="form-control" [maskValidation]="false" [includeLiterals]="true"
+                formControlName="Fax1" name="Fax1"
+                [disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice|| isCompanySetup) && !hasUpdateContactPermission) ? '' : null">
+              </kendo-maskedtextbox>
+              <app-control-messages class="error-msg messages text-left text-danger" [control]="contact.controls.Fax1">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'FUNCTION'|translate}}</label>
+              <input class="form-control" type="text" formControlName="Fonction"
+              [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice|| isCompanySetup) && !hasUpdateContactPermission) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="contact.controls.Fonction">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ADDRESS'|translate}}</label>
+              <input class="form-control" type="text" formControlName="Adress" [value]="contact.value.Adress"
+                [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 || !hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && !hasUpdateContactPermission) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="contact.controls.Adress">
+              </app-control-messages>
+            </div>
+            <div class="col mt-2" [formGroupName]="i">
+              <app-phone [parentFormGroup]="contact" [hasUpdatePhone]="hasUpdateContactPermission" [isBankAgency]="isBankAgency" [isOffice]="isOffice" [isCompanySetup]="isCompanySetup" [phoneToUpdate]="phoneToUpdate[i]" [idTiers]="idTiers"
+                (phoneHasErrorEvent)="isContactPhoneHasError($event)"></app-phone>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-12 col-sm-12 d-flex justify-content-center">
+          <label class="img-border  d-flex justify-content-center" for="{{'file-input-contact' + uuid + i}}" #fileInput>
+            <img id="{{'tiersPicture' + uuid + i}}" class="img-upload" alt="Illustration des problèmes de suddation"
+              border="0" [src]="picturesContactsSrc && picturesContactsSrc[i] ? picturesContactsSrc[i] : 'assets/image/placeholder-logo.png'" />
+            <i class="fa fa-camera fa-lg"></i>
+            <i *ngIf="picturesContactsSrc && picturesContactsSrc[i] && (idTiers === 0 || (idTiers > 0 && (hasUpdateCustomerPermission && typeTier === 1 ||hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && !hasUpdateContactPermission))" class="fa fa-close fa-xs" (click)="removeContactPicture($event,i, contact)"></i>
+          </label>
+          <input *ngIf="idTiers === 0 || (idTiers > 0 && ((hasUpdateCustomerPermission && typeTier === 1) ||(hasUpdateSupplierPermission && typeTier === 2) ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && hasUpdateContactPermission)"
+            id="{{'file-input-contact' + uuid + i}}" type='file' (change)="uplodadPicture($event,i)" accept="image/*">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="tiersFormGroup.value.Id === 0 || (tiersFormGroup.value.Id > 0 && (hasUpdateCustomerPermission && typeTier === 1 ||hasUpdateSupplierPermission && typeTier === 2 ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && hasUpdateContactPermission)" class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+    <button class="btn-Add k-button btn btn-add" type="button" (click)='addNewContact()'>
+      <i class="fa fa-plus fa AddIcon"></i>
+      <span>&nbsp; {{'ADD'|translate}}</span>
+    </button>
+  </div>
+</div>

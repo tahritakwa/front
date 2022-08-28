@@ -1,0 +1,117 @@
+<div class="card" *ngIf="salaryStructureFormGroup">
+  <form class="form-horizontal" [formGroup]="salaryStructureFormGroup">
+    <div class="card-header local-card-header">
+      <div class="row">
+        <div class=" col-sm-6 mt-1 local-column">
+          <h2 class="card-title mb-0">
+            {{ (isUpdateMode ? 'SALARY_STRUCTURE_COMPONENT.UPDATE' : 'SALARY_STRUCTURE_COMPONENT.ADD' ) | translate }}
+          </h2>
+        </div>
+      </div>
+    </div>
+    <!-- Begin principal menu  part-->
+    <div class="card-body form-group col-12">
+      <div class="row">
+        <div class="row col-12">
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <label class="col-12">
+              {{'REFERENCE'|translate}}<span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <label class="col-12">
+              {{'NAME'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <label class="col-12">
+              {{'SALARY_STRUCTURE_COMPONENT.ORDER'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <label class="col-12">
+              {{'SALARY_STRUCTURE_COMPONENT.PARENT'|translate}}
+            </label>
+          </div>
+        </div>
+        <div class="row col-12">
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <input class="form-control" formControlName="SalaryStructureReference" type="text" [readonly]="isUpdateMode && !isDuplicated"
+              [ngClass]="{ 'has-error': (SalaryStructureReference.touched || SalaryStructureReference.dirty)
+               && (!SalaryStructureReference.valid && !SalaryStructureReference.disabled && !SalaryStructureReference.pending) }">
+            <app-control-messages [control]="SalaryStructureReference" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <input class="form-control" formControlName="Name" type="text"
+              [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && !Name.valid }">
+            <app-control-messages [control]="Name" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <input class="form-control" formControlName="Order" type="number" (change)="changeOrder()"
+              [ngClass]="{ 'has-error': (Order.touched || Order.dirty) && (!Order.valid && !Order.disabled) }"
+              onkeydown="return (event.keyCode!=109 && event.keyCode!=107 && event.keyCode!=110 && event.keyCode!=188);">
+            <app-control-messages [control]="Order" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <app-salary-structure-dropdown [disabled]="isDisabledParent" [group]="salaryStructureFormGroup" (Selected)="getStructureSalaryParentData($event)" [parent]="true" [notWithRoot]="false">
+            </app-salary-structure-dropdown>
+            <app-control-messages [control]="IdParent" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="row col-12 top-space">
+          <div class="col-12">
+            <label class="col-12">
+              {{'DESCRIPTION'|translate}}
+            </label>
+          </div>
+        </div>
+        <div class="row col-12">
+          <div class="col-12">
+            <textarea class="col-12 form-control textarea-space" type="textarea" formControlName="Description"
+              rows="3"></textarea>
+            <br />
+          </div>
+        </div>
+        <div class="col-12">
+          <button class="noPadding btn-Add k-button" *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)"
+            type="button" dir="ltr" style="border: none" style="margin:20px" (click)="addSalaryStructureValidityPeriod()">
+            <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+            <span>&nbsp; {{'ADD_SALARY_STRUCTURE_VALIDITY_PERIOD'|translate}}</span>
+          </button>
+        </div>
+        <div class="card-body row">
+          <!--Begin list of periods-->
+          <div formArrayName="SalaryStructureValidityPeriod" class="col-lg-6 col-sm-12 col-md-12"
+            *ngFor="let validityPeriod of SalaryStructureValidityPeriod.controls.slice().reverse(); let i=index;">
+          <app-manage-salary-structure-validity-period [group]="validityPeriod" [service]="salaryStructureService" [index]="i">
+          </app-manage-salary-structure-validity-period>
+          </div>
+          <!--End list of periods-->
+        </div>
+      </div>
+    </div>
+    <div class="fixed-card-footer">
+      <div [ngClass]="getFooterClass()">
+        <footer class="ml-0 app-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="/main/settings/payroll/salaryStructure">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i>
+                  {{ "BACK_TO_LIST" | translate }}
+                </span>
+              </a>
+              <button class="btn btn-sm btn-save mx-1" (click)="saveSalaryStructure()" *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </form>
+</div>

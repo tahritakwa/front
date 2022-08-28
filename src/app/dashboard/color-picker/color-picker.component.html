@@ -1,0 +1,23 @@
+<div class="row justify-content-md-center">
+    <div class="col-9">
+      <div class="btn-group col-12" role="group">
+        <button type="button" [style.background]="arrayColors['color5']" class="btn btn-secondary"
+          (click)="onChangeColors('color5')"></button>
+        <button type="button" [style.background]="arrayColors['color4']" class="btn btn-secondary"
+          (click)="onChangeColors('color4')"></button>
+        <button type="button" [style.background]="arrayColors['color3']" class="btn btn-secondary"
+          (click)="onChangeColors('color3')"></button>
+        <button type="button" [style.background]="arrayColors['color2']" class="btn btn-secondary"
+          (click)="onChangeColors('color2')"></button>
+        <button type="button" [style.background]="arrayColors['color1']" class="btn btn-secondary"
+          (click)="onChangeColors('color1')"></button>
+      </div>
+    </div>
+</div>
+<div class="row justify-content-md-center">
+  <div [style.background]="arrayColors[selectedColor]" [cpToggle]="true" [cpDialogDisplay]="'inline'"
+    [cpCancelButton]="true" [cpCancelButtonText]="'CANCEL' | translate" [cpOKButtonText]="'CONFIRM' | translate" [cpOKButton]="true" [cpCancelButtonClass]="'btn btn-danger btn-xs'"
+    [cpOKButtonClass]="'btn btn-success btn-xs'" [(colorPicker)]="arrayColors[selectedColor]"
+    (colorPickerSelect)="confirm()">
+  </div>
+</div>

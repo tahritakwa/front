@@ -1,0 +1,30 @@
+.multi-select-style {
+  border: 2px double #4c9aae78;
+}
+
+.indicate-color {
+  height: 25px;
+  width: 100px;
+  border-radius: 5px;
+  margin-left: 2%;
+}
+
+#pipelineTitle {
+  color: #4c9aae;
+}
+
+#intermediateStepsKendo tr.dragging {
+  background-color: #4c9aae;
+}
+#intermediateStepsKendo {
+  cursor: move;
+}
+
+.grid-buttons{
+  background: none;
+  border: none;
+}
+.grid-buttons:hover{
+  background: none;
+  border: none;
+}

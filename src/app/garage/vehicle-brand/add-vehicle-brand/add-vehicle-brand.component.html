@@ -1,0 +1,68 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5" >
+    <div class="row pl-3" >
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_VEHICLE_BRAND' : 'ADD_VEHICLE_BRAND') |translate}}</h3>
+      </div>
+    </div>
+  </div>
+      <hr color="#d9d9d9" class="mt-0">
+ <!--End Card header-->
+
+ <div class="card-body">
+<form [formGroup]="brandFormGroup" class="container-fluid">
+    <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+            <div class="col-lg-10 col-sm-12 col-md-12">
+                <div class="row">
+                    <div class="col-lg-5 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+                      <input class="form-control" formControlName="Code" type="text" name="Code">
+                      <app-control-messages [control]="brandFormGroup.controls.Code"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-5 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESIGNATION'|translate}}<span class="required">*</span></label>
+                      <input class="form-control" formControlName="Designation" type="text" name="Designation">
+                      <app-control-messages [control]="brandFormGroup.controls.Designation"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                      </div>
+            </div>
+          <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+            <label class="img-border  d-flex justify-content-center" for="file-input" #fileInput>
+              <img id="brandPicture" class="imgSize" alt="Illustration des problèmes de suddation" border="0"
+                   [src]="pictureBrandSrc || 'assets/image/placeholder-logo.png'"/>
+              <i class="fa fa-camera fa-lg"></i>
+              <i *ngIf="pictureBrandSrc" class="fa fa-close fa-xs" (click)="removeBrandPicture($event)"></i>
+            </label>
+            <input id="file-input" type='file' (change)="onSelectFile($event)">
+          </div>
+        </div>
+    </div>
+</form>
+</div>
+ <!--Begin Card footer-->
+
+ <div class="fixed-card-footer">
+  <div class="footerStyle">
+
+    <footer class="app-footer mx-0">
+      <div class="w-100">
+        <div class="d-flex justify-content-end p-3 footer-content">
+          <a (click)="backToList()">
+            <span class="btn btn-sm btn-back-to-list btn-primary">
+              <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+            </span>
+          </a>
+          <button (click)="onAddBrandClick()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateBrandPermission && isUpdateMode || hasAddBrandPermission && !isUpdateMode">
+            <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+          </button>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>
+<!--End Card footer-->
+</div>

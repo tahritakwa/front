@@ -1,0 +1,123 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-body">
+          <div class="d-flex flex-row mt-2">
+            <div class="col-auto float-left">
+              <app-search-bank (sendData)="receiveData($event)"></app-search-bank>
+            </div>
+            <app-btn-grid  class="flex-grow-1 float-right"
+                          [fileName]="'LIST_BANK'|translate"
+                          [advencedAdd]='hasAddPermission' [addLink]='"add"'
+                          [isExportExcel]="true" [service]="bankService"
+                          [gridSettings]="gridSettings" [relativeStyle]='true' [model]="true"
+                          [predicate]="predicate">
+            </app-btn-grid>
+          </div>
+          <form class="form-horizontal">
+            <kendo-grid
+              [data]="gridSettings.gridData"
+              [pageSize]="gridSettings.state.take"
+              [skip]="gridSettings.state.skip"
+              [sort]="sort"
+              [filter]="gridSettings.state.filter"
+              (cancel)="cancelHandler($event)"
+              (save)="saveHandler($event)"
+              (remove)="removeHandler($event)"
+              (add)="addHandler($event)"
+              (edit)="editHandler($event)"
+              (dataStateChange)="dataStateChange($event)"
+              [sortable]="true"
+              [pageable]="pagerSettings"
+              [columnMenu]="false"
+              [reorderable]="true"
+              (sortChange)="sortChange($event)">
+              <!--Columns-->
+              <!--Name & picture Start-->
+              <kendo-grid-column
+                [field]="gridSettings.columnsConfig[0].field"
+                [title]="gridSettings.columnsConfig[0].title | translate"
+                [width]="gridSettings.columnsConfig[0]._width"
+                [filter]="gridSettings.columnsConfig[0].filter"
+                [filterable]="gridSettings.columnsConfig[0].filterable"
+                [format]="gridSettings.columnsConfig[0].format"
+                [columnMenu]="false">
+                <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+                              theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div class="row d-flex align-items-center">
+                    <div class="col-auto">
+                      <img id="blah" class="rounded-circle card-avatar"
+                      [src]="dataItem.image" alt="avatar"/>
+                    </div>
+                    <div class="col pl-0">
+                      <span class="tiers-title"> {{dataItem.Name}} </span>
+                    </div>
+                  </div>
+                </ng-template>
+              </kendo-grid-column>
+              <!--Name End-->
+              <!--Email Start-->
+              <kendo-grid-column
+                [field]="gridSettings.columnsConfig[1].field"
+                [title]="gridSettings.columnsConfig[1].title | translate"
+                [width]="gridSettings.columnsConfig[1]._width"
+                [filter]="gridSettings.columnsConfig[1].filter"
+                [filterable]="gridSettings.columnsConfig[1].filterable"
+                [format]="gridSettings.columnsConfig[1].format"
+                [columnMenu]="false">
+                <!--Email End-->
+              </kendo-grid-column>
+              <!--Phone Start-->
+              <kendo-grid-column
+                [field]="gridSettings.columnsConfig[2].field"
+                [title]="gridSettings.columnsConfig[2].title | translate"
+                [width]="gridSettings.columnsConfig[2]._width"
+                [filter]="gridSettings.columnsConfig[2].filter"
+                [filterable]="gridSettings.columnsConfig[2].filterable"
+                [format]="gridSettings.columnsConfig[2].format"
+                [columnMenu]="false">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  <span *ngIf="dataItem.Phone">{{dataItem.Phone}}</span>
+                  <span *ngIf="!dataItem.Phone">-</span>
+                </ng-template>
+              </kendo-grid-column>
+              <!--Phone End-->
+              <!--Address Start-->
+              <kendo-grid-column
+                [field]="gridSettings.columnsConfig[3].field"
+                [title]="gridSettings.columnsConfig[3].title | translate"
+                [width]="gridSettings.columnsConfig[3]._width"
+                [filter]="gridSettings.columnsConfig[3].filter"
+                [filterable]="gridSettings.columnsConfig[3].filterable"
+                [format]="gridSettings.columnsConfig[3].format"
+                [columnMenu]="false">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  <span *ngIf="dataItem.Address">{{dataItem.Address}}</span>
+                  <span *ngIf="!dataItem.Address">-</span>
+                </ng-template>
+              </kendo-grid-column>
+              <!--Address End-->
+              <!--End Columns-->
+              <!--Actions-->
+              <kendo-grid-command-column [width]="actionColumnWidth" [title]="actionColumnTitle | translate">
+                <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                  <!-- edit command directive, will do nothing if dataItem is not editable -->
+                  <i *ngIf="btnEditVisible && (hasShowPermission || hasUpdatePermission)" class="las la-pen cursor-pointer edit-pencil la-lg"
+                     (click)="goToAdvancedEdit(dataItem)"></i>
+                  <!-- remove command directive -->
+                  <i class="fa fa-trash-o la-lg mx-3 text-danger" aria-hidden="true"
+                     (click)="removeHandler(dataItem)" *ngIf="hasDeletePermission"></i>
+                </ng-template>
+              </kendo-grid-command-column>
+              <!--End Actions-->
+            </kendo-grid>
+          </form>
+        </div><!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,100 @@
+.modal-dialog {
+  max-width: 100% !important;
+}
+
+.archiveBtn {
+  background: #028fb9 !important;
+  color: white !important;
+}
+
+.dropdown-item-active {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.25rem 1.5rem !important;
+  clear: both !important;
+  font-weight: 400 !important;
+  text-align: inherit !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: relative !important;
+  padding: 10px 20px !important;
+  border-bottom: 1px solid #c8ced3 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  background-color: #4c9aae !important;
+}
+
+
+.dropdown-item.active, .dropdown-item:active {
+  color: #212529;
+}
+
+.btnConfigDashboard {
+  float: right;
+  margin-bottom: 0px;
+  line-height: 2.5em;
+  color: white;
+}
+
+.btnConfigDashboard:hover {
+  color: #3e98b3;
+}
+
+.HandPointer {
+  cursor: pointer !important;
+}
+
+.HandPointer:hover {
+  background-color: #4c9aae29;
+}
+
+aside.aside-menu {
+  background: #f0f3f5 !important;
+}
+
+.list-group-item-accent-secondary {
+  border-left: 4px solid #4b9aad !important;
+}
+
+.pointer-cursor:hover {
+
+  cursor: pointer;
+}
+
+.customMarginIcons {
+  margin-right: 15px !important;
+  margin-left: 2px !important
+}
+
+.colorSubRightMenu {
+  border-left: 4px solid #a0d2d9f2;
+}
+
+.customMarginText {
+  margin-right: 20px !important;
+}
+
+.navTitle {
+  width: 141px;
+  font-size: 120%;
+  text-align: center;
+}
+
+.borderRemoved {
+  border: none !important;
+}
+
+.dropdown-menu {
+  transform: none !important;
+}
+
+.drop-resp-right {
+  right: 15px !important;
+  left: 15px !important;
+  top: 35px !important;
+}
+.nav-tabs-new {
+  border: none;
+  margin-bottom: 1px;
+  border-bottom: dashed 2px #d9d9d9;
+}

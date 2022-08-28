@@ -1,0 +1,87 @@
+<kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+            [sortable]="true" [pageable]="pagerSettings" [navigable]="true" (dataStateChange)="dataStateChange($event)"
+            (pageChange)="onPageChange($event)" [sort]="gridSettings.state.sort" (sortChange)="sortChange()" class="bulk-table">
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountDate"
+              [title]="'DATE_FACTURATION_DOCUMENT_ACCOUNT'| translate" width="125px"
+               [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridHeaderTemplate>
+       <span tooltip="{{'DATE_FACTURATION_DOCUMENT_ACCOUNT'| translate}}" theme="light">{{'DATE_FACTURATION_DOCUMENT_ACCOUNT'| translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+    {{dataItem.date | date: formatDate}}
+    </ng-template>
+    <ng-template kendoGridFooterTemplate>
+      <div> {{'TOTAL'|translate}}</div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="folio"
+                     [title]="'CODE_DOCUMENT_ACCOUNT'| translate" width="80px"
+                     [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'CODE_DOCUMENT_ACCOUNT'| translate}}" theme="light">{{'CODE_DOCUMENT_ACCOUNT'| translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountDateLine"
+                     [title]="'DOCUMENT_LINE_DATE'| translate" width="90px"
+                     [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridHeaderTemplate>
+       <span tooltip="{{'DOCUMENT_LINE_DATE'| translate}}" theme="light">{{'DOCUMENT_LINE_DATE'| translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+           {{dataItem.documentLineDate | date: formatDate}}
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="accountCode"
+                     [title]="'ACCOUNT_NUMBER'| translate" width="90px"
+                     [headerStyle]="{'color': 'black','padding' : '0.75rem 0'}">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'ACCOUNT_NUMBER'| translate}}" theme="light">{{'ACCOUNT_NUMBER'| translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="label"
+                     [title]="'LABEL'| translate" width="405px"
+                     [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'LABEL'| translate}}" theme="light">{{'LABEL'| translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column  [style]="{'text-align': 'right', 'padding-right':'3rem !important'}" [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}"
+  [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}" field="debit"
+                     [title]="'DEBIT'|translate" [width]="150"  [format]="formatNumberOptions" >
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'DEBIT'| translate}}" theme="light">{{'DEBIT'| translate}}</span>
+    </ng-template>
+
+    <ng-template kendoGridFooterTemplate>
+      <kendo-numerictextbox [readonly]="true" style="text-align: right; padding-right:1rem"
+                            [format]="formatNumberOptions"
+                            [value]="totalDebitAmount">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [style]="{'text-align': 'right', 'padding-right':'3rem !important'}" [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}"
+   [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}"
+   field="credit" [title]="'CREDIT'|translate" [width]="150"   [format]="formatNumberOptions" >
+
+   <ng-template kendoGridHeaderTemplate>
+    <span tooltip="{{'CREDIT'| translate}}" theme="light">{{'CREDIT'| translate}}</span>
+  </ng-template>
+
+   <ng-template kendoGridFooterTemplate>
+      <kendo-numerictextbox [readonly]="true"  style="text-align: right; padding-right:1rem"
+                            [format]="formatNumberOptions"
+                            [value]="totalCreditAmount">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                       pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+  </kendo-grid-messages>
+</kendo-grid>

@@ -1,0 +1,11 @@
+<div [formGroup]="group">
+  <kendo-combobox (filterChange)="handleFilter($event)" (valueChange)="skillsSelected($event)" [allowCustom]="allowCustom"
+    [data]="languageDataSource" [filterable]="true" [valuePrimitive]="true" class="form-control HistoryCommandMargin"
+    formControlName="IdLanguage" name="IdLanguage" textField="Name" valueField="Id" [disabled]="disabled">
+    <!--footer template-->
+    <ng-template *ngIf="hasAddLanguagePermission" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>

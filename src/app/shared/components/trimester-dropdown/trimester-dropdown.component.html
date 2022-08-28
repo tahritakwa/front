@@ -1,0 +1,14 @@
+<div [formGroup]="group">
+  <kendo-dropdownlist [data]="trimesterDataSource"
+                      class="form-control HistoryCommandMargin"
+                      name="Trimester"
+                      formControlName="Trimester"
+                      textField="name"
+                      valueField="value"
+                      [valuePrimitive]="true"
+                      (valueChange)="valueChange($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.name | uppercase | translate }}
+    </ng-template>
+  </kendo-dropdownlist>
+</div>

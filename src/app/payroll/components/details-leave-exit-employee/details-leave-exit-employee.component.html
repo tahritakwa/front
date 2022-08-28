@@ -1,0 +1,178 @@
+<div class="card">
+  <!----MONTHLY TYPE------>
+  <div class="card">
+    <!--Begin Card eader-->
+    <div class="card-header">
+      <div class="col-sm-6 mt-1">
+        <h4 class="card-title mb-0">{{'LEAVE_BALANCE_RESUME_MONTHLY_TYPE'|translate}}</h4>
+      </div>
+    </div>
+    <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:35px">
+      <kendo-grid (dataStateChange)="dataStateChange($event)" [data]="gridSettings.gridData"
+        [filter]="gridSettings.state.filter" [navigable]="true" [pageSize]="gridSettings.state.take" [pageSize]="gridState.take"
+        [pageable]="pagerSettings" [reorderable]="true" [selectable]="true" [skip]="gridSettings.state.skip"
+        [skip]="gridState.skip" [sort]="gridSettings.state.sort" [sortable]="true">
+        <!--MONTH -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                           [filter]="gridSettings.columnsConfig[0].filter"
+                           [filterable]="gridSettings.columnsConfig[0].filterable"
+                           [format]="gridSettings.columnsConfig[0].format"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0]._width">
+        </kendo-grid-column>
+        <!--MONTH -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                           [filter]="gridSettings.columnsConfig[1].filter"
+                           [filterable]="gridSettings.columnsConfig[1].filterable"
+                           [format]="gridSettings.columnsConfig[1].format"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1]._width">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{dataItem.Month | date:'MMMM' | uppercase | translate }} {{dataItem.Month | date: 'yyyy'}}
+          </ng-template>
+        </kendo-grid-column>
+        <!--DAY_TAKEN_PER_MONTH-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                           [filter]="gridSettings.columnsConfig[2].filter"
+                           [filterable]="gridSettings.columnsConfig[2].filterable"
+                           [format]="gridSettings.columnsConfig[2].format"
+                           [title]="gridSettings.columnsConfig[2].title | translate"
+                           [width]="gridSettings.columnsConfig[2]._width">
+        </kendo-grid-column>
+        <!--TOTAL_TAKEN_PER_MONTH-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                           [filter]="gridSettings.columnsConfig[3].filter"
+                           [filterable]="gridSettings.columnsConfig[3].filterable"
+                           [format]="gridSettings.columnsConfig[3].format"
+                           [title]="gridSettings.columnsConfig[3].title | translate"
+                           [width]="gridSettings.columnsConfig[3]._width">
+        </kendo-grid-column>
+        <!--ACQUIRED_PER_MONTH-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                           [filter]="gridSettings.columnsConfig[4].filter"
+                           [filterable]="gridSettings.columnsConfig[4].filterable"
+                           [format]="gridSettings.columnsConfig[4].format"
+                           [title]="gridSettings.columnsConfig[4].title | translate"
+                           [width]="gridSettings.columnsConfig[4]._width">
+        </kendo-grid-column>
+        <!--CUMULATIVE_TAKEN-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+                           [filter]="gridSettings.columnsConfig[5].filter"
+                           [filterable]="gridSettings.columnsConfig[5].filterable"
+                           [format]="gridSettings.columnsConfig[5].format"
+                           [title]="gridSettings.columnsConfig[5].title | translate"
+                           [width]="gridSettings.columnsConfig[5]._width">
+        </kendo-grid-column>
+        <!--CUMULATIVE_ACQUIRED-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+                           [filter]="gridSettings.columnsConfig[6].filter"
+                           [filterable]="gridSettings.columnsConfig[6].filterable"
+                           [format]="gridSettings.columnsConfig[6].format"
+                           [title]="gridSettings.columnsConfig[6].title | translate"
+                           [width]="gridSettings.columnsConfig[6]._width">
+        </kendo-grid-column>
+        <!--CUMULATIVE_ACQUIRED-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[7].field"
+                           [filter]="gridSettings.columnsConfig[7].filter"
+                           [filterable]="gridSettings.columnsConfig[7].filterable"
+                           [format]="gridSettings.columnsConfig[7].format"
+                           [title]="gridSettings.columnsConfig[7].title | translate"
+                           [width]="gridSettings.columnsConfig[7]._width">
+        </kendo-grid-column>
+      </kendo-grid>
+    </div>
+
+  </div>
+  <!--end div card-->
+  <!----ANNUAL TYPE------>
+  <div class="card">
+    <!--Begin Card eader-->
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h4 class="card-title mb-0">{{'LEAVE_BALANCE_RESUME_ANNUAL_TYPE'|translate}}</h4>
+      </div>
+    </div>
+    <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:35px">
+      <kendo-grid (dataStateChange)="dataStateChangeSecondGrid($event)" [data]="secondGridSettings.gridData"
+        [filter]="secondGridSettings.state.filter" [navigable]="true" [pageSize]="secondGridSettings.state.take" [pageSize]="gridState.take"
+        [pageable]="pagerSettings" [reorderable]="true" [selectable]="true" [skip]="secondGridSettings.state.skip"
+        [skip]="gridState.skip" [sort]="secondGridSettings.state.sort" [sortable]="true">
+        <!--LEAVE_TYPE -->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[0].field"
+                           [filter]="secondGridSettings.columnsConfig[0].filter"
+                           [filterable]="secondGridSettings.columnsConfig[0].filterable"
+                           [format]="secondGridSettings.columnsConfig[0].format"
+                           [title]="secondGridSettings.columnsConfig[0].title | translate"
+                           [width]="secondGridSettings.columnsConfig[0]._width">
+        </kendo-grid-column>
+        <!--YEAR -->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[1].field"
+                           [filter]="secondGridSettings.columnsConfig[1].filter"
+                           [filterable]="secondGridSettings.columnsConfig[1].filterable"
+                           [format]="secondGridSettings.columnsConfig[1].format"
+                           [title]="secondGridSettings.columnsConfig[1].title | translate"
+                           [width]="secondGridSettings.columnsConfig[1]._width">
+        </kendo-grid-column>
+        <!--DAY_TAKEN_PER_YEAR-->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[2].field"
+                           [filter]="secondGridSettings.columnsConfig[2].filter"
+                           [filterable]="secondGridSettings.columnsConfig[2].filterable"
+                           [format]="secondGridSettings.columnsConfig[2].format"
+                           [title]="secondGridSettings.columnsConfig[2].title | translate"
+                           [width]="secondGridSettings.columnsConfig[2]._width">
+        </kendo-grid-column>
+        <!--TOTAL_TAKEN_PER_YEAR-->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[3].field"
+                           [filter]="secondGridSettings.columnsConfig[3].filter"
+                           [filterable]="secondGridSettings.columnsConfig[3].filterable"
+                           [format]="secondGridSettings.columnsConfig[3].format"
+                           [title]="secondGridSettings.columnsConfig[3].title | translate"
+                           [width]="secondGridSettings.columnsConfig[3]._width">
+        </kendo-grid-column>
+        <!--ACQUIRED_PER_YEAR-->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[4].field"
+                           [filter]="secondGridSettings.columnsConfig[4].filter"
+                           [filterable]="secondGridSettings.columnsConfig[4].filterable"
+                           [format]="secondGridSettings.columnsConfig[4].format"
+                           [title]="secondGridSettings.columnsConfig[4].title | translate"
+                           [width]="secondGridSettings.columnsConfig[4]._width">
+        </kendo-grid-column>
+        <!--CUMULATIVE_TAKEN-->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[5].field"
+                           [filter]="secondGridSettings.columnsConfig[5].filter"
+                           [filterable]="secondGridSettings.columnsConfig[5].filterable"
+                           [format]="secondGridSettings.columnsConfig[5].format"
+                           [title]="secondGridSettings.columnsConfig[5].title | translate"
+                           [width]="secondGridSettings.columnsConfig[5]._width">
+        </kendo-grid-column>
+        <!--CUMULATIVE_ACQUIRED-->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[6].field"
+                           [filter]="secondGridSettings.columnsConfig[6].filter"
+                           [filterable]="secondGridSettings.columnsConfig[6].filterable"
+                           [format]="secondGridSettings.columnsConfig[6].format"
+                           [title]="secondGridSettings.columnsConfig[6].title | translate"
+                           [width]="secondGridSettings.columnsConfig[6]._width">
+        </kendo-grid-column>
+        <!--BALANCE_PER_YEAR-->
+        <kendo-grid-column [field]="secondGridSettings.columnsConfig[7].field"
+                           [filter]="secondGridSettings.columnsConfig[7].filter"
+                           [filterable]="secondGridSettings.columnsConfig[7].filterable"
+                           [format]="secondGridSettings.columnsConfig[7].format"
+                           [title]="secondGridSettings.columnsConfig[7].title | translate"
+                           [width]="secondGridSettings.columnsConfig[7]._width">
+        </kendo-grid-column>
+      </kendo-grid>
+    </div>
+  </div>
+  <!--end div card-->
+  <div *ngIf="!hide" class="card-footer">
+    <button [routerLink]="['/main/payroll/exit-employee/edit/',id]" class="btn btn-sm btn-primary">
+      <i class="fa fa-chevron-circle-left"></i> {{'BACK'|translate}}
+    </button>
+    <button (click)="onPrintLeaveSummary()" class="btn btn-sm btn-primary">
+      <i class="fa fa-print"></i> {{'PRINT'|translate}}
+    </button>
+  </div>
+</div>
+
+

@@ -1,0 +1,62 @@
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="cnssFormGroup" class="form-horizontal">
+
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+          <div class="form-group row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'LABEL'|translate}}<span class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (Label.touched || Label.dirty) && !Label.valid }" class="form-control" formControlName="Label" name="Label"
+                     type="text">
+              <app-control-messages [control]="Label" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMPLOYER_RATE'|translate}}<span class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (EmployerRate.touched || EmployerRate.dirty) && !EmployerRate.valid }" class="form-control" formControlName="EmployerRate" name="EmployerRate"
+                     type="number">
+              <app-control-messages [control]="EmployerRate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-6 col-md-16 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'SALARY_RATE'|translate}}<span
+                class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (SalaryRate.touched || SalaryRate.dirty) && !SalaryRate.valid }" class="form-control" formControlName="SalaryRate" name="SalaryRate"
+                     type="number">
+              <app-control-messages [control]="SalaryRate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'WORK_ACCIDENT_QUOTA'|translate}}<span
+                class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (WorkAccidentQuota.touched || WorkAccidentQuota.dirty) && !WorkAccidentQuota.valid }" class="form-control" formControlName="WorkAccidentQuota" name="WorkAccidentQuota"
+                     type="number">
+              <app-control-messages [control]="WorkAccidentQuota" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'OPERATING_CODE'|translate}}<span
+                class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (OperatingCode.touched || OperatingCode.dirty) && !OperatingCode.valid }" class="form-control" formControlName="OperatingCode" name="OperatingCode"
+                     type="text">
+              <app-control-messages [control]="OperatingCode" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End principal menu  part -->
+
+      <br/>
+      <button (click)="save()" class="btn btn-sm btn-danger" type="submit">
+        <i class="fa fa-floppy-o"></i> {{'ADD' |translate}}
+      </button>
+    </form>
+  </div>
+</div>

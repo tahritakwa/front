@@ -1,0 +1,336 @@
+<div class="period-filter" *ngIf="!shouldRefresh">
+
+  <!--first line of cards -->
+  <div class="period-filter dashboard-widget row" [dragula]="dragula">
+    <!---------Card 1--------->
+    <div *ngIf="hasSalesPermission" class="period-filter col-sm-12 draggable-card"
+      [class.col-xl-3]="hasPurchasePermission" [class.col-lg-6]="hasPurchasePermission"
+      [class.col-md-6]="hasPurchasePermission" [class.col-xl-4]="!hasPurchasePermission"
+      [class.col-lg-4]="!hasPurchasePermission" [class.col-md-4]="!hasPurchasePermission">
+      <div class="row static-card">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div class="card with-shadow bg-c-blue order-card">
+            <div class="card-block">
+              <h4 class="m-b-20">{{'TURNOVER_PER_SALES'|translate}}</h4>
+              <div class="row text-center mt-4">
+                <div class="col-6  border-right-white">
+                  <div *ngIf="lastMonthTurnoverSales && userCurrencyCode && userCurrencyPrecision" class="h4 font-weight-bold text-warning mb-0 ">
+                    {{intl.formatNumber(lastMonthTurnoverSales,userCurrencyPrecision)}}
+                    <span *ngIf="userCurrencyCode" class="currency text-warning">{{userCurrencyCode}} </span>
+                  </div>
+                  <div *ngIf="!lastMonthTurnoverSales" class="h4 font-weight-bold text-warning mb-0 ">0
+                    <span *ngIf="userCurrencyCode" class="currency text-warning">{{userCurrencyCode}} </span>
+                  </div>
+                  <span class="small text-dark">{{'LAST_MONTH'|translate}} </span>
+                </div>
+                <div class="col-6">
+                  <div *ngIf="currentMonthTurnoverSales && userCurrencyCode && userCurrencyPrecision" class="h4 font-weight-bold text-warning mb-0">
+                    {{intl.formatNumber(currentMonthTurnoverSales,userCurrencyPrecision)}}
+                    <span *ngIf="userCurrencyCode" class="currency text-warning">{{userCurrencyCode}} </span>
+                  </div>
+                  <div *ngIf="!currentMonthTurnoverSales" class="h4 font-weight-bold text-warning mb-0">0
+                    <span *ngIf="userCurrencyCode" class="currency text-warning">{{userCurrencyCode}} </span>
+                  </div>
+                  <span class="small text-dark">{{'CURRENT_MONTH'|translate}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-------- Card 2----------->
+    <div *ngIf="hasSalesPermission" class="period-filter col-sm-12 draggable-card"
+      [class.col-xl-3]=" hasPurchasePermission" [class.col-lg-6]="hasPurchasePermission"
+      [class.col-md-6]="hasPurchasePermission" [class.col-xl-4]="!hasPurchasePermission"
+      [class.col-lg-4]=" !hasPurchasePermission" [class.col-md-4]="!hasPurchasePermission">
+      <div class="row static-card">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div class="card with-shadow bg-c-green order-card">
+            <div class="card-block">
+              <h4 class="m-b-20">{{'TOTAL_CUSTOMER' |translate}} </h4>
+              <h2 *ngIf="totalClientPerDay" class="text-right"><i
+                  class="fa fa-rocket f-left"></i><span>{{totalClientPerDay.Value}}</span></h2>
+              <h2 *ngIf="!totalClientPerDay" class="text-right"><i class="fa fa-rocket f-left"></i><span>0</span>
+              </h2>
+              <span class="text-nowrap f-right">{{'TODAY' |translate}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-------Card 3----------->
+    <div *ngIf="hasPurchasePermission" class="period-filter  col-sm-12 draggable-card"
+      [class.col-xl-12]="!hasSalesPermission" [class.col-lg-12]=" !hasSalesPermission"
+      [class.col-md-12]=" !hasSalesPermission" [class.col-xl-3]="hasSalesPermission "
+      [class.col-lg-6]="hasSalesPermission " [class.col-md-6]="hasSalesPermission">
+      <div class="row static-card">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div class="card with-shadow  bg-c-yellow order-card">
+            <div class="card-block">
+              <h4 class="m-b-20">{{'TURNOER_DEPENSE' |translate}} </h4>
+              <div class="row text-center mt-4">
+                <div class="col-6  border-right-white">
+                  <div *ngIf="lastMonthTurnoverDepense && userCurrencyCode && userCurrencyPrecision" class="h4 font-weight-bold text-danger mb-0 ">
+                    {{intl.formatNumber(lastMonthTurnoverDepense,userCurrencyPrecision)}}
+                    <span *ngIf="userCurrencyCode" class="currency text-danger">{{userCurrencyCode}} </span>
+                  </div>
+                  <div *ngIf="!lastMonthTurnoverDepense" class="h4 font-weight-bold text-danger mb-0 ">0
+                    <span *ngIf="userCurrencyCode" class="currency text-danger">{{userCurrencyCode}} </span>
+                  </div>
+                  <span class="small text-dark">{{'LAST_MONTH'|translate}}</span>
+                </div>
+                <div class="col-6">
+                  <div *ngIf="currentMonthTurnoverDepense && userCurrencyCode && userCurrencyPrecision" class="h4 font-weight-bold text-danger mb-0">
+                    {{intl.formatNumber(currentMonthTurnoverDepense,userCurrencyPrecision)}}
+                    <span *ngIf="userCurrencyCode" class="currency text-danger">{{userCurrencyCode}} </span>
+                  </div>
+                  <div *ngIf="!currentMonthTurnoverDepense" class="h4 font-weight-bold text-danger mb-0">0
+                    <span *ngIf="userCurrencyCode" class="currency text-danger">{{userCurrencyCode}} </span>
+                  </div>
+                  <span class="small text-dark">{{'CURRENT_MONTH'|translate}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-------Card 4----------->
+    <div *ngIf="hasSalesPermission" class="period-filter col-sm-12 draggable-card"
+      [class.col-xl-3]="hasPurchasePermission" [class.col-lg-6]="hasPurchasePermission"
+      [class.col-md-6]="hasPurchasePermission" [class.col-xl-4]="!hasPurchasePermission"
+      [class.col-lg-4]="!hasPurchasePermission" [class.col-md-4]=" !hasPurchasePermission">
+      <div class="row static-card">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <div class="card with-shadow bg-c-pink order-card">
+            <div class="card-block">
+              <h4 class="m-b-20"> {{'TOTAL_ORDERS_B2B'|translate}} <span
+                  class="currency text-white">{{'DELIVRED'|translate}} / {{'ORDERED'|translate}} </span>
+              </h4>
+              <div class="row text-center mt-4">
+                <div class="col-6  border-right-white">
+                  <div *ngIf="totalOrderB2B" class="h4  font-weight-bold text-white mb-0 ">
+                    {{totalOrderB2B.deliverLastMonth}} / {{totalOrderB2B.allLastMonth}}
+                  </div>
+                  <div *ngIf="!totalOrderB2B" class="h4 font-weight-bold text-white mb-0 ">0/0
+                  </div>
+                  <span class="small text-dark">{{'LAST_MONTH'|translate}}</span>
+                </div>
+                <div class="col-6">
+                  <div *ngIf="totalOrderB2B" class="h4 font-weight-bold text-white mb-0">
+                    {{totalOrderB2B.deliveredCurrentMonth}} / {{totalOrderB2B.allCurrentMonth}}
+                  </div>
+                  <div *ngIf="!totalOrderB2B" class="h4 font-weight-bold text-white mb-0">0/0
+                  </div>
+                  <span class="small text-dark">{{'CURRENT_MONTH'|translate}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <!-- Rest of cards -->
+
+    <!-- Customers outstanding-->
+    <div *ngIf="hasTreasurySalesPermission" class="period-filter col-xl-3 col-lg-6 col-md-6 col-sm-12 draggable-card"
+      [class.col-xl-4]=" hasSalesPermission && !hasPurchasePermission ">
+      <div class={{ClickedClass}}>
+        <div class="card-header py-3">
+          <h4 class="card-title mb-0">{{'CUSTOMER_OUTSTANDING'|translate}}</h4>
+          <div class="small text-muted">
+            {{'CURRENT_YEAR'|translate}}
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="progress" [attr.data-percentage]="InvoiceRemainingAmountPercentSales">
+            <span class="progress-left">
+              <span class="progress-bar" style="border-color:#73b4ff"></span>
+            </span>
+            <span class="progress-right">
+              <span class="progress-bar" style="border-color:#73b4ff"></span>
+            </span>
+            <div class="progress-value">
+              <div>
+                <div *ngIf="InvoiceRemainingAmountPercentSales" class="h2 ">
+                  {{InvoiceRemainingAmountPercentSales}}<sup class="small">%</sup></div>
+                <div *ngIf="!InvoiceRemainingAmountPercentSales" class="h2 font-weight-bold">
+                  0<sup class="small">%</sup></div>
+              </div>
+            </div>
+          </div>
+          <div class="row text-center mt-4">
+            <div class="col-6 border-right">
+              <div *ngIf="!InvoiceAmountTTCSales" class="h4 font-weight-bold mb-0">0</div>
+              <div *ngIf="InvoiceAmountTTCSales && userCurrencyCode && userCurrencyPrecision" class="h4 font-weight-bold mb-0">
+                {{intl.formatNumber(InvoiceAmountTTCSales,userCurrencyPrecision)}}
+                <span *ngIf="userCurrencyCode" class="currency text-dark">{{userCurrencyCode}} </span>
+              </div>
+              <span class="small text-gray">{{'INVOICE_AMOUNT_TTC' |translate}}</span>
+            </div>
+            <div class="col-6">
+              <div *ngIf="!InvoiceRemainingAmountSales" class="h4 font-weight-bold mb-0">0</div>
+              <div *ngIf="InvoiceRemainingAmountSales && userCurrencyCode && userCurrencyPrecision" class="h4 font-weight-bold mb-0">
+                {{intl.formatNumber(InvoiceRemainingAmountSales,userCurrencyPrecision)}}
+                <span *ngIf="userCurrencyCode" class="currency text-dark">{{userCurrencyCode}} </span>
+              </div>
+              <span class="small text-gray">{{'INVOICE_REMAINING_AMOUNT_TTC'|translate}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--Etat des ventes-->
+    <div *ngIf="hasSalesPermission" class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card" [class.col-xl-3]="(hasPurchasePermission && hasTreasurySalesPermission && hasTreasuryPurchasePermission) || (hasPurchasePermission && hasTreasurySalesPermission) ||
+       (hasPurchasePermission && hasTreasuryPurchasePermission) "
+      [class.col-xl-4]="(hasPurchasePermission && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission) || (hasTreasurySalesPermission && !hasPurchasePermission)  "
+      [class.col-xl-6]="!hasPurchasePermission && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission">
+      <div class={{ClickedClass}}>
+        <app-sale-state class="period-filter" [currency]="userCurrencySymbole" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat" [type]="salesType"></app-sale-state>
+      </div>
+    </div>
+
+    <!--Supplier outstanding-->
+    <div *ngIf="hasTreasuryPurchasePermission" class="period-filter col-xl-3 col-lg-6 col-md-6 col-sm-12 draggable-card"
+      [class.col-xl-6]=" hasPurchasePermission && !hasSalesPermission">
+      <div class={{ClickedClass}}>
+        <div class="card-header py-3">
+          <h4 class="card-title mb-0">{{'SUPPLIER_OUTSTANDING'|translate}}</h4>
+          <div class="small text-muted">
+            {{'CURRENT_YEAR'|translate}}
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="progress" [attr.data-percentage]="InvoiceRemainingAmountPercentPurchases">
+            <span class="progress-left">
+              <span class="progress-bar"></span>
+            </span>
+            <span class="progress-right">
+              <span class="progress-bar"></span>
+            </span>
+            <div class="progress-value">
+              <div>
+                <div *ngIf="InvoiceRemainingAmountPercentPurchases" class="h2 font-weight-bold">
+                  {{InvoiceRemainingAmountPercentPurchases}}<sup class="small">%</sup></div>
+                <div *ngIf="!InvoiceRemainingAmountPercentPurchases" class="h2 font-weight-bold">0<sup
+                    class="small">%</sup></div>
+              </div>
+            </div>
+          </div>
+          <div class="row text-center mt-4">
+            <div class="col-6 border-right">
+              <div *ngIf="InvoiceAmountTTCPurchases && userCurrencyPrecision && userCurrencyCode" class="h4 font-weight-bold mb-0">
+                {{intl.formatNumber(InvoiceAmountTTCPurchases,userCurrencyPrecision)}}
+                <span *ngIf="userCurrencyCode" class="currency text-dark">{{userCurrencyCode}} </span>
+              </div>
+              <div *ngIf="!InvoiceAmountTTCPurchases" class="h4 font-weight-bold mb-0">0</div>
+              <span class="small text-gray">{{'INVOICE_AMOUNT_TTC' |translate}}</span>
+            </div>
+            <div class="col-6">
+              <div *ngIf="InvoiceRemainingAmountPurchases && userCurrencyPrecision && userCurrencyCode " class="h4 font-weight-bold mb-0">
+                {{intl.formatNumber(InvoiceRemainingAmountPurchases,userCurrencyPrecision)}}
+                <span *ngIf="userCurrencyCode" class="currency text-dark">{{userCurrencyCode}} </span>
+              </div>
+              <div *ngIf="!InvoiceRemainingAmountPurchases" class="h4 font-weight-bold mb-0">0</div>
+              <span class="small text-gray">{{'INVOICE_REMAINING_AMOUNT_TTC'|translate}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!--Etat des achats-->
+    <div *ngIf="hasPurchasePermission" class="period-filter  col-lg-6 col-md-6 col-sm-12 draggable-card"
+      [class.col-xl-3]="(hasSalesPermission && hasTreasurySalesPermission && hasTreasuryPurchasePermission )|| (hasPurchasePermission && hasTreasurySalesPermission) ||
+      (hasPurchasePermission && hasTreasuryPurchasePermission ) "
+      [class.col-xl-4]="hasSalesPermission  && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission"
+      [class.col-xl-6]="!hasSalesPermission">
+      <div class={{ClickedClass}}>
+        <app-sale-state class="period-filter" [currency]="userCurrencySymbole" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat" [type]="purchaseType"></app-sale-state>
+      </div>
+    </div>
+
+    <!--Top clients-->
+    <div *ngIf="hasSalesPermission" class="period-filter col-lg-6 col-md-6 col-sm-12 draggable-card"
+      [class.col-xl-3]="(hasPurchasePermission && hasTreasurySalesPermission && hasTreasuryPurchasePermission) || (hasPurchasePermission && hasTreasurySalesPermission) || (hasPurchasePermission && hasTreasuryPurchasePermission ) "
+      [class.col-xl-4]="(hasPurchasePermission && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission) || (hasTreasurySalesPermission && !hasPurchasePermission)"
+      [class.col-xl-6]="!hasPurchasePermission && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission">
+      <div class={{ClickedClass}}>
+        <app-top-costumers class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-top-costumers>
+      </div>
+    </div>
+
+    <!--Vente par article-->
+    <div *ngIf="hasSalesPermission" class="period-filter  col-lg-6 col-md-6 col-sm-12 draggable-card"
+      [class.col-xl-3]="hasPurchasePermission && hasTreasurySalesPermission && hasTreasuryPurchasePermission"
+      [class.col-xl-4]="(hasPurchasePermission && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission) 
+      || (hasPurchasePermission && hasTreasuryPurchasePermission &&  !hasTreasurySalesPermission) || (hasPurchasePermission && hasTreasurySalesPermission && !hasTreasuryPurchasePermission)"
+      [class.col-xl-6]="!hasPurchasePermission">
+      <div class={{ClickedClass}}>
+        <app-item-sale class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-item-sale>
+      </div>
+    </div>
+
+
+
+    <!--Top Fournisseurs-->
+    <div *ngIf="hasPurchasePermission" class="period-filter  col-lg-6 col-md-6 col-sm-12 draggable-card"
+      [class.col-xl-3]="hasSalesPermission && hasTreasurySalesPermission && hasTreasuryPurchasePermission"
+      [class.col-xl-4]="(hasSalesPermission && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission) || (hasPurchasePermission && hasTreasuryPurchasePermission && !hasTreasurySalesPermission) || (hasPurchasePermission && hasTreasurySalesPermission && !hasTreasuryPurchasePermission) "
+      [class.col-xl-6]="!hasSalesPermission">
+      <div class={{ClickedClass}}>
+        <app-top-supliers class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-top-supliers>
+      </div>
+    </div>
+
+
+    <!--Achat par article-->
+    <div *ngIf="hasPurchasePermission" class="period-filter  col-lg-6 col-md-6 col-sm-12 draggable-card"
+      [class.col-xl-3]="hasSalesPermission && hasTreasurySalesPermission && hasTreasuryPurchasePermission"
+      [class.col-xl-4]="(hasSalesPermission && !hasTreasurySalesPermission && !hasTreasuryPurchasePermission) || (hasPurchasePermission && hasTreasuryPurchasePermission && !hasTreasurySalesPermission ) || (hasPurchasePermission && hasTreasurySalesPermission && !hasTreasuryPurchasePermission)"
+      [class.col-xl-6]="!hasSalesPermission">
+      <div class={{ClickedClass}}>
+        <app-item-purchase class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-item-purchase>
+      </div>
+    </div>
+
+    <!--Vente et achat-->
+    <div *ngIf="hasPurchasePermission && hasSalesPermission"
+      class="period-filter col-xl-6 col-lg-6 col-md-12 col-sm-12 draggable-card">
+      <div class={{ClickedClass}}>
+        <app-sales-purchases-volume class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-sales-purchases-volume>
+      </div>
+    </div>
+
+    <!--turnover sale per year-->
+
+    <div *ngIf="hasSalesPermission" class="period-filter col-xl-6 col-lg-6 col-md-12 col-sm-12 draggable-card"
+      [class.col-md-12]="hasPurchasePermission" [class.col-md-6]="!hasPurchasePermission">
+      <div class={{ClickedClass}}>
+        <app-turnover-sale-per-year class="period-filter" [FORMAT_NUMBER]="FORMAT_NUMBER"
+          [dateformat]="dateformat"></app-turnover-sale-per-year>
+      </div>
+    </div>
+
+  </div>
+
+</div>

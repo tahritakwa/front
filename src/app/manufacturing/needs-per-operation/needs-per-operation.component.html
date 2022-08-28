@@ -1,0 +1,286 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 style=" float:left;" class="card-title mb-0">{{'OPERATION_NEED'|translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="formGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'ARTICLE'|translate}}</label>
+            <input class="form-control" name="article" formControlName="article" disabled>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REVENUE_COST'|translate}}</label>
+            <input class="form-control" name="revenueCost" formControlName="revenueCost" disabled>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'OPERATION'|translate}}</label>
+
+            <app-operations-gamme-dropdown [idGamme]="idGamme"   (selectedOperation)="receiveOperation($event)" (firstOperation)="receiveFirstId($event)"  [form]="formGroup">
+            </app-operations-gamme-dropdown>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active show" data-toggle="tab" href="#home1" role="tab" aria-controls="home1"
+              aria-selected="true" style="font-size: larger;">
+              <i class="cui-list"></i> {{'PRODUCTS_TITLE'|translate}}
+            </a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" aria-selected="false"
+              (click)="loadPersonnelDetails()">
+              <i class="cui-list"></i> {{'PERSONNEL'|translate}}
+            </a>
+          </li>
+          <li class="nav-item" >
+            <a class="nav-link" data-toggle="tab" href="#home3" role="tab" aria-controls="home3" aria-selected="false"
+              (click)="loadEquipmentDetails()">
+              <i class="cui-list"></i> {{'EQUIPMENT'|translate}}
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active show" id="home1" role="tabpanel"
+            [ngStyle]="{'min-height': 'auto', 'max-height': 'auto', 'overflow-y': 'auto'}">
+            <kendo-grid [data]="gridSettingsNomenclatures.gridData" [pageSize]="gridSettingsNomenclatures.state.take"
+              [skip]="gridSettingsNomenclatures.state.skip" (pageChange)="onPageChange($event)"
+              (dataStateChange)="dataStateChange($event)" [sort]="gridSettingsNomenclatures.state.sort"
+              [filter]="gridSettingsNomenclatures.state.filter" 
+              [pageable]="pagerSettingsPers"
+              [sortable]="true"
+              [reorderable]="true"
+              [resizable]="true" 
+             [columnMenu]="false" >
+
+               <kendo-grid-column 
+                [field]="gridSettingsNomenclatures.columnsConfig[0].field" [title]="gridSettingsNomenclatures.columnsConfig[0].title | translate "
+                [filter]="gridSettingsNomenclatures.columnsConfig[0].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[0].filterable"
+                [format]="gridSettingsNomenclatures.columnsConfig[0].format">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  {{dataItem.description}}
+                </ng-template>
+              </kendo-grid-column>
+        
+              <kendo-grid-column 
+              [field]="gridSettingsNomenclatures.columnsConfig[1].field" [title]="gridSettingsNomenclatures.columnsConfig[1].title | translate"
+              [filter]="gridSettingsNomenclatures.columnsConfig[1].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[1].filterable"
+              [format]="gridSettingsNomenclatures.columnsConfig[1].format">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <kendo-numerictextbox style="padding-right:3rem !important" class="text-right" [readonly]="true"
+                  [format]="formatNumberOptions" value="{{dataItem.quantity}}">
+                </kendo-numerictextbox>
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-column 
+            [field]="gridSettingsNomenclatures.columnsConfig[2].field" [title]="gridSettingsNomenclatures.columnsConfig[2].title | translate "
+            [filter]="gridSettingsNomenclatures.columnsConfig[2].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[2].filterable"
+            [format]="gridSettingsNomenclatures.columnsConfig[2].format">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.unite}}
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column 
+              [field]="gridSettingsNomenclatures.columnsConfig[3].field" [title]="gridSettingsNomenclatures.columnsConfig[3].title | translate"
+              [filter]="gridSettingsNomenclatures.columnsConfig[3].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[3].filterable"
+              [format]="gridSettingsNomenclatures.columnsConfig[3].format">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <kendo-numerictextbox style="padding-right:3rem !important" class="text-right" [readonly]="true"
+                                      [format]="formatNumberOptions" [value]="dataItem.brutCost">
+                </kendo-numerictextbox>
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+            
+            <kendo-grid-column 
+              [field]="gridSettingsNomenclatures.columnsConfig[4].field" [title]="gridSettingsNomenclatures.columnsConfig[4].title | translate"
+              [filter]="gridSettingsNomenclatures.columnsConfig[4].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[4].filterable"
+              [format]="gridSettingsNomenclatures.columnsConfig[4].format">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <kendo-numerictextbox style="padding-right:3rem !important" class="text-right" [readonly]="true"
+                                      [format]="formatNumberOptions" [value]="dataItem.quantityChute">
+                </kendo-numerictextbox>
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+            
+            <kendo-grid-column 
+            [field]="gridSettingsNomenclatures.columnsConfig[5].field" [title]="gridSettingsNomenclatures.columnsConfig[5].title | translate"
+            [filter]="gridSettingsNomenclatures.columnsConfig[5].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[5].filterable"
+            [format]="gridSettingsNomenclatures.columnsConfig[5].format">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <kendo-numerictextbox style="padding-right:3rem !important" class="text-right" [readonly]="true"
+                                    [format]="formatNumberOptions" [value]="dataItem.chuteCost">
+              </kendo-numerictextbox>
+            </ng-template>
+            <ng-template kendoGridEditTemplate>
+              <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+              </app-grid-cell-input-template>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column 
+          [field]="gridSettingsNomenclatures.columnsConfig[6].field" [title]="gridSettingsNomenclatures.columnsConfig[6].title | translate"
+          [filter]="gridSettingsNomenclatures.columnsConfig[6].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[6].filterable"
+          [format]="gridSettingsNomenclatures.columnsConfig[6].format">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <kendo-numerictextbox style="padding-right:3rem !important" class="text-right" [readonly]="true"
+                                  [format]="formatNumberOptions" [value]="dataItem.quantityNet">
+            </kendo-numerictextbox>
+          </ng-template>
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        
+        <kendo-grid-column 
+          [field]="gridSettingsNomenclatures.columnsConfig[7].field" [title]="gridSettingsNomenclatures.columnsConfig[7].title | translate"
+          [filter]="gridSettingsNomenclatures.columnsConfig[7].filter" [filterable]="gridSettingsNomenclatures.columnsConfig[7].filterable"
+          [format]="gridSettingsNomenclatures.columnsConfig[7].format">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <kendo-numerictextbox style="padding-right:3rem !important" class="text-right" [readonly]="true"
+                                  [format]="formatNumberOptions" [value]="dataItem.netCost">
+            </kendo-numerictextbox>
+          </ng-template>
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+            </kendo-grid>
+          </div>
+          <div class="tab-pane" id="home2" role="tabpanel"
+          [ngStyle]="{'min-height': 'auto', 'max-height': 'auto', 'overflow-y': 'auto'}">
+          <kendo-grid [data]="gridPersonnelSettings.gridData" [pageSize]="gridPersonnelSettings.state.take"
+          [skip]="gridPersonnelSettings.state.skip" (pageChange)="onPageChange($event)"
+          (dataStateChange)="dataStateChange($event)" [sort]="gridPersonnelSettings.state.sort"
+          [filter]="gridPersonnelSettings.state.filter" [sortable]="true" [columnMenu]="true"
+          [pageable]="pagerSettingsPers" filterable="menu" [reorderable]="true">
+
+                                <ng-template kendoGridToolbarTemplate [position]="'bottom'" >
+                                  <div  class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" >
+                                      <span class="name"  >&nbsp;  <strong> {{'NET_TIME_PERSONNEL'|translate}}:  </strong></span>
+                                      <span class="value" >&nbsp;  <strong>   {{tempsNetPersonnel}}</strong></span>
+                                  </div>
+                                  <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" >
+
+                                      <span   >&nbsp;  <strong> {{'NET_COST_PERSONNEL'|translate}}:  </strong></span>
+                                      <span  >&nbsp;  <strong>  {{coutNetPersonnel}}</strong></span>
+                                  </div>
+
+                                </ng-template>
+
+                <!--Columns-->
+                <kendo-grid-column 
+                [field]="gridPersonnelSettings.columnsConfig[0].field" [title]="gridPersonnelSettings.columnsConfig[0].title | translate "
+                [filter]="gridPersonnelSettings.columnsConfig[0].filter" [filterable]="gridPersonnelSettings.columnsConfig[0].filterable"
+                [format]="gridPersonnelSettings.columnsConfig[0].format">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  {{dataItem.FullName}}
+                </ng-template>
+              </kendo-grid-column>
+        
+              <kendo-grid-column 
+              [field]="gridPersonnelSettings.columnsConfig[1].field" [title]="gridPersonnelSettings.columnsConfig[1].title | translate"
+              [filter]="gridPersonnelSettings.columnsConfig[1].filter" [filterable]="gridPersonnelSettings.columnsConfig[1].filterable"
+              [format]="gridPersonnelSettings.columnsConfig[1].format">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <kendo-numerictextbox style="padding-right:0rem !important" class="text-right" [readonly]="true"
+                                      [format]="formatNumberOptions" [value]="dataItem.costPerson">
+                </kendo-numerictextbox>
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+                <!--End Columns-->
+              </kendo-grid>
+
+            </div>
+            <div class="tab-pane" id="home3" role="tabpanel"
+              [ngStyle]="{'min-height': 'auto', 'max-height': 'auto', 'overflow-y': 'auto'}">
+              <kendo-grid [data]="gridEquipmentSettings.gridData" [pageSize]="gridEquipmentSettings.state.take"
+              [skip]="gridEquipmentSettings.state.skip" (pageChange)="onPageChange($event)"
+              (dataStateChange)="dataStateChange($event)" [sort]="gridEquipmentSettings.state.sort"
+              [filter]="gridEquipmentSettings.state.filter" [sortable]="true" [columnMenu]="true"
+              [pageable]="pagerSettingsEquip" filterable="menu" [reorderable]="true">
+                                <ng-template kendoGridToolbarTemplate [position]="'bottom'" id="addButton">
+                                  <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" >
+
+                                      <span class="name" >&nbsp;  <strong>{{'NET_TIME_MACHINE'|translate}}: </strong></span>
+                                      <span class="value" >&nbsp;  <strong> {{tempsNetMachine}}</strong></span>
+                                  </div>
+                                  <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" >
+
+                                      <span  >&nbsp;  <strong>{{'NET_COST_MACHINE'|translate}}:   </strong></span>
+                                      <span  >&nbsp;  <strong> {{coutNetMachine}} </strong></span>
+                                  </div>
+                                </ng-template>
+               
+                <kendo-grid-column 
+                [field]="gridEquipmentSettings.columnsConfig[0].field" [title]="gridEquipmentSettings.columnsConfig[0].title | translate "
+                [filter]="gridEquipmentSettings.columnsConfig[0].filter" [filterable]="gridEquipmentSettings.columnsConfig[0].filterable"
+                [format]="gridEquipmentSettings.columnsConfig[0].format">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  {{dataItem.description}}
+                </ng-template>
+              </kendo-grid-column>
+        
+              <kendo-grid-column 
+              [field]="gridEquipmentSettings.columnsConfig[1].field" [title]="gridEquipmentSettings.columnsConfig[1].title | translate"
+              [filter]="gridEquipmentSettings.columnsConfig[1].filter" [filterable]="gridEquipmentSettings.columnsConfig[1].filterable"
+              [format]="gridEquipmentSettings.columnsConfig[1].format">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <kendo-numerictextbox style="padding-right:0rem !important" class="text-right"  [readonly]="true"
+                                      [format]="formatNumberOptions" [value]="dataItem.costPerHour">
+                </kendo-numerictextbox>
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="formGroup" controlName="Value" inputType="number">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+           
+              </kendo-grid>
+            </div>
+        </div>
+      </div>
+
+      <!--Begin card Footer -->
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <footer class="app-footer" style="margin-left: 0;">
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 footer-content">
+                <a routerLink='/main/manufacturing/calculate_cost_price'>
+                  <span class="btn btn-sm btn-back-to-list btn-primary">
+                    <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                  </span>
+                </a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <!--End card Footer -->
+    </form>
+  </div>
+</div>

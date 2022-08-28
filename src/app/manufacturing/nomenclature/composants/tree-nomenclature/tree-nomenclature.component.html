@@ -1,0 +1,12 @@
+<ay-treeTable
+  [value]="data" (onNodeExpand)="expandChild($event)" selectionMode="single"
+  (onNodeSelect)="nodeParentToUpdateComponent($event)" (onNodeCollapse)="collapseChild($event)">
+  <ay-column *ngIf="data" field="name"
+             header="{{'DESCRIPTION'  |translate }}"></ay-column>
+  <ay-column [style]="{'textAlign':'center'}" *ngIf="data" field="quantity"
+             header="{{'QUANTITY'  |translate }}"></ay-column>
+  <ay-column [style]="{'textAlign':'center'}" *ngIf="data" field="unite" header="{{'UNIT'  |translate }}"></ay-column>
+  <ay-column [style]="{'textAlign':'center'}" *ngIf="data" field="unitHtpurchasePrice"
+             header="{{'PURCHASING_PRICE'  |translate }}"></ay-column>
+
+</ay-treeTable>

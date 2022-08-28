@@ -1,0 +1,850 @@
+<app-head [home]="home" [menu]="menu" [actionpage]="actionpage"
+          [connectedUser]="connectedUser" [countNotifications]="countNotifications"
+          [currentpage]="currentpage" [DashBoardConfig]="DashBoardConfig"
+          [DashboardRoute]="DashboardRoute" [navItemsList]="navItemsList" [NoOnglet]="NoOnglet"
+          [paramItemsList]="paramItemsList"
+          [router_url]="router_url" [Saved]="Saved"
+          (OpenColorPicker)="OpenColorPicker()" (AddDrag)="AddDrag()"></app-head>
+<div class="app-body">
+  <app-side [RoleConfig]="listRoleConfigs"></app-side>
+  <main class="main" style="min-height: -webkit-fill-available;">
+    <ng-container
+    *ngIf="haveDhashboardPermission">
+      <ol class="breadcrumb mb-1 d-sm-down-none" *ngIf="DashboardRoute">
+        <li class="breadcrumb-menu">
+          <div class="btn-group" role="group" *ngIf="!Saved && DashboardRoute">
+            <button type="button" class="btn btn-info btnConfigDashboard"
+                    (click)="OpenColorPicker()">{{'CUSTOMIZE_PALETTE' | translate}}</button>
+          </div>
+
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <button type="button" class="btn btn-info btnConfigDashboard" (click)="AddDrag()">
+              <i [class]="Class"></i> {{DashBoardConfig|translate}}
+            </button>
+          </div>
+        </li>
+      </ol>
+    </ng-container>
+    <ng-container
+    *ngIf="showSalesSettingsMenu || showPurchaseSettingsMenu || showStockSettingsMenu
+    || this.authService.hasAuthorities([RoleConfigConstant.SettingsConfig,RoleConfigConstant.CRMSettings])">
+      <ol class="breadcrumb mb-1 d-sm-block d-md-none d-lg-none" *ngIf="!isUsersActionsRouter">
+        <!-- Breadcrumb Menu-->
+        <li class="breadcrumb-item" aria-current="page">{{home}}</li>
+        <span *ngIf="home === translate.instant(notifications)"
+              class="ml-2 px-2 h-50 badge badge-success">{{countNotifications}}</span>
+        <span *ngIf="home === translate.instant(actions_notifications)"
+              class="ml-2 px-2 h-50 badge badge-warning">{{countNotifications}}</span>
+        <li *ngIf="(!this.DashboardRoute && currentpage && !actionpage && NoOnglet ||
+               !this.DashboardRoute && actionpage && !currentpage && NoOnglet) && menu"
+            class="breadcrumb-item"><a [routerLink]="[router_url]">{{menu}}</a></li>
+        <li
+          *ngIf="(!NoOnglet || !this.DashboardRoute && !currentpage && !actionpage
+              || !this.DashboardRoute && currentpage && actionpage )&& menu"
+          class="breadcrumb-item active" aria-current="page">{{menu}}</li>
+
+        <li *ngIf="(!this.DashboardRoute && currentpage) && actionpage" class="breadcrumb-item"><a
+          [routerLink]="[router_url]">{{currentpage}}</a></li>
+        <li *ngIf="(!this.DashboardRoute&& !actionpage) && currentpage " class="breadcrumb-item active"
+            aria-current="page">{{currentpage}}</li>
+        <li *ngIf="!this.DashboardRoute && actionpage" class="breadcrumb-item active" aria-current="page">{{actionpage}}
+        </li>
+      </ol>
+    </ng-container>
+
+    <br *ngIf='!isEcommerce && !isDocument && !isStockDocument && !DashboardRoute'>
+
+    <div *ngIf='isEcommerce' style="height: 53px;">
+      <app-menu-ecommerce style="width: 100%;"></app-menu-ecommerce>
+    </div>
+
+    <div *ngIf='isDocument' style="height: 53px;">
+      <app-document-menu style="width: 100%;"></app-document-menu>
+    </div>
+    <div *ngIf='isCrm' style="height: 71px;">
+      <app-archiving-menu style="width: 100%;"></app-archiving-menu>
+    </div>
+    <!-- Breadcrumb -->
+
+    <div class="container-fluid" style="padding: 0 12px;">
+          <router-outlet></router-outlet>
+    </div>
+    <!-- /.container-fluid -->
+
+  </main>
+  <app-aside [fixed]="true" [display]="true">
+    <div id="MainMenu">
+      <div class="list-group panel">
+        <div class="list-group list-group-accent" *ngIf="showSettingsMenu">
+          <a href="#setting"
+             class="list-group-item list-group-item-accent-secondary bg-light  font-weight-bold text-muted"
+             data-toggle="collapse">
+
+            <table>
+              <tbody>
+              <tr>
+                <td class="td-ico"><i class="fa fa-cog fa-lg customMarginIcons"></i></td>
+                <td>{{'SETTINGS'|translate}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </a>
+          <div class="collapse" id="setting">
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/company']"
+                 *ngIf="hasCompanyUpdatePermission">
+              <div>
+                {{'COMPANY'|translate}}
+              </div>
+            </div>
+
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/period']" *ngIf="hasPeriodListPermission">
+              <div class="customMarginText">
+                {{'PERIOD'|translate}}
+              </div>
+            </div>
+
+
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/country']"
+                 *ngIf="hasCountryListPermission">
+              <div>
+                {{'COUNTRY'|translate}}
+              </div>
+            </div>
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/city']"
+                 *ngIf="hasCityListPermission">
+              <div>
+                {{'CITY'|translate}}
+              </div>
+            </div>
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/taxe']"
+                 *ngIf=this.authService.hasAuthority(RoleConfigConstant.SettingsConfig)>
+              <div>
+                {{'TAXE'|translate}}
+              </div>
+            </div>
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/group-taxe']"
+                 *ngIf=this.authService.hasAuthority(RoleConfigConstant.SettingsConfig)>
+              <div>
+                {{'GROUP_TAXE'|translate}}
+              </div>
+            </div>
+
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/currency']"
+                 *ngIf=this.authService.hasAuthorities([RoleConfigConstant.SettingsConfig,RoleConfigConstant.CRMSettings])>
+              <div>
+                {{'CURRENCY'|translate}}
+              </div>
+            </div>
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/treasury/bankManagement/bank']" *ngIf="hasBankListPermission">
+              <div>
+                {{'BANK'|translate}}
+              </div>
+            </div>
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/treasury/bankManagement/bankaccounts/fromSettings']" *ngIf="hasBankAccountListPermission">
+              <div>
+                {{'BANK_ACCOUNT'|translate}}
+              </div>
+            </div>
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/office']" *ngIf="hasOfficeListPermission">
+              <div>
+                {{'OFFICE'|translate}}
+              </div>
+            </div>
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/administration/version']">
+              <div>
+                {{'ABOUT'|translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list-group list-group-accent">
+
+          <div class="list-group list-group-accent" *ngIf="showSalesSettingsMenu">
+            <a href="#salesSetting"
+               class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+               data-toggle="collapse">
+
+              <table>
+                <tbody>
+                <tr>
+                  <td class="td-ico"><i class="fa fa-line-chart fa-lg customMarginIcons"></i></td>
+                  <td>{{'SALES_SETTINGS'|translate}}</td>
+                </tr>
+                </tbody>
+              </table>
+
+            </a>
+            <div class="collapse" id="salesSetting">
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/sales/price']" *ngIf="hasPricesListPermission">
+                <div>
+                  {{'DISCOUNT'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/payment/settlementmode']" *ngIf="hasSettlementModeListPermission">
+                <div>
+                  {{'PAYMENT_METHOD'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/sales/salesPrice']" *ngIf="hasPriceCategoryListPermission" >
+                <div>
+                  {{'PRICE_CATEGORY'|translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="list-group list-group-accent" *ngIf="showStockSettingsMenu">
+            <a href="#stockSetting"
+               class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+               data-toggle="collapse">
+
+              <table>
+                <tbody>
+                <tr>
+                  <td class="td-ico"><i class="icon-layers fa-lg customMarginIcons"></i></td>
+                  <td>{{'STOCK_SETTINGS'|translate}}</td>
+                </tr>
+                </tbody>
+              </table>
+
+            </a>
+            <div class="collapse" id="stockSetting">
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/administration/nature']" *ngIf="hasNatureListPermission">
+                <div>
+                  {{'PRODUCTS_TYPE'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/inventory/list-family']" *ngIf="hasFamilyListPermission">
+                <div>
+                  {{'FAMILIES'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/settings/inventory/list-sub-family']" *ngIf="hasSubFamilyListPermission">
+                <div>
+                  {{'SUB_FAMILY'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/inventory/list-Measure-Unit']" *ngIf="hasMeasureUnitListPermission">
+                <div>
+                  {{'Measure_Unit' |translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                [routerLink]="['/main/inventory/list-brands']" *ngIf='isAutoVersion && hasBrandsListPermission'>
+                <div>
+                  {{'BRANDS'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/inventory/list-product-brand']" *ngIf='hasProductBrandsListPermission'>
+                <div>
+                  {{'PRODUCT_BRANDS'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                [routerLink]="['/main/inventory/list-model']" *ngIf='isAutoVersion && hasModelsListPermission'>
+                <div>
+                  {{'MODELS'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                [routerLink]="['/main/inventory/list-sub-models']" *ngIf='isAutoVersion && hasSubModelsListPermission'>
+                <div>
+                  {{'SUB_MODELS'|translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list-group list-group-accent" *ngIf="showpayrollSettingsMenu">
+            <a href="#payrollSetting"
+               class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+               data-toggle="collapse">
+              <table>
+                <tbody>
+                <tr>
+                  <td class="td-ico"><i class="fa fa-money fa-lg customMarginIcons"></i></td>
+                  <td>{{'PAYROLLSETTINGS'|translate}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </a>
+            <div class="collapse" id="payrollSetting">
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/payroll/benefitInKind']" *ngIf="hasBenefitInKindListPermission">
+                <div>
+                  {{'BENEFIT_IN_KIND'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/payroll/bonus']" *ngIf="hasBonusListPermission">
+                <div>
+                  {{'BONUSES'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/payroll/cnss']" *ngIf="hasCnssListPermission">
+                <div>
+                  {{'CNSS_TYPE'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/payroll/salaryRule']" *ngIf="hasSalaryRuleListPermission">
+                <div>
+                  {{'SALARY_RULE'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/payroll/variable']" *ngIf="hasVariableListPermission">
+                <div>
+                  {{'VARIABLE'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/payroll/salaryStructure']" *ngIf="hasSalaryStructureListPermission">
+                <div>
+                  {{'SALARY_STRUCTURE'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                [routerLink]="['/main/payroll/additionalHour']" *ngIf="hasAdditionalHourListPermission">
+                <div>
+                  {{'ADDITIONAL_HOUR'|translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list-group list-group-accent" *ngIf="showpRHSettingsMenu">
+            <div class="list-group list-group-accent">
+              <a href="#rhSetting"
+                 class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+                 data-toggle="collapse">
+
+                <table>
+                  <tbody>
+                  <tr>
+                    <td class="td-ico"><i class="icon-people fa-lg customMarginIcons"></i></td>
+                    <td>{{'RHSETTINGS'|translate}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+
+              </a>
+              <div class="collapse" id="rhSetting">
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/skills']"
+                  *ngIf="hasSkillsListPermission">
+                  <div>
+                    {{'SKILLS'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/grade']"
+                  *ngIf="hasGradeListPermission">
+                  <div>
+                    {{'GRADE'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/job']"
+                  *ngIf="hasJobListPermission">
+                  <div>
+                    {{'JOB'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+              [routerLink]="['/main/administration/period']"
+              *ngIf="hasPeriodListPermission">
+              <div class="customMarginText">
+                {{'PERIOD'|translate}}
+              </div>
+            </div>
+
+			 <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+              [routerLink]="['/main/administration/office']"
+              *ngIf="hasOfficeListPermission">
+              <div>
+                {{'OFFICE'|translate}}
+              </div>
+            </div>
+
+			  <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+              [routerLink]="['/main/administration/language']"
+              *ngIf="hasLanguageListPermission">
+              <div>
+                {{'LANGUAGE'|translate}}
+              </div>
+            </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/contract-type']"
+                  *ngIf="hasContractTypeListPermission">
+                  <div>
+                    {{'CONTRACT_TYPE'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/leave-type']"
+                  *ngIf="hasLeaveTypeListPermission">
+                  <div>
+                    {{'LEAVE_TYPE'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/expense-report-type']"
+                  *ngIf="hasExpenseReportTypeListPermission">
+                  <div>
+                    {{'EXPENSE_REPORT_TYPE'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/rh/evaluation-criteria']"
+                  *ngIf="hasEvaluationCriteriaListPermission">
+                  <div>
+                    {{'EVALUATION_CRITERIA_PER_THEME'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/qualification-type']"
+                  *ngIf="hasQualificationTypeListPermission">
+                  <div>
+                    {{'QUALIFICATION_TYPE'|translate}}
+                  </div>
+                </div>
+                <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                  [routerLink]="['/main/payroll/exit-reason']"
+                  *ngIf="hasExitReasonListPermission">
+                  <div>
+                    {{'EXIT_REASON'|translate}}
+                  </div>
+                </div>
+                <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.HRSettings]">
+                  <a href="#reviewSetting"
+                     class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+                     data-toggle="collapse"> {{'ANNUAL_REVIEW'|translate}}</a>
+                  <div class="collapse" id="reviewSetting">
+                    <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                         [routerLink]="['/main/rh/interview-type']">
+                      <div>
+                        {{'INTERVIEW_TYPE'|translate}}
+                      </div>
+                    </div>
+                    <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                         [routerLink]="['/main/rh/review/manager']">
+                      <div>
+                        {{'REVIEW_MANAGER'|translate}}
+                      </div>
+                    </div>
+                    <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                         [routerLink]="['/main/rh/review/notification']">
+                      <div>
+                        {{'ANNUAL_REVIEW'|translate}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list-group list-group-accent" *ngIf="showUserSettings">
+            <a href="#userSetting"
+               class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+               data-toggle="collapse">
+              <table>
+                <tbody>
+                <tr>
+                  <td class="td-ico"><i class="fa fa-users fa-lg customMarginIcons"></i></td>
+                  <td>{{'USERMANAGEMENT'|translate}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </a>
+            <div class="collapse" id="userSetting">
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                [routerLink]="['/main/administration/user']"
+                *ngIf="hasUsersListPermission">
+                <div class="customMarginText">
+                  {{'USER'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                [routerLink]="['/main/administration/user/masterUsers']"
+                *ngIf="hasGroupUserListPermission">
+                <div class="customMarginText">
+                  {{'MASTER_USER'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                [routerLink]="['/main/administration/role']"
+                *ngIf="hasRoleListPermission">
+                <div class="customMarginText">
+                  {{'ROLE'|translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.PurchaseSettings]">
+            <a href="#purchaseSetting"
+               class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+               data-toggle="collapse">
+              <table>
+                <tbody>
+                <tr>
+                  <td class="td-ico"><i class="fa fa-shopping-cart fa-lg customMarginIcons"></i></td>
+                  <td>{{'PURCHASE_SETTINGS'|translate}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </a>
+            <div class="collapse" id="purchaseSetting">
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/inventory/list-expense-items']">
+                <div>
+                  {{'EXPENSES'|translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.B2BSettings]">
+            <a href="#B2bSetting"
+               class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+               data-toggle="collapse">
+              <table>
+                <tbody>
+                <tr>
+                  <td class="td-ico"><i class="icon-layers fa-lg customMarginIcons"></i></td>
+                  <td>{{'B2B_SETTINGS'|translate}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </a>
+            <div class="collapse" id="B2bSetting">
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/administration/B2bSetting']">
+                <div>
+                  {{'LIST_USER_B2B'|translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- accounting conf -->
+          <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.AccountingSettings]">
+            <a href="#accounting" style="width: 110%;"
+               class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+               data-toggle="collapse">
+              <table>
+                <tbody>
+                <tr>
+                  <td class="td-ico"><i class="fa fa-calculator fa-lg customMarginIcons"></i></td>
+                  <td>{{'ACCOUNTING_CONFIGURATION'|translate}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </a>
+            <div class="collapse" id="accounting">
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/accounting/chartOfAccounts']">
+                <div>
+                  {{'CHART_OF_ACCOUNTS'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/accounting/journal']">
+                <div>
+                  {{'JOURNAL'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/accounting/account']">
+                <div>
+                  {{'ACCOUNT_ACCOUNTING'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/accounting/template']">
+                <div>
+                  {{'TEMPLATE_ACCOUNTING'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/accounting/fiscalyear']">
+                <div>
+                  {{'FISCAL_YEARS'|translate}}
+                </div>
+              </div>
+              <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                   [routerLink]="['/main/accounting/amortizationConfiguration']">
+                <div>
+                  {{'ACCOUNTING_IMMOBILIZATION'|translate}}
+                </div>
+              </div>
+              <div
+                class="list-group-item colorSubRightMenu list-group-item-accent-danger list-group-item-divider HandPointer"
+                [routerLink]="['/main/accounting/configuration/reports']">
+                <div>
+                  {{'REPORTINGS'|translate}}
+                </div>
+              </div>
+              <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.AccountingSettings]">
+                <a href="#accountingConfig"
+                   class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+                   data-toggle="collapse">
+                  <table>
+                    <tbody>
+                    <tr>
+                      <td class="td-ico"><i class="fa-lg customMarginIcons"></i></td>
+                      <td>{{'OTHERS'|translate}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </a>
+                <div class="collapse" id="accountingConfig">
+                  <div
+                    class="list-group-item colorSubRightMenu list-group-item-accent-danger list-group-item-divider HandPointer"
+                    [routerLink]="['/main/accounting/configuration/financialAccount']">
+                    <div>
+                      {{'FINANCIAL_ACCOUNTS'|translate}}
+                    </div>
+                  </div>
+                  <div
+                    class="list-group-item colorSubRightMenu list-group-item-accent-danger list-group-item-divider HandPointer"
+                    [routerLink]="['/main/accounting/configuration/tiersAccount']">
+                    <div>
+                      {{'TIERS_ACCOUNTS'|translate}}
+                    </div>
+                  </div>
+                  <div
+                    class="list-group-item colorSubRightMenu list-group-item-accent-danger list-group-item-divider HandPointer"
+                    [routerLink]="['/main/accounting/configuration/paymentsAccount']">
+                    <div>
+                      {{'PAYMENTS_ACCOUNTS'|translate}}
+                    </div>
+                  </div>
+                  <div
+                    class="list-group-item colorSubRightMenu list-group-item-accent-danger list-group-item-divider HandPointer"
+                    [routerLink]="['/main/accounting/configuration/amortizationAccount']">
+                    <div>
+                      {{'AMORTIZATION_ACCOUNT'|translate}}
+                    </div>
+                  </div>
+                  <div
+                    class="list-group-item colorSubRightMenu list-group-item-accent-danger list-group-item-divider HandPointer"
+                    [routerLink]="['/main/accounting/configuration/journals']">
+                    <div>
+                      {{'ACCOUNTING_JOURNAL_SETTINGS'|translate}}
+                    </div>
+                  </div>
+                  <div
+                    class="list-group-item colorSubRightMenu list-group-item-accent-danger list-group-item-divider HandPointer"
+                    [routerLink]="['/main/accounting/configuration/userConfiguration']">
+                    <div>
+                      {{'USER_PARAMETERS'|translate}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end accounting conf -->
+        </div>
+        <!-- ecommerce -->
+        <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.EcommerceSettings]">
+          <a href="#ecommerce"
+             class="list-group-item list-group-item-accent-secondary bg-light  font-weight-bold text-muted"
+             data-toggle="collapse">
+            <table>
+              <tbody>
+              <tr>
+                <td class="td-ico"><i class="fa fa-money fa-lg customMarginIcons"></i></td>
+                <td>{{'ECOMMERCE'|translate}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </a>
+          <div class="collapse" id="ecommerce">
+            <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+                 [routerLink]="['/main/ecommerce/delivery']">
+              <div>
+                {{'DELIVERY'|translate}}
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- end ecommerce -->
+      </div>
+      <!-- Manufacturing Menu -->
+      <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.Manufacturingsettings]">
+        <a href="#manufacturingSetting"
+           class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+           data-toggle="collapse">
+          <table>
+            <tbody>
+            <tr>
+              <td class="td-ico"><i class="fa fa-industry fa-lg customMarginIcons"></i></td>
+              <td>{{'MANUFACTURING'|translate}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </a>
+        <div class="collapse" id="manufacturingSetting">
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/manufacturing/area']">
+            <div>
+              {{'AREA'|translate}}
+            </div>
+          </a>
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/settings/manufacturing/section']">
+            <div>
+              {{'SECTION'|translate}}
+            </div>
+          </a>
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/settings/manufacturing/machine']">
+            <div>
+              {{'MACHINE'|translate}}
+            </div>
+          </a>
+        </div>
+      </div>
+      <!-- CRM Conf-->
+      <!-- CRM Conf-->
+      <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.CRMSettings]">
+        <a href="#crmSetting"
+           class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+           data-toggle="collapse">
+          <table>
+            <tbody>
+            <tr>
+              <td class="td-ico"><i class="fa fa-handshake-o fa-lg customMarginIcons"></i></td>
+              <td>{{'CRM_SETTINGS'|translate}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </a>
+        <div class="collapse" id="crmSetting">
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/crm/category']">
+            <div>
+              {{'OBJECTIF'|translate}}
+            </div>
+          </a>
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/crm/status']">
+            <div>
+              {{'STATUS_OBJECTIFS'|translate}}
+            </div>
+          </a>
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/crm/pipeline']">
+            <div>
+              {{'PIPELINE'|translate}}
+            </div>
+          </a>
+
+        </div>
+        <!-- end CRM Conf-->
+      </div>
+      <!-- Mailing -->
+      <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.MailingSettings]">
+        <a href="#mailingSetting"
+           class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+           data-toggle="collapse">
+          <table>
+            <tbody>
+            <tr>
+              <td class="td-ico"><i class="fa fa-server fa-lg customMarginIcons"></i></td>
+              <td>{{'MAILING_SETTINGS'|translate}}</td>
+            </tr>
+            </tbody>
+          </table>
+        </a>
+        <div class="collapse" id="mailingSetting">
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/mailing/templateEmail']">
+            <div>
+              {{'TEMPLATE_EMAIL'|translate}}
+            </div>
+          </a>
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/mailing/settings']">
+            <div>
+              {{'SERVER_SETTINGS'|translate}}
+            </div>
+          </a>
+          <a class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+             [routerLink]="['/main/mailing/settingsUser/listUsercredentials']">
+            <div>
+              {{'USER_SETTINGS'|translate}}
+            </div>
+          </a>
+        </div>
+      </div>
+      <!-- Treasury Settings -->
+      <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.TREASURY_SETTINGS]">
+        <a href="#treasurySetting"
+           class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+           data-toggle="collapse"><i class="cui-dollar icons font-xl mt-1"
+                                     style="margin-right: 10px !important;"></i>{{'TREASURY_SETTING'|translate}}</a>
+        <div class="collapse" id="treasurySetting">
+          <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+               [routerLink]="['/main/treasury/withholdingTaxConfiguration']">
+            <div>
+              {{'WITH_HOLDING_TAX'|translate}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Garage Settings -->
+      <div class="list-group list-group-accent" *starkPermissionsOnly="[RoleConfigConstant.GARAGE_CONFIG]">
+        <a href="#garage" class="list-group-item list-group-item-accent-secondary bg-light font-weight-bold text-muted"
+           data-toggle="collapse"><i class="fa fa-car font-xm mt-1"
+                                     style="margin-right: 10px !important;"></i>{{'GARAGE_SETTING'|translate}}</a>
+        <div class="collapse" id="garage">
+          <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+               [routerLink]="['/main/garage/operation']">
+            <div>
+              {{'OPERATIONS'|translate}}
+            </div>
+          </div>
+          <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+               [routerLink]="['/main/garage/machine']">
+            <div>
+              {{'MACHINES'|translate}}
+            </div>
+          </div>
+          <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+               [routerLink]="['/main/garage/garage']">
+            <div>
+              {{'GARAGE'|translate}}
+            </div>
+          </div>
+          <div class="list-group-item colorSubRightMenu list-group-item-divider HandPointer"
+               [routerLink]="['/main/garage/calibration']">
+            <div>
+              {{'CALIBRATION'|translate}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </app-aside>
+</div>
+<br>
+<footer style="line-height: 2em;"></footer>

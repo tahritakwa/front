@@ -1,0 +1,1911 @@
+.k-header .k-grid-toolbar,
+.k-grid-header,
+.k-grid-pager,
+.k-pager {
+  background: white !important;
+}
+
+kendo-grid-toolbar {
+  background: white !important;
+}
+
+k-grid,
+.k-grid *,
+.k-action-buttons.k-button-group,
+.k-pager,
+.k-pager *,
+kendo-grid {
+  border: none !important;
+}
+
+.k-grid-header-wrap {
+  border-top: 1px solid #00000026 !important;
+  border-bottom: 1px solid #00000026 !important;
+}
+
+.AddIcon {
+  color: #4c9aae;
+}
+
+.k-grid-header-locked > table,
+.k-grid-header-wrap > table {
+  font-weight: bolder;
+  font-size: 16px;
+}
+
+.btnKendoGrid {
+  margin: 2px !important;
+}
+
+.btn-Add {
+  background: none !important;
+  font-size: 16px !important;
+  margin-top: -0.8%;
+  color: #999999 !important;
+}
+
+.input-checkbox100 {
+  display: none;
+}
+
+.label-checkbox100 {
+  font-family: Raleway-Regular;
+  font-size: 16px;
+  color: #999999;
+  line-height: 1.2;
+  display: block;
+  position: relative;
+  padding-left: 26px;
+  cursor: pointer;
+
+  &::before {
+    content: "\f00c";
+    font-family: FontAwesome;
+    font-size: 13px;
+    color: transparent;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: #fff;
+    border: 2px solid #4c9aae;
+    left: 0;
+    top: 48%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+}
+
+.input-checkbox100:checked + .label-checkbox100::before {
+  color: #4c9aae;
+}
+
+.label-checkbox100 {
+  font-family: Raleway-Regular;
+  font-size: 16px;
+  color: #999999;
+  line-height: 1.2;
+  display: block;
+  position: relative;
+  padding-left: 26px;
+  cursor: pointer;
+
+  &::before {
+    content: "\f00c";
+    font-family: FontAwesome;
+    font-size: 13px;
+    color: transparent;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: #fff;
+    border: 2px solid #4c9aae;
+    left: 0;
+    top: 48%;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+}
+
+.input-checkbox100:checked + .label-checkbox100::before {
+  color: #4c9aae;
+}
+
+.k-grid-content {
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+}
+
+app-attendance {
+  .k-grid-content {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+  }
+
+  .k-grid tr.k-state-selected,
+  .k-grid th.k-state-selected {
+    border-color: inherit !important;
+    color: inherit !important;
+    background-color: rgba(174, 76, 90, 0.25) !important;
+  }
+
+  .k-grid tbody tr {
+    height: 36px;
+  }
+}
+
+app-session-resume {
+  .k-grid-content {
+    overflow-y: auto !important;
+    overflow-x: scroll !important;
+  }
+
+  .resume-header-style {
+    font-size: 12px !important;
+  }
+}
+
+app-list-tec-doc,
+app-tecdoc-details,
+app-expense-grid,
+app-cost-price,
+app-grid-import-bl,
+app-grid-bs,
+app-purchase-order-add > app-advenced-list-provisionnig,
+app-grid-be,
+app-details-product {
+  .k-grid td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    font-size: small;
+    height: 36px;
+    font-family: var(--font-family-sans-serif);
+  }
+}
+
+app-add-order-project {
+  span.k-numeric-wrap.k-state-disabled {
+    background-color: transparent !important;
+  }
+}
+
+app-delivery-form-not-billed,
+app-settlements-history,
+app-bank-reconciliation,
+app-financial-commitment-not-billed,
+app-ticket-list,
+app-invoice-commitment-not-billed,
+app-pop-up-selected-financial-commitment,
+app-tiers-receivables,
+app-document-withholding-tax,
+app-list-intervention-order,
+app-grid-vehicle,
+app-list-operation-grid-for-history,
+app-operation-grid-for-intervention-order,
+app-list-machine,
+app-list-garage,
+app-list-intervention,
+app-tecdoc-details,
+app-list-tec-doc,
+app-list-products,
+app-advanced-list-products,
+app-tec-doc-advanced-list-product,
+app-replacement-list-product,
+app-document-list,
+app-oem-synchronize,
+app-movement-history,
+app-list-inventory-movement,
+app-list-claim,
+app-term-billing-list,
+app-inventory-details-list,
+app-details-product,
+app-list-bank,
+app-list-item,
+app-list-daily-sales-inventory-movement,
+app-purchase-balance,
+app-settlement-check-draft,
+app-list-negotiation,
+app-list-payment-slip,
+app-funds-transfer-list,
+app-add-payment-slip,
+app-close-fund-transfert-grid,
+app-list-transfer-movement,
+app-list-review,
+app-list-employee,
+app-list-loan-installment,
+app-add-source-deduction,
+app-list-source-deduction,
+app-session-resume,
+app-list-project,
+app-list-exit-employee,
+app-list-team,
+app-list-candidate,
+app-list-recruitment-request-offer,
+app-list-recruitment,
+app-grid-timesheet,
+app-leave-request-list,
+app-expense-report-request-add-request-add,
+app-leave-request-add,
+app-leave-balance-remaining,
+app-expense-report-request-list,
+app-document-request-list,
+app-list-shared-document,
+app-training-list-request,
+app-training-session-list,
+app-list-session,
+app-payslip-history,
+app-list-transfer-order,
+app-search-session-section,
+app-list-source-deduction-session,
+app-employer-declaration,
+app-list-loan,
+app-list-cnss-declaration,
+app-list-benefit-in-kind,
+app-list-bonus,
+app-list-cnss,
+app-list-loan-type,
+app-list-salary-rule,
+app-list-variable,
+app-list-salary-structure,
+app-company-skills,
+app-list-period,
+app-list-country,
+app-list-city,
+app-list-grade,
+app-list-contract-type,
+app-list-leave-type,
+app-expense-report-detail-type,
+app-list-interview-type,
+app-list-evaluation-criteria-theme,
+app-list-qualification-type,
+app-list-exit-reason,
+app-list-user,
+app-list-source-deduction,
+app-list-role,
+app-list-privilege,
+app-add-session,
+app-attendance,
+app-variable-bonuses-section,
+app-list-payslip,
+app-list-transfer-movement,
+app-list-contract,
+app-list-role-config,
+app-documents-associated,
+app-bank-account,
+app-validate-cra,
+app-billing-session-employees,
+app-list-billing-session,
+app-documents-generated-list,
+app-add-cnss-declaration,
+app-add-transfer-order,
+app-skills-matrix,
+app-add-settlement-mode,
+app-settlement-mode-list,
+app-price-list,
+app-document-request-add,
+app-list-interview-by-recruitment,
+app-selection,
+app-list-candidacy,
+app-pre-selection,
+app-list-evaluation,
+app-list-offer-by-candidacy,
+app-hiring,
+app-session-loan-list,
+app-wrong-payslip-list,
+app-exit-employee-pay,
+app-details-leave-exit-employee,
+app-transfer-order-generation,
+app-search-item-list{
+  .k-button {
+    font-size: small;
+    padding-bottom: 4px;
+    padding-top: 4px;
+  }
+
+  a.k-icon.k-plus {
+    font-size: small;
+    padding: 0px;
+  }
+
+  .k-grid td {
+    height: 26px;
+    font-family: var(--font-family-sans-serif);
+  }
+
+  .k-grid .k-hierarchy-cell > .k-icon {
+    padding-bottom: 0px;
+    padding-top: 0px;
+    height: 18px;
+  }
+
+  td.k-detail-cell {
+    padding: 17px;
+  }
+}
+
+app-grid-sales-invoice-assests,
+app-document-grid,
+app-expense-grid,
+app-cost-price,
+app-grid-purchase-invoice-assests-budget,
+app-grid-import-bl,
+app-purchase-order-grid,
+app-purchase-order-add > app-advenced-list-provisionnig,
+app-grid-bs,
+app-grid-be {
+  //colors
+  $seashell: hsl(0, 0%, 95%);
+  $color_suva_gray_approx: rgba(33, 37, 41, 0.125);
+  $color_fuscous_gray_approx: rgba(33, 37, 41, 0.125);
+
+  .k-grid {
+    ::-webkit-scrollbar {
+      height: 7px !important;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: $seashell !important;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: $color_suva_gray_approx !important;
+
+      &:hover {
+        background: $color_fuscous_gray_approx !important;
+      }
+    }
+  }
+
+  .k-grid-header {
+    padding: 0px !important;
+  }
+
+  .k-grid-content {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+  }
+
+  .k-grid-header-wrap {
+    border: none !important;
+  }
+
+  div.k-grid-header,
+  div.k-grid-footer {
+    border: none !important;
+    color: black;
+    -webkit-box-shadow: 0px 5px 12px -7px rgb(175, 175, 175);
+    box-shadow: 0px 5px 12px -7px rgb(175, 175, 175);
+    border-bottom: 1px solid #e4e5e680;
+  }
+
+  .k-grid tr {
+    color: black;
+  }
+
+  .k-grid-header-locked > table,
+  .k-grid-header-wrap > table {
+    font-size: 14px;
+  }
+
+  .k-grid-edit-row td > .k-textbox,
+  .k-grid-edit-row td > .k-widget {
+    display: block !important;
+    width: 100% !important;
+    height: calc(2.0625rem + 2px) !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    color: #5c6873 !important;
+    background-clip: padding-box !important;
+    border: 1px solid #e4e7ea !important;
+    border-radius: 0.25rem !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+  }
+
+  .k-textbox:disabled,
+  .k-textbox[disabled],
+  .k-textbox.k-state-disabled {
+    display: noe !important;
+    width: 100% !important;
+    height: calc(2.0625rem + 2px) !important;
+    padding: 0.375rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    line-height: 1.5 !important;
+    color: #5c6873 !important;
+    background-clip: padding-box !important;
+    border: 1px solid #e4e7ea !important;
+    border-radius: 0.25rem !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    background-color: #e4e7eb !important;
+  }
+
+  .k-grid tbody tr:hover {
+    background-color: transparent;
+  }
+}
+
+tr.k-grid-edit-row {
+  background: #f0f1f1 !important;
+  height: 6em;
+}
+
+button.btnKendoGrid.k-button.k-grid-remove-command {
+  background: transparent !important;
+  color: #f86c6b !important;
+}
+
+.editBtn {
+  background: #516670 !important;
+  color: white !important;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.cta {
+  position: relative;
+  margin: auto;
+  padding: 19px 22px;
+  transition: all 0.2s ease;
+}
+
+.cta:before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 0;
+  display: block;
+  border-radius: 28px;
+  background: rgba(67, 153, 174, 0.21176470588235294);
+  width: 56px;
+  height: 45px;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+.cta span {
+  position: relative;
+  /* letter-spacing: 0.25em; */
+  vertical-align: middle;
+  background: none !important;
+  font-size: 16px !important;
+  margin-top: -0.8%;
+  color: #999999 !important;
+}
+
+.cta svg {
+  position: relative;
+  top: 0;
+  margin-left: 10px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke: #4399ae;
+  stroke-width: 2;
+  transform: translateX(-5px);
+  transition: all 0.3s ease;
+}
+
+.cta:hover:before {
+  width: 100%;
+  background: #4c9aae;
+}
+
+.cta:hover span {
+  color: white !important;
+}
+
+.cta:hover svg {
+  color: white !important;
+  transform: translateX(0);
+  stroke: white;
+}
+
+.cta:active {
+  transform: scale(0.96);
+}
+
+app-manage-team {
+  .k-grid-content.k-virtual-content {
+    cursor: pointer !important;
+  }
+}
+
+app-add-order-project {
+  .k-grid-content.k-virtual-content {
+    cursor: pointer !important;
+  }
+}
+
+app-add-order-project {
+  .k-grid-content {
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+  }
+}
+
+app-list-tec-doc {
+  .k-grid tr.notecodd {
+    background-color: #dde6e8;
+  }
+
+  .k-grid tr.noteceven {
+    background-color: #eef8fb;
+  }
+
+  .k-grid tr.k-state-selected {
+    background: rgba(76, 154, 174, 0.25);
+  }
+
+  .k-grid tr.notecodd:hover,
+  .k-grid tr.noteceven:hover {
+    background-color: #d2c49c36;
+  }
+}
+
+app-tec-doc-advanced-list-product {
+  .k-grid tr.notecodd {
+    background-color: #dde6e8;
+  }
+
+  .k-grid tr.noteceven {
+    background-color: #eef8fb;
+  }
+
+  .k-grid tr.k-state-selected {
+    background: rgba(76, 154, 174, 0.25);
+  }
+
+  .k-grid tr.notecodd:hover,
+  .k-grid tr.noteceven:hover {
+    background-color: #d2c49c36;
+  }
+}
+
+app-advanced-list-products {
+  .k-grid tr.notecodd {
+    background-color: #dde6e8;
+  }
+
+  .k-grid tr.noteceven {
+    background-color: #eef8fb;
+  }
+
+  .k-grid tr.k-state-selected {
+    background: rgba(76, 154, 174, 0.25);
+  }
+
+  .k-grid tr.notecodd:hover,
+  .k-grid tr.noteceven:hover {
+    background-color: #d2c49c36;
+  }
+}
+
+.taxClass {
+  font-size: 12px;
+  border-radius: 100px 100px 100px 100px;
+  -moz-border-radius: 100px 100px 100px 100px;
+  -webkit-border-radius: 100px 100px 100px 100px;
+  border: 3px solid #61a8ad;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  height: 20px;
+}
+
+app-validate-cra {
+  .k-grid th {
+    border-right: solid 1px lightgray !important;
+    text-align: center;
+  }
+}
+
+app-advenced-list-provisionnig {
+  .k-checkbox-label,
+  .k-radio-label {
+    min-height: 0px;
+  }
+}
+
+app-add-customer {
+  .k-grid tbody tr:hover {
+    color: #292b2c;
+    background-color: #607d8b1c;
+  }
+
+  .k-grid .k-alt {
+    color: #292b2c;
+    background-color: transparent;
+  }
+}
+
+app-policy-combo-box {
+  .k-grid .k-alt {
+    color: #292b2c;
+    background-color: #f1f5fa !important;
+  }
+
+  kendo-combobox.form-control.HistoryCommandMargin.k-widget.k-combobox.k-header.k-combobox-clearable {
+    border: 1px solid #80808061 !important;
+  }
+
+  .list-group-item {
+    word-wrap: break-word;
+  }
+
+  .whole-cell.column-decoration {
+    padding: 0 !important;
+  }
+}
+
+app-list-negotiation {
+  .k-filtercell .k-filtercell-wrapper > .k-textbox,
+  .k-dropdown .k-dropdown-wrap,
+  .k-dropdowntree .k-dropdown-wrap,
+  .k-numerictextbox .k-numeric-wrap,
+  .k-numerictextbox .k-select,
+  .k-datepicker .k-picker-wrap,
+  .k-timepicker .k-picker-wrap,
+  .k-datetimepicker .k-picker-wrap,
+  .k-datepicker .k-select,
+  .k-timepicker .k-select,
+  .k-datetimepicker .k-select {
+    border: 1px solid #dddde5 !important;
+    width: 25px;
+  }
+}
+
+app-delivery-form-not-billed,
+app-financial-commitment-not-billed,
+app-ticket-list,
+app-invoice-commitment-not-billed,
+app-pop-up-selected-financial-commitment,
+app-tiers-receivables,
+app-document-withholding-tax,
+app-settlements-history,
+app-document-list,
+app-list-customer,
+app-list-supplier,
+app-valid-invoice-asset-list,
+app-movement-history,
+app-list-inventory-movement,
+app-oem-synchronize,
+app-list-claim,
+app-list-of-car,
+app-term-billing-list,
+app-list-family,
+app-list-sub-family,
+app-list-brands,
+app-list-product-brand,
+app-list-model,
+app-list-sub-models,
+app-inventory-details-list,
+app-purchase-order-grid,
+app-grid-purchase-invoice-assests-budget,
+app-list-bank,
+app-settlement-check-draft,
+app-purchase-balance,
+app-list-daily-sales-inventory-movement,
+app-list-negotiation,
+app-list-payment-slip,
+app-funds-transfer-list,
+app-add-payment-slip,
+app-close-fund-transfert-grid,
+app-list-transfer-movement,
+app-list-review,
+app-list-employee,
+app-list-loan-installment,
+app-add-source-deduction,
+app-list-source-deduction,
+app-session-resume,
+app-list-project,
+app-list-exit-employee,
+app-list-team,
+app-list-candidate,
+app-list-recruitment-request-offer,
+app-list-recruitment,
+app-grid-timesheet,
+app-leave-request-list,
+app-expense-report-request-add-request-add,
+app-leave-request-add,
+app-leave-balance-remaining,
+app-expense-report-request-list,
+app-document-request-list,
+app-list-shared-document,
+app-training-list-request,
+app-training-session-list,
+app-list-session,
+app-payslip-history,
+app-list-transfer-order,
+app-search-session-section,
+app-list-source-deduction-session,
+app-employer-declaration,
+app-list-loan,
+app-list-cnss-declaration,
+app-list-benefit-in-kind,
+app-list-bonus,
+app-list-cnss,
+app-list-loan-type,
+app-list-salary-rule,
+app-list-variable,
+app-list-salary-structure,
+app-company-skills,
+app-list-period,
+app-list-country,
+app-list-city,
+app-list-grade,
+app-list-contract-type,
+app-list-leave-type,
+app-expense-report-detail-type,
+app-list-interview-type,
+app-list-evaluation-criteria-theme,
+app-list-qualification-type,
+app-list-exit-reason,
+app-list-user,
+app-list-source-deduction,
+app-list-role,
+app-list-privilege,
+app-add-session,
+app-attendance,
+app-variable-bonuses-section,
+app-list-payslip,
+app-list-transfer-movement,
+app-grid-sales-invoice-assests,
+app-financial-commitment,
+app-list-contract,
+app-list-role-config,
+app-documents-associated,
+app-bank-account,
+app-validate-cra,
+app-billing-session-employees,
+app-list-billing-session,
+app-documents-generated-list,
+app-add-cnss-declaration,
+app-add-transfer-order,
+app-skills-matrix,
+app-document-request-add,
+app-actions-list,
+app-claims-list,
+app-contact-list,
+app-file-list,
+app-list-note,
+app-list-opportunity,
+app-add-settlement-mode,
+app-settlement-mode-list,
+app-price-list,
+app-organisationlist,
+app-list-interview-by-recruitment,
+app-selection,
+app-list-candidacy,
+app-pre-selection,
+app-list-evaluation,
+app-list-offer-by-candidacy,
+app-hiring,
+app-session-loan-list,
+app-wrong-payslip-list,
+app-exit-employee-pay,
+app-details-leave-exit-employee,
+app-transfer-order-generation,
+app-search-item-list {
+  span.k-numeric-wrap > span.k-select {
+    display: none;
+  }
+
+  .k-filtercell .k-filtercell-wrapper > .k-textbox,
+  .k-dropdown .k-dropdown-wrap,
+  .k-dropdowntree .k-dropdown-wrap,
+  .k-numerictextbox .k-numeric-wrap,
+  .k-numerictextbox .k-select,
+  .k-datepicker .k-picker-wrap,
+  .k-timepicker .k-picker-wrap,
+  .k-datetimepicker .k-picker-wrap,
+  .k-datepicker .k-select,
+  .k-timepicker .k-select,
+  .k-datetimepicker .k-select {
+    border: 1px solid #dddde5 !important;
+  }
+
+  .k-filter-row td,
+  .k-filter-row th {
+    padding: 1px !important;
+    padding-bottom: 8px !important;
+  }
+}
+
+app-document-list {
+  .k-header.k-grid-draggable-header,
+  .k-grid .k-filter-row td {
+    border-right: solid 1px lightgray !important;
+    text-align: center;
+  }
+}
+
+app-delivery-form-not-billed,
+app-financial-commitment-not-billed,
+app-invoice-commitment-not-billed,
+app-ticket-list,
+app-pop-up-selected-financial-commitment,
+app-tiers-receivables,
+app-list-intervention-order,
+app-grid-vehicle,
+app-list-operation-grid-for-history,
+app-operation-grid-for-intervention-order,
+app-list-machine,
+app-list-garage,
+app-list-intervention,
+app-document-withholding-tax,
+app-settlements-history,
+app-bank-reconciliation,
+app-document-list,
+app-oem-synchronize,
+app-list-supplier,
+app-list-customer,
+app-movement-history,
+app-list-inventory-movement,
+app-list-claim,
+app-list-of-car,
+app-term-billing-list,
+app-list-family,
+app-list-sub-family,
+app-list-brands,
+app-list-product-brand,
+app-list-model,
+app-list-sub-models,
+app-purchase-order-grid,
+app-inventory-details-list,
+app-grid-purchase-invoice-assests-budget,
+app-list-bank,
+app-purchase-balance,
+app-settlement-check-draft,
+app-list-daily-sales-inventory-movement,
+app-list-negotiation,
+app-list-payment-slip,
+app-funds-transfer-list,
+app-add-payment-slip,
+app-close-fund-transfert-grid,
+app-list-transfer-movement,
+app-list-review,
+app-list-employee,
+app-list-loan-installment,
+app-add-source-deduction,
+app-list-source-deduction,
+app-session-resume,
+app-list-project,
+app-list-exit-employee,
+app-list-team,
+app-list-candidate,
+app-list-recruitment-request-offer,
+app-list-recruitment,
+app-grid-timesheet,
+app-leave-request-list,
+app-expense-report-request-add-request-add,
+app-leave-request-add,
+app-leave-balance-remaining,
+app-expense-report-request-list,
+app-document-request-list,
+app-list-shared-document,
+app-training-list-request,
+app-training-session-list,
+app-list-session,
+app-payslip-history,
+app-list-transfer-order,
+app-search-session-section,
+app-list-source-deduction-session,
+app-employer-declaration,
+app-list-loan,
+app-list-cnss-declaration,
+app-list-benefit-in-kind,
+app-list-bonus,
+app-list-cnss,
+app-list-loan-type,
+app-list-salary-rule,
+app-list-variable,
+app-list-salary-structure,
+app-company-skills,
+app-list-period,
+app-list-country,
+app-list-city,
+app-list-grade,
+app-list-contract-type,
+app-list-leave-type,
+app-expense-report-detail-type,
+app-list-interview-type,
+app-list-evaluation-criteria-theme,
+app-list-qualification-type,
+app-list-exit-reason,
+app-list-user,
+app-list-source-deduction,
+app-list-role,
+app-list-privilege,
+app-add-session,
+app-attendance,
+app-variable-bonuses-section,
+app-list-payslip,
+app-list-transfer-movement,
+app-grid-sales-invoice-assests,
+app-financial-commitment,
+app-list-contract,
+app-list-role-config,
+app-documents-associated,
+app-bank-account,
+app-validate-cra,
+app-billing-session-employees,
+app-list-billing-session,
+app-documents-generated-list,
+app-add-cnss-declaration,
+app-add-transfer-order,
+app-skills-matrix,
+app-document-request-add,
+app-actions-list,
+app-claims-list,
+app-contact-list,
+app-file-list,
+app-list-note,
+app-list-opportunity,
+app-add-settlement-mode,
+app-settlement-mode-list,
+app-price-list,
+app-organisationlist,
+app-list-interview-by-recruitment,
+app-selection,
+app-list-candidacy,
+app-pre-selection,
+app-list-evaluation,
+app-list-offer-by-candidacy,
+app-hiring,
+app-session-loan-list,
+app-wrong-payslip-list,
+app-exit-employee-pay,
+app-details-leave-exit-employee,
+app-transfer-order-generation,
+app-search-item-list {
+  td {
+    .k-filtercell .k-filtercell-operator {
+      height: 24px;
+    }
+
+    .k-dropdown-operator .k-select,
+    .k-datepicker .k-select,
+    .k-filtercell .k-filtercell-operator > .k-button.k-clear-button-visible {
+      font-size: x-small;
+      height: 24px;
+      width: 21px;
+    }
+
+    .k-numerictextbox .k-numeric-wrap,
+    .k-numerictextbox .k-select,
+    .k-filtercell .k-filtercell-wrapper > .k-textbox,
+    .k-datepicker .k-dateinput-wrap {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      padding-left: 3px;
+      height: 24px;
+      font-size: small;
+    }
+
+    .k-filtercell .k-numeric-wrap .k-input,
+    .k-filtercell .k-picker-wrap .k-input {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      height: 24px;
+      font-size: small;
+      margin-left: -15px;
+    }
+
+    .k-datepicker .k-picker-wrap {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      height: 26px;
+      width: 120px;
+    }
+
+    .k-grid-header .k-header {
+      vertical-align: top !important;
+    }
+
+    kendo-datepicker.k-widget.k-datepicker.k-header {
+      width: 120px;
+    }
+
+    .k-filtercell .k-filtercell-wrapper,
+    kendo-grid-date-filter-cell.k-filtercell {
+      width: fit-content;
+    }
+  }
+
+  kendo-dropdownlist.k-dropdown-operator.k-widget.k-dropdown.k-header {
+    vertical-align: top !important;
+    width: 21px;
+  }
+
+  .k-filter-row td {
+    padding-left: 5px !important;
+  }
+
+  button.k-button.btnKendoGrid {
+    height: 21px;
+    font-size: small;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+app-tec-doc {
+  .k-dropdown-wrap {
+    border: 1px solid #e4e7ea !important;
+    font-family: var(--font-family-sans-serif);
+  }
+}
+
+app-list-products,
+app-list-item,
+app-replacement-list-product,
+app-search-item-list {
+  span.k-numeric-wrap {
+    background: #ffffff !important;
+    border: 1px solid gray !important;
+    margin-left: 5px;
+    margin-bottom: -2px;
+    width: 80px !important;
+  }
+
+  .k-dateinput .k-select,
+  .k-numerictextbox .k-select {
+    width: 20px !important;
+  }
+
+  .k-numeric-wrap > .k-input {
+    margin-top: -3px !important;
+    text-align: right !important;
+  }
+
+  .grid-cell {
+    padding: 5px;
+  }
+}
+
+app-shelf-and-storage-manage-grid {
+  span.k-dropdown-wrap.k-state-default {
+    border: 1px solid #dedfdf !important;
+  }
+
+  span.k-dropdown-wrap.k-state-default {
+    font-size: 15px;
+    color: #4c9aae;
+    height: 2.5em;
+  }
+
+  th.k-header.ng-star-inserted,
+  .k-grid-header .k-header {
+    font-size: 13.5px !important;
+    /* margin-bottom: 2px; */
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+  }
+
+  .k-grid td,
+  .k-grid .k-grid-content,
+  .k-grid .k-grid-header-locked,
+  .k-grid .k-grid-content-locked {
+    border-bottom-width: 0;
+    font-size: 13.5px !important;
+    /* margin-bottom: 2px; */
+    padding-bottom: 2px !important;
+    padding-top: 2px !important;
+  }
+}
+
+.k-grid td.tec-doc {
+  text-align: center;
+  padding: 0;
+  color: rgb(76, 154, 174);
+  cursor: pointer;
+}
+
+app-add-order-project {
+  .k-grid-header .k-header {
+    position: relative;
+    margin: 0;
+    padding: 5px;
+    vertical-align: bottom;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+}
+
+app-add-order-project {
+  .k-grid-header .k-header {
+    position: relative;
+    margin: 0;
+    padding: 5px;
+    vertical-align: bottom;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+}
+
+app-grid-provision {
+  .k-grid td {
+    border-width: 0 0 0 1px;
+    vertical-align: middle;
+    padding: 0;
+    font-size: 12px;
+    margin: 0;
+  }
+}
+
+app-advenced-list-provisionnig {
+  .k-grid td {
+    border-width: 0 0 0 1px;
+    vertical-align: middle;
+    padding: 5px;
+    font-size: 13px;
+    margin: 0;
+  }
+}
+
+app-list-supplier,
+app-list-customer {
+  .k-command-cell {
+    text-align: center !important;
+  }
+}
+
+app-purchase-order-add {
+  app-advenced-list-provisionnig {
+    //colors
+    $seashell: #f1f1f1;
+    $color_suva_gray_approx: rgba(33, 37, 41, 0.125);
+    $color_fuscous_gray_approx: rgba(33, 37, 41, 0.125);
+
+    .k-grid {
+      ::-webkit-scrollbar {
+        height: 7px !important;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: $seashell !important;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: $color_suva_gray_approx !important;
+
+        &:hover {
+          background: $color_fuscous_gray_approx !important;
+        }
+      }
+    }
+
+    .k-grid-header {
+      padding: 0px !important;
+    }
+
+    .k-grid-content {
+      overflow-y: auto !important;
+      overflow-x: auto !important;
+    }
+
+    .k-grid-header-wrap {
+      border: none !important;
+    }
+
+    div.k-grid-header,
+    div.k-grid-footer {
+      border: none !important;
+      color: black;
+      -webkit-box-shadow: 0px 5px 12px -7px rgb(175, 175, 175);
+      box-shadow: 0px 5px 12px -7px rgb(175, 175, 175);
+      border-bottom: 1px solid #e4e5e680;
+    }
+
+    .k-grid tr {
+      color: black;
+    }
+
+    .k-grid-header-locked > table,
+    .k-grid-header-wrap > table {
+      font-size: 14px;
+    }
+
+    .k-grid-edit-row td > .k-textbox,
+    .k-grid-edit-row td > .k-widget {
+      display: block !important;
+      width: 100% !important;
+      height: calc(2.0625rem + 2px) !important;
+      padding: 0.375rem 0.75rem !important;
+      font-size: 0.875rem !important;
+      line-height: 1.5 !important;
+      color: #5c6873 !important;
+      background-clip: padding-box !important;
+      border: 1px solid #e4e7ea !important;
+      border-radius: 0.25rem !important;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+    }
+
+    .k-textbox:disabled,
+    .k-textbox[disabled],
+    .k-textbox.k-state-disabled {
+      display: noe !important;
+      width: 100% !important;
+      height: calc(2.0625rem + 2px) !important;
+      padding: 0.375rem 0.75rem !important;
+      font-size: 0.875rem !important;
+      line-height: 1.5 !important;
+      color: #5c6873 !important;
+      background-clip: padding-box !important;
+      border: 1px solid #e4e7ea !important;
+      border-radius: 0.25rem !important;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+      background-color: #e4e7eb !important;
+    }
+
+    .k-grid tbody tr:hover {
+      background-color: transparent !important;
+    }
+  }
+}
+
+app-grid-provision,
+app-grid-sales-invoice-assests {
+  .k-button {
+    font-size: small;
+    padding-bottom: 4px;
+    padding-top: 4px;
+  }
+}
+
+app-advenced-list-provisionnig {
+  td {
+    .k-filtercell .k-filtercell-operator {
+      height: 24px;
+    }
+
+    .k-dropdown-operator .k-select,
+    .k-datepicker .k-select,
+    .k-filtercell .k-filtercell-operator > .k-button.k-clear-button-visible {
+      font-size: x-small;
+      height: 24px;
+      width: 21px;
+    }
+
+    button.k-button.k-button-icon.k-clear-button-visible {
+      margin-bottom: 3px;
+    }
+
+    .k-numerictextbox .k-numeric-wrap,
+    .k-numerictextbox .k-select,
+    .k-filtercell .k-filtercell-wrapper > .k-textbox,
+    .k-datepicker .k-dateinput-wrap {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      padding-left: 3px;
+      height: 24px;
+      font-size: small;
+    }
+
+    .k-filtercell .k-numeric-wrap .k-input,
+    .k-filtercell .k-picker-wrap .k-input {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      height: 24px;
+      font-size: small;
+      margin-left: -15px;
+    }
+
+    .k-datepicker .k-picker-wrap {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      height: 26px;
+      width: 120px;
+    }
+
+    .k-grid-header .k-header {
+      vertical-align: top !important;
+    }
+
+    kendo-datepicker.k-widget.k-datepicker.k-header {
+      width: 120px;
+    }
+
+    .k-filtercell .k-filtercell-wrapper,
+    kendo-grid-date-filter-cell.k-filtercell {
+      width: fit-content;
+    }
+  }
+
+  span.k-numeric-wrap > span.k-select {
+    display: none;
+  }
+
+  .k-filtercell .k-filtercell-wrapper > .k-textbox,
+  .k-filtercell .k-filtercell-wrapper > .k-dropdown .k-dropdown-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-dropdowntree .k-dropdown-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-numerictextbox .k-numeric-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-numerictextbox .k-select,
+  .k-filtercell .k-filtercell-wrapper > .k-datepicker .k-picker-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-timepicker .k-picker-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-datetimepicker .k-picker-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-datepicker .k-select,
+  .k-filtercell .k-filtercell-wrapper > .k-timepicker .k-select,
+  .k-filtercell .k-filtercell-wrapper > .k-datetimepicker .k-select {
+    border: 1px solid #dddde5 !important;
+  }
+
+  .k-filter-row td,
+  .k-filter-row th {
+    padding: 1px !important;
+    padding-bottom: 8px !important;
+  }
+
+  a.k-grid-column-menu.k-grid-filter {
+    padding: 0px;
+    font-size: 0;
+    padding-right: 12px;
+  }
+
+  td {
+    font-size: small;
+  }
+
+  .k-button {
+    font-size: small;
+    padding-bottom: 4px;
+    padding-top: 4px;
+  }
+
+  th.k-header {
+    padding: 8px !important;
+  }
+
+  a.k-icon.k-plus {
+    font-size: small;
+    padding: 0px;
+  }
+
+  .k-grid td {
+    height: 26px;
+    font-family: var(--font-family-sans-serif);
+  }
+
+  .k-grid .k-hierarchy-cell > .k-icon {
+    padding-bottom: 0px;
+    padding-top: 0px;
+    height: 18px;
+  }
+
+  td.k-detail-cell {
+    padding: 17px;
+  }
+}
+
+kendo-numerictextbox.form-control.inputEnabled.as-label.k-widget.k-numerictextbox
+  > span.k-numeric-wrap.k-state-disabled {
+  border: none !important;
+  color: black !important;
+  background: transparent !important;
+  width: 100% !important;
+  opacity: 1 !important;
+  filter: none !important;
+  text-align: right !important;
+}
+
+.k-widget.form-control .k-input {
+  color: black !important;
+}
+
+app-list-item {
+  height: 26px !important;
+}
+
+.k-numeric-wrap > .k-input {
+  text-align: right !important;
+}
+
+.tooltip {
+  padding: 0.25rem !important;
+  background-color: white !important;
+  color: rgb(0, 0, 0) !important;
+  font-weight: normal !important;
+}
+
+.tooltip-top::after {
+  border-top-color: #fff !important;
+}
+
+.tooltip-left::after {
+  border-left-color: #fff !important;
+}
+
+.tooltip-right::after {
+  border-right-color: #fff !important;
+}
+
+.tooltip-bottom::after {
+  border-bottom-color: #fff !important;
+}
+
+app-centralisation-of-journals {
+  .read-only-amount.k-numerictextbox > .k-numeric-wrap {
+    background-color: transparent;
+  }
+
+  .read-only-amount.k-numerictextbox .k-select {
+    display: none !important;
+  }
+
+  .k-grid-header-locked > table,
+  .k-grid-header-wrap > table {
+    font-size: 16px;
+  }
+
+  .k-grid th,
+  .k-icon {
+    font-size: small;
+  }
+
+  .k-grid td {
+    padding: 0.25em 1.75em 0.25em 0em !important;
+  }
+
+  .k-widget {
+    font-size: small;
+  }
+
+  .read-only-amount .k-numeric-wrap > .k-input {
+    padding: 0em 1em 0em 0em;
+    text-align: right !important;
+  }
+
+  .left-class .k-numeric-wrap > .k-input {
+    padding: 0em 1em 0em 1em;
+    text-align: left !important;
+  }
+
+  kendo-grid.bulk-table.k-widget.k-grid br {
+    display: none;
+  }
+
+  .amount-field {
+    text-align: right !important;
+  }
+
+  .k-grid th,
+  .k-grid td {
+    overflow: no-display;
+    text-overflow: unset;
+  }
+
+  button.k-button.btnKendoGrid {
+    height: 21px;
+    font-size: small;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .total-class {
+    color: #4c9aae !important;
+    font-family: Raleway-Bold;
+    font-weight: bolder;
+    font-size: 14px;
+  }
+}
+
+app-list-document-account{
+  .k-filtercell .k-filtercell-wrapper .k-textbox,
+  .k-filtercell .k-filtercell-wrapper .k-numerictextbox .k-numeric-wrap,
+  .k-dropdown .k-dropdown-wrap,
+  .k-datepicker .k-picker-wrap,
+  .k-timepicker .k-picker-wrap,
+  .k-datetimepicker .k-picker-wrap,
+  .k-datepicker .k-select,
+  .k-timepicker .k-select,
+  .k-datetimepicker .k-select {
+    border: 1px solid #dddde5 !important;
+  }
+
+  .k-grid-header-locked > table,
+  .k-grid-header-wrap > table {
+    line-height: 5px !important;
+  }
+
+  .k-filter-row td,
+  .k-filter-row th {
+    padding: 1px !important;
+    padding-bottom: 8px !important;
+  }
+
+  a.k-grid-column-menu.k-grid-filter {
+    padding: 0px;
+    font-size: 0;
+    padding-right: 12px;
+  }
+
+  td {
+    font-size: small;
+  }
+
+  td {
+    .k-filtercell .k-filtercell-operator {
+      height: 24px;
+    }
+
+    .k-dropdown-operator .k-select,
+    .k-datepicker .k-select,
+    .k-filtercell .k-filtercell-operator > .k-button.k-clear-button-visible {
+      font-size: x-small;
+      height: 24px;
+      width: 21px;
+    }
+
+    .k-numerictextbox .k-numeric-wrap,
+    .k-numerictextbox .k-select,
+    .k-filtercell .k-filtercell-wrapper > .k-textbox,
+    .k-datepicker .k-dateinput-wrap {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      padding-left: 3px;
+      height: 24px;
+      font-size: small;
+    }
+
+    .k-filtercell .k-numeric-wrap .k-input,
+    .k-filtercell .k-picker-wrap .k-input {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      height: 24px;
+      font-size: small;
+      margin-left: -15px;
+    }
+
+    .k-datepicker .k-picker-wrap {
+      padding-top: 0px;
+      padding-bottom: 0px;
+      height: 26px;
+      width: 120px;
+    }
+
+    .k-grid-header .k-header {
+      vertical-align: top !important;
+    }
+
+    kendo-datepicker.k-widget.k-datepicker.k-header {
+      width: 120px;
+    }
+
+    .k-filtercell .k-filtercell-wrapper,
+    kendo-grid-date-filter-cell.k-filtercell {
+      width: fit-content;
+    }
+  }
+
+  kendo-dropdownlist.k-dropdown-operator.k-widget.k-dropdown.k-header {
+    vertical-align: top !important;
+    width: 21px;
+  }
+
+  .k-filter-row td {
+    padding-left: 5px !important;
+  }
+
+  button.k-button.btnKendoGrid {
+    height: 21px;
+    font-size: small;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .k-combobox-clearable .k-input {
+    height: 25px !important;
+  }
+
+  .k-dropdown .k-dropdown-wrap,
+  .k-dropdowntree .k-dropdown-wrap {
+    width: 150%;
+  }
+}
+
+app-list-daily-sales-inventory-movement {
+  .k-button {
+    font-size: medium !important;
+  }
+}
+
+app-grid-provision,
+app-advenced-list-provisionnig {
+  .k-numerictextbox .k-numeric-wrap,
+  .k-numerictextbox .k-select,
+  .k-filtercell .k-filtercell-wrapper > .k-textbox,
+  .k-datepicker .k-dateinput-wrap {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 3px;
+    height: 24px;
+    font-size: small;
+    margin-top: 5px;
+  }
+
+  .k-filtercell .k-numeric-wrap .k-input,
+  .k-filtercell .k-picker-wrap .k-input {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    height: 24px;
+    font-size: small;
+    margin-left: -15px;
+    width: 70px;
+  }
+
+  .k-filtercell .k-filtercell-wrapper > .k-textbox,
+  .k-filtercell .k-filtercell-wrapper > .k-dropdown .k-dropdown-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-dropdowntree .k-dropdown-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-numerictextbox .k-numeric-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-numerictextbox .k-select,
+  .k-filtercell .k-filtercell-wrapper > .k-datepicker .k-picker-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-timepicker .k-picker-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-datetimepicker .k-picker-wrap,
+  .k-filtercell .k-filtercell-wrapper > .k-datepicker .k-select,
+  .k-filtercell .k-filtercell-wrapper > .k-timepicker .k-select,
+  .k-filtercell .k-filtercell-wrapper > .k-datetimepicker .k-select {
+    border: 1px solid #dddde5 !important;
+  }
+}
+
+app-expense-grid,
+app-cost-price {
+  kendo-numerictextbox.form-control.inputEnabled.as-no-border-input.k-widget.k-numerictextbox > span.k-numeric-wrap {
+    margin-top: -7px !important;
+  }
+}
+
+app-expense-grid {
+  kendo-numerictextbox.form-control.inputEnabled.as-no-border-input.k-widget.k-numerictextbox > span.k-numeric-wrap {
+    width: 140% !important;
+    margin-left: -10px !important;
+  }
+}
+
+app-cost-price {
+  kendo-numerictextbox.form-control.inputEnabled.as-no-border-input.k-widget.k-numerictextbox {
+    border: none !important;
+    width: 75% !important;
+    margin-bottom: -26px !important;
+  }
+
+  kendo-numerictextbox.form-control.inputEnabled.as-no-border-input.k-widget.k-numerictextbox > span.k-numeric-wrap {
+    width: 190% !important;
+    margin-left: -15px !important;
+  }
+}
+
+app-tiers-receivables {
+  a.k-icon.k-plus {
+    display: none !important;
+  }
+
+  td.k-detail-cell {
+    padding: 25px !important;
+  }
+}
+
+app-grid-timesheet,
+app-leave-request-list,
+app-leave-balance-remaining,
+app-expense-report-request-add-request-add,
+app-expense-report-request-show,
+app-document-request-show,
+app-add-session,
+app-list-payslip {
+  .k-grid td {
+    kendo-dropdownlist,
+    kendo-combobox {
+      position: relative;
+      vertical-align: bottom;
+      height: 24px !important;
+      font-size: small !important;
+
+      .k-input {
+        height: 1.5rem !important;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+      }
+    }
+
+    kendo-combobox {
+      border-width: 1px !important;
+      border-color: #e4e7eb !important;
+    }
+  }
+}
+
+.status-badge {
+  margin-left: 2.4vw;
+}
+
+.btn-validate {
+  cursor: pointer;
+  color: #fff;
+  background-color: #00b050;
+  border-color: #00b050;
+}
+
+.btn-validate:hover,
+.btn-validate:focus,
+.btn-validate:active {
+  color: #fff;
+  background-color: #00ca5c;
+}
+
+.btn-cancel {
+  cursor: pointer;
+  color: #fff;
+  background-color: #ff0000;
+  border-color: #ff0000;
+}
+
+.btn-cancel:hover,
+.btn-cancel:focus,
+.btn-cancel:active {
+  color: #fff;
+  background-color: #e50000;
+}
+
+.edit-pencil {
+  color: #b3b3c7;
+}
+
+/**
+
+ */
+app-journal-import-grid-btn,
+app-account-import-grid-btn,
+app-accounting-document-grid-btn,
+app-accounting-template-import-grid-btn,
+app-chart-accounts-import-btn {
+  .dpItem {
+    border-bottom: 1px solid #c8ced3 !important;
+  }
+
+  .dpMenu {
+    border: 1px solid #c8ced3 !important;
+  }
+
+  a.dropdown-item.dpItem.k-button.k-grid-excel {
+    background: transparent;
+  }
+
+  a.dropdown-item.k-button.k-grid-excel {
+    position: relative;
+    padding: 10px 20px;
+    border-bottom: 1px solid #c8ced3;
+    border-radius: 0px;
+    font-size: 0.875rem;
+    text-align: left;
+    background: transparent;
+    margin-left: 0px;
+    justify-content: left;
+  }
+
+  a.dropdown-item.k-button.k-grid-excel:hover {
+    background-color: #f0f3f5;
+  }
+
+  .dropdown-menu {
+    width: min-content;
+  }
+
+  #action_grid_toggle {
+    left: -30px !important;
+  }
+
+  label.list-item {
+    display: list-item;
+    margin-bottom: 0px;
+  }
+}
+app-price-request-grid .k-grid-table {
+  transform: none !important;
+}
+
+app-gallery-card {
+  iframe {
+    max-width: 220px;
+    max-height: 160px;
+    height: 160px;
+  }
+}
+
+.tecdoc-button {
+  border-radius: 50em;
+}
+
+.back-to-line {
+  white-space: pre-line;
+}
+
+span.dropdown-btn {
+  color: #868686 !important;
+}
+
+app-list-products,
+app-list-expense-items,
+app-search-item-list,
+app-reminder-sms-list,
+app-cash-register-ticket {
+    .k-grid td.overflow-class {
+        overflow: inherit;
+    }
+}
+
+.header-current-fiscal-year {
+  margin-top: -21px;
+  background-color: white;
+}
+
+
+app-accounting-reporting-menu-financial-states,
+app-reconciliation-bank-menu,
+app-accounting-reporting-menu-editions,
+app-accounting-reporting-menu-journals
+{
+  a.nav-link.nav-style.active-link {
+    color: #336699 !important;
+    font-weight: bold;
+    border: none;
+    border-bottom: solid #336699 !important;
+    height: 37px;
+  }
+  a.nav-link.nav-style {
+    text-align: center;
+    border: none;
+    border-bottom: solid 1px #c8ced3;
+  }
+
+}
+
+.spinner {
+  padding-top: 0%!important;
+  padding-left: 0%;
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%!important;
+  height: 100%!important;
+  background: #00000052;
+  z-index: 999999;
+
+  justify-content: center!important;
+  display: flex;
+  align-items: center!important;
+}
+app-grid-sales-invoice-assests{
+  .k-grid th, .k-grid td{
+    overflow: visible !important;
+  }
+}

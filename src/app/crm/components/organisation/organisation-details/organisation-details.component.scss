@@ -1,0 +1,53 @@
+
+.greenBtn{
+  background: #009688;
+  border: none;
+  color: white;
+}
+
+
+
+body .ui-accordion .ui-accordion-header:not(.ui-state-disabled).ui-state-active a {
+  background-color: #4c9aae;
+  border: 1px solid #4c9aae;
+  color: black;
+}
+
+body .ui-accordion .ui-accordion-content {
+  padding: 0.571em 1em;
+  border: 1px solid #c8c8c8;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 0.571em 1em;
+}
+
+body .ui-accordion .ui-accordion-header a {
+  padding: 0.571em 1em;
+  background-color: #f4f4f4;
+  color: #4c9aae;
+  font-weight: 700;
+  -moz-transition: background-color 0.2s;
+  -o-transition: background-color 0.2s;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+  font-size: medium;
+}
+
+
+body .ui-accordion .ui-accordion-content {
+  padding: 0.571em 1em;
+  border: 1px solid #c8c8c8;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 0.571em 1em;
+}
+#nav-tabContent {
+  height: 100% !important;
+  overflow: auto;
+}
+
+.fixheaderdetail{
+  background-color: white;
+   border: none;
+   height: 11%;
+ }

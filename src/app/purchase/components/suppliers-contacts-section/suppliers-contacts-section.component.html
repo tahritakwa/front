@@ -1,0 +1,14 @@
+
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <app-supplier-dropdown [type]=2 [itemForm]="tierPriceRequestform"  [selectedValue]='supplierId' (Selected)="receiveSupplier($event)" 
+         class="error-msg messages text-left text-danger">
+        </app-supplier-dropdown>
+        <app-control-messages [control]="tierPriceRequestform.controls.IdTiers" class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+        <app-contact-dropdown class="error-msg messages text-left text-danger" [itemForm]="tierPriceRequestform">
+        </app-contact-dropdown>
+        <app-control-messages [control]="tierPriceRequestform.controls.IdContact" class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+</div>

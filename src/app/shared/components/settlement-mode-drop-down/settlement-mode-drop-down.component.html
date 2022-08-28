@@ -1,0 +1,38 @@
+<div *ngIf='group'>
+  <div [formGroup]="group">
+    <kendo-combobox [data]="settlementModeFiltredDataSource" class="form-control w-100" name="IdSettlementMode"
+      formControlName="IdSettlementMode" (valueChange)="onSelect($event)" [textField]="'Code'" [valueField]="'Id'"
+      [valuePrimitive]="true" [allowCustom]="allowCustom" [filterable]="true" (filterChange)="handleFilter($event)"
+      [disabled]="disabled">
+      <ng-template kendoDropDownListFooterTemplate let-dataItem *ngIf='showAddButton'>
+        <!--footer template-->
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+      <!--end footer template-->
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" noDataText="{{'NO_DATA_FOUND'|translate}}" > </kendo-combobox-messages>
+      <!--end No data template-->
+    </kendo-combobox>
+  </div>
+</div>
+<div *ngIf='!group'>
+  <kendo-combobox [data]="settlementModeFiltredDataSource" class="form-control w-100" name="IdSettlementMode"
+    [(ngModel)]='selectedValueWithNoFrom' (valueChange)="onSelect($event)" [textField]="'Code'" [valueField]="'Id'"
+    [valuePrimitive]="true" [allowCustom]="allowCustom" [filterable]="true" (filterChange)="handleFilter($event)"
+    [disabled]="disabled">
+    <ng-template kendoDropDownListFooterTemplate let-dataItem >
+      <!--footer template-->
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" > </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

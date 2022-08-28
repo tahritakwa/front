@@ -1,0 +1,44 @@
+<div class="card">
+  <div *ngIf="!isModal" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'SHARE_DOCUMENT'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="sharedDocumentFormGroup" class="form-horizontal">
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:20px">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE'|translate}}<span class="required">*</span></label>
+          <app-document-request-type-dropdown [group]="sharedDocumentFormGroup" [disabled] ="isDocumentValidation"></app-document-request-type-dropdown>
+        </div>
+        <br>
+        <div class="col-lg-6 col-md-12 col-sm-12" style="margin-bottom:20px">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'EMPLOYEE'|translate}}<span class="required">*</span></label>
+          <app-employee-dropdown [form]="sharedDocumentFormGroup" [disabled] ="isDocumentValidation"></app-employee-dropdown>
+        </div>
+        <br>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'FILES'|translate}}(PDF)<span class="required">*</span></label>
+          <app-upload-file [authorisedTypes]="'application/pdf'" [fileToUpload]="filesInfos"></app-upload-file>
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+          <input class="input-checkbox100" formControlName="EncryptFile" id="ckb2" name="EncryptFile" type="checkbox">
+          <label class="label-checkbox100" for="ckb2" style="margin-top: 2%; margin-top: 45px;">
+            {{'ENCRYPT_FILE' | translate}}&nbsp;
+          </label>
+        </div>
+      </div>
+    </form>
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button (click)="shareDocument()" class="btn btn-sm btn-save" type="submit">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

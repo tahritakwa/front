@@ -1,0 +1,45 @@
+<div class="card">
+  <div class="card-header" style="background-color:white!important;">
+      <button class="noPadding btn-Add k-button" style="background: no-repeat;border: none;  margin-top:5px;"
+             (click)="showDetails=!showDetails;" *ngIf="hasUpdatePermission">
+          <i [ngClass]="{'cui-chevron-bottom':!showDetails,'cui-chevron-top':showDetails}" 
+             aria-hidden="true" style="color: #4c9aae">
+          </i> 
+      </button>
+      <span class="card-title mb-0" [ngClass]="{'success': Name.value, 'error': !Name.value}" 
+            style="font-style: italic; margin-left: 10px;" 
+            *ngIf="!Name.value">
+        {{'POST'| translate}}
+      </span>
+      <span class="card-title mb-0"  style="font-weight: bold; margin-left: 10px;" *ngIf="Name.value"> 
+        {{Name.value}}
+      </span>
+      <button class="noPadding btn-Add k-button  pull-right" *ngIf="hasUpdatePermission" type="button" dir="ltr" style="border: none; margin-top:5px" (click)="RemoveView()">
+          <i class="fa fa-close fa-lg AddIcon"></i>
+      </button>
+   </div>
+   <div class="card-body" *ngIf="showDetails === true">
+     <div class="row col-lg-12 col-md-12 col-sm-12">
+      <!-- Name start -->
+      <div class="col-lg-6 col-md-6 col-sm-12" [formGroup]="postFormGroup">
+        <div class="form-group row">
+          <label class="col-lg-4 col-md-12 col-sm-12" style="padding-left: 30px;">{{'NAME'|translate}}<span class="required">*</span></label>
+          <div class="col-lg-6 col-md-10 col-sm-10">
+            <input class="form-control" [attr.disabled]="!hasUpdatePermission ? '' : null" [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && !Name.valid }"
+             type="text" formControlName="Name">
+            <app-control-messages [control]="postFormGroup.controls.Name" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+      <!-- Name End -->
+      </div>
+      <app-grid-machine [machineSelected]='allMachineSelected'
+                        [idGarage]='idGarage' 
+                        [hasUpdatePermission]="hasUpdatePermission"
+                        [data]="machineGridData" 
+                        (machineAdded)="machineAddedInTheGrid($event)" 
+                        (machineRemoved)="machineRemovedFromTheGrid($event)">
+      </app-grid-machine>
+    </div>
+  </div>

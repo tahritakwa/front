@@ -1,0 +1,22 @@
+<div [formGroup]="group">
+<kendo-combobox  formControlName="planId" [data]="chartOfAccountFiltredList"
+                [textField]="'label'" [valueField]="'id'" [valuePrimitive]="true" class="form-control" [filterable]="true"
+                (filterChange)="handleFilterChartOfAccount($event)" (valueChange)="onSelect($event)">
+  <ng-template kendoComboBoxItemTemplate let-dataItem>
+    <div class="container">
+      <div class="row">
+        <b>{{dataItem.code}}</b>
+      </div>
+      <div class="row">
+        <span class="small">{{dataItem.label}}</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <!--No data template-->
+  <ng-template kendoDropDownListNoDataTemplate>
+    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+  </ng-template>
+  <!--end No data template-->
+</kendo-combobox>
+</div>

@@ -1,0 +1,89 @@
+<div class="modal fade" role="alertdialog" aria-labelledby="myLargeModalLabel" aria-hidden="true"
+     id="generatePopup" data-backdrop="static"
+     data-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>{{'CALENDAR.POPUP.TITLE'|translate}}</h5>
+        <button id="closeModal" type="button" class="close" data-dismiss="modal" aria-label="Close"
+                (click)="closeModal()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <nav>
+          <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-action-tab" data-toggle="tab" href="#nav-action" role="tab"
+               (click)="changeShowingMode('ACTION')"
+               aria-controls="nav-home" aria-selected="true">{{'CALENDAR.POPUP.TYPE_EVENT.ACTION'| translate}}</a>
+            <a class="nav-item nav-link" id="nav-reminder-tab" data-toggle="tab" href="#nav-reminder"
+               role="tab" (click)="changeShowingMode('REMINDER')"
+               aria-controls="nav-contact" aria-selected="false">{{'CALENDAR.POPUP.TYPE_EVENT.REMINDER' | translate}}</a>
+            <a class="nav-item nav-link" id="nav-event-tab" data-toggle="tab" href="#nav-event"
+               role="tab" (click)="changeShowingMode('EVENT')"
+               aria-controls="nav-contact" aria-selected="false">{{'CALENDAR_EVENT' | translate}}</a>
+
+          </div>
+        </nav>
+
+      </div>
+      <div class="modal-body">
+        <div class="row form-group">
+          <div class="tab-content" id="nav-tabContent" style="width: 100%;border-top: none;">
+            <div class="tab-pane fade show active" id="nav-action" role="tabpanel" aria-labelledby="nav-action-tab">
+              <app-add-action [popupCalendar]="true"
+                              [selectedDate]="selectedDate"
+                              [eventToSaveFromCalendar]="save.asObservable()"
+                              [eventToCloseFromCalendar]="closePopUp.asObservable()"
+                              (saveIsDone)="closeP()"
+                              style="width: 100%">
+
+              </app-add-action>
+            </div>
+            <div class="tab-pane fade" id="nav-reminder" role="tabpanel" aria-labelledby="nav-reminder-tab">
+              <app-reminder-event [selectedDate]="selectedDate"
+                                  [reminderToSaveFromCalendar]="save.asObservable()"
+                                  [reminderToCloseFromCalendar]="closePopUp.asObservable()"
+                                  (saveIsDone)="closeP()"></app-reminder-event>
+            </div>
+            <div class="tab-pane fade" id="nav-event" role="tabpanel" aria-labelledby="nav-event-tab">
+              <app-event
+                [selectedDate]="selectedDate"
+                [eventToSaveFromCalendar]="save.asObservable()"
+                [eventToCloseFromCalendar]="closePopUp.asObservable()"
+                (saveIsDone)="closeP()" ></app-event>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+      <div class="modal-footer">
+
+        <div class="footerStyle">
+          <footer >
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 footer-content">
+                <a (click)="closeP()" >
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'VALIDATION_CANCEL'|translate}}
+              </span>
+                </a>
+                <button  class="btn btn-sm btn-save mx-1" type="submit" (click)="emitEventToSaveAction()">
+                  <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                </button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+<span class="k-button btnKendoGrid" id="openPopup"
+      style="background: #607D8B;    display: none;  color: white;" data-toggle="modal"
+      data-target="#generatePopup" type="button" href="#generatePopup">
+              <span><i class="fa fa-plus"></i>&nbsp;
+                {{'QUOTATION'|translate}}&nbsp;-&nbsp;BL</span>
+</span>

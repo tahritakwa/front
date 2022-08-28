@@ -1,0 +1,12 @@
+<div [formGroup]="form">
+  <kendo-combobox [data]="unitFiltredDataSource" class="form-control" name="IdUnit" formControlName="IdUnit"
+    textField="Name" valueField="Id" [valuePrimitive]="true" [filterable]="true" (valueChange)="onSelect($event)" [disabled]="disabled"
+    (filterChange)="handleFilter($event)">
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

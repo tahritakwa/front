@@ -1,0 +1,76 @@
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="moveToAssignFormGroup" class="form-horizontal">
+      <div *ngIf="showControl">
+        <div class="form-group row">
+          <div class="form-group col-lg-12 col-sm-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'ASSIGNMENT_DATE'|translate}}<span
+                  class="required">*</span></label>
+                <kendo-datepicker (valueChange)="changeAssignmentDate()" [disabled]="!state" [format]="formatDate"
+                                  [max]="maxAssignmentDate"
+                                  class="form-control" formControlName="AssignmentDate" formatPlaceholder="formatDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="AssignmentDate" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'ASSIGNMENT_PERCENTAGE'|translate}}<span
+                  class="required">*</span></label>
+                <div class="input-group mb-3">
+                  <input [ngClass]="{ 'has-error': (AssignmentPercentage.touched || AssignmentPercentage.dirty) && !AssignmentPercentage.valid }" aria-describedby="basic-addon2" class="form-control"
+                         formControlName="AssignmentPercentage"
+                         type="number">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">%</span>
+                  </div>
+                </div>
+                <app-control-messages [control]="AssignmentPercentage" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'UN_ASSIGNMENT_DATE'|translate}}</label>
+                <kendo-datepicker (valueChange)="changeUnassignmentDate()" [disabled]="!state" [format]="formatDate"
+                                  [min]="minUnassignmentDate" [ngClass]="{ 'has-error': (UnassignmentDate.touched || UnassignmentDate.dirty) && !UnassignmentDate.valid }"
+                                  class="form-control"
+                                  formControlName="UnassignmentDate"
+                                  formatPlaceholder="formatDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="UnassignmentDate" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button *ngIf="isModal" [disabled]="!state" type="submit" class="btn btn-sm btn-save" style="float: right; margin-bottom: 5px;" (click)="toAssignClick()">
+          <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'VALIDATE') |translate}}
+        </button>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="max-height: 300px; overflow-x: hidden ">
+        <div class="form-group row">
+          <table class="table table-responsive-sm table-striped">
+            <thead>
+            <tr>
+              <th>{{'ASSIGNMENT_DATE' | translate}}</th>
+              <th>{{'UN_ASSIGNMENT_DATE' | translate}}</th>
+              <th>{{'PROPORTION' | translate}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let d of dataAssignementHistoric" class="col-lg-12 col-sm-12 col-md-12">
+              <td>{{ d.AssignmentDate | date: formatDate}}</td>
+              <td>{{ d.UnassignmentDate | date: formatDate}}</td>
+              <td>{{ d.AssignmentPercentage }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

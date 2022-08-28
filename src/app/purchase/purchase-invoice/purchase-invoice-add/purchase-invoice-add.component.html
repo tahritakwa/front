@@ -1,0 +1,471 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: white">
+    <div class="row" style="float: right">
+      <div class="col-lg-auto col-md-1 col-sm-12 primaryColor" style="float: right">
+        <div class="row pl-3">
+          <i class=" fa fa-line-chart fa-3x"></i>
+          <div class="col-auto d-flex align-items-end" style="width: 220px">
+            <input class="form-control InvoiceNumber pb-0" [value]="documentForm.controls['Code']?.value" [readOnly]="true">
+          </div>
+        </div>
+      </div>
+      <app-document-header [documentForm]="documentForm" style="float: right"
+        class="col-lg-auto col-md-3 col-sm-12 d-flex align-items-center">
+      </app-document-header>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="documentForm">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span tooltip="Devise: {{formatOptions? formatOptions.currency : '--'}}" theme="light">
+                    {{'SUPPLIER'|translate}} <span class="required">*</span>
+                  </span>
+                </label>
+                <app-supplier-dropdown [type]=2 [itemForm]="documentForm" (Selected)="receiveSupplier($event)"
+                  class="error-msg messages text-left text-danger" [showDetails]='showSupplierDetails'
+                  [hideAddBtn]='!hideSupplierAddBtn'>
+                </app-supplier-dropdown>
+                <app-control-messages [control]="documentForm.controls.IdTiers"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'DATE'|translate}}<span class="required">*</span> &nbsp;
+                  &nbsp; &nbsp;
+                  &nbsp; &nbsp;</label>
+                <kendo-datepicker [format]="formatDate()" formatPlaceholder="narrow" class="form-control"
+                  formControlName="DocumentDate" (focusout)='changeData()'>
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                    toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="documentForm.controls.DocumentDate"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'PAYMENT'|translate}}<span
+                    class="required">*</span></label>
+                <app-settlement-mode-drop-down class="error-msg messages text-left text-danger" [addNewLine]="false"
+                  [group]="documentForm" (Selected)='idSettlementModeValueChange($event)' [setDefaultValue]='true'
+                  [showAddButton]='showSettlementAddButton'>
+                </app-settlement-mode-drop-down>
+                <app-control-messages [control]="documentForm.controls.IdSettlementMode"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'NOTE'|translate}}</label>
+                <input class="form-control" formControlName="Reference" type="text" name="Reference"
+                  (focusout)="changeData()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-6 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'INVOICING_NUMBER'|translate}} &nbsp; &nbsp; &nbsp; &nbsp;
+              &nbsp;</label>
+            <input type="text" formControlName='DocumentInvoicingNumber' class="form-control" (focusout)="changeData()">
+          </div>
+
+          <div class="col-sm-12 col-md-6 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DATEINVOICING_DATE'|translate}} </label>
+            <kendo-datepicker [format]="formatDate()" formatPlaceholder="narrow" class="form-control"
+              formControlName="DocumentInvoicingDate" (focusout)='changeData()'>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="documentForm.controls.DocumentInvoicingDate"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-sm-12 col-md-6 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CONTACT'|translate}} &nbsp; &nbsp;</label>
+            <app-contact-dropdown class="error-msg messages text-left text-danger" [itemForm]="documentForm"
+              (selectedContact)='selectedContact($event)' [showAddNew]='hideSupplierAddBtn'>
+            </app-contact-dropdown>
+          </div>
+
+          <div class="col-sm-12 col-md-6 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'EXCHANGERATE'|translate}} &nbsp; </label>
+            <input *ngIf=" documentForm.value.IdDocumentStatus == statusCode.Provisional" class="form-control"
+              formControlName="ExchangeRate" type="number" name="ExchangeRate"
+              (focusout)="RecalculateDocumentAndDocumentLineAfterChangingCurrencyExchangeRate()" [ngClass]="{ 'has-error': (documentForm.controls.ExchangeRate.touched
+                      || documentForm.controls.ExchangeRate.dirty) && !documentForm.controls.ExchangeRate.valid }">
+            <input *ngIf="documentForm.value.IdDocumentStatus != statusCode.Provisional" class="form-control"
+              formControlName="ExchangeRate" type="number" name="ExchangeRate" disabled="true">
+          </div>
+        </div>
+
+        <!-- Upload file start -->
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <app-upload-file [fileToUpload]="attachmentFilesToUpload"
+              [canUpdateFile]="isDisabledForm()|| (isUpdateMode && !hasUpdatePermission)" [service]="documentService"
+              (selectedFiles)='selectedFiles($event)'></app-upload-file>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active pb-0 pt-1 show" data-toggle="tab" href="#home3" role="tab" aria-controls="home"
+                aria-selected="true">
+                {{'DOCUMENT_LINE'|translate}}
+              </a>
+            </li>
+            <li class="nav-item"
+              *ngIf='documentType === documentEnumerator.PurchaseInvoices && documentForm.controls["IdDocumentStatus"].value > statusCode.Provisional'>
+              <a class="nav-link pb-0 pt-1" data-toggle="tab" href="#profile2" role="tab" aria-controls="history"
+                aria-selected="false">
+                {{'DEADLINES'|translate}}
+              </a>
+            </li>
+
+            <li class="nav-item" *ngIf='documentForm.value.IdDocumentStatus !== statusCode.Provisional
+                                              && documentForm.value.IdDocumentStatus !== statusCode.DRAFT'>
+            <li class="nav-item" *ngIf='documentForm.value.IdDocumentStatus !== statusCode.Provisional
+                                              && documentForm.value.IdDocumentStatus !== statusCode.DRAFT
+                                              && companyWithholdingTax && hasWithholdingTaxListPermission'>
+              <a class="nav-link pb-0 pt-1 " data-toggle="tab" href="#withholdingTax" role="tab"
+                aria-controls="withholdingTax" aria-selected="false" style="height: 35px;">
+                &nbsp;{{'HOLDING_TAX'|translate}}
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active pt-0 show" id="home3" role="tabpanel">
+              <app-grid-purchase-invoice-assests-budget [itemForm]='documentForm' (reloadSignal)='ngOnInit()'
+                [updateValidDocumentRole]='updateValidDocumentRole'
+                [isEditedGrid]='isDisabledForm() || (isUpdateMode && !hasUpdatePermission)'
+                [documentType]="documentType" [formatOption]="formatOptions" [documentTaxeResume]="documentTaxeResume">
+              </app-grid-purchase-invoice-assests-budget>
+
+              <!-- footer-->
+              <div class="row">
+
+                <div class="col-lg-6 col-md-6 col-sm-12 px-0">
+                  <hr style="margin-bottom: 0rem;">
+                  <div class="col-12 table-responsive" style="margin-bottom: -1rem;"
+                    *ngIf="documentTaxeResume.length > 0">
+                    <table class="table table-sm" style="width: 60%;">
+                      <thead class="thead-light">
+                        <tr>
+                          <th scope="col">{{'TAXE'|translate}}</th>
+                          <th scope="col" style="text-align: center">{{'BASE_TVA'|translate}}</th>
+                          <th scope="col" style="text-align: center">{{'AMOUNT'|translate}}</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let taxeResume of documentTaxeResume">
+                          <td style="width: 10%;">
+
+                            <span tooltip="{{taxeResume.IdTaxNavigation.Label}}" theme="light">
+                              {{taxeResume.IdTaxNavigation.Label}}
+                            </span>
+
+                          </td>
+                          <td style="width: 33%;" class="tva-base-amount">
+
+                            <span
+                              tooltip="{{taxeResume.HtAmountWithCurrency.toLocaleString('fr-FR',{minimumFractionDigits: 3})}} {{formatOptions? formatOptions.currency : ''}}"
+                              theme="light">
+
+                              <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1"
+                                [value]="taxeResume.HtAmountWithCurrency" class="form-control inputEnabled"
+                                style="float: right; font-family: Arial,
+                                                                    Helvetica; color: rgb(80, 82, 83); font-weight: bolder" [disabled]="true">
+                              </kendo-numerictextbox>
+
+                            </span>
+
+
+                          </td>
+                          <td style="width: 33%;" class="tva-base-amount">
+
+                            <span
+                              tooltip="{{taxeResume.TaxAmountWithCurrency.toLocaleString('fr-FR',{minimumFractionDigits: 3})}} {{formatOptions? formatOptions.currency : ''}}"
+                              theme="light">
+                              <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1"
+                                [value]="taxeResume.TaxAmountWithCurrency" class="form-control inputEnabled"
+                                style="float: right; font-family: Arial,
+                                                                    Helvetica; color: rgb(80, 82, 83);font-weight: bolder " [disabled]="true">
+                              </kendo-numerictextbox>
+                            </span>
+
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12 px-0 total-div">
+                  <hr style="margin-bottom: 0rem;">
+                  <div class="col-12 total-amount-position" style="margin-bottom: -1rem;">
+
+
+
+                    <div class="row">
+                      <div class="col-9  num-key">
+                        <div style="font-weight: bold; font-size:0.8rem;float: right;">
+                          {{'DISCOUNT'|translate}} </div>
+                      </div>
+                      <div class="col-3 num-value">
+                        <span
+                          tooltip="{{documentForm.controls['DocumentTotalDiscountWithCurrency'].value.toLocaleString('fr-FR',{minimumFractionDigits: 3})}} {{formatOptions? formatOptions.currency : ''}}"
+                          theme="light">
+                          <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1"
+                            formControlName="DocumentTotalDiscountWithCurrency"
+                            class="num-field form-control disabledInput">
+                          </kendo-numerictextbox>
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-9 num-key">
+                        <div style=" font-weight: bolder;
+                                                    font-size: 15px;
+                                                    font-style: normal;
+                                                    color: black;float: right;">
+                          {{'AMOUNT'|translate}} HT </div>
+                      </div>
+                      <div class="col-3 num-value-large num-value">
+                        <span
+                          tooltip="{{documentForm.controls['DocumentHtpriceWithCurrency'].value.toLocaleString('fr-FR',{minimumFractionDigits: 3})}} {{formatOptions? formatOptions.currency : ''}}"
+                          theme="light">
+                          <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1"
+                            formControlName="DocumentHtpriceWithCurrency"
+                            class="num-field important-amount form-control disabledInput" style="margin-top: -5%; font-family:
+                                                                Arial, Helvetica, serif;font-weight: bloder;
+                                                                    color: black"></kendo-numerictextbox>
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-9 num-key">
+                        <div style="font-weight: bold; font-size:0.8rem;float: right;">
+                          {{'EXCLUDING_TVA'|translate}} </div>
+                      </div>
+                      <div class="col-3 num-value">
+                        <span
+                          tooltip="{{documentForm.controls['DocumentTotalExcVatTaxesWithCurrency'].value.toLocaleString('fr-FR',{minimumFractionDigits: 3})}} {{formatOptions? formatOptions.currency : ''}}"
+                          theme="light">
+                          <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1"
+                            formControlName="DocumentTotalExcVatTaxesWithCurrency"
+                            class="num-field form-control disabledInput" style="margin-top: -5%; font-family: Arial, Helvetica;
+                                                                 color: rgb(80, 82, 83); border-bottom: black;">
+                          </kendo-numerictextbox>
+                        </span>
+                      </div>
+                    </div>
+
+
+
+                    <div class="row">
+                      <div class="col-9 num-key">
+                        <div style="font-weight: bold; font-size:0.8rem;float: right;">
+                          {{'TVA'|translate}} </div>
+                      </div>
+                      <div class="col-3 num-value">
+                        <span
+                          tooltip="{{documentForm.controls['DocumentTotalVatTaxesWithCurrency'].value.toLocaleString('fr-FR',{minimumFractionDigits: 3})}} {{formatOptions? formatOptions.currency : ''}}"
+                          theme="light">
+                          <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1"
+                            formControlName="DocumentTotalVatTaxesWithCurrency"
+                            class="num-field form-control disabledInput" style="margin-top: -5%; font-family: Arial,
+                                                                Helvetica; color: rgb(80, 82, 83); ">
+                          </kendo-numerictextbox>
+                        </span>
+                      </div>
+                    </div>
+
+
+                    <div class="row">
+                      <div class="col-9 num-key">
+                        <div style="font-weight: bold; font-size:0.8rem;float: right;">
+                          {{'TAX_STAMP'|translate}} </div>
+                      </div>
+                      <div class=" col-3 num-value">
+                        <app-sales-setting-combo [itemForm]=documentForm class="num-field"
+                          (otherTaxeValueChange)='changeOtherTaxValue($event)' [formatOptions]='formatOptions'
+                          [type]='documentForm.value.IdDocumentStatus === statusCode.Provisional'
+                          [documentType]="documentType"
+                          [companyDetails]="documentLineGrid ? documentLineGrid.currentCompany : null">
+                        </app-sales-setting-combo>
+                      </div>
+                    </div>
+
+                    <hr style="border-color: black;
+                              border-bottom: 1px solid;width: 39%;float: right;
+                              margin-bottom: 0rem;margin-top: 0rem;">
+                    <br />
+
+                    <div class="row" style="margin-top: -15px">
+                      <div class="col-9 num-key">
+                        <div style="font-weight: bolder;
+                                                    font-size: 15px;
+                                                    font-style: normal;
+                                                    color: black;float: right;">
+                          {{'AMOUNT'|translate}} TTC </div>
+                      </div>
+                      <div class="col-3 num-value-large num-value">
+                        <span
+                          tooltip="{{documentForm.controls['DocumentTtcpriceWithCurrency'].value.toLocaleString('fr-FR',{minimumFractionDigits: 3})}} {{formatOptions? formatOptions.currency : ''}}"
+                          theme="light">
+                          <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1"
+                            formControlName="DocumentTtcpriceWithCurrency"
+                            class="important-amount num-field form-control disabledInput"
+                            style="margin-top: -5%;
+                                             font-family: Arial, Helvetica; font-weight: bloder; color: rgb(80, 82, 83);">
+                          </kendo-numerictextbox>
+                        </span>
+                      </div>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+              <hr class="mb-0" *ngIf="settlementsHistory.length > 0">
+              <!--setlement payment-->
+              <div class="col-12 mt-0">
+                <div class="row">
+                  <div class="col-auto" *ngFor="let settlementHistory of settlementsHistory">
+                    <div class="row">
+                      <div class="col">
+                        <div class="col-auto num-key" style="font-style: italic;">
+                          <i class="fa fa-info-circle fa-lg" style="color:#4c9aae;cursor: pointer;" aria-hidden="true"
+                            (click)="showSettlementDetail(settlementHistory)"></i>&nbsp;
+                          {{'PAYMENT_DATE'|translate}}:
+                          {{settlementHistory.Settlement.SettlementDate| date:formatDate()}}
+                        </div>
+                        <div class="col-auto num-key"
+                          style="font-style: italic; margin-left: 20px; margin-bottom: 3px;">
+                          {{'CODE'|translate}}:
+                          {{settlementHistory.Settlement.Code}}
+                        </div>
+                        <div style="font-style: italic;">
+                          <label
+                            style="padding-right: 0px; font-weight: bold; font-size: 0.8rem; color: #929293; margin-left: 2.7em;">
+                            {{'ASSIGNED_AMOUNT'|translate}}:
+                            <span style="font-size: 16px;">{{settlementHistory.AssignedAmountWithCurrency}}
+                              {{formatOptions? formatOptions.currency : ''}}</span>
+                          </label>
+                        </div>
+                        <div style="font-style: italic;">
+                          <label
+                            style="padding-right: 0px; font-weight: bold; font-size: 0.8rem; color: #929293; margin-left: 2.7em;">
+                            {{'ASSIGNED_WITHHOLDING_TAX'|translate}}:
+                            <span style="font-size: 16px;">
+                              {{settlementHistory.AssignedWithholdingTaxWithCurrency ?
+                              settlementHistory.AssignedWithholdingTaxWithCurrency: 0}}
+                              {{formatOptions? formatOptions.currency : ''}}</span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row"
+                  *ngIf="lostAmount > 0 && documentForm.value.IdDocumentStatus === statusCode.TotallySatisfied">
+                  <span class="error-msg messages text-left text-danger" style="margin-left: 42px; margin-top:15px;">
+                    {{lostAmountExplanation}} <br> <span style="font-weight: bold;">
+                      {{'DIFFERENCE_LOSS'|translate}}</span>
+                  </span>
+                </div>
+              </div>
+              <!--setlement payment-->
+
+            </div>
+            <div class="tab-pane" id="profile2" role="tabpanel"
+              style="min-height: 450px;    max-height: 450px !important; overflow-y: scroll;">
+              <app-dead-line-document [idDocument]="id" [idTiers]="documentForm.controls['IdTiers'].value"
+                [showWithholdingTax]="companyWithholdingTax" [documentType]="documentType"
+                [formatOptions]="formatOptions" (settlementAdded)='RechargeSettlementInformations()'>
+              </app-dead-line-document>
+            </div>
+            <div class="tab-pane" id="withholdingTax" role="tabpanel">
+              <app-document-withholding-tax *ngIf="currentDocument" [idDocument]="id"
+                [currentDocument]="currentDocument" [tiersType]="tiersType.Supplier"
+                (withholdingConfigHasBeenChanged)="refreshFinancialCommitmentComponent()">
+              </app-document-withholding-tax>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <span style="margin-right: 4px;">
+              <span class="btn btn-sm btn-back-to-list btn-primary" (click)='onClickGoToList()'>
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </span>
+            <span *ngIf='!isDisabledForm() && isSubmitBtnDisplay && isGridEmpty()'>
+              <button type="button" (click)="onClickGetOverview()" class="btn btn-primary btn-sm"
+                style="margin-right: 4px;">
+                <span>
+                  <i class="fa fa-eye"></i> {{'OVERVIEW'|translate}}
+                </span>
+              </button>
+            </span>
+            <span *ngIf='!isDisabledForm() && isSubmited && validateInvoicePermission_PU'>
+              <button type="button" (click)="onClickValidate()" class="btn btn-sm btn-save mx-1">
+                <span>
+                  <i class="fa fa-floppy-o"></i> {{'VALIDATE'|translate}}
+                </span>
+              </button>
+            </span>
+            <span *ngIf='((!isUpdateMode && hasAddPermission) || (isUpdateMode && hasUpdatePermission))
+                        && !isDisabledForm()  && isSubmitBtnDisplay() && isGridEmpty()' style="margin-right: 4px;">
+              <button type="button" (click)="saveDocumentMessageNotification()" class="btn btn-sm badge-warning">
+                <span>
+                  <i class="fa fa-paper-plane-o"></i> {{'SUBMIT'|translate}}
+                </span>
+              </button>
+            </span>
+
+            <span *ngIf='isDisabledForm() && isSubmited' [ngStyle]="{'margin-left': '4px'}">
+              <kendo-dropdownbutton [data]="dataReportTemplate" (itemClick)="onJasperPrintClick($event)"
+                [primary]="true" *ngIf='isMultiReportTemplate && printInvoicePermission_PU && documentForm.value.IdDocumentStatus != statusCode.Provisional'>
+                <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}}
+              </kendo-dropdownbutton>
+              <button (click)='onJasperPrintClick()' type="button" class="btn btn-primary btn-sm"
+                *ngIf='!isMultiReportTemplate && printInvoicePermission_PU && documentForm.value.IdDocumentStatus != statusCode.Provisional'>
+                <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}}
+              </button>
+            </span>
+
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

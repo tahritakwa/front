@@ -1,0 +1,119 @@
+<form class="form-horizontal" [formGroup]="interventionSearchFormGroup">
+  <div class="card" style="border: none;">
+    <div class="card-body" *ngIf="vehicleInterventionList.data.length > 0">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-3">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE' | translate}}</label>
+              <div class="col-lg-12">
+                <kendo-datepicker [format]="formatDate" class="form-control" formControlName="StartDate">
+                </kendo-datepicker>
+                <app-control-messages [control]="interventionSearchFormGroup.controls.StartDate"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE' | translate}}</label>
+              <div class="col-lg-12">
+                <kendo-datepicker [format]="formatDate" class="form-control" formControlName="EndDate">
+                </kendo-datepicker>
+                <app-control-messages [control]="interventionSearchFormGroup.controls.EndDate"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'OPERATION' | translate}}</label>
+              <div class="col-lg-12">
+                <app-operation-dropdown [group]="interventionSearchFormGroup">
+                </app-operation-dropdown>
+                <app-control-messages [control]="interventionSearchFormGroup.controls.IdOperation"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'STATUS' | translate}}</label>
+              <div class="col-lg-12">
+                <app-intervention-state-dropdown [group]="interventionSearchFormGroup">
+                </app-intervention-state-dropdown>
+                <app-control-messages [control]="interventionSearchFormGroup.controls.IdInterventionState"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-12 col-md-12 col-sm-12"
+        *ngFor="let intervention of vehicleInterventionList.data; let i=index;">
+        <div class="card">
+          <div class="card-header" style="background-color:	white!important;">
+            <div class="row">
+              <div class="col-lg-7">
+                <button class="noPadding btn-Add k-button"
+                  style=" background: no-repeat!important;border: none!important;"
+                  (click)="intervention.Hide = !intervention.Hide;">
+                  <i [ngClass]="{'cui-chevron-bottom': intervention.Hide,'cui-chevron-top': !intervention.Hide}"
+                    aria-hidden="true" style="color: #4c9aae!important;"></i>
+                </button>
+                <span style="color: #4c9aae;">{{intervention.InterventionDate | date: formatDate}}</span>
+                &nbsp;&nbsp;&nbsp;
+                <span>
+                  <i class="fa fa-sign-in blue-color-fade"></i> {{intervention.StartHourOfIntervention}} -
+                  <i class="fa fa-sign-out blue-color-fade"></i> {{intervention.EndHourOfIntervention}}
+                </span>
+              </div>
+              <div class="col-lg-5" align="right">
+                <span *ngIf="intervention.IdInterventionState === interventionState.Open" class="badge"
+                  style="color: #fff; background-color: #89549e;">
+                  {{'OPEN'|translate}} </span>
+                <span *ngIf="intervention.IdInterventionState === interventionState.Completed"
+                  class="badge badge-success">
+                  {{'COMPLETED'|translate}} </span>
+                <span *ngIf="intervention.IdInterventionState === interventionState.InProgress"
+                  class="badge badge-danger">
+                  {{'INPROGRESS'|translate}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" [hidden]="intervention.Hide">
+            <div class="col-lg-12">
+              <span class="pull-right" style="color: #5151dc;">{{intervention.InvoiceCode}}</span>
+            </div>
+            <br>
+            <br>
+            <app-list-operation-grid-for-history [currency]="currency" [idIntervention]="intervention.Id">
+            </app-list-operation-grid-for-history>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="vehicleInterventionList.data.length > 0">
+        <span class="pull-right" style="font-weight: bold; margin-right: 20px;">{{'TOTAL' | translate}}:
+          &nbsp;
+          {{totalAmount.toLocaleString(language,{minimumFractionDigits: currency.SalesPrecision,
+          style: 'currency', currency: currency.Code, currencyDisplay:'code'})}}
+        </span>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 1em; margin-bottom: 2em;"
+        *ngIf="vehicleInterventionList.data.length > 0">
+        <div class="row" style="margin-left: 3.5em">
+          <p-paginator [rows]="vehicleInterventionToTake" [rowsPerPageOptions]="[5,10,20,30,40,50]"
+            [totalRecords]="totalVehicleIntervention" (onPageChange)="paginate($event)"></p-paginator>
+          <span style="align-self: center"> &nbsp; &nbsp;{{'INTERVETION_PER_PAGE' | translate}},
+            &nbsp;{{state.skip + 1}}&nbsp;-&nbsp;{{state.skip + vehicleInterventionList.data.length}}&nbsp; {{'OF' |
+            translate}}&nbsp;{{totalVehicleIntervention}} {{'INTERVETIONS' | translate}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body" *ngIf="vehicleInterventionList.data.length === 0">
+      {{ 'NO_INTERVETION_HISTORY_AVAIBLE' | translate }}
+    </div>
+  </div>
+</form>

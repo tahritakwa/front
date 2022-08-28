@@ -1,0 +1,206 @@
+<div class="card">
+  <form class="form-horizontal" [formGroup]="salaryRuleFormGroup">
+    <div class="card-header local-card-header">
+      <div class="row">
+        <div class=" col-sm-5 mt-1 local-column">
+          <h2 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_SALARY_RULE' : 'ADD_SALARY_RULE' ) | translate }}</h2>
+        </div>
+      </div>
+    </div>
+    <!-- Begin principal menu  part-->
+    <div class="card-body form-group col-12">
+      <!--fields-->
+      <div class="row">
+        <div class="row col-12">
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <label class="col-12">
+              {{'REFERENCE'|translate}}<span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <label class="col-12">
+              {{'NAME'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <label class="col-12">
+              {{'RULE_TYPE'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+        </div>
+        <div class="row col-12">
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <input class="form-control" formControlName="Reference" type="text" [readonly]="isUpdateMode"
+                   [ngClass]="{ 'has-error': (Reference.touched || Reference.dirty) && (!Reference.valid && !Reference.disabled && !Reference.pending) }">
+            <app-control-messages [control]="Reference" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <input class="form-control" formControlName="Name" type="text"
+                   [ngClass]="{ 'has-error': (salaryRuleFormGroup.controls.Name.touched || salaryRuleFormGroup.controls.Name.dirty) && !salaryRuleFormGroup.controls.Name.valid }">
+            <app-control-messages [control]="salaryRuleFormGroup.controls.Name"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <app-rule-type [group]="salaryRuleFormGroup"></app-rule-type>
+          </div>
+        </div>
+
+        <div class="row col-12 top-space">
+          <div class="col-4">
+            <label class="col-12">
+              {{'RULE_CATEGORY'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-4">
+            <label class="col-12">
+              {{'SALARY_RULE_ORDER'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-4">
+            <label class="col-12">
+              {{'APPLICABILITY'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="row col-12 bottom-space">
+          <div class="col-4">
+            <app-rule-category [group]="salaryRuleFormGroup"></app-rule-category>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+            <input class="form-control" formControlName="Order" type="number" min="0" max="50" (change)="changeOrder()"
+                   [ngClass]="{ 'has-error': (Order.touched || Order.dirty) && (!Order.valid && !Order.disabled) }"
+                   onkeydown="return (event.keyCode!=109 && event.keyCode!=107 && event.keyCode!=110 && event.keyCode!=188);">
+            <app-control-messages [control]="Order"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+            <input class="form-control" formControlName="Applicability" type="number" min="0" max="50"
+                   [ngClass]="{ 'has-error': (Applicability.touched || Applicability.dirty) && !Applicability.valid }"
+                   onkeydown="return (event.keyCode!=109 && event.keyCode!=107 && event.keyCode!=110 && event.keyCode!=188);">
+            <app-control-messages [control]="Applicability"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+
+        <div class="row col-12 ">
+          <div class="col-12">
+            <label class="col-12">
+              {{'DESCRIPTION'|translate}}
+            </label>
+          </div>
+        </div>
+
+        <div class="row col-12">
+          <div class="col-12">
+            <textarea class="col-12 form-control textarea-space" type="textarea" formControlName="Description"
+                      rows="3"></textarea>
+            <br />
+          </div>
+        </div>
+
+        <br />
+        <div class="col-lg-4 col-md-6 col-sm-12 contact100-form-checkbox">
+          <div class="col-12">
+            <input class="input-checkbox100" id="ckb1" type="checkbox" formControlName="AppearsOnPaySlip"
+                   name="AppearsOnPaySlip" (change)="toggleEditable()">
+            <label class="label-checkbox100 checkbox-space" for="ckb1">
+              {{'APPEARS_ON_PAY_SLIP'|translate}}
+            </label>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12 contact100-form-checkbox">
+          <div class="col-12">
+            <input class="input-checkbox100" id="ckb2" type="checkbox" formControlName="DependNumberDaysWorked"
+                   name="DependNumberDaysWorked" (change)="toggleEditable()">
+            <label class="label-checkbox100 checkbox-space" for="ckb2">
+              {{'DEPEND_NUMBER_DAYS_WORKED'|translate}}
+            </label>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 contact100-form-checkbox">
+          <div class="col-12">
+            <input class="input-checkbox100" id="ckb3" type="checkbox" formControlName="UsedinNewsPaper"
+                   name="UsedinNewsPaper" (change)="toggleEditable()">
+            <label class="label-checkbox100 checkbox-space" for="ckb3">
+              {{'USED_IN_NEWS_PAPER'|translate}}
+            </label>
+          </div>
+        </div>
+        <div *ngIf="canHaveValidity" class="card-body">
+          <div class="col-lg-4 col-md-6 col-sm-12" id="SALARY_RULE_VALIDITY_PERIOD">
+            <div class="form-group row">
+              <button *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)" class="noPadding btn-Add k-button"
+                      type="button" dir="ltr" style="border: none!important;" (click)="addSalaryRuleValidityPeriod()">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                <span>&nbsp;{{'ADD_SALARY_RULE_VALIDITY_PERIOD'|translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div  *ngIf="canHaveValidity" class="card-body col-lg-11 col-sm-12 col-md-12">
+          <!--Begin list of periods-->
+          <div formArrayName="SalaryRuleValidityPeriod"
+               *ngFor="let validityPeriod of SalaryRuleValidityPeriod.controls; let i=index;">
+            <div class="card" style=" border: 1px solid #c8ced3 !important;border-radius: 0.25rem !important;">
+              <div  *ngIf="i < SalaryRuleValidityPeriod.length - 1" class="card-header" style="background-color:	white!important;">
+                  <button class="noPadding btn-Add k-button"
+                          style=" background: no-repeat!important;border: none!important;"
+                          (click)="validityPeriod.controls.Hide.value=!validityPeriod.controls.Hide.value;">
+                    <i [ngClass]="{'cui-chevron-bottom':validityPeriod.controls.Hide.value,'cui-chevron-top':!validityPeriod.controls.Hide.value}"
+                       aria-hidden="true" style="color: #4c9aae!important;"></i>
+                  </button>
+                  <span>{{'VALIDITY_PERIOD'|translate}}</span>
+                  <span *ngIf="validityPeriod.controls.StartDate.value">{{'FROM'|translate}}</span>
+                  <b style="margin-right:10px!important;">
+                    {{validityPeriod.controls.StartDate.value | date:'MMMM' | uppercase | translate }} {{validityPeriod.controls.StartDate.value | date: 'yyyy'}}
+                  </b>
+                  <span style="margin-left: 5% !important;"
+                        *ngIf="validityPeriod.controls.State.value == salaryRuleValidityPeriodStateEnumerator.UpComing"
+                        class="badge badge-warning">{{'UPCOMING'|translate}}</span>
+                  <span style="margin-left: 5% !important;"
+                        *ngIf="validityPeriod.controls.State.value == salaryRuleValidityPeriodStateEnumerator.InProgress"
+                        class="badge badge-success">{{'IN_PROGESS'|translate}}</span>
+                  <span style="margin-left: 5% !important;"
+                        *ngIf="validityPeriod.controls.State.value == salaryRuleValidityPeriodStateEnumerator.Expired"
+                        class="badge badge-danger">{{'EXPIRED'|translate}}</span>
+              </div>
+              <div class="card-body" [hidden]="i < SalaryRuleValidityPeriod.length - 1 &&  validityPeriod.controls.Hide.value">
+                <app-manage-variable-validity-period class="col-lg-12 col-sm-12 col-md-12" [group]="validityPeriod"
+                  [isFirstElement]="i === SalaryRuleValidityPeriod.length - 1"></app-manage-variable-validity-period>
+                <div class="col-lg-2 col-sm-2 col-md-2" style="margin-top: 2% !important;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--End list of periods-->
+        </div>
+      </div>
+      <br />
+    </div>
+    <div class="fixed-card-footer">
+      <div [ngClass]="getFooterClass()">
+        <footer class="ml-0 app-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="/main/settings/payroll/salaryRule">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i>
+                  {{ "BACK_TO_LIST" | translate }}
+                </span>
+              </a>
+              <button class="btn btn-sm btn-save mx-1" (click)="save()" *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </form>
+</div>

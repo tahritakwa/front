@@ -1,0 +1,227 @@
+<form class="form-horizontal">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <h3 class="col-sm-5 mt-1">{{'CASH_MANAGEMENT'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <kendo-splitter orientation="horizontal" style="height: 100%;">
+        <!-- Cash registers nav Start -->
+        <kendo-splitter-pane [collapsible]="true" size="25%">
+          <div class="card-body" style="overflow-x: auto;">
+            <!-- Side Nav start -->
+            <!-- filter & buttons start -->
+            <div class="row">
+              <div class="pl-12 pr-0">
+                <div class="input-group flex-nowrap">
+                  <input #search (keyup)='onkeyup(search.value)' type="text" class="form-control" placeholder="{{'SEARCH'|translate}}"
+                    style="margin-right: 10px;"
+                    aria-describedby="addon-wrapping" #category>
+                </div>
+              </div>
+              <app-btn-grid (click)="addCashRegister()" [showPopUpAdd]="true" [btnText]="'ADD'"[relativeStyle]="false" *ngIf="hasAddPermission">
+              </app-btn-grid>
+            </div>
+            <!-- filter & buttons end -->
+            <div style="margin-left: -20px !important; margin-top: 15px;">
+              <kendo-treeview [nodes]="nodesData" textField="Text" kendoTreeViewExpandable
+                kendoTreeViewHierarchyBinding kendoTreeViewSelectable childrenField="Items"
+                [(expandedKeys)]="expandedKeys" [selectBy]="'Id'" [(selectedKeys)]="selectedKeys"
+                (selectionChange)="receiveSelectedCashRegister($event)">
+                <ng-template kendoTreeViewNodeTemplate let-dataItem>
+                  <div [ngClass]="{'main-cash-class' : dataItem.Type === cashRegisterItemTypeEnumerator.Central}">
+                    <span *ngIf="dataItem.Type === cashRegisterItemTypeEnumerator.Central">
+                      <div style="text-align:right;padding-right:10px;">
+                        <i class="fa fa-university">&nbsp;{{dataItem.Text}}</i>
+                      </div>
+                    </span>
+                  </div>
+                  <div [ngClass]="{'main-cash-class' : dataItem.Type === cashRegisterItemTypeEnumerator.Zone}"></div>
+                  <span *ngIf="dataItem.Type === cashRegisterItemTypeEnumerator.Zone">
+                    <div style="text-align:right;padding-right:10px;">
+                      <i class="fa fa-map-marker">&nbsp;{{dataItem.Text}}</i>
+                    </div>
+                  </span>
+                  <div [ngClass]="{'main-cash-class' : dataItem.Type === cashRegisterItemTypeEnumerator.Cash}">
+                    <span *ngIf="dataItem.Type === cashRegisterItemTypeEnumerator.Cash">
+                      <i class="fa fa-money" style="width: 7em;">&nbsp;{{dataItem.Text}}</i>
+                      <i (click)="addCashRegister(dataItem)" style="margin-left: 1em;"
+                        class="las la-pen cursor-pointer edit-pencil la-lg" *ngIf="hasUpdatePermission"></i>
+                      <i class="fa fa-trash-o la-lg cursor-pointer text-danger ng-star-inserted"
+                        (click)="removeHandler(dataItem)" *ngIf="hasDeletePermission"></i>
+                    </span>
+                  </div>
+                  <div [ngClass]="{'main-cash-class' : dataItem.Type === cashRegisterItemTypeEnumerator.Principal}">
+                    <span *ngIf="dataItem.Type === cashRegisterItemTypeEnumerator.Principal">
+                      <i class="fa fa-university" style="width: 8em;">&nbsp;{{dataItem.Text}}</i>
+                      <i (click)="addCashRegister(dataItem)" style="margin-left: 1em;"
+                        class="las la-pen cursor-pointer edit-pencil la-lg" *ngIf="hasUpdatePermission"></i>
+                      <i class="fa fa-trash-o la-lg cursor-pointer text-danger ng-star-inserted"
+                        (click)="removeHandler(dataItem)" *ngIf="hasDeletePermission && (!dataItem.Items || (dataItem.Items && dataItem.Items.length == 0))"></i>
+                    </span>
+                  </div>
+                  <div>
+                  <span [ngStyle]="dataItem.Type === cashRegisterItemTypeEnumerator.Central ?
+                      {'font-weight': 'bold'} :  {'font-weight': 'unset'}">
+                      &nbsp;
+                  </span>
+                  </div>
+                </ng-template>
+              </kendo-treeview>
+            </div>
+          </div>
+        </kendo-splitter-pane>
+        <!-- Cash registers nav End -->
+        <!-- Cash register detail Start -->
+        <div class="tab-content tab-content-new">
+        </div>
+
+          <!-- Cash register infos Start -->
+        <kendo-splitter-pane [collapsible]="false">
+          <!-- Cash register header Start -->
+          <div class="px-2">
+            <div class="w-100 border rounded-border p-3">
+              <div>
+                <div class="row d-flex justify-content-around">
+                  <div class="col-lg-4 col-md-6 col-sm-12"></div>
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <h5>
+                      <i class="fa fa-university"></i> {{cashRegisterItemSelected?.Name}}
+                    </h5>
+                  </div>
+                </div>
+                <div class="row d-flex justify-content-around mt-2">
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                      <div class="col-auto ml-4 p-0">
+                        <strong>{{'CASH_REGISTER_CODE'|translate}} : </strong>
+                      </div>
+                      <div class="col-6 px-1">
+                        {{cashRegisterItemSelected?.Code}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                      <div class="col-auto ml-4 p-0">
+                        <strong>{{'TYPE'|translate}} : </strong>
+                      </div>
+                      <div class="col-6 px-1">
+                        {{translatedCashRegisterType}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                      <div class="col-auto ml-4 p-0">
+                        <strong>{{'PARENT_CRATE'|translate}} : </strong>
+                      </div>
+                      <div class="col-6 px-1">
+                       <span *ngIf="cashRegisterItemSelected && cashRegisterItemSelected.IdParentCashNavigation">
+                        {{cashRegisterItemSelected?.IdParentCashNavigation.Name}}
+                       </span>
+                       <span *ngIf="cashRegisterItemSelected && !cashRegisterItemSelected.IdParentCashNavigation">
+                            -
+                       </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                      <div class="col-auto ml-4 p-0">
+                        <strong>
+                          <span *ngIf="cashRegisterItemSelected?.Type === cashRegisterTypeEnum.Central; else notCentral">
+                            {{'COUNTRY'|translate}} : {{getCountryName()}}
+                          </span>
+                          <ng-template #notCentral>{{'CITY'|translate}} : </ng-template>
+                        </strong>
+                      </div>
+                      <div class="col-6 px-1">
+                        {{cashRegisterItemSelected?.IdCityNavigation?.Label}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                      <div class="col-auto ml-4 p-0">
+                        <strong>{{'ADDRESS'|translate}} : </strong>
+                      </div>
+                      <div class="col-6 px-1">
+                        {{cashRegisterItemSelected?.Address}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                      <div class="col-auto ml-4 p-0">
+                        <strong>{{'USER'|translate}} : </strong>
+                      </div>
+                      <div class="col-6 px-1">
+                       <span *ngIf="cashRegisterItemSelected && cashRegisterItemSelected.IdResponsibleNavigation">
+                        {{cashRegisterItemSelected?.IdResponsibleNavigation.FullName}}
+                       </span>
+                       <span *ngIf="cashRegisterItemSelected && !cashRegisterItemSelected.IdResponsibleNavigation">
+                        -
+                       </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Cash register header End -->
+          <!-- Cash register detail start -->
+          <div class="col-lg-12 col-md-12 col-sm-12 col-12" style="margin-top: 10px;">
+            <!-- navs start -->
+            <ul class="nav nav-tabs" id="tabListCounterSales" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active pb-0 pt-1" data-toggle="tab" href="#session" role="tab" aria-selected="false" >
+                  <i class="icon-wallet icons fa-lg" style=" opacity: 0.6;"></i> {{'SESSIONS'|translate}}
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="cashRegisterItemSelected?.Type === cashRegisterTypeEnum.RecipeBox && currentCompanyActivityArea != activitySectorEnum.PAYMENT_INSTITUTION">
+                <a class="nav-link pb-0 pt-1" data-toggle="tab" href="#ticket" role="tab" aria-selected="false">
+                  <i class="icon-wallet icons fa-lg" style=" opacity: 0.6;"></i> {{'TICKET'|translate}}
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="cashRegisterItemSelected?.Type === cashRegisterTypeEnum.RecipeBox && currentCompanyActivityArea != activitySectorEnum.PAYMENT_INSTITUTION">
+                <a class="nav-link pb-0 pt-1" data-toggle="tab" href="#settlement" role="tab" aria-selected="false">
+                  <i class="icon-wallet icons fa-lg" style=" opacity: 0.6;"></i> {{'SETTLEMENT'|translate}}
+                </a>
+              </li>
+              <li class="nav-item" *ngIf="cashRegisterItemSelected?.Type === cashRegisterTypeEnum.RecipeBox && currentCompanyActivityArea == activitySectorEnum.PAYMENT_INSTITUTION">
+                <a class="nav-link pb-0 pt-1" data-toggle="tab" href="#operations" role="tab" aria-selected="false">
+                  <i class="icon-wallet icons fa-lg" style=" opacity: 0.6;"></i> {{'OPERATIONS'|translate}}
+                </a>
+              </li>
+            </ul>
+            <!-- navs end -->
+            <!-- Containers start -->
+            <div class="tab-content">
+              <div class="nav-style tab-pane section-style active pt-0 show" id="session" role="tabpanel">
+                <app-cash-register-session [selectedcashRegister]="cashRegisterItemSelected"></app-cash-register-session>
+              </div>
+              <div class="nav-style tab-pane" id="ticket" role="tabpanel" *ngIf="cashRegisterItemSelected?.Type === cashRegisterTypeEnum.RecipeBox && currentCompanyActivityArea != activitySectorEnum.PAYMENT_INSTITUTION">
+                <app-cash-register-ticket [cashRegister]="cashRegisterItemSelected"></app-cash-register-ticket>
+              </div>
+              <div class="nav-style tab-pane" id="settlement" role="tabpanel" *ngIf="cashRegisterItemSelected?.Type === cashRegisterTypeEnum.RecipeBox && currentCompanyActivityArea != activitySectorEnum.PAYMENT_INSTITUTION">
+                <app-cash-register-settlement [cashRegister]="cashRegisterItemSelected"></app-cash-register-settlement>
+              </div>
+              <div class="nav-style tab-pane" id="operations" role="tabpanel" *ngIf="cashRegisterItemSelected?.Type === cashRegisterTypeEnum.RecipeBox && currentCompanyActivityArea == activitySectorEnum.PAYMENT_INSTITUTION">
+                <app-operation-list [selectedcashRegister]="cashRegisterItemSelected"></app-operation-list>
+              </div>
+            </div>
+            <!-- Containers end-->
+          </div>
+          <!-- Cash register detail End -->
+        </kendo-splitter-pane>
+        <!-- Cash register infos End -->
+
+      </kendo-splitter>
+    </div>
+  </div>
+</form>
+
+

@@ -1,0 +1,133 @@
+<div class="card">
+  <form class="form-horizontal" [formGroup]="variableFormGroup">
+    <div class="card-header local-card-header">
+      <div class="row">
+        <div class=" col-sm-5 mt-1 local-column">
+          <h2 class="card-title mb-0">
+            {{ (isUpdateMode ? 'VARIABLE_COMPONENT.UPDATE' : 'VARIABLE_COMPONENT.ADD' ) | translate }}</h2>
+        </div>
+      </div>
+    </div>
+    <!-- Begin principal menu  part-->
+    <div class="card-body form-group col-12">
+      <!--fields-->
+      <div class="row">
+        <div class="row col-12">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label class="col-12">
+              {{'REFERENCE'|translate}}<span class="required">*</span>
+            </label>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label class="col-12">
+              {{'NAME'|translate}} <span class="required">*</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="row col-12">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <input class="form-control" formControlName="Reference" type="text" [readonly]="isUpdateMode"
+                   [ngClass]="{ 'has-error': (Reference.touched || Reference.dirty) && (!Reference.valid && !Reference.disabled && !Reference.pending) }">
+            <app-control-messages [control]="Reference"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <input class="form-control" formControlName="Name" type="text"
+                   [ngClass]="{ 'has-error': (variableFormGroup.controls.Name.touched || variableFormGroup.controls.Name.dirty) && !variableFormGroup.controls.Name.valid }">
+            <app-control-messages [control]="variableFormGroup.controls.Name"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+
+        <div class="row col-12 top-space">
+          <div class="col-12">
+            <label class="col-12">
+              {{'DESCRIPTION'|translate}}
+            </label>
+          </div>
+        </div>
+
+        <div class="row col-12">
+          <div class="col-12">
+            <textarea class="col-12 form-control textarea-space" type="textarea" formControlName="Description"
+                      rows="5"></textarea>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="col-lg-4 col-md-6 col-sm-12" id="SALARY_RULE_VALIDITY_PERIOD">
+            <div class="form-group row">
+              <button class="noPadding btn-Add k-button" *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)"
+                      type="button" dir="ltr" style="border: none!important;" (click)="addVariableValidityPeriod()">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                <span>&nbsp;{{'ADD_VARIABLE_VALIDITY_PERIOD'|translate}}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body col-lg-11 col-sm-12 col-md-12">
+          <!--Begin list of periods-->
+          <div formArrayName="VariableValidityPeriod"
+               *ngFor="let validityPeriod of VariableValidityPeriod.controls; let i=index;">
+            <div class="card" style=" border: 1px solid #c8ced3 !important;border-radius: 0.25rem !important;">
+              <div class="card-header" style="background-color:	white!important;">
+                <div>
+                  <div *ngIf="i < VariableValidityPeriod.length - 1">
+                    <button class="noPadding btn-Add k-button"
+                      style=" background: no-repeat!important;border: none!important;" (click)="validityPeriod.controls.Hide.value=!validityPeriod.controls.Hide.value;">
+                      <i [ngClass]="{'cui-chevron-bottom':validityPeriod.controls.Hide.value,'cui-chevron-top':!validityPeriod.controls.Hide.value}"
+                        aria-hidden="true" style="color: #4c9aae!important;"></i>
+                    </button>
+                    <span>{{'VALIDITY_PERIOD'|translate}}</span>
+                    <span *ngIf="validityPeriod.controls.StartDate.value">{{'FROM'|translate}}</span>
+                    <b style="margin-right:10px!important;">
+                      {{validityPeriod.controls.StartDate.value | date:'MMMM' | uppercase | translate }} {{validityPeriod.controls.StartDate.value | date: 'yyyy'}}
+                    </b>
+                    <span style="margin-left: 5% !important;"
+                          *ngIf="validityPeriod.controls.State.value == variableValidityPeriodStateEnumerator.UpComing"
+                          class="badge badge-warning">{{'UPCOMING'|translate}}</span>
+                    <span style="margin-left: 5% !important;"
+                          *ngIf="validityPeriod.controls.State.value == variableValidityPeriodStateEnumerator.InProgress"
+                          class="badge badge-success">{{'IN_PROGESS'|translate}}</span>
+                    <span style="margin-left: 5% !important;"
+                          *ngIf="validityPeriod.controls.State.value == variableValidityPeriodStateEnumerator.Expired"
+                          class="badge badge-danger">{{'EXPIRED'|translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" [hidden]="i < VariableValidityPeriod.length - 1 && validityPeriod.controls.Hide.value">
+                <app-manage-variable-validity-period class="col-lg-12 col-sm-12 col-md-12" [group]="validityPeriod"
+                  [isFirstElement]="i === VariableValidityPeriod.length - 1" [isVariable]="true"></app-manage-variable-validity-period>
+                <div class="col-lg-2 col-sm-2 col-md-2" style="margin-top: 2% !important;">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--End list of periods-->
+        </div>
+      </div>
+      <br />
+    </div>
+    <div class="fixed-card-footer">
+      <div [ngClass]="getFooterClass()">
+        <footer class="ml-0 app-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="/main/settings/payroll/variable">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i>
+                  {{ "BACK_TO_LIST" | translate }}
+                </span>
+              </a>
+              <button class="btn btn-sm btn-save mx-1" (click)="save()" *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </form>
+</div>

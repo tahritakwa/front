@@ -1,0 +1,313 @@
+<form>
+  <div class="card">
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'ORDERPROJECT' | translate}}</h3>
+        <div>{{Code}}</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-horizontal">
+        <div class="row">
+          <div class="col-sm-5">
+            <h5 class="card-title" style="color: #4c9aae;">{{'CHOOSESUPPLIER' | translate}}</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <app-supplier-dropdown type="2" [isMultiSelect]='true' (Selected)="choosenSupplier($event)"
+                                   [isDisabledDropDown]='idProvision>0'>
+            </app-supplier-dropdown>
+            <h5 *ngIf='supplierRequired' style="color: red">{{'SupplierRquiredError'|translate}}</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-5  mt-3">
+            <h5 class="card-title mb-0" style="color: #4c9aae;">{{'ADDINGMETHOD' | translate}}</h5>
+          </div>
+        </div>
+        <h5 style="color: red" *ngIf='isInvalidSelectionOrDates'>{{warrringString}}</h5>
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-4 col-sm-4 col-sx-4 contact100-form-checkbox">
+            <input class="input-checkbox100" id="ckb1" name="methodMinMax" type="checkbox" [checked]='isMinMaxCheked'
+                   (click)='minMax()' [disabled]='idProvision>0'>
+            <label class="label-checkbox100" for="ckb1" style="margin-top: 2%;">
+              {{'QANTMINMAX' | translate}}&nbsp;
+            </label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-4 col-sm-4 col-sx-4 contact100-form-checkbox">
+            <input class="input-checkbox100" id="ckb2" name="methodMinMax" type="checkbox" [checked]='ShowHistory'
+                   (click)='purchaseHistory()' [disabled]='idProvision>0'>
+            <label class="label-checkbox100" for="ckb2" style="margin-top: 2%;">
+              {{'ORDERHISTORY' | translate}}&nbsp;
+            </label>
+          </div>
+
+          <div class="col-lg-4" [hidden]='!ShowHistory'>
+            <label class="col-lg-6 col-md-6 TextStyle">
+              {{'STARTDATE' | translate}}<span class="required">*</span>
+            </label>
+            <kendo-datepicker formatPlaceholder="narrow" [(value)]="SatrtDatePurchase" [disabled]='idProvision>0'>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+          <div class="col-lg-4" [hidden]='!ShowHistory'>
+            <label class="col-lg-6 col-md-6 TextStyle">{{'ENDDATE' | translate}}<span class="required">*</span></label>
+            <kendo-datepicker formatPlaceholder="narrow" [(value)]="EndDatePurchase" [disabled]='idProvision>0'>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-4 col-sm-4 col-sx-4 contact100-form-checkbox">
+            <input class="input-checkbox100" id="ckb3" name="methodSales" type="checkbox" (click)='salesHistory()'
+                   [checked]='SalesHistory' [disabled]='idProvision>0'>
+            <label class="label-checkbox100" for="ckb3" style="margin-top: 2%;">
+              {{'SALESHISTORY' | translate}}&nbsp;
+            </label>
+          </div>
+          <div class="col-lg-4" [hidden]='!SalesHistory'>
+            <label class="col-lg-6 col-md-6 TextStyle">
+              {{'STARTDATE' | translate}}<span class="required">*</span>
+            </label>
+            <kendo-datepicker formatPlaceholder="narrow" [(value)]="SatrtDateSales" [disabled]='idProvision>0'>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+          <div class="col-lg-4" [hidden]='!SalesHistory'>
+            <label class="col-lg-6 col-md-6 TextStyle">{{'ENDDATE' | translate}}<span class="required">*</span></label>
+            <kendo-datepicker formatPlaceholder="narrow" [(value)]="EndDateSales" [disabled]='idProvision>0'>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+
+        <div class="form-group row" [formGroup]="newRefDatesForm">
+          <div class="col-lg-3 col-md-4 col-sm-4 col-sx-4 contact100-form-checkbox">
+            <input class="input-checkbox100" id="ckb4" name="methodNewReferences" type="checkbox"
+                   [checked]='isNewReferencesChecked' (click)='newReferenceClick()' [disabled]='idProvision>0'>
+            <label class="label-checkbox100" for="ckb4" style="margin-top: 2%;">
+              {{'NEW_REFERENCES' | translate}}&nbsp;
+            </label>
+          </div>
+
+          <div class="col-lg-4" [hidden]='!isNewReferencesChecked'>
+            <label class="col-lg-6 col-md-6 TextStyle">
+              {{'STARTDATE' | translate}}</label>
+            <kendo-datepicker formatPlaceholder="narrow" formControlName="SatrtDateNewReferences" [disabled]='idProvision>0' #RefSatrtDateNewReferences>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+          <div class="col-lg-4" [hidden]='!isNewReferencesChecked'>
+            <label class="col-lg-6 col-md-6 TextStyle">{{'ENDDATE' | translate}}</label>
+            <kendo-datepicker formatPlaceholder="narrow" formControlName="EndDateNewReferences" [disabled]='idProvision>0' #RefEndDateNewReferences>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+        <div class="row mt-3 ml-1">
+          <button data-toggle="tooltip" title="{{'ORDERPROJECTGENERATE' | translate}}"
+                  class="k-button btn-secondary ml-3 mr-2 generate-button" type="button" tabindex="0"
+                  (click)="filterSelect()" [disabled]='!validOrderProject'
+                  *ngIf="!idProvision">
+            <i class="fa fa-cogs fa-lg AddIcon"></i>
+            <span>&nbsp;{{'GENERATE_REAP' | translate}}</span>
+          </button>
+        </div>
+
+        <div class="form-group mt-3" [hidden]="DisplayGrid">
+          <div class="row mb-2">
+            <div class="col-sm-5">
+              <h5 class="card-title mb-0" style="color: #4c9aae;">{{'ORDERPROJECTLIST' | translate}}</h5>
+            </div>
+          </div>
+
+          <div class="mr-3 mt-3">
+            <app-grid-provision [idProvision]='idProvision' [selectedRow]='selectedRow'
+                                [selectedValueMultiSelect]='supplier.selectedValueMultiSelect'
+                                [isTheOrderBtnDisabled]='isTheOrderBtnDisabled'
+                                (htPeerSupplier)='htPeerSupplier($event)'
+                                (quantityDetails)='quantityDetails($event)'
+                                (updateSupplierSelectedList)='updateSupplierSelectedList($event)'
+                                (generateEquivalentProduct)='generateEquivalentProduct($event)'
+                                [isForReappro]='true'
+                                >
+            </app-grid-provision>
+          </div>
+        </div>
+        <div *ngIf='!isTheOrderBtnDisabled && idProvision > 0'>
+          <div class="row" *ngIf='idItem && OrderService.importedData?.length > 0'>
+            <button type="button" class="btn btn-danger" tooltip="{{'ADD_TO_ORDER_LIST' | translate}}" (click)='imprtLines()' style="margin: auto;">
+              <i class="fa fa-arrow-up" aria-hidden="true"></i>
+            </button>
+          </div>
+          <app-advenced-list-provisionnig [selectedValueMultiSelect]='selectedValueMultiSelect'
+                                          [SalesHistory]='SalesHistory' [ShowHistory]='ShowHistory'
+                                          [isMinMaxCheked]='isMinMaxCheked'
+                                          [SatrtDatePurchase]='SatrtDatePurchase' [EndDatePurchase]='EndDatePurchase'
+                                          [SatrtDateSales]='SatrtDateSales'
+                                          [EndDateSales]='EndDateSales'></app-advenced-list-provisionnig>
+        </div>
+        <br>
+        <div class=" row" style="max-height: 400px;  overflow: auto;">
+          <div *ngFor='let data of suplierData' class="col-lg-6 col-md-6 col-sm-12">
+            <div class="list-group-item list-group-item-action flex-column align-items-start mt-2">
+              <div class="row">
+                <div class="col-lg-8 col-md-6 col-sm-12"></div>
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <h5 style="color: #519da4; font-weight: bold;">
+                    {{'TOTAL' |translate}} &nbsp; HT
+                  </h5>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-8 col-md-6 col-sm-12">
+                  <input kendoTextBox value="{{data.IdTiersNavigation.Name}}" class="form-control inputEnabled"
+                         disabled="disabled"/>
+
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-12" style="text-align-last : left">
+                  <div *ngIf="data.Total>0">
+                    <kendo-numerictextbox [spinners]="false" [format]="data.IdTiersNavigation.FormatOption" [step]="1"
+                                          class="form-control inputEnabled"
+                                          style="font-family:  Roboto, serif; font-weight: bloder; color: black;"
+                                          [value]='data.Total'
+                                          [disabled]="true"></kendo-numerictextbox>
+                  </div>
+                  <h5 *ngIf="data.Total==0" style="font-weight: bold; margin-left: 15px; margin-top:10px">-</h5>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!--Begin Card footer End-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+
+        <footer class="app-footer ml-0">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a [routerLink]="urlList" class="ml-1">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+              </a>
+              <button class="btn btn-sm btn-save mx-1 ml-1" type="button" (click)='generateOrderProject()'
+                      *ngIf='!isTheOrderBtnDisabled && idProvision>0 && generateOrderPermission'>
+                <i class="fa fa-chevron-circle-left"></i> {{'LANCHORDER' | translate}}
+              </button>
+              <button class="btn btn-sm btn-primary ml-1" type="button" (click)='importOrderProject()'
+                      [disabled]="idProvision==0"
+                      data-toggle="modal" data-target="#importOrderProject"
+                      *ngIf='!isTheOrderBtnDisabled && idProvision>0 && ImportPermission'>
+                <i class="fa fa-upload"></i> {{'IMPORT' | translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true" *ngIf='selectedRow' style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">{{'DETAILS_QANTITY'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="text-align: center">
+
+        <div style="margin-bottom: -3px;"><b>{{'DELEVERY_DELAY'|translate}}</b></div>
+        <div *ngIf='selectedRow != null && selectedRow.IdTiersNavigation != null && selectedRow.IdTiersNavigation.DeleveryDelay != null'>{{selectedRow.IdTiersNavigation.DeleveryDelay}}
+          {{'DAYS'|translate}}</div>
+        <div *ngIf='selectedRow == null || selectedRow.IdTiersNavigation == null || selectedRow.IdTiersNavigation.DeleveryDelay == null'>0 {{'DAYS'|translate}}</div>
+
+        <div style="margin-bottom: -3px;">
+          <b>
+            {{'AVERAGE_DAILY_SALES'|translate}}
+          </b>
+        </div>
+        <div *ngIf='selectedRow.IdItemNavigation.AverageSalesPerDay!=null'>
+          {{selectedRow.IdItemNavigation.AverageSalesPerDay}}</div>
+        <div *ngIf='selectedRow.IdItemNavigation.AverageSalesPerDay==null'>0,0</div>
+        <div style="margin-bottom: -3px;"><b>{{'MIN_QUANTITY'|translate}} </b></div>
+        <div *ngIf='selectedRow.IdItemNavigation.CentralMinQuantity>0'>
+          {{selectedRow.IdItemNavigation.CentralMinQuantity}}</div>
+        <div *ngIf='!(selectedRow.IdItemNavigation.CentralMinQuantity>0)'> 0</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle1"
+     aria-hidden="true" *ngIf='selectedRow' style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle1">{{'DETAILS_QANTITY_SALES'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p>
+            <strong class="sizeStyle">{{'TO_ORDER_QUANTITY' | translate}} : </strong>
+            {{selectedRow.ToOrderQuantity}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Imported lines -->
+<div class="modal fade pl-5" id="importOrderProject" tabindex="-1" role="dialog" aria-labelledby="importOrderProject"
+     aria-hidden="true" style="z-index: 9999999" *ngIf='showModalImport' data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-dialog-top modal-lg" role="document" style="max-width: 80% !important;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='clearImportList()'>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" #container>
+        <app-provisioning-list [isModal]='true' [idProvrision]='idProvision' [containerRef]="containerRef">
+        </app-provisioning-list>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" (click)='initDataSource()' data-dismiss="modal" aria-label="Close"
+                type="button">
+          {{'IMPORT'|translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

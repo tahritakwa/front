@@ -1,0 +1,59 @@
+<ng-container *ngIf="!isCardView">
+  <div [formGroup]="itemForm" *ngIf='itemForm'>
+    <kendo-combobox #brand (focus)="openComboBox()" formControlName="IdVehicleBrand" [data]="brandFiltredDataSource"
+      [textField]="'Label'" [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control"
+      [filterable]="true" (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)"
+      [disabled]='disabled'>
+      <!--footer template-->
+      <ng-template *ngIf="!forSearch && hasAddBrandPermission" kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+      <!--end footer template-->
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      <!--end No data template-->
+    </kendo-combobox>
+  </div>
+  <div *ngIf='!itemForm'>
+    <kendo-combobox #brand (focus)="openComboBox()" [data]="brandFiltredDataSource" [textField]="'Label'"
+      [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control" [filterable]="true"
+      (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)" [(ngModel)]="selectedBrand"
+      [placeholder]="placeholder | translate" [disabled]='disabled'>
+      <!--footer template-->
+      <ng-template *ngIf="!forSearch && hasAddBrandPermission" kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+      <!--end footer template-->
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      <!--end No data template-->
+    </kendo-combobox>
+  </div>
+</ng-container>
+<ng-container *ngIf="isCardView">
+  <div [formGroup]="itemForm" class="example-wrapper">
+    <kendo-combobox #brand (focus)="openComboBox()" formControlName="IdVehicleBrand" [data]="brandFiltredDataSource"
+      [textField]="'Label'" [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control"
+      [filterable]="true" (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)"
+      [disabled]='disabled' [(ngModel)]="searchedBrand" placeholder="{{'SEARCH_BRAND'|translate}}"
+      aria-describedby="addon-wrapping">
+      <ng-template kendoComboBoxItemTemplate let-dataItem>
+        <img [attr.id]="dataItem.Id+dataItem.Label" (click)="onPictureClick(dataItem)" class="picture-template"
+          [src]="dataItem.Picture ||'assets/image/placeholder-logo.png'" [alt]="'Vehicle brand picture'" />
+        <span style="margin-left: 10px;">{{ dataItem.Label }}</span>
+      </ng-template>
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      <!--end No data template-->
+    </kendo-combobox>
+  </div>
+</ng-container>

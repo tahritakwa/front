@@ -1,0 +1,372 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="header-current-fiscal-year">
+  <app-reconciliation-bank-menu [currentFiscalYearId]="currentFiscalYear.id"></app-reconciliation-bank-menu>
+</div>
+<div class="card full-screen-card mb-5">
+  <div class="d-flex flex-row-reverse bd-highlight m-3">
+    <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="documentAccountLineFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <div class="row">
+                  <label class="col-lg-12 col-md-12 col-sm-12">
+                    {{'ACCOUNT'|translate}}<span class="required">*</span>
+                  </label>
+                  <div class="col-lg-12 col-md-12  col-sm-12">
+                    <kendo-combobox [data]="reconcilableAccountFiltredList" [textField]="'code'" [valueField]="'id'"
+                                    [valuePrimitive]="true" formControlName="account" class="form-control"
+                                    [filterable]="true"
+                                    (filterChange)="handleFilterAccount($event)">
+                      <ng-template kendoComboBoxItemTemplate let-dataItem>
+                        <div class="container">
+                          <div class="row">
+                            <b>{{dataItem.code}}</b>
+                          </div>
+                          <div class="row">
+                            <span class="small">{{dataItem.label}}</span>
+                          </div>
+                        </div>
+                      </ng-template>
+
+                      <!--No data template-->
+                      <ng-template kendoDropDownListNoDataTemplate>
+                        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                      </ng-template>
+                      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                      <!--end No data template-->
+                    </kendo-combobox>
+                    <app-control-messages [control]="documentAccountLineFormGroup.controls.account"
+                                          class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <div class="row">
+                  <label class="col-lg-12 col-md-12 col-sm-12">
+                    {{'MONTH'|translate}}<span class="required">*</span>
+                  </label>
+                  <div class="col-lg-12 col-md-12  col-sm-12">
+                    <kendo-datepicker [bottomView]="'year'" [topView]="'decade'" [format]="'MMMM yyyy'"
+                                      formControlName="closeMonth" class="form-control"
+                                      [min]="currentExerciceStartDate"
+                                      [max]="currentExerciceEndDate" (valueChange)="changeClosedMonth($event)">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                 toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <div class="row">
+                  <label class="col-lg-12 col-md-12 col-sm-12">
+                    {{'START_DATE'|translate}}<span class="required">*</span>
+                  </label>
+                  <div class="col-lg-12 col-md-12  col-sm-12">
+                    <kendo-datepicker [format]="formatDate" formControlName="startDate" class="form-control"
+                                      formatPlaceholder="formatDate"
+                                      (valueChange)="loadDocumentAccountLineOnSearch()">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                 toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                    <app-control-messages [control]="documentAccountLineFormGroup.controls.startDate"
+                                          class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-3">
+                <div class="row">
+                  <label class="col-lg-12 col-md-12 col-sm-12">
+                    {{'END_DATE'|translate}}<span class="required">*</span>
+                  </label>
+                  <div class="col-lg-12 col-md-12  col-sm-12">
+                    <kendo-datepicker [format]="formatDate" formControlName="endDate" class="form-control"
+                                      formatPlaceholder="formatDate"
+                                      (valueChange)="loadDocumentAccountLineOnSearch()">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                 toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                    <app-control-messages [control]="documentAccountLineFormGroup.controls.endDate"
+                                          class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="d-flex flex-row-reverse">
+        <div class="col-lg-12 d-flex d-flex justify-content-between">
+          <div>
+            <input type="checkbox" id="prev-check-box" class="input-checkbox100"
+                   (click)='changeProvisionalEdition()'/>
+            <label class="label-checkbox100" for="prev-check-box"> {{'PROVISIONAL_EDITION'|translate}}</label>
+          </div>
+          <div class="mt-5 d-flex flex-row-reverse">
+            <button class="btn btn-sm btn-search" type="button" [tooltip]="search"
+                    content-type="template" (click)="loadDocumentAccountLineOnSearch()">
+              <i class="fa fa-search fa-lg" aria-hidden="true"></i>{{'SEARCH'|translate}}
+            </button>
+            <div *ngIf="this.authService.hasAuthority(this.AccountingPermissions.PRINT_RECONCILIATION_BANK) && isReconciliable">
+              <button class="btn btn-sm k-button mr-2" (click)="goToHistoric()">
+                <i class="fa fa-history"></i>
+              </button>
+              <button class="btn btn-sm btn-primary dropdown-toggle mr-2" type="button"
+                      [tooltip]="printReconciledEntries" content-type="template" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false" [disabled]="!isPrintedClosedLine"
+                      *ngIf="this.authService.hasAuthority(this.AccountingPermissions.PRINT_RECONCILIATION_BANK) && isReconciliable">
+                <i class="fa fa-print"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <a class="dropdown-item" (click)="onClickPrintByJasper()">PDF</a>
+              </div>
+              <ng-template #printReconciledEntries>
+                <span>{{ 'PRINT_RECONCILED_ENTRIES'|translate}}</span>
+              </ng-template>
+            </div>
+
+            <div *ngIf="this.authService.hasAuthority(this.AccountingPermissions.PRINT_RECONCILIATION_BANK_STATEMENT) && !isReconciliable">
+              <button class="btn btn-sm btn-primary dropdown-toggle mr-2" type="button"
+                      [tooltip]="printUnreconciledEntries" content-type="template" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false" [disabled]="!isPrinted">
+                <i class="fa fa-print"></i>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <a class="dropdown-item" (click)="onClickPrintByJasper()">PDF</a>
+              </div>
+              <ng-template #printUnreconciledEntries>
+                <span>{{ 'PRINT_UNRECONCILED_ENTRIES'|translate}}</span>
+              </ng-template>
+            </div>
+            <ng-template #search>
+              <span>{{ 'SEARCH'|translate}}</span>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <br>
+    <br>
+    <div class="row justify-content-md-center" *ngIf="isReconciliable">
+      <!--title debit / credit fields-->
+      <div class="col-lg-2 col-md-12 col-sm-12"></div>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <label class="col-lg-2 col-md-12 col-sm-12 titleColumnMax">{{'DEBIT'|translate}}</label>
+      </div>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <label class="col-lg-2 col-md-12 col-sm-12 titleColumnMax">{{'CREDIT'|translate}}</label>
+      </div>
+
+      <!--title debit / credit fields-->
+    </div>
+    <div class="row justify-content-md-center" *ngIf="isReconciliable">
+      <label class="col-lg-2 col-md-12 col-sm-12">{{'INITIAL_AMOUNT'|translate}}</label>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <label class="col-lg-2 col-md-12 col-sm-12 titleColumnMin">{{'DEBIT'|translate}}</label>
+        <kendo-numerictextbox [disabled]="true" [format]="formatNumberOptions" class="amount form-control" name="label"
+                              placeholder="0,000" [(ngModel)]="initialAmountDebit"
+                              [ngModelOptions]="{standalone: true}" readonly></kendo-numerictextbox>
+      </div>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <label class="col-lg-2 col-md-12 col-sm-12 titleColumnMin">{{'CREDIT'|translate}}</label>
+        <kendo-numerictextbox [disabled]="true"
+                              [format]="formatNumberOptions" class="amount form-control" name="label"
+                              placeholder="0,000" [(ngModel)]="initialAmountCredit"
+                              [ngModelOptions]="{standalone: true}" readonly></kendo-numerictextbox>
+      </div>
+    </div>
+
+    <div class="row justify-content-md-center" *ngIf="isReconciliable">
+      <label class="col-lg-2 col-md-12 col-sm-12">{{'FINAL_AMOUNT'|translate}}</label>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <label class="col-lg-2 col-md-12 col-sm-12 titleColumnMin">{{'DEBIT'|translate}}</label>
+        <kendo-numerictextbox [disabled]="true"
+                              [format]="formatNumberOptions" class="amount form-control" name="label"
+                              placeholder="0,000" [(ngModel)]="finalAmountDebit"
+                              [ngModelOptions]="{standalone: true}" readonly></kendo-numerictextbox>
+      </div>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <label class="col-lg-2 col-md-12 col-sm-12 titleColumnMin">{{'CREDIT'|translate}}</label>
+        <kendo-numerictextbox [disabled]="true" [format]="formatNumberOptions" class="amount form-control" name="label"
+                              placeholder="0,000" [(ngModel)]="finalAmountCredit"
+                              [ngModelOptions]="{standalone: true}" readonly></kendo-numerictextbox>
+      </div>
+    </div>
+    <br>
+    <div class="col-sm-5 mb-4">
+      <h4 class="card-title mb-0" style="color: #4c9aae;">
+        {{'UNRECONCILED_ENTRIES'|translate}}
+      </h4>
+    </div>
+
+    <kendo-grid [data]="reconciliationGridSettings.gridData" [pageSize]="reconciliationGridSettings.state.take"
+                [pageable]="pagerSettings" [skip]="reconciliationGridSettings.state.skip" [navigable]="true"
+                [sortable]="true" [sort]="reconciliationGridSettings.state.sort"
+                (sortChange)="reconciliationGridSortChange()"
+                (pageChange)="onPageChangeReconciliationLine($event)" [selectable]="!isReconciliable"
+                [kendoGridSelectBy]="'id'"
+                (dataStateChange)="dataReconciliationStateChange($event)" [selectedKeys]="documentToAffectSelectedId"
+                (selectedKeysChange)="onSourceKeysChange($event)">
+
+      <kendo-grid-checkbox-column *ngIf="this.authService.hasAuthority(this.AccountingPermissions.RECONCILIATION_BANK) && this.fiscalYearIsOpened && isReconciliable"
+                                  showSelectAll="this.fiscalYearIsOpened" [width]="50">
+      </kendo-grid-checkbox-column>
+
+      <kendo-grid-column *ngFor="let column of columnsConfig" field="{{column.field}}"
+                         title="{{column.title | translate }}" filterable="{{column.filterable}}"
+                         width="{{column.width}}">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{column.tooltip|translate}}" theme="light">{{column.title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='codeDocument'"
+                     style="background: transparent !important">
+          <a style="color: #2980b9;cursor: pointer;"
+             [routerLink]="['/main/accounting/documentAccount/consult',dataItem.documentId]"
+             routerLinkActive="active-link" target="_blank">{{dataItem.codeDocument}}</a>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate let-column let-columnIndex="columnIndex"
+                     *ngIf="isStatement && column.field==='codeDocument'">
+          <div class="total-class">{{'TOTAL'|translate}}</div>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='documentDate'"
+                     style="background: transparent !important">
+          {{dataItem.documentDate | date: 'dd/MM/yyyy'}}
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='creditAmount'"
+                     class="amount-field">
+          <kendo-numerictextbox class="text-right" [readonly]="true" [spinners]="false" [format]="formatNumberOptions"
+                                value="{{dataItem.creditAmount}}">
+          </kendo-numerictextbox>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf=" column.field==='debitAmount'"
+                     class="amount-field">
+          <kendo-numerictextbox class="text-right" [readonly]="true" [spinners]="false" [format]="formatNumberOptions"
+                                value="{{dataItem.debitAmount}}">
+          </kendo-numerictextbox>
+        </ng-template>
+
+        <ng-template kendoGridFooterTemplate *ngIf="isStatement && column.field==='debitAmount'">
+          <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions"
+                                [value]="unreconciledEntriesTotalDebit">
+          </kendo-numerictextbox>
+        </ng-template>
+
+        <ng-template kendoGridFooterTemplate *ngIf="isStatement && column.field==='creditAmount'">
+          <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions"
+                                [value]="unreconciledEntriesTotalCredit">
+          </kendo-numerictextbox>
+        </ng-template>
+
+      </kendo-grid-column>
+      <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                           pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+      </kendo-grid-messages>
+    </kendo-grid>
+
+    <br>
+
+    <div class="d-flex justify-content-center mt-3 mb-3 " *ngIf="isReconciliable">
+      <button (click)='affectDocuemntAccountAllLine()' type="button" class="btn btn-primary btn-sm mr-2"
+              [disabled]="!this.authService.hasAuthority(this.AccountingPermissions.RECONCILE_ENTRY) || !fiscalYearIsOpened || documentAccountLineSource.length === 0"
+              style="width:135px">
+        <i class="fa fa-angle-double-down"></i> &nbsp;{{'RECONCILIATION_BANK_CLOSE_ALL'|translate}}
+      </button>
+      <button (click)='affectDocuemntAccountLine()' type="button" class="btn btn-primary btn-sm mr-2"
+              [disabled]="!this.authService.hasAuthority(this.AccountingPermissions.RECONCILE_ENTRY) || !fiscalYearIsOpened || this.documentToAffectSelectedId.length === 0"
+              style="width:120px">
+        <i class="fa fa-angle-down"></i> &nbsp;{{'RECONCILIATION_BANK_CLOSE'|translate}}
+      </button>
+      <button (click)='releaseDocuemntAccountLine()' type="button" class="btn btn-primary btn-sm mr-2"
+              [disabled]="!this.authService.hasAuthority(this.AccountingPermissions.UNRECONCILE_ENTRY) || !fiscalYearIsOpened || this.documentToReleaseSelectedId.length === 0"
+              style="width:120px">
+        <i class="fa fa-angle-up"></i> &nbsp;{{'FREE'|translate}}
+      </button>
+      <button (click)='releaseDocuemntAccountAllLine()' type="button" class="btn btn-primary btn-sm mr-2"
+              [disabled]="!this.authService.hasAuthority(this.AccountingPermissions.UNRECONCILE_ENTRY) || !fiscalYearIsOpened || documentAccountLineSelected.length === 0"
+              style="width:120px">
+        <i class="fa fa-angle-double-up"></i> &nbsp;{{'FREE_ALL'|translate}}
+      </button>
+    </div>
+
+    <div class="col-sm-5 mb-4" *ngIf="isReconciliable">
+      <h4 class="card-title mb-0" style="color: #4c9aae;">
+        {{'RECONCILED_ENTRIES'|translate}}
+      </h4>
+    </div>
+
+    <kendo-grid [data]="closedGridSettings.gridData" [pageSize]="closedGridSettings.state.take"
+                [pageable]="pagerSettings" [skip]="closedGridSettings.state.skip" [navigable]="true" [sortable]="true"
+                [sort]="closedGridSettings.state.sort" (sortChange)="closedGridSortChange()"
+                (pageChange)="onPageChangeClosedLine($event)" [selectable]="true" [kendoGridSelectBy]="'id'"
+                [selectedKeys]="documentToReleaseSelectedId" (dataStateChange)="dataClosedStateChange($event)"
+                (selectedKeysChange)="onSelectedKeysChange($event)" *ngIf="isReconciliable" style="margin-top: -1%;">
+
+      <kendo-grid-checkbox-column *ngIf="this.authService.hasAuthority(this.AccountingPermissions.RECONCILIATION_BANK) && this.fiscalYearIsOpened && isReconciliable"
+                                  showSelectAll="this.fiscalYearIsOpened" [width]="50">
+      </kendo-grid-checkbox-column>
+
+      <kendo-grid-column *ngFor="let column of columnsConfig" field="{{column.field}}"
+                         title="{{column.title | translate }}" filterable="{{column.filterable}}"
+                         width="{{column.width}}">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{column.tooltip|translate}}" theme="light">{{column.title|translate}}</span>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='codeDocument'"
+                     style="background: transparent !important">
+          <a style="color: #2980b9;cursor: pointer;"
+             [routerLink]="['/main/accounting/documentAccount/consult',dataItem.documentId]"
+             routerLinkActive="active-link" target="_blank">{{dataItem.codeDocument}}</a>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='documentDate'"
+                     style="background: transparent !important">
+          {{dataItem.documentDate | date: 'dd/MM/yyyy'}}
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='creditAmount'"
+                     class="amount-field">
+          <kendo-numerictextbox class="text-right" [readonly]="true" [spinners]="false" [format]="formatNumberOptions"
+                                value="{{dataItem.creditAmount}}">
+          </kendo-numerictextbox>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf=" column.field==='debitAmount'"
+                     class="amount-field">
+          <kendo-numerictextbox class="text-right" [readonly]="true" [spinners]="false" [format]="formatNumberOptions"
+                                value="{{dataItem.debitAmount}}">
+          </kendo-numerictextbox>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                           pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+      </kendo-grid-messages>
+    </kendo-grid>
+
+  </div>
+
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer" *ngIf="this.authService.hasAuthorities([AccountingPermissions.RECONCILE_ENTRY,AccountingPermissions.UNRECONCILE_ENTRY]) && fiscalYearIsOpened && isReconciliable">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button class="btn btn-sm btn-save" (click)="saveReconciliationBank()"
+                    [disabled]="!((isReconciliationBankFormChanged() || isClosedBankFormChanged()) && isSave)">
+              <i class="fa fa-floppy-o"></i> {{'SAVE' |translate }}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

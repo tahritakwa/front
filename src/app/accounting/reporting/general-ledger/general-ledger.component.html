@@ -1,0 +1,285 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="header-current-fiscal-year">
+  <app-accounting-reporting-menu-editions [currentFiscalYearId]="currentFiscalYear.id">
+  </app-accounting-reporting-menu-editions>
+</div>
+<div class="card">
+  <div class="d-flex flex-row-reverse bd-highlight m-3">
+    <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+  </div>
+  <form class="form-horizontal" [formGroup]="generalLedgerFilterFormGroup">
+    <div class="card-body">
+      <div class="container-fluid">
+        <div class="col-lg-12 col-sm-12 col-md-12">
+          <div class="form-group row mb-0">
+            <div class="col-lg-12 col-sm-12 col-md-12 ">
+              <div class="form-group row mb-0">
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">
+                      {{'START_DATE'|translate}}<span class="required">*</span>
+                    </label>
+                    <div class="col-lg-12 col-md-12  col-sm-12">
+                      <kendo-datepicker [format]="formatDate" formControlName="startDate" class="form-control"
+                                        formatPlaceholder="formatDate" [min]="startDate" [max]="endDate"
+                                        [ngModel]="startDate">
+                        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                   toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                        </kendo-datepicker-messages>
+                      </kendo-datepicker>
+                      <app-control-messages [control]="generalLedgerFilterFormGroup.controls.startDate"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">
+                      {{'END_DATE'|translate}}<span class="required">*</span>
+                    </label>
+                    <div class="col-lg-12 col-md-12  col-sm-12">
+                      <kendo-datepicker [format]="formatDate" formControlName="endDate" class="form-control"
+                                        formatPlaceholder="formatDate" [min]="startDate" [max]="endDate"
+                                        [ngModel]="endDate">
+                        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                   toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                        </kendo-datepicker-messages>
+                      </kendo-datepicker>
+                      <app-control-messages [control]="generalLedgerFilterFormGroup.controls.endDate"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                  </div>
+                </div>
+                <app-filter-by-account class="col-lg-6 col-sm-12 col-md-12"
+                                       [FilterFormGroup]="generalLedgerFilterFormGroup"></app-filter-by-account>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row mb-0">
+            <div class="col-lg-12 col-sm-12 col-md-12">
+              <div class="form-group row mb-0" >
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">
+                      {{'BEGIN_AMOUNT'|translate}}
+                    </label>
+                    <div class="col-lg-12 col-md-12  col-sm-12">
+                      <kendo-numerictextbox [format]="formatNumberOptions" class="form-control" name="beginAmount"
+                                            formControlName="beginAmount"
+                                            [formControl]="generalLedgerFilterFormGroup.get('beginAmount')"
+                                            appThreeDigitDecimaNumber>
+                      </kendo-numerictextbox>
+                      <br>
+                      <span style="color: red" *ngIf="generalLedgerFilterFormGroup.controls.beginAmount.invalid &&
+                        generalLedgerFilterFormGroup.controls.beginAmount.dirty &&
+                        generalLedgerFilterFormGroup.controls.beginAmount.touched" class="text-danger">
+                      {{'BEGIN_AMOUNT_ONLY_NUMBER'|translate}}
+                    </span>
+                      <br>
+                      <span style="color: red"
+                            *ngIf="generalLedgerFilterFormGroup.errors && generalLedgerFilterFormGroup.errors.beginAmountGratterThanEndAmount">
+                      {{'END_AMOUNT_LESS_THAN_BEGIN_AMOUNT'|translate}}
+                    </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">
+                      {{'END_AMOUNT'|translate}}
+                    </label>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <kendo-numerictextbox [format]="formatNumberOptions" class="form-control" name="endAmount"
+                                            formControlName="endAmount"
+                                            [formControl]="generalLedgerFilterFormGroup.get('endAmount')"
+                                            appThreeDigitDecimaNumber></kendo-numerictextbox>
+                      <span style="color: red" *ngIf="generalLedgerFilterFormGroup.controls.endAmount.invalid &&
+                        generalLedgerFilterFormGroup.controls.beginAmount.dirty &&
+                        generalLedgerFilterFormGroup.controls.beginAmount.touched" class="text-danger">
+                      {{'END_AMOUNT_ONLY_NUMBER'|translate}}
+                    </span>
+                      <br>
+                      <span style="color: red"
+                            *ngIf="generalLedgerFilterFormGroup.errors &&
+                             generalLedgerFilterFormGroup.errors.beginAmountGratterThanEndAmount">
+                      {{'BEGIN_AMOUNT_GREATER_THAN_END_AMOUNT'|translate}}
+                    </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">
+                      {{'AMOUNT'|translate}}
+                    </label>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <kendo-numerictextbox [format]="formatNumberOptions" class="form-control" name="amount"
+                                            formControlName="amount"
+                                            [formControl]="generalLedgerFilterFormGroup.get('amount')"
+                                            appThreeDigitDecimaNumber></kendo-numerictextbox>
+                      <span style="color: red" *ngIf="generalLedgerFilterFormGroup.controls.endAmount.invalid &&
+                        generalLedgerFilterFormGroup.controls.beginAmount.dirty &&
+                        generalLedgerFilterFormGroup.controls.beginAmount.touched" class="text-danger">
+                      {{'AMOUNT_ONLY_NUMBER'|translate}}
+                    </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-3">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE_ACCOUNT'|translate}}</label>
+                  </div>
+                  <div>
+                    <kendo-combobox formControlName="accountType" [data]="accountTypeList" [textField]="'text'"
+                                    [valueField]="'value'" class="form-control" [itemDisabled]="itemDisabled"
+                                    [filterable]="true" (filterChange)="handleFilterChange($event)">
+
+                      <!--No data template-->
+                      <ng-template kendoDropDownListNoDataTemplate>
+                        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                      </ng-template>
+                      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                      <!--end No data template-->
+                    </kendo-combobox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="d-flex justify-content-start col-lg-6 col-md-12 col-sm-12" >
+          <div class="row col-lg-6 col-md-12  col-sm-12 pr-0">
+          <kendo-combobox class="form-control"
+                          formControlName="letteringOperationType" [data]="letteringOperationTypeData"
+                          [textField]="'text'"
+                          [valueField]="'value'" [filterable]="true"
+                          (filterChange)="handleFilterOperationTypeChange($event)">
+            <!--No data template-->
+            <ng-template kendoDropDownListNoDataTemplate>
+              <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+            </ng-template>
+            <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            <!--end No data template-->
+          </kendo-combobox>
+          </div>
+
+          <div class="pl-5 col-lg-6 col-md-12  col-sm-12">
+            <input type="checkbox" id="prev-check-box" class="input-checkbox100"
+                   (click)='changeProvisionalEdition()'/>
+            <label class="label-checkbox100" for="prev-check-box"> {{'PROVISIONAL_EDITION'|translate}}</label>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button class="btn btn-sm btn-search mr-2" type="button"
+                  content-type="template" (click)="onSearch()">
+            <i class="fa fa-search fa-lg" aria-hidden="true"></i>{{'SEARCH'|translate}}
+          </button>
+          <button class="btn btn-sm btn-primary dropdown-toggle mr-2" type="button"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                  *ngIf="this.authService.hasAuthority(AccountingPermissions.PRINT_EDITIONS_REPORTS)">
+            <i class="fa fa-print"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <a class="dropdown-item" (click)="onClickPrintByJasper()">PDF</a>
+            <a class="dropdown-item" (click)="onClickPrintExcel()">Excel</a>
+          </div>
+        </div>
+      </div>
+      <br>
+      <kendo-grid [data]="generalLedgerView | async" [pageSize]="gridSettings.state.take"
+                  [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [sortable]="true"
+                  [pageable]="pagerSettings"
+                  [navigable]="true" [reorderable]="true" (dataStateChange)="dataStateChange($event)"
+                  [columnMenu]="true"
+                  (pageChange)="onPageChange()" class="bulk-table">
+
+        <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="account" width="550"
+                           [headerStyle]="{'padding' : '0.75rem 0'}" [title]="'ACCOUNT'|translate"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'ACCOUNT'| translate}}" theme="light">{{'ACCOUNT'| translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div class="total-class"> {{'TOTAL_GENERAL_LEDGER'|translate}}</div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [style]="{'text-align': 'right'}"
+                           [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}" field="debit" width="150px"
+                           [headerStyle]="{'text-align': 'right'}" [title]="'DEBIT'|translate"
+                           [format]="formatNumberOptions"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'DEBIT'| translate}}" theme="light">{{'DEBIT'| translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" [value]="totalDebit">
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [style]="{'text-align': 'right'}"
+                           [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}" field="credit"
+                           width="150px"
+                           [headerStyle]="{'text-align': 'right'}" [title]="'CREDIT'|translate"
+                           [format]="formatNumberOptions"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'CREDIT'| translate}}" theme="light">{{'CREDIT'| translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" [value]="totalCredit">
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [style]="{'text-align': 'right'}"
+                           [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}" field="balance"
+                           width="150px"
+                           [headerStyle]="{'text-align': 'right'}" [title]="'BALANCE'|translate"
+                           [format]="formatNumberOptions"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'BALANCE'| translate}}" theme="light">{{'BALANCE'| translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" [value]="totalBalance">
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column field="literable" width="100" [title]="'STATUS'|translate" [columnMenu]="true">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'STATUS'| translate}}" theme="light">{{'STATUS'| translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div *ngIf="dataItem.literable === true">
+                <span class="badge"
+                      style="color: #ffffff; background-color: #0f9021;">{{'IS_LITERABLE'|translate}}</span>
+            </div>
+            <div *ngIf="dataItem.literable === false">
+              <span class="badge"
+                    style="color: #ffffff; background-color: #5531a3;">{{'IS_NOT_LITERABLE'|translate}}</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <div *kendoGridDetailTemplate="let dataItem" showIf="Expand">
+          <app-account-detail [account]="dataItem" [beginAmount]="generalLedgerFilterFormGroup.value.beginAmount"
+                              [endAmount]="generalLedgerFilterFormGroup.value.endAmount"
+                              [amount]="generalLedgerFilterFormGroup.value.amount"
+                              [searchOnDetailsIsEnabled]="searchOnDetailsIsEnabled"
+                              [letteringOperationType]="generalLedgerFilterFormGroup.value.letteringOperationType.value"
+                              (sortParamEmit)="getSortParam($event)" [field]="field" [direction]="direction">
+          </app-account-detail>
+        </div>
+        <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                             pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+        </kendo-grid-messages>
+      </kendo-grid>
+
+    </div>
+
+  </form>
+</div>

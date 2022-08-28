@@ -1,0 +1,343 @@
+<div class="card">
+  <div *ngIf="type == recruitmentType.Request" style="margin-left: 40px; margin-top: 20px;">
+    <h3 class="card-title mb-0">{{ "LIST_REQUEST" | translate }}</h3>
+  </div>
+  <div *ngIf="type == recruitmentType.Offer" style="margin-left: 40px; margin-top: 20px;">
+    <h3 class="card-title mb-0">{{ "LIST_OFFER" | translate }}</h3>
+  </div>
+  <div *ngIf="type == recruitmentType.RecruitmentSession" style="margin-left: 40px; margin-top: 20px;">
+    <h3 class="card-title mb-0">{{ 'LIST_RECRUITMENT' |translate }}</h3>
+  </div>
+
+  <form class="form-horizontal">
+    <div class="card-body">
+      <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+        (filtrePredicateToSend)="getFiltrePredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+        (searchClickEvent)="initGridDataSource()" (resetClickEvent)="resetClickEvent()">
+      </app-advanced-search>
+      <div class="row d-flex justify-content-between mt-3">
+        <app-btn-grid *ngIf="type == recruitmentType.RecruitmentSession" class="col" [advencedAdd]='hasAddRecruitmentPermission' [addLink]='"add"'
+          [relativeStyle]='true' [model]="true" [gridSettings]="gridSettings"
+          [fileName]="'RECRUITMENT_LIST'|translate" [service]="recruitmentService" [predicate]="predicate"
+          api="getDataSourcePredicate" [isExportExcel]="true">
+        </app-btn-grid>
+        <app-btn-grid *ngIf="type == recruitmentType.Request" class="col" [advencedAdd]='hasAddRequestPermission' [addLink]='"add"'
+          [relativeStyle]='true' [model]="true" [gridSettings]="gridSettings"
+          [fileName]="'RECRUITMENT_REQUEST_LIST'|translate" [service]="recruitmentService" [predicate]="predicate"
+          api="getDataSourcePredicate" [isExportExcel]="true">
+        </app-btn-grid>
+        <app-btn-grid *ngIf="type == recruitmentType.Offer" class="col" [advencedAdd]='hasAddOfferPermission' [addLink]='"add"'
+          [relativeStyle]='true' [model]="true" [gridSettings]="gridSettings"
+          [fileName]="'RECRUITMENT_OFFER_LIST'|translate" [service]="recruitmentService" [predicate]="predicate"
+          api="getDataSourcePredicate" [isExportExcel]="true">
+        </app-btn-grid>
+      </div>
+      <kendo-grid (dataStateChange)="dataStateChange($event)"
+        (sortChange)="sortChange($event)" [data]="gridSettings.gridData"
+        [filter]="gridSettings.state.filter" [groupable]="false"
+        [pageSize]="gridSettings.state.take" [pageable]="pagerSettings" [reorderable]="true" [selectable]="true"
+        [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [sortable]="true">
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                           [filter]="gridSettings.columnsConfig[0].filter"
+                           [filterable]="gridSettings.columnsConfig[0].filterable"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[0].title|translate}}">{{gridSettings.columnsConfig[0].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                           [filter]="gridSettings.columnsConfig[1].filter"
+                           [filterable]="gridSettings.columnsConfig[1].filterable"
+                           [format]="gridSettings.columnsConfig[1].format"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[1].title|translate}}">{{gridSettings.columnsConfig[1].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <!--Link to offer in request list if recruitment request is accepted -->
+            <a *ngIf="hasUpdateOfferPermission" [routerLink]="['/main/rh/recruitment-offer/edit/', dataItem.Id]"
+               class="recruitment-link" target="_blank">
+                            <span *ngIf="type == recruitmentType.Request && dataItem.Type !== recruitmentType.Request">
+                                {{dataItem.Code}}
+                            </span>
+            </a>
+            <span *ngIf="type == recruitmentType.Request && dataItem.Type == recruitmentType.Request">
+                            {{dataItem.Code}}
+                        </span>
+            <span *ngIf="!hasUpdateOfferPermission &&
+                        type == recruitmentType.Request && dataItem.Type !== recruitmentType.Request" style="color: #73818f; text-decoration: underline;">
+                            {{dataItem.Code}}
+                        </span>
+            <!-- Link to recruitment session in offer List if offer is opened -->
+            <a *ngIf="hasUpdateRecruitmentPermission" [routerLink]="['/main/rh/recruitment/edit/', dataItem.Id]"
+               class="recruitment-link" target="_blank">
+                            <span
+                              *ngIf="type == recruitmentType.Offer && dataItem.Type == recruitmentType.RecruitmentSession">
+                                {{dataItem.Code}}
+                            </span>
+            </a>
+            <span *ngIf="type == recruitmentType.Offer && dataItem.Type == recruitmentType.Offer">
+                            {{dataItem.Code}}
+                        </span>
+            <span *ngIf="type == recruitmentType.RecruitmentSession">
+                            {{dataItem.Code}}
+                        </span>
+            <span *ngIf="!hasUpdateRecruitmentPermission &&
+                        type == recruitmentType.Offer && dataItem.Type == recruitmentType.RecruitmentSession" style="color: #73818f; text-decoration: underline;">
+                            {{dataItem.Code}}
+                        </span>
+          </ng-template>
+
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="type == recruitmentType.RecruitmentSession"
+                           [field]="gridSettings.columnsConfig[2].field" [filter]="gridSettings.columnsConfig[2].filter"
+                           [filterable]="gridSettings.columnsConfig[2].filterable"
+                           [format]="gridSettings.columnsConfig[2].format"
+                           [title]="gridSettings.columnsConfig[2].title | translate"
+                           [width]="gridSettings.columnsConfig[2]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[2].title|translate}}">{{gridSettings.columnsConfig[2].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                           [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+                           [title]="gridSettings.columnsConfig[3].title | translate"
+                           [width]="gridSettings.columnsConfig[3]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[3].title|translate}}">{{gridSettings.columnsConfig[3].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div *ngIf="dataItem.Priority == priorityCode.Low">
+              <span class="badge badge-secondary">{{ "LOW" | translate }}</span>
+            </div>
+            <div *ngIf="dataItem.Priority == priorityCode.Normal">
+              <span class="badge badge-success">{{"NORMAL" | translate }}</span>
+            </div>
+            <div *ngIf="dataItem.Priority == priorityCode.High">
+              <span class="badge badge-primary">{{ "HIGH" | translate }}</span>
+            </div>
+            <div *ngIf="dataItem.Priority == priorityCode.Urgent">
+                            <span class="badge badge-warning">{{
+                                "URGENT" | translate
+                              }}</span>
+            </div>
+            <div *ngIf="dataItem.Priority == priorityCode.Immediate">
+                            <span class="badge badge-danger">{{
+                                "IMMEDIATE" | translate
+                              }}</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                           [filter]="gridSettings.columnsConfig[3].filter"
+                           [filterable]="gridSettings.columnsConfig[4].filterable"
+                           [format]="gridSettings.columnsConfig[4].format"
+                           [title]="gridSettings.columnsConfig[4].title | translate"
+                           [width]="gridSettings.columnsConfig[4]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[4].title|translate}}">{{gridSettings.columnsConfig[4].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="type !== recruitmentType.RecruitmentSession"
+                           [field]="gridSettings.columnsConfig[5].field"
+                           [filter]="gridSettings.columnsConfig[5].filter"
+                           [filterable]="gridSettings.columnsConfig[5].filterable"
+                           [format]="gridSettings.columnsConfig[5].format"
+                           [title]="gridSettings.columnsConfig[5].title | translate"
+                           [width]="gridSettings.columnsConfig[5]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[5].title|translate}}">{{gridSettings.columnsConfig[5].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+                           [filter]="gridSettings.columnsConfig[6].filter"
+                           [filterable]="gridSettings.columnsConfig[6].filterable"
+                           [format]="gridSettings.columnsConfig[6].format"
+                           [title]="gridSettings.columnsConfig[6].title | translate"
+                           [width]="gridSettings.columnsConfig[6]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[6].title|translate}}">{{gridSettings.columnsConfig[6].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.CreationDate | date: formatDate }}
+          </ng-template>
+
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="type == recruitmentType.Offer" [field]="gridSettings.columnsConfig[7].field"
+                           [filter]="gridSettings.columnsConfig[7].filter"
+                           [filterable]="gridSettings.columnsConfig[7].filterable"
+                           [format]="gridSettings.columnsConfig[7].format"
+                           [title]="gridSettings.columnsConfig[7].title | translate"
+                           [width]="gridSettings.columnsConfig[7]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[7].title|translate}}">{{gridSettings.columnsConfig[7].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.ClosingDate | date: formatDate }}
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="type == recruitmentType.Request"
+                           [field]=" gridSettings.columnsConfig[8].field"
+                           [filter]="gridSettings.columnsConfig[8].filter"
+                           [filterable]="gridSettings.columnsConfig[8].filterable"
+                           [format]="gridSettings.columnsConfig[8].format"
+                           [title]="gridSettings.columnsConfig[8].title | translate"
+                           [width]="gridSettings.columnsConfig[8]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[8].title|translate}}">{{gridSettings.columnsConfig[8].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.TreatmentDate | date: formatDate }}
+          </ng-template>
+
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="type == recruitmentType.Request"
+                           [field]="gridSettings.columnsConfig[9].field"
+                           [filter]="gridSettings.columnsConfig[9].filter" [filterable]="gridSettings.columnsConfig[9].filterable"
+                           [title]="gridSettings.columnsConfig[9].title | translate"
+                           [width]="gridSettings.columnsConfig[9]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[9].title|translate}}">{{gridSettings.columnsConfig[9].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div *ngIf="dataItem.RequestStatus == statusCode.Waiting">
+              <span class="badge badge-warning">{{"WAITING" | translate}}</span>
+            </div>
+            <div *ngIf="dataItem.RequestStatus == statusCode.Accepted">
+              <span class="badge badge-success">{{"ACCEPTED" | translate}}</span>
+            </div>
+            <div *ngIf="dataItem.RequestStatus == statusCode.Refused">
+              <span class="badge badge-danger">{{"REFUSED" | translate}}</span>
+            </div>
+            <div *ngIf="dataItem.RequestStatus == statusCode.Canceled">
+              <span class="badge badge-primary">{{"CANCELED" | translate}}</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="type == recruitmentType.Offer"
+                           [field]="gridSettings.columnsConfig[10].field"
+                           [filter]="gridSettings.columnsConfig[10].filter"
+                           [filterable]="gridSettings.columnsConfig[10].filterable"
+                           [title]="gridSettings.columnsConfig[10].title | translate"
+                           [width]="gridSettings.columnsConfig[10]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[10].title|translate}}">{{gridSettings.columnsConfig[10].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div *ngIf="dataItem.OfferStatus == offerStatus.New">
+              <span class="badge badge-warning">{{"NEW" | translate}}</span>
+            </div>
+            <div *ngIf="dataItem.OfferStatus == offerStatus.Opened">
+              <span class="badge badge-success">{{"OPEN" | translate }}</span>
+            </div>
+            <div *ngIf="dataItem.OfferStatus == offerStatus.Closed">
+              <span class="badge badge-danger">{{ "CLOSED" | translate}}</span>
+            </div>
+
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="type == recruitmentType.RecruitmentSession"
+                           [field]="gridSettings.columnsConfig[11].field"
+                           [filter]="gridSettings.columnsConfig[11].filter"
+                           [filterable]="gridSettings.columnsConfig[11].filterable"
+                           [format]="gridSettings.columnsConfig[11].format"
+                           [title]="gridSettings.columnsConfig[11].title | translate"
+                           [width]="gridSettings.columnsConfig[11]._width">
+          <ng-template kendoGridHeaderTemplate>
+                        <span theme="light"
+                              tooltip="{{gridSettings.columnsConfig[11].title|translate}}">{{gridSettings.columnsConfig[11].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <div class="progress mb-4" style="width: 80%!important;">
+              <div [style.width]="(dataItem.State / 9)*100  + '%'"
+                   aria-valuemax="9" aria-valuemin="1" aria-valuenow="dataItem.State"
+                   class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="background-color: #4c9aae"
+                   style="display: block;"></div>
+            </div>
+            <div *ngIf="dataItem.State == 1" style="margin-top:-25px!important;">
+              <span class="badge"> {{'DRAFT'|translate}} (1/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 2" style="margin-top:-25px!important;">
+              <span class="badge">{{'CANDIDACY'|translate}} (2/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 3" style="margin-top:-25px!important;">
+              <span class="badge">{{'PRE_SELECTION'|translate}} (3/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 4" style="margin-top:-25px!important;">
+              <span class="badge">{{'INTERVIEW'|translate}} (4/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 5" style="margin-top:-25px!important;">
+              <span class="badge">{{'EVALUATION'|translate}} (5/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 6" style="margin-top:-25px!important;">
+              <span class="badge">{{'SELECTION'|translate}} (6/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 7" style="margin-top:-25px!important;">
+              <span class="badge">{{'OFFER'|translate}} (7/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 8" style="margin-top:-25px!important;">
+              <span class="badge">{{'HIRING'|translate}} (8/9)</span>
+            </div>
+            <div *ngIf="dataItem.State == 9" style="margin-top:-25px!important;">
+              <span class="badge">{{'CLOSED'|translate}} (9/9)</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- End Recruitment list-->
+
+        <kendo-grid-command-column [width]="170">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+
+             <!-- Request type -->
+             <i *ngIf="(hasUpdateRequestPermission || hasShowRequestPermission) && type == recruitmentType.Request" class="las la-pen edit-pencil cursor-pointer la-lg"
+             (click)="goToAdvancedEdit(dataItem)" tooltip="{{'UPDATE' | translate}}"></i>
+            <i *ngIf="hasDeleteRequestPermission && type == recruitmentType.Request" class="las la-trash-alt text-danger cursor-pointer la-lg"
+              tooltip="{{'DELETE' | translate}}" (click)="removeHandler(dataItem)"></i>
+            <!-- End request type -->
+
+            <!-- Offer type -->
+            <i *ngIf="(hasUpdateOfferPermission || hasShowOfferPermission) && type == recruitmentType.Offer" class="las la-pen edit-pencil cursor-pointer la-lg"
+              (click)="goToAdvancedEdit(dataItem)" tooltip="{{'UPDATE' | translate}}"></i>
+            <i *ngIf="hasDeleteOfferPermission && type == recruitmentType.Offer" class="las la-trash-alt text-danger cursor-pointer la-lg"
+              tooltip="{{'DELETE' | translate}}" (click)="removeHandler(dataItem)"></i>
+            <!-- End offer type -->
+              
+            <!-- Recruitment type -->
+            <i *ngIf="(hasUpdateRecruitmentPermission || hasShowRecruitmentPermission) && type == recruitmentType.RecruitmentSession"
+              class="las la-pen edit-pencil cursor-pointer la-lg" (click)="goToAdvancedEdit(dataItem)" tooltip="{{'UPDATE' | translate}}"></i>
+            <i *ngIf="hasDeleteRecruitmentPermission && type == recruitmentType.RecruitmentSession" class="las la-trash-alt text-danger cursor-pointer la-lg"
+              tooltip="{{'DELETE' | translate}}" (click)="removeHandler(dataItem)"></i>
+            <!-- End recruitment type -->
+          </ng-template>
+        </kendo-grid-command-column>
+        <app-grid-export *ngIf="type == recruitmentType.Request" [gridSettings]="gridSettings"
+                         [predicate]="predicate" [service]="recruitmentService" excel="true" fileName="{{'LIST_REQUEST'|translate}}"
+                         pdf="true">
+        </app-grid-export>
+        <app-grid-export *ngIf="type == recruitmentType.Offer " [gridSettings]="gridSettings"
+                         [predicate]="predicate" [service]="recruitmentService" excel="true" fileName="{{'LIST_OFFER'|translate}}"
+                         pdf="true">
+        </app-grid-export>
+        <app-grid-export *ngIf="type == recruitmentType.RecruitmentSession" [gridSettings]="gridSettings"
+                         [predicate]="predicate" [service]="recruitmentService" excel="true"
+                         fileName="{{'LIST_RECRUITMENT'|translate}}"
+                         pdf="true">
+        </app-grid-export>
+      </kendo-grid>
+    </div>
+  </form>
+</div>

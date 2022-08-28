@@ -1,0 +1,34 @@
+export class CnssDeclarationConstant {
+    public static readonly CNSS_DECLARATION_NUMBER = 'DeclarationNumber';
+    public static readonly CNSS_DECLARATION_NUMBER_UPPERCASE = 'CNSS_DECLARATION_NUMBER';
+    public static readonly TITLE = 'Title';
+    public static readonly TITLE_UPPERCASE = 'TITLE';
+    public static readonly TRIMESTER = 'Trimester';
+    public static readonly TRIMESTER_UPPERCASE = 'TRIMESTER';
+    public static readonly YEAR = 'Year';
+    public static readonly YEAR_UPPERCASE = 'YEAR';
+    public static readonly CREATION_DATE = 'CreationDate';
+    public static readonly CREATION_DATE_UPPERCASE = 'CREATION_DATE';
+    public static readonly TOTAL_AMOUNT = 'TotalAmount';
+    public static readonly ID_CNSS_NAVIGATION = 'IdCnssNavigation';
+    public static readonly ID_CNSS_NAVIGATION_LABEL = 'IdCnssNavigation.Label';
+    public static readonly ID_CNSS_NAVIGATION_LABEL_UPPERCASE = 'CNSS_TYPE';
+    public static readonly SESSION = 'Session';
+    public static readonly CNSS_DECLARATION_LIST_URL = '/main/payroll/cnssdeclaration';
+    public static readonly ID_CNSS = 'IdCnss';
+    public static readonly MONTH = 'Month';
+    public static readonly CNSS_DECLARATION_EDIT_URL = 'main/payroll/cnssdeclaration/edit/';
+    public static readonly GET_TELE_DECLARATION = 'getTeleDeclaration/';
+    public static readonly GENERATE_DECLARATION = 'generateDeclaration/';
+    public static readonly CNSS_DECLARATION_REPORT_NAME = 'CnssDeclaration';
+    public static readonly CNSS_DECLARATION_UPPERCASE = 'CNSS_DECLARATION';
+    public static readonly CNSS_SUMMARY_REPORT_NAME = 'CnssSummary';
+    public static readonly CNSS_SUMMARY_UPPERCASE = 'CNSS_DECLARATION_SUMMARY';
+    public static readonly STATE = 'State';
+    public static readonly CLOSE_CNSS_DECLARATION_MESSAGE = 'CLOSE_CNSS_DECLARATION_MESSAGE';
+    public static readonly STATE_UPPERCASE = 'STATE';
+    public static OPEN = 'OPEN';
+    public static CLOSED = 'CLOSED';
+    public static readonly DATE = 'DATE';
+    public static readonly CLOSE_CNSS_DECLARATION_URL = 'closeCnssDeclaration';
+}

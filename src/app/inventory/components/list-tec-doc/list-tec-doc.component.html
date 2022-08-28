@@ -1,0 +1,343 @@
+<kendo-grid [data]="tecdocService.gridView" [rowClass]="rowCallback" [pageSize]="gridSettings.state.take"
+  [pageable]="true" [skip]="gridSettings.state.skip" [sortable]="true" (detailExpand)="loadWarehousDetails($event)"
+  (dblclick)="dbCellClick()" (remove)="removeHandler($event)" [selectable]="true" (selectionChange)="selectRow($event)"
+  (pageChange)="tecdocService.pageChange($event)">
+<!--Code + Description  -->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [width]="gridSettings.columnsConfig[0]._width"
+    [title]="gridSettings.columnsConfig[0].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+        theme="light">{{gridSettings.columnsConfig[0].title | translate}}
+      </span>
+    </ng-template>
+
+    <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+      <div class="row d-flex align-items-center" *ngIf="dataItem && dataItem.IsInDb">
+        <div class="col-auto">
+          <img id="item-photo" class="rounded-circle card-avatar" [src]="dataItem.Image" alt="avatar" />
+        </div>
+        <div class="col">
+          <div class="row">
+            <b>{{dataItem.ItemInDB.Description}}</b>
+          </div>
+          <div class="row mt-1">
+            <span class="small"> {{dataItem.ItemInDB.Code ? dataItem.ItemInDB.Code : dataItem.ItemInDB.Description}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="row d-flex align-items-center"  *ngIf="!dataItem.IsInDb">
+        <div class="col-auto">
+          <img id="item-photo" class="rounded-circle card-avatar" src="assets/image/placeholder-logo.png" alt="avatar" />
+        </div>
+        <div class="col">
+          <div class="row">
+            <b>{{dataItem.Description}}</b>
+          </div>
+          <div class="row mt-1">
+            <span class="small"> {{dataItem.Reference}}</span>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+
+<!--Supplier-->
+<kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+[filterable]="gridSettings.columnsConfig[1].filterable"
+[title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+[format]="gridSettings.columnsConfig[1].format" [hidden]="gridSettings.columnsConfig[1].hidden"
+[headerStyle]="{'line-height': '1em'}" [class]="{'overflow-class': true}">>
+<ng-template kendoGridHeaderTemplate>
+  <span tooltip=" {{gridSettings.columnsConfig[1].title|translate}}"
+    theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+</ng-template>
+<ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+  <div class="row ml-1" *ngIf="dataItem.IsInDb && dataItem.ItemInDB.NamesTiers" style="overflow: initial;">
+    <span *ngIf="dataItem.ItemInDB.NamesTiers[0]" tooltip="{{dataItem.ItemInDB.NamesTiers[0]}}"
+      class="rounded-element-cell">
+      {{dataItem.ItemInDB.NamesTiers[0]}}
+    </span>
+    <span *ngIf="dataItem.ItemInDB.NamesTiers[1]" tooltip="{{dataItem.ItemInDB.NamesTiers[1]}}"
+      class="rounded-element-cell">
+      {{dataItem.ItemInDB.NamesTiers[1]}}
+    </span>
+    <span *ngIf="dataItem.ItemInDB.NamesTiers && dataItem.ItemInDB.NamesTiers.length > 2" class="dropdown">
+      <div class="show-more" type="button" id="testOfSupplier" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false">
+        +{{dataItem.ItemInDB.NamesTiers.length - 2}}
+      </div>
+      <div class="dropdown-menu border" aria-labelledby="testOfSupplier">
+        <button class="dropdown-item disabled" *ngFor="let tier of dataItem.ItemInDB.NamesTiers.slice(2)"
+          type="button">{{tier}}</button>
+      </div>
+    </span>
+  </div>
+
+  <div class="container grid-cell" *ngIf="!dataItem.IsInDb || !dataItem.ItemInDB.NamesTiers">
+    -
+  </div>
+</ng-template>
+</kendo-grid-column>
+
+<!--Available qty-->
+<kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+[filterable]="gridSettings.columnsConfig[3].filterable"
+[title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+[format]="gridSettings.columnsConfig[3].format" [hidden]="gridSettings.columnsConfig[3].hidden"
+[headerStyle]="{'line-height': '1em'}">
+
+<ng-template kendoGridHeaderTemplate>
+  <span tooltip="{{'ALLQUANTITY'|translate}}"
+    theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+</ng-template>
+
+<ng-template kendoGridCellTemplate let-dataItem="dataItem">
+  <div>
+    <div class="container" *ngIf="!dataItem.IsInDb || !dataItem.ItemInDB.IsStockManeged">
+      <div class="row grid-cell">-</div>
+    </div>
+    <kendo-numerictextbox *ngIf="dataItem.IsInDb && dataItem.ItemInDB.IsStockManeged" [spinners]="false" [format]="FormatNumber"
+      [step]="1" class="form-control inputEnabled as-label numeric-style"
+      [value]="dataItem.ItemInDB.AllAvailableQuantity?dataItem.ItemInDB.AllAvailableQuantity:'0'" [disabled]="true">
+    </kendo-numerictextbox>
+  </div>
+</ng-template>
+</kendo-grid-column>
+
+<!--Warehouse available qty-->
+<kendo-grid-column 
+[field]="gridSettings.columnsConfig[4].field" [filterable]="gridSettings.columnsConfig[4].filterable"
+[title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+[format]="gridSettings.columnsConfig[4].format" [headerStyle]="{'line-height': '1em'}">
+
+<ng-template kendoGridHeaderTemplate>
+  <span tooltip=" {{gridSettings.columnsConfig[4].title|translate}}"
+    theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+</ng-template>
+
+<ng-template kendoGridCellTemplate let-dataItem="dataItem">
+  <div class="container" *ngIf="!dataItem.IsInDb || (dataItem.ItemInDB && !dataItem.ItemInDB.IsStockManeged)">
+    <div class="row grid-cell">
+      -
+    </div>
+  </div>
+  <kendo-numerictextbox *ngIf="dataItem.ItemInDB && dataItem.ItemInDB.IsStockManeged" [spinners]="false" [format]="FormatNumber"
+                        [step]="1" class="form-control inputEnabled as-label numeric-style"
+                        [value]="dataItem.ItemInDB.WarhouseAvailableQuantity?dataItem.ItemInDB.WarhouseAvailableQuantity:'0'" [disabled]="true">
+  </kendo-numerictextbox>
+</ng-template>
+</kendo-grid-column>
+
+ <!--UnitHtsalePrice-->
+<kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+              [filterable]="gridSettings.columnsConfig[5].filterable"
+              [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+              [format]="gridSettings.columnsConfig[5].format" [headerStyle]="{'line-height': '1em'}"
+              [hidden]="!showSalesPrice && !itemService.isPurchase" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253",
+              "text-align": "right", "padding-right": "4%"}' filter="numeric">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'SALES_PUHT'|translate}}" theme="light">
+                  {{gridSettings.columnsConfig[5].title|translate}}
+                </span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <span *ngIf="dataItem.IsInDb"
+                  tooltip="{{dataItem.UnitHtsalePrice?dataItem.UnitHtsalePrice.toLocaleString('fr-FR',{minimumFractionDigits: 3}):'-'}} {{itemService.formatSaleOptions? itemService.formatSaleOptions.currency : ''}}"
+                  placement="right" theme="light">
+                  <kendo-numerictextbox [spinners]="false" [format]="itemService.formatSaleOptions" [step]="1"
+                    class="form-control inputEnabled as-label numeric-style"
+                    [value]="dataItem.ItemInDB.UnitHtsalePrice?dataItem.ItemInDB.UnitHtsalePrice:'-'" [disabled]="true">
+                  </kendo-numerictextbox>
+                </span>
+                <span *ngIf="!dataItem.IsInDb">-</span>
+              </ng-template>
+            </kendo-grid-column>
+
+
+              <!--BRAND-->
+              <kendo-grid-column *ngIf="!itemService.isPurchase" [field]="gridSettings.columnsConfig[6].field"
+              [filterable]="gridSettings.columnsConfig[6].filterable"
+              [title]="gridSettings.columnsConfig[6].title | translate" [width]="gridSettings.columnsConfig[6]._width"
+              [format]="gridSettings.columnsConfig[6].format" [hidden]="gridSettings.columnsConfig[6].hidden"
+              [headerStyle]="{'line-height': '1em'}">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip=" {{gridSettings.columnsConfig[6].title|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[6].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="container" style="margin-bottom: 4px;">
+                  <span class="row grid-cell" *ngIf="dataItem.IsInDb && dataItem.ItemInDB.IsStockManeged && dataItem.ItemInDB.LabelProduct"> {{dataItem.ItemInDB.LabelProduct}} </span>
+                  <span *ngIf="dataItem.IsInDb && dataItem.ItemInDB && !dataItem.ItemInDB.IsStockManeged" placement="right">-</span>
+                  <span *ngIf="dataItem.IsInDb && dataItem.ItemInDB.IsStockManeged && !dataItem.ItemInDB.LabelProduct" placement="right"> - </span>
+                  <span *ngIf="!dataItem.IsInDb " placement="right">{{dataItem.Supplier}}</span>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+  <kendo-grid-column *ngIf="isAutoVersion" field="Tecdoc" [width]='24' [class]="{'tec-doc': true}"
+    [headerStyle]="{'padding': '0','flex-wrap': 'wrap','align-content': 'center','vertical-align': 'middle'}">
+    <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+      <img src="../../../../assets/image/TecDoc.png" width="23px" />
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem='dataItem' class="px-0">
+      <i aria-hidden="true" class="fa fa-info-circle fa-lg" style="cursor: pointer;" (click)='openTecdocModal(dataItem)'
+        data-toggle="modal" data-target="#tecdocdetails"></i>
+    </ng-template>
+  </kendo-grid-column>
+
+
+
+  <kendo-grid-command-column [width]="100" *ngIf='isforSync'>
+    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem" let-rowIndex="rowIndex">
+      <button *ngIf="!dataItem.IsUnsubbed" class="btn btn-danger btn-sm font-weight-bold my-1"
+        style="border: none !important; width:76px" (click)="unSub(dataItem,rowIndex)" type="button">
+        <i class="fa fa-ban"></i>
+      </button>
+      <button *ngIf="dataItem.IsUnsubbed" class="btn btn-dark btn-sm font-weight-bold my-1"
+        style="border: none !important; width:76px" (click)="ReSub(dataItem,rowIndex)" type="button">
+        <i class="fa fa-share-square-o"></i>
+      </button>
+    </ng-template>
+  </kendo-grid-command-column>
+
+
+  <kendo-grid-column *ngIf="isModal && !isSync && !openedFromGarageAddCar" title="" [width]='130'>
+    <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+      <div *ngIf="isModal && dataItem.IsInDb" class="k-grid-ignore-click">
+        <kendo-numerictextbox [step]="1" [min]="0" [(ngModel)]="dataItem.QuantityForDocumentLine"
+        [style.width]="'120px'" [decimals]="3" [style.height]="'26px'" name='QuantityForDocumentLine'
+        [spinners]="false">
+      </kendo-numerictextbox>
+        <button class="btn btn-primary btn-sm font-weight-bold my-1"
+          style="border: none !important; background-color: #4c9aae !important;" (click)="getItemId(dataItem)"
+          type="button">
+          <i class="fa fa-send-o"></i>
+        </button>
+    </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-command-column [width]="170" *ngIf="!isModal && !isSync">
+    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+      <!--Open advanced edit form -->
+      <div class="row pr-3 py-1 k-grid-ignore-click" *ngIf="dataItem.IsInDb">
+        <i *ngIf="btnEditVisible && !searchItemService.isFromSearchItem_supplierInetrface"
+          (click)="goToAdvancedEdit(dataItem)" class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+        <!-- save command directive, will be visible when in edit mode -->
+        <button kendoGridSaveCommand class="btnKendoGrid" *ngIf='!searchItemService.isFromSearchItem_supplierInetrface'
+          type="button"><span class="fa fa-save"></span></button>
+        <!-- cancel command directive, will be visible when in edit mode -->
+        <button kendoGridCancelCommand class="btnKendoGrid"
+          *ngIf='!searchItemService.isFromSearchItem_supplierInetrface' type="button"><span
+            class="fa fa-close"></span></button>
+        <!-- remove command directive, will be visible when not in edit mode -->
+
+        <i *ngIf='!searchItemService.isFromSearchItem_supplierInetrface' class="fa fa-trash-o la-lg mx-2 text-danger"
+          aria-hidden="true" (click)="removeHandler(dataItem)"></i>
+
+      </div>
+      <div *ngIf="!dataItem.IsInDb && !searchItemService.isFromSearchItem_supplierInetrface"
+        class="justify-content-md-center">
+        <div>
+          <button (click)="tecDocAdd(dataItem)" *ngIf="btnEditVisible" class="btn-add-tecdoc k-button btnKendoGrid"
+            type="button">
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="row py-1" *ngIf='dataItem.IsInDb && this.searchItemService && this.searchItemService.idSupplier'
+      class="k-grid-ignore-click">
+      <div class="col-auto px-0">
+        <kendo-numerictextbox [step]="1" [min]="0" [(ngModel)]="dataItem.ItemInDB.QuantityForDocumentLine"
+          focus="true" [style.width]="'80px'" [decimals]="3" [style.height]="'26px'"
+          name='QuantityForDocumentLine'>
+        </kendo-numerictextbox>
+          <button [disabled]="!searchItemService.idSupplier>0"
+            *ngIf="!(searchItemService.idDocument && searchItemService.searchItemDocumentType=='Q-SA')"
+            type="button" class="btn btn-warning btn-sm font-weight-bold" id="generateDocumentbl"
+            (click)='isSelectedSupplier(dataItem.ItemInDB.Id,"D-SA",dataItem.ItemInDB.QuantityForDocumentLine)'
+            data-toggle="modal" href="#generateDocument" data-target="#generateDocument">
+            BL
+          </button>
+      </div>
+    </div>
+    </ng-template>
+  </kendo-grid-command-column>
+
+
+
+
+  <kendo-grid-command-column [width]="250" *ngIf="isModal && openedFromGarageAddCar">
+    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+      <!-- show button plus in the list when the modal in opened from garage add car -->
+      <div *ngIf="!dataItem.IsInDb && !searchItemService.isFromSearchItem_supplierInetrface"
+        class="justify-content-md-center">
+        <div>
+          <button (click)="tecDocAddFromGarage(dataItem)" *ngIf="btnEditVisible"
+            class="btn-add-tecdoc k-button btnKendoGrid" type="button">
+            <i class="fa fa-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- show button numerictex, BS and Commande buttons in the list when the modal in opened from garage add car -->
+      <div class="row py-1 justify-content-md-center" *ngIf="isModal && dataItem.IsInDb">
+        <div class="col-auto px-0">
+          <kendo-numerictextbox [step]="1" [min]="0" [(ngModel)]="dataItem.QuantityForDocumentLine"
+            [style.width]="'100px'" [decimals]="3" [style.height]="'26px'" name='QuantityForDocumentLine'>
+          </kendo-numerictextbox>
+        </div>
+        <div class="col-auto px-2">
+          <ng-container *starkPermissionsOnly="['ADD-SALESDELIVERY']">
+            <button *ngIf="!(searchItemService.idDocument && searchItemService.searchItemDocumentType=='Q-SA') "
+              type="button" class="btn btn-warning btn-sm font-weight-bold" id="generateDocumentbl" data-toggle="modal"
+              data-target=".generateDocumentEquiv">BS</button>
+          </ng-container>
+          <!--(click)='addDocument(dataItem.Id,"D-SA",dataItem.QuantityForDocumentLine)'-->
+
+          <ng-container *starkPermissionsOnly="['ADD-SALESQUOTATION']">
+            <button *ngIf="!(searchItemService.idDocument && searchItemService.searchItemDocumentType=='D-SA') "
+              type="button" class="btn btn-info btn-sm font-weight-bold" id="generateDocumentqt" data-toggle="modal"
+              data-target=".generateDocumentEquiv">{{'COMMANDE' | translate}}</button>
+          </ng-container>
+          <!--(click)='addDocument(dataItem.Id,"Q-SA",dataItem.QuantityForDocumentLine)'-->
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-command-column>
+
+
+</kendo-grid>
+<div class="row justify-content-end mt-1" *ngIf="isFiltered">
+  <div class="col-auto">
+    <span class="fa-stack">
+      <i class="fa fa-square fa-stack-2x" style="color:#eef8fb"></i>
+      <i class="fa fa-square-o fa-stack-2x" style="color:#dde6e8"></i>
+    </span>
+    {{'ONLY_IN_TECDOC'|translate}}
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal " id="tecdocdetails" tabindex="-1" role="dialog" aria-labelledby="tecdocdetails" aria-hidden="true"
+  data-backdrop="static" data-keyboard="false" *ngIf='opentecdocdetails'>
+  <div class="modal-dialog modal-dialog modal-xlg" style='width: 85%;' role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tecdocdetails">{{'TEC_DOC_DETAILS' | translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)='closeTecdocModal()'>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-tecdoc-details [isModal]="true" [selectedItem]="SelectedForDetails" *ngIf="!FromApi"></app-tecdoc-details>
+        <app-tecdoc-details-api [isModal]="true" [selectedItem]="SelectedForDetails" *ngIf="FromApi">
+        </app-tecdoc-details-api>
+      </div>
+    </div>
+  </div>
+</div>

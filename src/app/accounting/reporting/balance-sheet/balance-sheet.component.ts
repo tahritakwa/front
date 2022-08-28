@@ -1,0 +1,454 @@
+import { Component, HostListener, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { GrowlService } from '../../../../COM/Growl/growl.service';
+import { TranslateService } from '@ngx-translate/core';
+import { FormModalDialogService } from '../../../shared/services/dialog/form-modal-dialog/form-modal-dialog.service';
+import { ReportingInModalComponent } from '../../../shared/components/reports/reporting-in-modal/reporting-in-modal.component';
+import { SharedConstant } from '../../../constant/shared/shared.constant';
+import { ReportingConstant } from '../../../constant/accounting/reporting.constant';
+import { NumberConstant } from '../../../constant/utility/number.constant';
+import { SharedAccountingConstant } from '../../../constant/accounting/sharedAccounting.constant';
+import { DataStateChangeEvent, GridComponent, RowClassArgs } from '@progress/kendo-angular-grid';
+import { DataSourceRequestState } from '@progress/kendo-data-query';
+import { ColumnSettings } from '../../../shared/utils/column-settings.interface';
+import { GridSettings } from '../../../shared/utils/grid-settings.interface';
+import { ReportingService } from '../../services/reporting/reporting.service';
+import { ValidationService } from '../../../shared/services/validation/validation.service';
+import { FiscalYearDropdownComponent } from '../../../shared/components/fiscal-year-dropdown/fiscal-year-dropdown.component';
+import { GenericAccountingService } from '../../services/generic-accounting.service';
+import { Observable } from 'rxjs/Observable';
+import { DatePipe } from '@angular/common';
+import { SwalWarring } from '../../../shared/components/swal/swal-popup';
+import { AccountingConfigurationService } from '../../services/configuration/accounting-configuration.service';
+import { Operation } from '../../../../COM/Models/operations';
+import { CompanyService } from '../../../administration/services/company/company.service';
+import NumberFormatOptions = Intl.NumberFormatOptions;
+import { Currency } from '../../../models/administration/currency.model';
+import { FiscalYearService } from '../../services/fiscal-year/fiscal-year.service';
+import { FiscalYearStateEnumerator } from '../../../models/enumerators/fiscal-year-state-enumerator.enum';
+import { AccountsConstant } from '../../../constant/accounting/account.constant';
+import {ActivatedRoute, Router} from '@angular/router';
+import { AccountingConfigurationConstant } from '../../../constant/accounting/accounting-configuration.constant';
+import { FiscalYearConstant } from '../../../constant/accounting/fiscal-year.constant';
+import { SpinnerService } from '../../../../COM/spinner/spinner.service';
+import { ReportTemplateDefaultParameters } from '../../../models/accounting/report-template-default-parameters';
+import { KeyboardConst } from '../../../constant/keyboard/keyboard.constant';
+import { ReducedCurrency } from '../../../models/administration/reduced-currency.model';
+import { AuthService } from '../../../login/Authentification/services/auth.service';
+import { PermissionConstant } from '../../../Structure/permission-constant';
+import { ReportTemplateDefaultParams } from './../../../models/accounting/report-template-default-params';
+
+
+@Component({
+  selector: 'app-balance-sheet',
+  templateUrl: './balance-sheet.component.html',
+  styleUrls: ['./balance-sheet.component.scss']
+})
+export class BalanceSheetComponent implements OnInit {
+
+  public balanceSheetTypeData: any[];
+  public balanceSheetTypeDataFilter: any[];
+  public balanceSheetForm: FormGroup;
+
+  public editedRowIndex: number;
+  public reportConfigFormGroup: FormGroup;
+  public editLineMode = false;
+
+  provisionalEdition = false;
+  fiscalYearIsOpened = true;
+  public signValues;
+  spinner = false;
+  @ViewChild(GridComponent)
+  public grid: GridComponent;
+
+  public gridState: DataSourceRequestState = {
+    skip: NumberConstant.ZERO,
+    filter: { // Initial filter descriptor
+      logic: 'and',
+      filters: []
+    }
+  };
+
+  public nameReport = '';
+  public typeReport = '';
+
+  @ViewChild(FiscalYearDropdownComponent) fiscalYearDropdownComponent;
+
+  public columnsConfig: ColumnSettings[] = ReportingConstant.REPORTS_DEFAULT_COLUMNS_CONFIG;
+
+  public displayReportDetails = false;
+  public previousFiscalYearLabel = '-';
+  public currentFiscalYearLabel = '-';
+  public currentFiscalYear: any;
+  fiscalYears: any;
+  public currencyCode: string;
+
+  lastUpdated: any;
+  user: any;
+  reportLinesOnPreview: any;
+
+  public formatNumberOptions: NumberFormatOptions;
+
+  firstGeneration = true;
+  public gridSettings: GridSettings = {
+    state: this.gridState,
+    columnsConfig: this.columnsConfig
+  };
+
+
+  public AccountingPermissions = PermissionConstant.AccountingPermissions;
+
+  constructor(private fb: FormBuilder, private growlService: GrowlService, private reportingService: ReportingService,
+    private datePipe: DatePipe, private translate: TranslateService,  private route: ActivatedRoute,
+    private validationService: ValidationService, private reportService: ReportingService,
+    private genericAccountingService: GenericAccountingService, private accountingConfigurationService: AccountingConfigurationService,
+    private companyService: CompanyService, private fiscalYearService: FiscalYearService, private spinnerService: SpinnerService,
+    public authService: AuthService, private router: Router
+  ) {
+    if (this.route.snapshot.data['currentFiscalYear']) {
+      this.currentFiscalYear = this.route.snapshot.data['currentFiscalYear'];
+      this.fiscalYearIsOpened = this.currentFiscalYear.closingState === FiscalYearStateEnumerator.Open
+        || this.currentFiscalYear.closingState === FiscalYearStateEnumerator.PartiallyClosed;
+      if (!this.fiscalYearIsOpened) {
+        this.growlService.warningNotification(this.translate.instant(SharedAccountingConstant.SELECTED_FISCAL_YEAR_IS_NOT_OPENED_YOU_ARE_IN_READ_MODE));
+      }
+    } else {
+      this.accountingConfigurationService.getJavaGenericService().getEntityList(
+        AccountingConfigurationConstant.CURRENT_FISCAL_YEAR_URL
+      ).subscribe(data => {
+        this.currentFiscalYear = data;
+        this.fiscalYearIsOpened = data.closingState === FiscalYearStateEnumerator.Open || data.closingState === FiscalYearStateEnumerator.PartiallyClosed;
+        if (!this.fiscalYearIsOpened) {
+          this.growlService.warningNotification(this.translate.instant(SharedAccountingConstant.SELECTED_FISCAL_YEAR_IS_NOT_OPENED_YOU_ARE_IN_READ_MODE));
+        }
+      });
+    }
+    if (this.route.snapshot.data['fiscalYears']) {
+      this.fiscalYears = this.route.snapshot.data['fiscalYears'];
+    } else {
+      this.fiscalYearService.getJavaGenericService().getEntityList(FiscalYearConstant.FIND_ALL_METHOD_URL).subscribe(data => {
+        this.fiscalYears = data;
+      });
+    }
+  }
+
+  receiveCurrentFiscalYear($event) {
+    if ($event !== undefined && $event.selectedValue !== undefined) {
+      this.closeEditor(this.editedRowIndex);
+      this.balanceSheetForm.controls['fiscalYearId'].setValue($event.selectedValue);
+      this.disablePrintButtonIfChartsUnbalanced($event.selectedValue);
+      this.fiscalYearService.getJavaGenericService().getEntityById($event.selectedValue).subscribe(data => {
+        this.fiscalYearIsOpened = data.closingState === FiscalYearStateEnumerator.Open || data.closingState === FiscalYearStateEnumerator.PartiallyClosed;
+        if (!this.fiscalYearIsOpened) {
+          this.growlService.warningNotification(this.translate.instant(SharedAccountingConstant.SELECTED_FISCAL_YEAR_IS_NOT_OPENED_YOU_ARE_IN_READ_MODE));
+        }
+        this.previewReportInGrid();
+      });
+    }
+  }
+
+  public rowClassCallback = (context: RowClassArgs) => {
+    return { grayed: context.dataItem.highlighted };
+  }
+
+  private createInputForm(): void {
+    this.balanceSheetForm = this.fb.group({
+      fiscalYearId: ['', Validators.required],
+      balanceSheetType: ['', Validators.required]
+    });
+  }
+
+  public initSignValues() {
+    this.signValues = [{ negative: false, status: `${this.translate.instant(ReportingConstant.POSITIVE)}` },
+    { negative: true, status: `${this.translate.instant(ReportingConstant.NEGATIVE)}` }];
+  }
+  previewReportInGrid() {
+    if (this.balanceSheetForm.valid) {
+      this.firstGeneration = false;
+      this.initGridDataSource();
+    } else {
+      this.validationService.validateAllFormFields(this.balanceSheetForm);
+    }
+  }
+
+  assignDataToGrid(data) {
+    data.map(reportLine => {
+      if (reportLine.negative === true) {
+        reportLine.negative = this.signValues[1].status;
+      } else if (reportLine.negative === false) {
+        reportLine.negative = this.signValues[0].status;
+      }
+    });
+    this.reportLinesOnPreview = data;
+    this.gridSettings.gridData = data;
+    this.previousFiscalYearLabel = data[0].previousFiscalYear;
+    this.currentFiscalYearLabel = data[0].fiscalYear.name;
+    const lastUpdatedReportLine = data.sort((a: any, b: any) => {
+      return new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime();
+    });
+    this.user = lastUpdatedReportLine[0].user;
+    this.lastUpdated = this.datePipe.transform(lastUpdatedReportLine[0].lastUpdated, SharedAccountingConstant.YYYY_MM_DD_HH_MM_SS);
+    this.displayReportDetails = true;
+  }
+
+  initGridDataSource(data?: any) {
+    if (data !== undefined) {
+      this.assignDataToGrid(data);
+    } else {
+      this.spinner = true;
+      this.reportingService.getJavaGenericService().getEntityList(`${ReportingConstant.GENERATE_ANNUAL_REPORT}/` +
+        `${this.balanceSheetForm.value.fiscalYearId}/${ReportingConstant.BS}`)
+        .subscribe(reportLines => {
+          this.assignDataToGrid(reportLines);
+        }, () => { }, () => {
+          this.spinner = false;
+        });
+    }
+  }
+
+  resetFormula(dataItem) {
+    if (dataItem.id) {
+      this.reportingService.getJavaGenericService().callService(Operation.PUT, ReportingConstant.RESET_REPORT_LINE, dataItem).finally(() => {
+        this.terminateOperation(this.editedRowIndex);
+      }
+      ).subscribe();
+    }
+  }
+
+  public lineClickHandler({ rowIndex, dataItem }) {
+    if (this.authService.hasAuthority(this.AccountingPermissions.UPDATE_FINANCIAL_STATES_REPORTS_FORMULA) && this.fiscalYearIsOpened) {
+      this.balanceSheetForm.disable();
+      if (this.editedRowIndex !== undefined && this.editedRowIndex !== rowIndex && this.editLineMode) {
+        this.saveHandler();
+      }
+      this.reportConfigFormGroup = this.reportingService.editHandler(rowIndex, dataItem, this.grid);
+      if (this.reportConfigFormGroup) {
+        if (dataItem.negative === this.signValues[1].status) {
+          this.reportConfigFormGroup.controls['negative'].setValue(true);
+        } else {
+          this.reportConfigFormGroup.controls['negative'].setValue(false);
+        }
+        this.editedRowIndex = rowIndex;
+        this.editLineMode = true;
+      }
+    }
+  }
+
+  public cancelHandler({ rowIndex }) {
+    this.closeEditor(rowIndex);
+  }
+
+  public closeEditor(rowIndex: number) {
+    this.grid.closeRow(rowIndex);
+    this.balanceSheetForm.enable();
+    if (this.balanceSheetForm.getRawValue().fiscalYearId) {
+      this.fiscalYearService.getJavaGenericService().getEntityById(this.balanceSheetForm.getRawValue().fiscalYearId).subscribe(data => {
+        this.fiscalYearIsOpened = data.closingState === FiscalYearStateEnumerator.Open || data.closingState === FiscalYearStateEnumerator.PartiallyClosed;
+        this.editLineMode = false;
+      });
+    }
+  }
+  public keyEnterAction(sender: GridComponent, formGroup: any, e: KeyboardEvent) {
+    const rowIndex = this.editedRowIndex;
+    if (!formGroup || !formGroup.valid || e.key !== KeyboardConst.ENTER) {
+      return;
+    }
+    this.editedRowIndex = rowIndex;
+    this.reportConfigFormGroup = formGroup;
+    this.saveHandler();
+  }
+
+  terminateOperation(rowIndex: number) {
+    this.initGridDataSource();
+    this.closeEditor(rowIndex);
+  }
+
+  public saveHandler() {
+    const rowIndex = this.editedRowIndex;
+    this.reportingService.saveHandler(rowIndex, this.reportConfigFormGroup, this.terminateOperation.bind(this));
+    this.editedRowIndex = undefined;
+  }
+
+  public dataStateChange(state: DataStateChangeEvent): void {
+    this.gridSettings.state = state;
+  }
+
+  canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
+    return this.genericAccountingService.handleCanDeactivateToLeaveCurrentComponent(this.isBalanceSheetFormChanged.bind(this));
+  }
+
+  isBalanceSheetFormChanged() {
+    return this.reportConfigFormGroup !== undefined;
+  }
+
+  private setSelectedCurrency(currency: ReducedCurrency) {
+    this.formatNumberOptions = {
+      style: 'decimal',
+      maximumFractionDigits: currency.Precision,
+      minimumFractionDigits: currency.Precision
+    };
+  }
+
+  checkBalancedChartAccount() {
+    this.reportService.getJavaGenericService().getData('check-balanced-plan' + `?fiscalYearId=${this.balanceSheetForm.value.fiscalYearId}`).subscribe();
+  }
+
+  public Print(): void {
+    this.spinner = true;
+    if (this.balanceSheetForm.invalid) {
+      return;
+    }
+    let report;
+    if (this.balanceSheetForm.getRawValue().balanceSheetType === NumberConstant.ZERO) {
+        this.typeReport = ReportingConstant.BSAS;
+        this.nameReport = this.translate.instant(ReportingConstant.BALANCE_SHEET_REPORT_TITLE);
+      report = ReportingConstant.GENERATE_ANNUAL_REPORT_JASPER;
+    } else {
+      report = ReportingConstant.GENERATE_ANNUAL_REPORT_ANNEX_JASPER;
+      this.nameReport = this.translate.instant(ReportingConstant.ANNEX_BALANCE_SHEET);
+      this.typeReport = ReportingConstant.BSAN;
+    }
+    const dataToSend = {
+      company: '',
+      logoDataBase64:'',
+      companyAdressInfo: '',
+      generationDate: '',
+      commercialRegister:'',
+      matriculeFisc:'',
+      mail:'',
+      webSite:'',
+      tel:'',
+          };
+
+    this.companyService.getCurrentCompany().subscribe(company => {
+      let srcPicture = this.companyService.getPicture(company.AttachmentUrl)
+      const printPDF = () => {
+        this.genericAccountingService.setCompanyInfos(dataToSend, company);
+        const reportTemplateParams = new ReportTemplateDefaultParams(dataToSend.company,dataToSend.logoDataBase64, dataToSend.companyAdressInfo, this.provisionalEdition, dataToSend.generationDate,dataToSend.commercialRegister,dataToSend.matriculeFisc,dataToSend.mail,dataToSend.webSite,dataToSend.tel);
+      this.reportingService.getJavaGenericService().saveEntity(reportTemplateParams,
+       `${ReportingConstant.JASPER_ENTITY_NAME}/${report}` +
+       `/${this.balanceSheetForm.value.fiscalYearId}` +
+       `/${this.typeReport}`)
+       .subscribe(data => {
+        this.genericAccountingService.downloadPDFFile(data, this.nameReport);
+
+       }, () => { }, () => {
+         this.spinner = false;
+       });
+             }
+             if (srcPicture == ""){
+               dataToSend.logoDataBase64= "";
+               printPDF();
+             }
+             else{ srcPicture.subscribe(
+               (res:any)=>{
+                if(res){
+                  dataToSend.logoDataBase64= res;}},
+                  () => {dataToSend.logoDataBase64= "";},
+                  () => printPDF());
+            }
+   });
+  }
+
+
+  handleFilterBalance(writtenValue) {
+    this.balanceSheetTypeData = this.balanceSheetTypeDataFilter.filter((s) =>
+      s.text.toLowerCase().includes(writtenValue.toLowerCase())
+      || s.text.toLocaleLowerCase().includes(writtenValue.toLowerCase())
+    );
+  }
+
+  disablePrintButtonIfChartsUnbalanced(fiscalYearId){
+    this.reportService.getJavaGenericService().getEntityList(`${ReportingConstant.UNBALANCED_CHARTS}?fiscalYearId=${fiscalYearId}`).subscribe((chartAccounts:Array<number>)=>{
+      if(chartAccounts.length>0){
+        this.growlService.warningNotification(`${this.translate.instant(ReportingConstant.ACCOUNT_NOT_BALANCED, { chartAccountCode: chartAccounts[0] })}`);
+      }
+    });
+  }
+  ngOnInit() {
+    this.disablePrintButtonIfChartsUnbalanced(this.currentFiscalYear.id);
+    this.initSignValues();
+    this.companyService.getDefaultCurrencyDetails().subscribe((currency: ReducedCurrency) => {
+      this.setSelectedCurrency(currency);
+      this.currencyCode = currency.Code;
+    });
+    this.balanceSheetTypeData = [{
+      text: this.translate.instant(ReportingConstant.BALANCE_SHEET_REPORT_TITLE),
+      balanceSheetType: NumberConstant.ZERO
+    }, {
+      text: this.translate.instant(ReportingConstant.ANNEX_BALANCE_SHEET),
+      balanceSheetType: NumberConstant.ONE
+    }];
+    this.balanceSheetTypeDataFilter = this.balanceSheetTypeData;
+    this.createInputForm();
+    this.balanceSheetForm.controls['balanceSheetType'].setValue(this.balanceSheetTypeData[0].balanceSheetType);
+    this.balanceSheetForm.controls['fiscalYearId'].setValue(this.currentFiscalYear.id);
+    if(this.authService.hasAuthority(this.AccountingPermissions.VIEW_FINANCIAL_STATES_REPORTS) ||
+    this.authService.hasAuthority(this.AccountingPermissions.UPDATE_FINANCIAL_STATES_REPORTS_FORMULA)){
+      this.initGridDataSource();
+    }
+  }
+  @HostListener('document:keydown.Enter', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    this.previewReportInGrid();
+  }
+
+  changeProvisionalEdition() {
+    this.provisionalEdition = !this.provisionalEdition;
+  }
+
+  onClickPrintExcel() {
+    const dataToSend = {
+      company: '',
+      logoDataBase64:'',
+      companyAdressInfo: '',
+      generationDate: '',
+      commercialRegister:'',
+      matriculeFisc:'',
+      mail:'',
+      webSite:'',
+      tel:'',
+          };
+    this.spinner = true;
+    let reportUrl = '';
+    this.typeReport = ReportingConstant.BS;
+    if (this.balanceSheetForm.getRawValue().balanceSheetType === NumberConstant.ZERO) {
+        this.nameReport = this.translate.instant(ReportingConstant.BALANCE_SHEET_REPORT_TITLE);
+      reportUrl = `${ReportingConstant.EXCEL_ENTITY_NAME}/${ReportingConstant.GET_ANNUAL_REPORT}/`;
+    } else {
+      this.nameReport = this.translate.instant(ReportingConstant.ANNEX_BALANCE_SHEET);
+      reportUrl = `${ReportingConstant.EXCEL_ENTITY_NAME}/${ReportingConstant.GENERATE_ANNUAL_REPORT_ANNEX}/`;
+    }
+    this.companyService.getCurrentCompany().subscribe(company => {
+      let srcPicture = this.companyService.getPicture(company.AttachmentUrl)
+      const printPDF = () => {
+        this.genericAccountingService.setCompanyInfos(dataToSend, company);
+        const reportTemplateParams = new ReportTemplateDefaultParams(dataToSend.company,dataToSend.logoDataBase64, dataToSend.companyAdressInfo, this.provisionalEdition, dataToSend.generationDate,dataToSend.commercialRegister,dataToSend.matriculeFisc,dataToSend.mail,dataToSend.webSite,dataToSend.tel);
+      this.reportingService.getJavaGenericService().saveEntity(reportTemplateParams,
+       reportUrl + `${this.currentFiscalYear.id}/${this.typeReport}`)
+        .subscribe(data => {
+         this.spinner = false;
+         this.genericAccountingService.downloadExcelFile(data, this.nameReport);
+       }, () => { }, () => {
+         this.spinner = false;
+       });
+             }
+             if (srcPicture == ""){
+               dataToSend.logoDataBase64= "";
+               printPDF();
+             }
+             else{ srcPicture.subscribe(
+              (res:any)=>{
+                if(res){
+                  dataToSend.logoDataBase64= res;}},
+                  () => {dataToSend.logoDataBase64= "";},
+                  () => printPDF());
+            }
+       this.spinnerService.hideLaoder();
+   });
+  }
+
+  public goToHistoric() {
+    this.router.navigateByUrl(ReportingConstant.REPORT_HISTORY_URL.concat(ReportingConstant.BS));
+  }
+}

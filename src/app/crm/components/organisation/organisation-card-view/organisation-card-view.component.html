@@ -1,0 +1,102 @@
+
+  <div class="row">
+     <div class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch cursor-pointer" style="min-height: 225px;" *ngFor="let organisation of this.gridSettings.gridData?.data"
+         (click)="goToDetails(organisation)">
+      <div class="card">
+        <!--
+        <div class="card-header px-3 py-2" style="background: #78b4c314;">
+          <span class="text-muted" style="font-size: 120%; font-weight: 400;">  {{organisation.name}}  </span>
+        </div> -->
+
+        <div class="card-body">
+
+          <div class="row d-flex align-items-center mb-3 pr-3">
+            <div class="col-11">
+              <div class="row">
+                <div class="col-auto">
+                      <span >
+            <img class="rounded-circle card-avatar"
+                 [src]="'../../../../assets/image/placeholder-logo.png'"alt="avatar"/>
+            </span>
+
+                </div>
+                <div class="col pl-0">
+                  <span
+                    class="tiers-title"> <a>{{organisation.name}} </a>  </span>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 d-flex">
+              <div class="col-1" *ngIf=" !isArchivingMode && (authService.hasAuthorities([CRMPermissions.OWN_ORGANISATION]) ||  authService.hasAuthorities([CRMPermissions.EDIT_ORGANISATION]))">
+                <i (click)="goToDetails(organisation)" class="las la-pen cursor-pointer edit-pencil la-2x"></i>
+              </div>
+              <div class="col-1" *ngIf=" !isArchivingMode && (authService.hasAuthorities([CRMPermissions.OWN_ORGANISATION]) ||  authService.hasAuthorities([CRMPermissions.DELETE_ORGANISATION]))">
+                <i class="fa fa-trash-o text-danger fa-2x" (click)="deleteOrganisation(organisation,$event)" *ngIf="authService.hasAuthorities([CRMPermissions.DELETE_ORGANISATION]) "></i>
+              </div>
+              <div class="col-1">
+                <i class="fa fa-archive fa-2x AddIcon" *ngIf="prospectType && !isArchivingMode && authService.hasAuthorities([CRMPermissions.ARCHIVE_ORGANISATION])" (click)="archiveOrganisation(organisation,$event)" ></i>
+              </div>
+              <div class="col-1">
+                <i class="fa fa-refresh fa-2x AddIcon" *ngIf="prospectType && isArchivingMode && authService.hasAuthorities([CRMPermissions.RESTORE_ARCHIVED_ORGANISATION])" (click)="restoreOrganisation(organisation,$event)" ></i>
+              </div>
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+
+            <!-- EMAIL -->
+              <div class="mb-2">
+
+        <span class="field-title" *ngIf="organisation.email !== null && organisation.email !== undefined">
+                  <!-- EMAIL -->
+           <i class="fa fa-envelope icon-from-label" aria-hidden="true"></i>
+
+          {{'EMAIL' | translate}}: </span>
+
+                <span style="font-size: inherit;" >
+                          {{organisation.email}}
+                    </span>
+              </div>
+
+            <!-- TELEPHONE -->
+              <div class="mb-2" *ngIf="organisation.telephone !== null && organisation.telephone !== undefined">
+                  <span class="field-title">
+
+
+                     <i class="fa fa-phone icon-from-label" aria-hidden="true">   </i>
+                    {{'PHONE' | translate}}:
+                  </span>
+                <span style="font-size: inherit;">
+                      &nbsp;{{organisation.telephone}}
+                    </span>
+
+
+              </div>
+            <!-- FAX -->
+              <div class="mb-2" *ngIf="organisation.fax !== null && organisation.fax !== undefined">
+                  <span class="field-title">
+
+                     <i class="fa fa-fax icon-from-label" aria-hidden="true">  </i> {{'FAX' | translate}}:
+                  </span>
+                <span style="font-size: inherit;">
+                       {{organisation.fax}}
+                     </span>
+
+
+              </div>
+
+        </div>
+
+
+</div>
+</div>
+</div>
+     </div>
+  </div>
+<app-pager-crm *ngIf="showed" [dataSource]="this.gridSettings"
+       (pageChangeEvent)="onPageChange($event)" (stateChangeEvent)="dataStateChange($event)">
+</app-pager-crm>

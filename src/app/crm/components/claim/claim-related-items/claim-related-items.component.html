@@ -1,0 +1,23 @@
+<div class="card-body">
+  <p-accordion [multiple]="true">
+
+    <p-accordionTab [header]="('NOTES'| translate) + ' (' + noteElementsCount + ')'"
+                    style="color: #4c9aae;">
+      <app-list-note [organisationId]="data" [source]='source'
+                     [entityType]="entityType"
+                     [sourceId]="sourceId" [related]="true"
+                     [fromRelatedArchiving]="isArchivingMode"
+                     (nbrNoteEvent)="nbrNoteEvent($event)"></app-list-note>
+    </p-accordionTab>
+    <br/>
+
+    <p-accordionTab [header]="('FILES'| translate) + ' (' + fileElementsCount + ')'"
+                    style="color: #4c9aae;">
+      <app-file-list [sourceId]="sourceId"
+                     [source]="source"
+                     [entityType]="entityType"
+                     [fromRelatedArchiving]="isArchivingMode"
+                     (recount)="recount($event)"></app-file-list>
+    </p-accordionTab>
+  </p-accordion>
+</div>

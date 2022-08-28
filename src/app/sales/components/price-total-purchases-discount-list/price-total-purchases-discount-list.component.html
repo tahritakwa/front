@@ -1,0 +1,22 @@
+<div [formGroup]="priceFormGroup" class="quantity-child-component">
+  <div class="form-group" formArrayName="PriceTotalPurchasesDiscountList" *ngFor="let priceTotalPurchasesDiscount of PriceTotalPurchasesDiscountList.controls; let i=index; let
+  isFirst=first">
+    <div *ngIf="isRowVisible(priceTotalPurchasesDiscount)">
+      <hr *ngIf="!isFirst && i !== 0 && isAnyVisibleRowBeforePosition(i)">
+      <div class="col-lg-12 col-md-12 col-sm-12" [formGroupName]="i">
+        <div class="row py-1 d-flex justify-content-end">
+
+          <i type="button" (click)="deletePriceTotalPurchasesDiscount(priceTotalPurchasesDiscount,i)"
+            class="fa fa-close fa-2x AddIcon text-danger"></i>
+        </div>
+      </div>
+      <app-price-total-purchases-discount [formGroupInput]="priceTotalPurchasesDiscount"></app-price-total-purchases-discount>
+    </div>
+  </div>
+  <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+    <button class="btn-Add k-button btn btn-add" type="button" (click)='addDiscountDetail()'>
+      <i class="fa fa-plus fa AddIcon"></i>
+      <span>&nbsp; {{'ADD'|translate}}</span>
+    </button>
+  </div>
+</div>

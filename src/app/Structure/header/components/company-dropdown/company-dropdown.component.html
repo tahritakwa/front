@@ -1,0 +1,14 @@
+<li class="nav-item dropdown ">
+  <button [ngClass]="(showDropDown)?'btn dropdown-toggle p-0':'btn p-0'" type="button" data-toggle="dropdown"
+    aria-haspopup="true" aria-expanded="true" *ngIf="showDropDown">
+    <img class="navbar-brand-minimized" src="../../../assets/image/log_s.svg" width="20" alt=" Stark Logo">
+    <a style="color: cornflowerblue;font-family:Arial, Helvetica, sans-serif ;">{{selectedCompany}}</a>
+  </button>
+  <div aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-right" x-placement="bottom-end"
+    style="font-size: 15px" *ngIf="showDropDown">
+    <button class="dropdown-item" *ngFor="let company of companiesFiltredDataSource" (click)="selectionChange(company)">
+      <img class="navbar-brand-minimized" src="../../../assets/image/log_s.svg" width="20" alt=" Stark Logo">
+      <span style="color: cornflowerblue;font-family:Arial, Helvetica, sans-serif ;">{{company.Name}}</span>
+    </button>
+  </div>
+</li>

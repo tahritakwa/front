@@ -1,0 +1,70 @@
+<div class="card">
+  <!-- Begin principal menu  part-->
+  <div class="card-body form-group col-12">
+    <h2 class="card-title mb-0">{{ 'ANNUAL_REVIEW_NOTIFICATION' | translate }}</h2>
+    <form class="form-horizontal">
+      <div class="row">
+
+        <!--days list-->
+        <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 30px;">
+          <div class="row" style="margin-top: 20px;margin-bottom: 10px;">
+            {{'ADD_REVIEW_NOTIF_DAY'|translate}}
+          </div>
+          <div class="row">
+            <div class="col-4">
+              <div class="row">
+                <input #dayValue class="form-control" max="100" min="1" type="number" value="1" [disabled]="!hasUpdatePermission">
+              </div>
+            </div>
+            <div class="col-3">
+              <div (click)="addDayToDaysList(dayValue.value)" *ngIf="hasUpdatePermission" class='favourite'>
+                <div class='favourite_heart'>
+                  <i aria-hidden="true" class="fa fa-plus" style="margin-left:-1px;"></i>
+                </div>
+              </div>
+            </div>
+            <div class="col-3" style="visibility: hidden;">
+              <button (click)="addDayToDaysList(dayValue.value)"></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 20px;">
+          <div class="card review-card">
+            <div class="cardPadding">
+              <div *ngFor="let day of daysList" class="row" style="padding-left: 20px;">
+                <div *ngIf="day != 0" class="col-8">
+                  {{'BEFORE'|translate}} <b class="textSpace">{{day}}</b> {{'DAYS_ABBREVIATED'|translate}}
+                </div>
+                <div *ngIf="day == 0" class="col-8">
+                  <b>{{'REVIEW_DAY'|translate}}</b>
+                </div>
+                <div class="col-4" *ngIf="hasUpdatePermission">
+                  <button (click)='removeDayFromDaysList(day)'
+                          class="noPadding btn-Add k-button ng-star-inserted" style="border: none; color: #E91E63 !important;">
+                    <i class="fa fa-times fa-lg"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="hasUpdatePermission" class="row" style="padding-left: 18px;">
+            <button (click)='cancelUpdates()' class="btn btn-sm btn-success"
+                    style="margin-right: 5px;margin-bottom: 5px;">
+              <i class="fa fa-chevron-circle-left" style="margin-right: 5px;"></i>{{'CANCEL'|translate}}
+            </button>
+            <button (click)='cleanList()' class="btn btn-sm btn-primary" style="margin-right: 5px;margin-bottom: 5px;">
+              <i class="fa fa-trash-o" style="margin-right: 5px;"></i>{{'CLEAR'|translate}}
+            </button>
+            <button (click)="updateReviewNotification()" class="btn btn-sm btn-danger" style="margin-bottom: 5px;">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+
+        </div>
+        <br/>
+      </div>
+    </form>
+  </div>
+</div>

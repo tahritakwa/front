@@ -1,0 +1,71 @@
+<div class="col-sm-5 mb-4">
+  <h6 class="card-title mb-0" style="color: #4c9aae;">
+    {{'SETTLEMENT'|translate}}
+  </h6>
+</div>
+
+<div class="col-lg-12 col-sm-12 col-md-12 mr-5" [formGroup]="settlementAddFormGroup">
+  <div class="form-group row">
+    <!--Date-->
+    <div class="col-lg-4 col-md-12 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'SETTLEMENT_DATE'|translate}}<span
+          class="required">*</span></label>
+      <kendo-datepicker formatPlaceholder="narrow" class="form-control" formControlName="SettlementDate">
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+      <app-control-messages [control]="settlementAddFormGroup.controls.SettlementDate"
+        class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <!--Payment method-->
+    <div class="col-lg-4 col-md-12 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'PAYMENT_METHOD'|translate}}<span class="required">*</span></label>
+      <app-payment-dropdown [group]="settlementAddFormGroup">
+      </app-payment-dropdown>
+      <app-control-messages [control]="settlementAddFormGroup.controls.IdPaymentMethod"
+        class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+    <!--Amount-->
+    <div class="col-lg-4 col-md-12 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'AMOUNT'|translate}}<span class="required">*</span></label>
+      <kendo-numerictextbox [spinners]="false" [format]="formatOptions" [step]="1" formControlName="AmountWithCurrency"
+        class="form-control disabledSettlementInput" style="font-family: Roboto, serif;">
+      </kendo-numerictextbox>
+      <!--<input class="form-control" formControlName="AmountWithCurrency" type="number" name="AmountWithCurrency"
+             [ngClass]="{ 'has-error': (settlementAddFormGroup.controls.AmountWithCurrency.touched || settlementAddFormGroup.controls.AmountWithCurrency.dirty)
+                   && !settlementAddFormGroup.controls.AmountWithCurrency.valid }">-->
+      <app-control-messages [control]="settlementAddFormGroup.controls.AmountWithCurrency"
+        class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+  </div>
+  <div class="form-group row">
+    <!--Reference-->
+    <div class="col-lg-4 col-md-12 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'REFERENCE'|translate}}</label>
+      <input class="form-control" formControlName="SettlementReference" type="text" name="SettlementReference"
+        [ngClass]="{ 'has-error': (settlementAddFormGroup.controls.SettlementReference.touched || settlementAddFormGroup.controls.SettlementReference.dirty)
+             && !settlementAddFormGroup.controls.SettlementReference.valid }">
+      <app-control-messages [control]="settlementAddFormGroup.controls.SettlementReference"
+        class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+    <!--Bank account-->
+    <div class="col-lg-4 col-md-12 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'BANK_ACCOUNT'|translate}}</label>
+      <app-bank-account-dropdown class="error-msg messages text-left text-danger"
+        [bankAccountForm]="settlementAddFormGroup">
+      </app-bank-account-dropdown>
+    </div>
+    <!-- Upload file -->
+    <div class="col-lg-4 col-md-12 col-sm-12">
+      <app-upload-file [fileToUpload]="attachmentFilesToUpload" [service]="deadLineDocumentService"></app-upload-file>
+    </div>
+  </div>
+
+  <div>
+    <button type="button" class="btn btn-sm btn-danger" (click)="onAddSettlementClick()">
+      <i class="fa fa-floppy-o"></i> {{ 'ADD_SETTLEMENT' |translate }}
+    </button>
+
+  </div>
+</div>

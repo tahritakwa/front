@@ -1,0 +1,19 @@
+<form class="form-horizontal" [formGroup]="customerOutstandingFilterFormGroup"  style="margin-bottom: 2em;">
+    <div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CUSTOMER'|translate}}</label>
+              <app-supplier-dropdown [type]=1 [itemForm]="customerOutstandingFilterFormGroup">
+              </app-supplier-dropdown>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'TYPE'|translate}}</label>
+            <app-document-outstanding-type-dropdown [form]="customerOutstandingFilterFormGroup" >
+            </app-document-outstanding-type-dropdown>
+        </div>
+        <div class="col-lg-2 col-md-6 col-sm-12">
+            <button class="btn btn-secondary" type="button" (click)="onSearch()" style="margin-top: 30px;">
+                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+            </button>
+        </div>
+  </div>
+</form>

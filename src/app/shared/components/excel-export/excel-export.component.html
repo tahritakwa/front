@@ -1,0 +1,16 @@
+<div class="col-auto px-1">
+  <a type="button" class="favourite" (click)="getAllDataAndSave()">
+    <div class="favourite_heart">
+      <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+    </div>
+  </a>
+</div>
+
+<kendo-excelexport [fileName]="fileName +'-'+ (dateTime | date:'full') + '.xlsx'" [data]="data" #excelexport>
+  <!--columns to export-->
+  <kendo-excelexport-column *ngFor="let column of gridSettings.columnsConfig" [field]="column.field"
+    title="{{column.title | translate}}">
+  </kendo-excelexport-column>
+  <!--end columns to export-->
+
+</kendo-excelexport>

@@ -1,0 +1,30 @@
+<div [formGroup]="itemForm">
+  <kendo-combobox #contact [data]="contactFiltredDataList"
+   class="form-control" [textField]="'FullName'"
+    [valueField]="'Id'"
+    name="IdContact" formControlName="IdContact"
+    [allowCustom]="allowCustom" [valuePrimitive]="true" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="receiveSupplier($event)" (focus)="focus()">
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.FirstName}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.LastName}}</span>
+        </div>
+      </div>
+    </ng-template>
+     <!--footer template-->
+     <!-- <ng-template kendoDropDownListFooterTemplate *ngIf='showAddNew'>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template> -->
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"></kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

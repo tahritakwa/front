@@ -1,0 +1,362 @@
+<div class="row col-lg-12 col-md-12 col-sm-12">
+  <div class="card">
+
+    <!-- Start card header -->
+    <div class="card-header">
+      <div class="row">
+        <div class="col-lg-10 col-md-8 col-sm-12">
+          <h3 class="card-title mb-0">
+            {{ (!isUpdateMode ? (
+                                  (paymentMethod === paymentMethodEnum.BankCheck) ? 'ADD_PAYMENT_SLIP_BANK_CHECK' : 'ADD_PAYMENT_SLIP_DRAFT_BANK'
+                                )
+                              : (
+                                  (paymentMethod === paymentMethodEnum.BankCheck) ? 'UPDATE_PAYMENT_SLIP_BANK_CHECK' : 'UPDATE_PAYMENT_SLIP_DRAFT_BANK'
+                                )
+                ) | translate}}
+          </h3>
+        </div>
+        <div class="col-lg-2 col-md-8 col-sm-12" *ngIf="isUpdateMode && paymentSlip">
+          <h4>
+            {{'STATE' | translate}}:
+            <span *ngIf="paymentSlip.State === paymentSlipStatusEnumerator.Provisional">
+              <span class="badge badge-warning">
+                {{ 'PROVISIONAL' | translate }}
+              </span>
+            </span>
+            <span *ngIf="paymentSlip.State === paymentSlipStatusEnumerator.Valid">
+              <span class="badge badge-primary">
+                {{ 'VALID' | translate }}
+              </span>
+            </span>
+            <span *ngIf="paymentSlip.State === paymentSlipStatusEnumerator.PaymentSlipIssued">
+              <span class="badge badge-info">
+                {{ 'ISSUED' | translate }}
+              </span>
+            </span>
+            <span *ngIf="paymentSlip.State === paymentSlipStatusEnumerator.PaymentSlipBankFeedBack">
+              <span class="badge badge-success">
+                {{ 'IN_BANK' | translate }}
+              </span>
+            </span>
+          </h4>
+        </div>
+      </div>
+    </div>
+    <!-- End card Header -->
+
+    <!-- Start card content -->
+    <div class="card-content">
+      <!--Begin card body-->
+      <div class="card-body">
+
+        <div class="col-lg-12 col-sm-12 col-md-12" style="margin-left: 10px;">
+          <div class="form-horizontal" [formGroup]="paymentSlipFormGroup"
+            style="margin-bottom: 10px; margin-top: 30px;">
+            <div class="form-group row">
+              <!-- Begin Reference -->
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-sx-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'REFERENCE'|translate}}
+                  <span class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <input class="form-control" formControlName="Reference" type="text" [ngClass]="{ 'has-error': !paymentSlipFormGroup.controls.Reference.disabled &&
+                  ((paymentSlipFormGroup.controls.Reference.touched || paymentSlipFormGroup.controls.Reference.dirty)
+                     && !paymentSlipFormGroup.controls.Reference.valid) }">
+                  <app-control-messages [control]="paymentSlipFormGroup.controls.Reference"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+              <!-- End Reference -->
+              <!-- Begin Deposer -->
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-sx-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'COMPANY_NAME'|translate}}
+                  <span class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <input class="form-control" formControlName="Deposer" type="text" [ngClass]="{ 'has-error': !paymentSlipFormGroup.controls.Deposer.disabled &&
+                    ((paymentSlipFormGroup.controls.Deposer.touched || paymentSlipFormGroup.controls.Deposer.dirty)
+                       && !paymentSlipFormGroup.controls.Deposer.valid) }">
+                  <app-control-messages [control]="paymentSlipFormGroup.controls.Deposer"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+              <!-- End Deposer -->
+              <!-- Begin Date -->
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-sx-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'DATE' | translate}}
+                  <span class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-datepicker formatPlaceholder="formatDate" [format]="formatDate" class="form-control"
+                    formControlName="Date" [ngClass]="{ 'has-error': !paymentSlipFormGroup.controls.Date.disabled &&
+                    ((paymentSlipFormGroup.controls.Date.touched || paymentSlipFormGroup.controls.Date.dirty)
+                       && !paymentSlipFormGroup.controls.Date.valid) }">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                      toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="paymentSlipFormGroup.controls.Date"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+              <!-- End Date -->
+            </div>
+            <div class="form-group row">
+              <!-- Begin bankAccount -->
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-sx-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'BENEFICIARY_BANK_ACCOUNT'|translate}}
+                  <span class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <app-bank-account-dropdown class="error-msg messages text-left text-danger" [canAddNew]="false"
+                   [bankAccountForm]="paymentSlipFormGroup" (Selected)="bankAccountValueChange($event)">
+                  </app-bank-account-dropdown>
+                  <app-control-messages [control]="paymentSlipFormGroup.controls.IdBankAccount"
+                    class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+              <!-- End bankAccount -->
+              <!-- Begin Bank -->
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-sx-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'BANK'|translate}}
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <app-bank-dropdown class="error-msg messages text-left text-danger" [group]="paymentSlipFormGroup">
+                  </app-bank-dropdown>
+                  <app-control-messages [control]="paymentSlipFormGroup.controls.IdBank"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+              <!-- End Bank -->
+              <!-- Begin agency -->
+              <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-sx-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'AGENCY'|translate}}
+                  <span class="required">*</span>
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <input class="form-control" formControlName="Agency" type="text" [ngClass]="{ 'has-error': !paymentSlipFormGroup.controls.Agency.disabled &&
+                  ((paymentSlipFormGroup.controls.Agency.touched || paymentSlipFormGroup.controls.Agency.dirty)
+                     && !paymentSlipFormGroup.controls.Agency.valid) }">
+                  <app-control-messages [control]="paymentSlipFormGroup.controls.Agency"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+              <!-- End agency -->
+            </div>
+          </div>
+
+          <!-- Grid Start-->
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+            [sortable]="true" [pageable]="pagerSettings" [filterable]="true" [reorderable]="true"
+            (dataStateChange)="dataStateChange($event)" [selectable]="selectableSettings" [kendoGridSelectBy]="'Id'"
+            [selectedKeys]="selectedItemsIds" (selectedKeysChange)="onSelectedKeysChange()">
+
+            <!--CheckBox field-->
+            <kendo-grid-checkbox-column [width]="20" *ngIf="!isUpdateMode || (isUpdateMode && paymentSlip &&
+                      (paymentSlip.State === paymentSlipStatusEnumerator.Provisional)) && hasUpdatePaymentSlipPermission">
+              <ng-template kendoGridHeaderTemplate let-dataItem>
+                <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+                  (selectAllChange)="onSelectAllChange($event)">
+                <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+              </ng-template>
+            </kendo-grid-checkbox-column>
+            <!--End CheckBox field-->
+
+            <!-- Reference field start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[0].title |translate" [width]="70"
+              [filterable]="gridSettings.columnsConfig[0].filterable">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{ dataItem.TiersName}}
+              </ng-template>
+            </kendo-grid-column>
+            <!--End Reference field-->
+
+            <!-- Issuing bank start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title |translate" [width]="70"
+              [filterable]="gridSettings.columnsConfig[1].filterable">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End Issuing bank field-->
+
+            <!-- Holder start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+              [title]="gridSettings.columnsConfig[2].title |translate" [width]="70"
+              [filterable]="gridSettings.columnsConfig[2].filterable">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End Holder field-->
+
+            <!-- Reference field start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+              [title]="gridSettings.columnsConfig[3].title |translate" [width]="70"
+              [filterable]="gridSettings.columnsConfig[3].filterable">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End Reference field-->
+
+            <!-- commitment Date field-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+              [title]="gridSettings.columnsConfig[4].title | translate" [filterable]="true" [width]="90" filter="date">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                {{dataItem.CommitmentDate| date: formatDate}}
+                <span *ngIf="!isUpdateMode && (dataItem.CommitmentDate <= currentDate)"
+                  tooltip="{{'EXCEEDED' | translate}}" style="margin-left: 12px;">
+                  <i class="fa fa-hourglass-end" style="color: #d42222;"></i>
+                </span>
+                <span
+                  *ngIf="!isUpdateMode && (!(dataItem.CommitmentDate <= currentDate) && (dataItem.CommitmentDate <= deadLineInTreeDays))"
+                  tooltip="{{'NEAR' | translate}}" style="margin-left: 12px;">
+                  <i class="fa fa-hourglass-half" style="color: rgba(255, 125, 4, 0.897);"></i>
+                </span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End commitment Date field-->
+
+
+
+            <!--State field-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+              [title]="gridSettings.columnsConfig[5].title | translate" [width]="70"
+              [filterable]="gridSettings.columnsConfig[5].filterable">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[5].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[5].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+                <app-payment-status-dropdown [group]="searchFormGroup"
+                  (selectedValue)="paymentMethodFilterChange($event)">
+                </app-payment-status-dropdown>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.Settled">
+                  <span class="badge badge-warning">
+                    {{ 'SETTLED' | translate }}
+                  </span>
+                </span>
+                <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.RemittanceSlip">
+                  <span class="badge badge-primary">
+                    {{ 'REMITTANCESLIP' | translate }}
+                  </span>
+                </span>
+                <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.Issued">
+                  <span class="badge badge-info">
+                    {{ 'ISSUED' | translate }}
+                  </span>
+                </span>
+                <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.InBank">
+                  <span class="badge badge-secondary">
+                    {{ 'IN_BANK' | translate }}
+                  </span>
+                </span>
+                <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.Cashed">
+                  <span class="badge badge-success">
+                    {{ 'CASHED' | translate }}
+                  </span>
+                </span>
+                <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.Unpaid">
+                  <span class="badge badge-danger">
+                    {{ 'UN_PAID' | translate }}
+                  </span>
+                </span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End State field-->
+
+            <!-- AmountWith Currency-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+              [title]="gridSettings.columnsConfig[6].title | translate" [width]="100" filter="numeric"
+              [filterable]="gridSettings.columnsConfig[6].filterable"
+              [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right","padding-right": "3%"}'>
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[6].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[6].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.Precision,
+                      style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay:'code'})}}
+              </ng-template>
+              <ng-template kendoGridFooterTemplate>
+                <div style="text-align: right;font-weight:bold;font-size: 16px;margin-right: 9%;" *ngIf="userCurrency">
+                  {{totalAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+                      style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End AmountWith Currency-->
+
+          </kendo-grid>
+          <!-- Grid End-->
+
+        </div>
+      </div>
+
+      <!--End card content-->
+      <!-- Start card footer -->
+      <div class="card-footer">
+        <!-- Button Start-->
+        <button class="btn btn-sm btn-primary" type="button" (click)="cancel()">
+          <i class="fa fa-chevron-circle-left"></i> {{ 'BACK_TO_LIST' |translate}}
+        </button>
+        <button *ngIf="!isUpdateMode" class="btn btn-sm btn-danger" type="button" (click)="save()">
+          <i class="fa fa-floppy-o"></i> {{ 'SAVE' |translate }}
+        </button>
+        <button *ngIf="isUpdateMode && (paymentSlip.State === paymentSlipStatusEnumerator.Provisional) &&
+        hasUpdatePaymentSlipPermission"
+          class="btn btn-sm btn-danger" type="button" (click)="validate(paymentSlipStatusEnumerator.Provisional)">
+          <i class="fa fa-floppy-o"></i> {{ 'SAVE' |translate }}
+        </button>
+        <button *ngIf="paymentSlip && (paymentSlip.State === paymentSlipStatusEnumerator.Provisional) && hasValidatePaymentSlipPermission"
+          class="btn btn-sm btn-danger" type="button" (click)="validate(paymentSlipStatusEnumerator.Valid)">
+          <i class="fa fa-floppy-o"></i> {{ 'VALIDATE' |translate }}
+        </button>
+        <button *ngIf="isUpdateMode && hasPrintPaymentSlipPermission"
+          class="btn btn-sm btn-danger" type="button" (click)="onPrintJasperClick()">
+          <i class="fa fa-floppy-o"></i> {{ 'PRINT' |translate }}
+        </button>
+        <button *ngIf="paymentSlip && (paymentSlip.State === paymentSlipStatusEnumerator.Valid) && hasToIssuedPaymentSlipPermission"
+          class="btn btn-sm btn-danger" type="button" (click)="validate(paymentSlipStatusEnumerator.PaymentSlipIssued)">
+          <i class="fa fa-floppy-o"></i> {{ 'TO_ISSUED' |translate }}
+        </button>
+        <button *ngIf="paymentSlip && (paymentSlip.State === paymentSlipStatusEnumerator.PaymentSlipIssued) && hasInBankPaymentSlipPermission"
+          class="btn btn-sm btn-danger" type="button"
+          (click)="validate(paymentSlipStatusEnumerator.PaymentSlipBankFeedBack)">
+          <i class="fa fa-floppy-o"></i> {{ 'IN_BANK' |translate }}
+        </button>
+        <!-- Button End-->
+      </div>
+      <!-- End Card Footer -->
+
+
+    </div>
+    <!--End card-->
+  </div>

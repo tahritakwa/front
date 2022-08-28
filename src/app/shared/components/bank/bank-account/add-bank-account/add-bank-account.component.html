@@ -1,0 +1,148 @@
+<div class="card h-100">
+  <div class="card-header ng-star-inserted" *ngIf="!isModal">
+    <div class="row pl-3" >
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{(isUpdateMode ? 'EDIT_BANK_ACCOUNT' : 'ADD_BANK_ACCOUNT')|translate}}</h3>
+     </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12 ">
+      <form class="form-horizontal" [formGroup]="bankAccountFormGroup">
+        <!-- Begin principal menu  part-->
+        <div class="form-group row" style="font-size:15px ;">
+
+          <div class="col-lg-4 col-md-6 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'Code'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Code" type="text"
+                   [ngClass]="{ 'has-error': (bankAccountFormGroup.controls.Code.touched || bankAccountFormGroup.controls.Code.dirty) && !bankAccountFormGroup.controls.Code.valid }">
+            <app-control-messages [control]="bankAccountFormGroup.controls.Code"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+            <div class="col-lg-4 col-md-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'BANK'|translate}}<span class="required">*</span></label>
+              <app-bank-dropdown [group]="bankAccountFormGroup" (Selected)="bankSelected($event)" [showDetails]="true"
+              ></app-bank-dropdown>
+              <app-control-messages [control]="bankAccountFormGroup.controls.IdBank"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+
+            </div>
+
+            <div class="col-lg-4 col-md-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'AGENCY'|translate}}<span
+                class="required">*</span>
+              </label>
+              <kendo-combobox class="w-100" [data]="listAgencyOfBank" name="Agency"
+                              [valueField]="'Label'" [textField]="'Label'"
+                              [disabled]="!checkvalidityAgency()"
+                              [filterable]="true" [valuePrimitive]="true"
+                              [formControlName]="'Agency'"
+                              >
+                                  <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+              <app-control-messages [control]="bankAccountFormGroup.controls.Agency"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'RIB'|translate}}<span class="required">*</span></label>
+              <input class="form-control" formControlName="Rib" type="text"
+                     [ngClass]="{ 'has-error': (bankAccountFormGroup.controls.Rib.touched || bankAccountFormGroup.controls.Rib.dirty) && !bankAccountFormGroup.controls.Rib.valid }">
+              <app-control-messages [control]="bankAccountFormGroup.controls.Rib"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'BIC'|translate}}</label>
+              <input class="form-control" formControlName="Bic" type="text"
+                     [ngClass]="{ 'has-error': (bankAccountFormGroup.controls.Bic.touched || bankAccountFormGroup.controls.Bic.dirty) && !bankAccountFormGroup.controls.Bic.valid }">
+              <app-control-messages [control]="bankAccountFormGroup.controls.Bic"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+
+            <div class="col-lg-4 col-md-6 col-sm-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'IBAN'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" formControlName="Iban" type="text"
+                     [ngClass]="{ 'has-error': (bankAccountFormGroup.controls.Iban.touched || bankAccountFormGroup.controls.Iban.dirty) && !bankAccountFormGroup.controls.Iban.valid }">
+              <app-control-messages [control]="bankAccountFormGroup.controls.Iban"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'GENERAL_LEDGER_INITIAL_BALANCE'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" formControlName="InitialBalance" type="number"
+                     [ngClass]="{ 'has-error': (bankAccountFormGroup.controls.InitialBalance.touched || bankAccountFormGroup.controls.InitialBalance.dirty) && !bankAccountFormGroup.controls.InitialBalance.valid }">
+              <app-control-messages [control]="bankAccountFormGroup.controls.InitialBalance"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+
+            <div class="col-lg-4 col-md-6 col-sm-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CURRENCY'|translate}}<span
+                class="required">*</span></label>
+              <app-currency-dropdown [group]="bankAccountFormGroup"></app-currency-dropdown>
+              <app-control-messages [control]="bankAccountFormGroup.controls.IdCurrency"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TYPE_ACCOUNT'|translate}}</label>
+                <kendo-combobox class="form-control" [data]="listBankAccountType" [valuePrimitive]="true"
+                  textField="name" valueField="value" [value]="selectedBankAccount" formControlName="TypeAccount">
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+              </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12 margin" *ngIf="isRole">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'ACCOUNTING_ACCOUNT'|translate}}</label>
+                <app-accounts-dropdown-component [fieldName]="'bankIdAccountingAccount'" [group]="bankAccountFormGroup">
+                </app-accounts-dropdown-component>
+              </div>
+            </div>
+      </form>
+    </div>
+  </div>
+  <!--Begin card Footer -->
+  <div *ngIf="!isModal" class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="goBackToList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div *ngIf="isModal" class="isShowedModalSideBar">
+      <footer class="app-footer mx-0 footerModal">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+  </div>
+  <!--End card Footer -->
+</div>

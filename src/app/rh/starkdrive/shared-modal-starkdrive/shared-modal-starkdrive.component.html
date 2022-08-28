@@ -1,0 +1,22 @@
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="sharedDocumentFormGroup" class="form-horizontal">
+      <div class="form-group row">
+        <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom:20px">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'EMPLOYEE'|translate}}<span class="required">*</span></label>
+          <app-employee-dropdown [form]="sharedDocumentFormGroup"></app-employee-dropdown>
+        </div>
+        <br>
+        <div class="col-lg-6 col-md-12 col-sm-12">
+          <input class="input-checkbox100" formControlName="EncryptFile" id="ckb2" name="EncryptFile" type="checkbox">
+          <label class="label-checkbox100" for="ckb2" style="margin-top: 2%; margin-top: 45px;">
+            {{'ENCRYPT_FILE' | translate}}&nbsp;
+          </label>
+        </div>
+      </div>
+    </form>
+    <button (click)="shareDocument()" class="btn btn-sm btn-danger" type="submit">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+  </div>
+</div>

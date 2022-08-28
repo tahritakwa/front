@@ -1,0 +1,103 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'JOBS'|translate}}</h3>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <form class="form-horizontal">
+      <div class="row">
+        <div class="card col-lg-12 col-md-12 col-sm-12 col-12">
+          <br/>
+          <div class="row" style="margin-top: 7px;">
+            <button (click)="synchronizeJobs()" *ngIf="hasSynchronizeJobsPermission" class="k-button btn-secondary generate ml-3 mr-2" tabindex="0"
+                    type="button" style="background-color: transparent;">
+              <i class="fa fa-history fa-lg" style="color: #20a8d8;"></i>
+              <span>&nbsp;{{'SYNCHRONIZE_JOBS' | translate}}</span>
+            </button>
+          </div>
+          <br/>
+          <div class="form-group row">
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <label [ngStyle]="{'color': '#4c9aae', 'text-align': 'center'}"
+                     class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <b>
+                  {{'HIERARCHY'|translate}}
+                </b>
+              </label>
+              <br/>
+              <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-8">
+                  <div align="left" style="margin-left: 5px;">
+                    <div class="input-group flex-nowrap">
+                      <input #search (keyup)='onkeyup(search.value)' [disabled]="disabledSearch"
+                             aria-describedby="addon-wrapping" class="form-control" placeholder="{{'SEARCHE'|translate}}"
+                             type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                  <div *ngIf="hasAddPermission" align="right" id="divButtonAdd" style="margin-right: 10px;">
+                    <div (click)="addNew(false,tr)" class='favourite'>
+                      <div class='favourite_heart'>
+                        <i aria-hidden="true" class="fa fa-plus" style="margin-left:-1px;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br/>
+              <div [ngStyle]="{'height': '630px', 'overflow-y': 'auto'}" class="multi-select-style">
+                <kendo-treeview #tr (selectionChange)="handleSelection($event)" [(selectedKeys)]="selectedKeys" [nodes]="parsedData"
+                                childrenField="Items" kendoTreeViewExpandable kendoTreeViewHierarchyBinding
+                                kendoTreeViewSelectable textField="Text">
+                  <ng-template kendoTreeViewNodeTemplate let-dataItem>
+                    &nbsp;{{dataItem.Text}} &nbsp;
+                    <button (click)="deleteWarehouse(dataItem)" *ngIf="hasDeletePermission"
+                            class="noPadding btn-Add k-button" dir="ltr"
+                            style="border: none; color: #E91E63 !important;" type="button">
+                      <i class="fa fa-times fa-lg"></i>
+                    </button>
+                  </ng-template>
+                </kendo-treeview>
+              </div>
+            </div>
+            <div class="col-lg-8 col-md-12 col-sm-12" *ngIf="hasShowPermission || hasAddPermission || hasUpdatePermission">
+              <label [ngStyle]="{'color': '#4c9aae', 'text-align': 'center'}"
+                     class="col-lg-12 col-md-12 col-sm-12 col-12">
+                <b>
+                  {{'DETAILS'|translate}}
+                </b>
+              </label>
+              <div *ngIf="hasUpdatePermission" align="right" id="divButtonEdit" style="margin-right: 10px;">
+                <div (click)="addNew(true,tr)" class='favourite'>
+                  <div class='favourite_heart'>
+                    <i aria-hidden="true" class="icon-note" style="margin-left:-2px; margin-top: -2px"></i>
+
+                  </div>
+                </div>
+              </div>
+
+              <br/>
+              <div [ngStyle]="{'height': '630px', 'overflow-y': 'auto'}" class="multi-select-style">
+                <!-- Show Details -->
+                <div *ngIf="isToShow">
+                  <app-show-job></app-show-job>
+
+                </div>
+
+                <!-- Add or Edit Job -->
+                <div *ngIf="isNewJob">
+                  <app-add-job (refresh)="refreshTreeView(tr)" [isUpdateMode]="isUpdateMode"
+                               [selectedJob]="selectedJob"></app-add-job>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <br/>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

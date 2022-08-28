@@ -1,0 +1,45 @@
+<div class="card">
+  <h3 class="card-title p-4">{{'DETAILS'|translate}}</h3>
+   <div class="multi-select-style" [ngStyle]="{'height': '800px', 'overflow-y': 'auto'}">
+    <div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12"
+           [ngStyle]="{'margin-top':'10px', 'text-align': 'center'}">
+        <h5><b> <i [ngClass]="warehouseIcon"></i> {{warehouse.WarehouseCode}} - {{warehouse.WarehouseName}}</b></h5>
+        <hr/>
+      </div>
+      <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+          <label>
+            &nbsp; <b> {{'CODE'|translate}} :</b> {{warehouse.WarehouseCode}}<br/>
+          </label>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+          <label>
+            &nbsp; <b> {{'NAME'|translate}} :</b> {{warehouse.WarehouseName}}<br/>
+          </label>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+          <label>
+            &nbsp; <b> {{'TYPE'|translate}} :</b> {{warehouseType |translate}}<br/>
+          </label>
+        </div>
+      </div>
+      <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-4">
+          <label>
+            &nbsp; <b> {{'RESPONSIBLE'|translate}} :</b> {{warehouse.IdResponsableNavigation?.FullName}}<br/>
+          </label>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8 col-8">
+          <label>
+            &nbsp; <b> {{'ADRESS'|translate}} :</b> {{warehouse.WarehouseAdresse}}<br/>
+          </label>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <app-fetch-products [isForWarehouseDetail]="true" [idSelectedWarehouse]="warehouse" [isFromFetchProduct]="false">
+        </app-fetch-products>
+      </div>
+    </div>
+  </div>
+</div>

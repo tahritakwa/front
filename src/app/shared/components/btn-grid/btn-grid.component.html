@@ -1,0 +1,238 @@
+<div class="row justify-content-end">
+  <div class="col-auto mt-1" *ngIf='showSynchronzeBToB'>
+    <button class="btn btn-sm" type="button" (click)="synchronizeWithBToB()" style="background-color: #20a8d8 !important;">
+      <i style="color: white" class="fa fa-refresh refreshClass"></i>
+      <span style="color: white">&nbsp; {{'SYNCHRONIZATION_BTOB'|translate}}</span>
+    </button>
+  </div>
+  <div class="col-auto mt-1" *ngIf='advencedAdd'>
+    <button class="btn btn-sm" [routerLink]="[addLink]" [queryParams]="{parameters: params}" type="button"
+      style="background-color: #20a8d8 !important;">
+      <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+      <span style="color: white">&nbsp; {{'ADD'|translate}}</span>
+    </button>
+  </div>
+  <div class="col-auto mt-1" *ngIf='documentType === documentEnumerator.SalesDelivery && isVisibleGenerateInvoiceButton'>
+    <button class="btn btn-sm" type="button" (click)="generateInvoice()"
+      style="background-color: #20a8d8 !important;">
+      <i style="color: white" class="fa fa-floppy-o"></i>
+      <span style="color: white">&nbsp; {{'GENERATE_INVOICE'|translate}}</span>
+    </button>
+  </div>
+  <div class="col-auto mt-1" *ngIf='isPrintReport'>
+    <i style="color: #20a8d8" class="fa fa-print fa-2x" id="dropdownMenuButtonPrint" data-toggle="dropdown"></i>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButtonPrint">
+      <a class="dropdown-item" *ngIf="isPrintReport" (click)="printJasper('DETAILED')">
+        {{'DETAILED'|translate}}</a>
+      <a class="dropdown-item" *ngIf="isPrintReport" (click)="printJasper('LISTED')">
+        {{'LISTED'|translate}}</a>
+    </div>
+  </div>
+  <div *ngIf="isOenModalToBillingTerm" data-toggle="modal" data-target="#exampleModal" id="showTermBillingModal">
+    <i aria-hidden="true" tooltip="{{'TERM_BILLING' | translate}}" class="las la-file-alt term-Billing-icon">
+    </i>
+  </div>
+  <div class="col-auto p-1" *ngIf='cardView'>
+    <i class="fa fa-th-large la-2x" (click)="changeViewToCard()"></i>
+  </div>
+  <div class="col-auto p-1" *ngIf='listView'>
+    <i class="fa fa-list fa-2x" aria-hidden="true" (click)="changeViewToList()"></i>
+  </div>
+  <div class="col-auto p-1 pr-2" *ngIf='isPrintShow'>
+    <button kendoGridAddCommand class="btn btn-sm" type="button" style="background-color: #20a8d8 !important"
+      (click)="print()">
+      <i style="color: white" class="fa fa-print cursor-pointer fa-lg"></i>
+      <span style="color: white">&nbsp; {{ (title === '' ? 'PRINT' : title) |translate }}</span>
+    </button>
+  </div>
+  <div class="col-auto p-1" *ngIf='model'>
+    <i class="las la-ellipsis-v la-2x" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+      aria-expanded="false">
+    </i>
+    <div class="dropdown-menu dpMenu" id="action_grid_toggle" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item dpItem" *ngIf="isExportModel" (click)="goToDownLoadFileEvent()">
+        {{'EXPORT_MODEL'|translate}}</a>
+      <a class="dropdown-item dpItem" *ngIf="isImportFile && (isFromGarage || isFromCRM)">
+        <label for="file-upload">
+          {{'IMPORT_FILE'|translate}}
+        </label>
+        <input id="file-upload" type="file" onclick="this.value=null;" (change)="goToIncomingFile($event)"
+               accept=".xlsx, .xls"/></a>
+      <a class="dropdown-item dpItem" *ngIf="isExportExcel" (click)="getAllDataAndSave()">
+        {{'EXPORT_EXCEL'|translate}}</a>
+      <a class="dropdown-item dpItem" *ngIf="isDownloadData" (click)="downloadData()">
+        {{'DOWNLOAD'|translate}}</a>
+      <a class="dropdown-item dpItem" *ngIf='isExportPDF' (click)="exportPDF()">{{'EXPORT_PDF'|translate}}</a>
+
+      <kendo-excelexport *ngIf="Config" [fileName]="fileName +'-'+ (dateTime | date:'full') + '.xlsx'" [data]="data"
+        #excelexport>
+        <div *ngFor="let column of Config">
+          <kendo-excelexport-column [field]="column.field" title="{{column.title | translate}}" [width]="column._width"
+            *ngIf="column.condition != null ? column.condition : true">
+          </kendo-excelexport-column>
+        </div>
+      </kendo-excelexport>
+
+
+      <kendo-excelexport *ngIf="gridSettings && !Config" [fileName]="fileName +'-'+ (dateTime | date:'full') + '.xlsx'"
+        [data]="data" #excelexport>
+        <!--columns to export-->
+        <kendo-excelexport-column *ngFor="let column of gridSettings.columnsConfig" [field]="column.field"
+          title="{{column.title | translate}}">
+        </kendo-excelexport-column>
+        <!--end columns to export-->
+      </kendo-excelexport>
+    </div>
+  </div>
+
+  <div class="col-auto mt-1" *ngIf='add && !relativeStyle'>
+    <button kendoGridAddCommand class="btn btn-sm" type="button" style="background-color: #20a8d8 !important">
+      <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+      <span style="color: white">&nbsp; {{ (title === '' ? 'ADD' : title) |translate }}</span>
+    </button>
+  </div>
+
+  <div class="col-auto p-1" *ngIf='sendMail'>
+    <a (click)="goToSendMail()" style="background: transparent; margin-right: 8px;    margin-top: 6px;">
+      <div class='favourite'>
+        <div class='favourite_heart'>
+          <i aria-hidden="true" class="fa fa-envelope"
+            style="color: #4b9aad; font-size: 25px; margin-left: -6px; margin-top: -1px;"></i>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-auto mt-1" *ngIf='showPopUpAdd'>
+    <button class="btn btn-sm" type="button" style="background-color: #20a8d8 !important;">
+      <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+      <span style="color: white">&nbsp; {{btnText|translate}}</span>
+    </button>
+  </div>
+  <div class="col-auto px-1" *ngIf='exportReport'>
+    <a (click)="exportReportAction()" style="background: transparent; margin-right: 8px;    margin-top: 6px;">
+      <div class='favourite'>
+        <div class='favourite_heart'>
+          <i aria-hidden="true" class="fa fa-file-pdf-o"
+            style="color: #4b9aad; font-size: 25px; margin-left: -6px; margin-top: -1px;"></i>
+        </div>
+        </div>
+    </a>
+  </div>
+</div>
+<div *ngIf="relativeStyle" class="col-auto px-0">
+  <div class="row mx-0">
+    <div class="col-auto px-1" *ngIf='add'>
+      <a style="background: transparent" kendoGridAddCommand>
+        <div class='favourite'>
+          <div class='favourite_heart'>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="col-auto px-1 mt-3" *ngIf='exportReport'>
+      <a (click)="exportReportAction()" style="background: transparent; margin-right: 8px;">
+          <div class='favourite_heart'>
+            <i aria-hidden="true" class="fa fa-file-pdf-o"></i>
+          </div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div *ngIf='crmConfig' class="config" style="margin-top: 3px;">
+  <input type="checkbox" [id]="source ? 'crmToggle'+source : 'crmToggle'" />
+  <label class="button" [for]="source ? 'crmToggle'+source : 'crmToggle'" [tooltip]="MASS_ACTIONS"
+    style="margin-top: -5px;"><i aria-hidden="true"
+      style="     color: #4b9aad; font-size: 25px; margin-left: 7px; margin-top: 8px;">
+      <svg class="bi bi-list-check" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1
+      .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5
+       0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1
+       .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3.854 2.146a.5.5 0 0 1
+        0 .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1
+        1 .708-.708L2 3.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0
+        .708l-1.5 1.5a.5.5 0 0 1-.708 0l-.5-.5a.5.5 0 1 1 .708-.708L2
+         7.293l1.146-1.147a.5.5 0 0 1 .708 0zm0 4a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0
+         0 1-.708 0l-.5-.5a.5.5 0 0 1 .708-.708l.146.147 1.146-1.147a.5.5 0 0 1 .708 0z"></path>
+      </svg>
+    </i></label>
+  <nav class="nav crm-nav"
+    [ngStyle]="{'top':  '30px' , 'color':'#516670','right':'0px','padding' : '10px 0px 10px 6px'}">
+    <a *ngIf="crmConfig.importOrganisations"
+      style="margin-left: 0; margin-top: 10%;">{{'IMPORT_ORGANIZATIONS'|translate}}</a>
+    <a *ngIf="crmConfig.exportExcel">{{'EXPORT_EXCEL'|translate}}</a>
+    <div class="row" style="width: 100%" *ngIf="crmConfig.sendMail" (click)="goToSendMail()">
+      <span class="col-lg-9 col-sm-9 col-md-9 col-xs-9">{{'SEND_MAIL'|translate}}</span>
+      <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+        <i class="fa fa-envelope"></i>
+      </div>
+    </div>
+    <div class="row" style="width: 100%" *ngIf="crmConfig.addPopup" (click)="addPopUp()">
+      <span class="col-lg-9 col-sm-9 col-md-9 col-xs-9">{{'ADD'|translate}}</span>
+      <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+        <i class="fa fa-pencil-square-o"></i>
+      </div>
+    </div>
+    <a *ngIf="crmConfig.sendSms">{{'SEND_SMS'|translate}}</a>
+    <a *ngIf="crmConfig.updatePermissions">{{'UPDATE_PERMISSION'|translate}}</a>
+    <div class="row" style="width: 100%" *ngIf="crmConfig.deleteSelected" (click)="deleteSelected()">
+      <span class="col-lg-9 col-sm-9 col-md-9 col-xs-9">{{'DELETE'|translate}}</span>
+      <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+        <i class="fa fa-trash-o"></i>
+      </div>
+    </div>
+    <div class="row" style="width: 100%" *ngIf="crmConfig.archiveSelected" (click)="archiveSelected()">
+      <span class="col-lg-9 col-sm-9 col-md-9 col-xs-9">{{'ARCHIVE'|translate}}</span>
+      <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+        <i class="fa fa-archive"></i>
+      </div>
+    </div>
+    <div class="row" style="width: 100%" *ngIf="crmConfig.restoreSelected" (click)="restoreSelected()">
+      <span class="col-lg-9 col-sm-9 col-md-9 col-xs-9">{{'RESTORE'|translate}}</span>
+      <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3">
+        <i class="fa fa-refresh"></i>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<div class="col-auto px-1" *ngIf='(isExportExcel || isExportPDF) && !relativeStyle && !model'>
+  <i style="font-size:1.75em; line-height:1.25" class="las la-ellipsis-v la-2x" id="dropdownMenu" data-toggle="dropdown"
+    aria-haspopup="true" aria-expanded="false">
+  </i>
+  <div class="dropdown-menu dpMenu" id="action_toggle" aria-labelledby="dropdownMenu">
+    <a class="dropdown-item dpItem" *ngIf='isDesactivate'
+      (click)="goToDesactivateItemsUsers()">{{'DESACTIVATE'|translate}}</a>
+    <a class="dropdown-item dpItem" *ngIf='isReactivate'
+      (click)="goToReactivateItemsUsers()">{{'REACTIVATE'|translate}}</a>
+    <a class="dropdown-item dpItem" *ngIf='isDelete' (click)="deleteSelected()">{{'DELETE'|translate}}</a>
+    <a class="dropdown-item dpItem" *ngIf="isExportModel" (click)="goToDownLoadFileEvent()">
+      {{'EXPORT_MODEL'|translate}}</a>
+    <a class="dropdown-item dpItem" *ngIf="isImportFile && isFromGarage">
+      <label for="file-upload2">
+        {{'IMPORT_FILE'|translate}}
+      </label>
+      <input id="file-upload2" type="file" onclick="this.value=null;" (change)="goToIncomingFile($event)"
+             accept=".xlsx, .xls"/></a>
+    <a kendoGridPDFCommand
+       class="dropdown-item dpItem"
+       *ngIf='!gridSettings && isExportPDF'>{{'EXPORT_PDF'|translate}}</a>
+
+    <a class="dropdown-item dpItem" *ngIf='gridSettings && isExportPDF'
+      (click)='convert2()'>{{'EXPORT_PDF'|translate}}</a>
+
+    <a kendoGridExcelCommand class="dropdown-item dpItem"
+      *ngIf='!gridSettings && isExportExcel && !Config'>{{'EXPORT_EXCEL'|translate}}</a>
+    <a class="dropdown-item dpItem" *ngIf="isExportExcel && Config" (click)="getAllDataAndSave()">
+      {{'EXPORT_EXCEL'|translate}}</a>
+    <kendo-excelexport *ngIf="Config && isExportExcel" [fileName]="fileName +'-'+ (dateTime | date:'full') + '.xlsx'"
+      [data]="data" #excelexport>
+      <div *ngFor="let column of Config">
+        <kendo-excelexport-column [field]="column.field" title="{{column.title | translate}}" [width]="column._width"
+          *ngIf="column.condition">
+        </kendo-excelexport-column>
+      </div>
+    </kendo-excelexport>
+  </div>
+</div>

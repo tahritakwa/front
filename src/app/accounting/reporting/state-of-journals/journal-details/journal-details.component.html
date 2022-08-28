@@ -1,0 +1,40 @@
+<app-spinner *ngIf="spinner"></app-spinner>
+<kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+            [sortable]="true" [pageable]="pagerSettings" [navigable]="true" (dataStateChange)="dataStateChange($event)"
+            (pageChange)="onPageChange($event)" [sort]="gridSettings.state.sort" (sortChange)="sortChange()"  class="bulk-table">
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountCode"
+                     [title]="'CODE_DOCUMENT_ACCOUNT'| translate" [width]="140" [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+
+    <ng-template kendoGridFooterTemplate>
+      <div> {{'TOTAL'|translate}}</div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountDate"
+                     [title]="'DATE_FACTURATION_DOCUMENT_ACCOUNT'| translate" width="120px" [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.documentAccountDate | date: formatDate}}
+    </ng-template>
+
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="documentAccountReference"
+                     [title]="'LABEL'| translate" width="590px"
+                     [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}"></kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}" field="totalAmount" [style]="{'text-align': 'right', 'padding-right':'3rem !important'}"
+                     [title]="'DOCUMENT_TOTAL_AMOUNT'|translate" [width]="165"
+                     [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}"
+                     [format]="formatNumberOptions">
+    <ng-template kendoGridFooterTemplate>
+      <kendo-numerictextbox [readonly]="true"  style="text-align: right; padding-right:1rem"
+                            [format]="formatNumberOptions"
+                            [value]="totalAmount">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                       pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+  </kendo-grid-messages>
+</kendo-grid>

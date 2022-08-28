@@ -1,0 +1,90 @@
+<div class="card">
+  <div class="card-header" style="background-color:    white!important;">
+    <div>
+      <button (click)="showDetails=!showDetails;" class="noPadding btn-Add k-button"
+              style=" background: no-repeat;border: none;  margin-top:5px;">
+        <i [ngClass]="{'cui-chevron-bottom':!showDetails,'cui-chevron-top':showDetails}" aria-hidden="true"
+           style="color: #4c9aae"></i>
+      </button>
+      <span *ngIf="!BonusIsSelected" [ngClass]="{'bonus-success': BonusIsSelected === false,
+                                                            'bonus-error': BonusIsSelected === true}"
+            class="card-title mb-0"
+            style="font-style: italic; margin-left: 10px;">{{'No_SELECTED_BONUS'| translate}}</span>
+      <span *ngIf="BonusIsSelected" class="card-title mb-0" style="font-weight: bold; margin-left: 10px;">
+                {{bonusSelected.Name}}</span>
+      <button (click)="RemoveView($event)" *ngIf="!isClosed" class="noPadding btn-Add k-button  pull-right" dir="ltr"
+              style="border: none; margin-top:5px" type="button">
+        <i class="fa fa-close fa-lg AddIcon"></i>
+      </button>
+    </div>
+  </div>
+  <div *ngIf="showDetails === true" class="card-body">
+    <div class="form-group row">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
+        <div style=" margin-bottom: 15px"> {{'SELECT_BONUS' | translate}} :</div>
+        <app-variable-bonuses-combobox (sendData)="onTypeChangeEventClick($event)" [form]="bonusTypeFormGroup" [disabled]="!hasUpdatePayrollSessionPermission">
+        </app-variable-bonuses-combobox>
+        <app-control-messages [control]="bonusTypeFormGroup.controls.IdBonusType"
+                              class="error-msg messages text-left text-danger"></app-control-messages>
+      </div>
+      <div style="margin-top:30px">
+        <kendo-grid (cellClick)="cellClickHandler($event)" (cellClose)="cellCloseHandler($event)" (dataStateChange)="dataStateChange($event)"
+          (selectionChange)="onSelectionChange($event)" [data]="view |async" [filter]="gridSettings.state.filter"
+          [kendoGridSelectBy]="'IdContract'" [navigable]="true" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+          [reorderable]="true" [selectable]="{enabled: true, checkboxOnly: true}" [selectedKeys]="contractListSelected"
+          [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [sortable]="true">
+          <kendo-grid-checkbox-column (valueChange)="lineChecked($event)" *ngIf="hasUpdatePayrollSessionPermission && !isClosed" [width]="100">
+            <ng-template kendoGridHeaderTemplate>
+              <input (selectAllChange)="onSelectAllChange($event)" [state]="selectAllState" class="k-checkbox"
+                id="{{viewIndex}}" kendoGridSelectAllCheckbox>
+              <label class="k-checkbox-label" for="{{viewIndex}}"></label>
+            </ng-template>
+          </kendo-grid-checkbox-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field">
+            <ng-template kendoGridHeaderTemplate>
+              <span theme="light" tooltip="{{gridSettings.columnsConfig[1].title|translate}}">{{gridSettings.columnsConfig[1].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field">
+            <ng-template kendoGridHeaderTemplate>
+              <span theme="light" tooltip="{{gridSettings.columnsConfig[2].title|translate}}">{{gridSettings.columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a [routerLink]="['/main/payroll/employee/edit', dataItem.IdEmployee]"
+                 class="employee-link"
+                 target="_blank">
+                {{dataItem.FullName}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[3].field">
+            <ng-template kendoGridHeaderTemplate>
+              <span theme="light" tooltip="{{gridSettings.columnsConfig[3].title|translate}}">{{gridSettings.columnsConfig[3].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[4].field" [sortable]="false"
+            [title]="gridSettings.columnsConfig[4].title|translate" editor="numeric">
+            <div *ngIf="isClosed; then thenCloseBlock else thenOpenBlock"></div>
+            <ng-template #thenCloseBlock>
+              <ng-template kendoGridHeaderTemplate>
+                <span theme="light" tooltip="{{gridSettings.columnsConfig[4].title|translate}}">{{gridSettings.columnsConfig[4].title|translate}}</span>
+              </ng-template>
+            </ng-template>
+            <ng-template #thenOpenBlock>
+              <ng-template kendoGridHeaderTemplate>
+                <div [formGroup]="allBonusesValueFormGroup" style="margin-bottom: -10px;">
+                  <input (change)="assignDataToTheGrid()" [ngClass]="{ 'has-error': (Value.touched || Value.dirty) && !Value.valid }" class="form-control"
+                    formControlName="Value" min="0" ondragstart="return false;"
+                    ondrop="return false;" placeholder="{{'ENTER_VALUE' | translate}}" style="padding-left: 4px;height: 20px;margin-bottom: 5px"
+                    type="number" tooltip="{{'VALUE' | translate}}" >
+                  <app-control-messages [control]="Value" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </ng-template>
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+      </div>
+    </div>
+  </div>
+</div>

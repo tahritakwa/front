@@ -1,0 +1,139 @@
+<div class="card">
+  <div *ngIf="!isModal" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ADD_PHYSICAL_INTERVIEW'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="interviewFormGroup" class="form-horizontal">
+
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+          <div *ngIf="!(isReviewInterview || isEmployeeExitInterview)" class="form-group row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CANDIDATE'|translate}}<span
+                class="required">*</span></label>
+              <app-candidacy-dropdownlist [allowCustom]="true" [disabled]="isUpdateMode"
+                                          [group]="interviewFormGroup" [minStep]="recruitmentState.Interview"
+                                          [recruitmentId]="recruitmentId"></app-candidacy-dropdownlist>
+              <app-control-messages [control]="interviewFormGroup.controls.IdCandidacy"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'INTERVIEW_TYPE'|translate}}<span
+                class="required">*</span></label>
+              <app-interview-type-dropdownlist [allowCustom]="true" [disabled]="isUpdateMode"
+                                               [group]="interviewFormGroup">
+              </app-interview-type-dropdownlist>
+              <app-control-messages [control]="interviewFormGroup.controls.IdInterviewType"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                <span *ngIf="!isEmployeeExitInterview">{{'INTERVIEW_DATE'|translate}}</span>
+                <span *ngIf="isEmployeeExitInterview">{{'MEETING_DATE'|translate}}</span>
+                <span class="required">*</span>
+              </label>
+              <kendo-datepicker [format]="formatDate" [ngClass]="{ 'has-error': (InterviewDate.touched || InterviewDate.dirty) && !InterviewDate.valid }" [readonly]="isChangeMode"
+                                class="form-control"
+                                formControlName="InterviewDate" formatPlaceholder="formatDate"
+                                onkeydown="return false;">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="InterviewDate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                <span *ngIf="!isEmployeeExitInterview">{{'START_TIME'|translate}}</span>
+                <span *ngIf="isEmployeeExitInterview">{{'MEETING_HOUR'|translate}}</span>
+                <span class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (StartTime.touched || StartTime.dirty) && (!StartTime.valid && !StartTime.disabled) }" [readonly]="isChangeMode" class="form-control"
+                     formControlName="StartTime"
+                     type="time"/>
+              <app-control-messages [control]="interviewFormGroup.controls.StartTime"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_TIME'|translate}}<span
+                class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (EndTime.touched || EndTime.dirty) && !EndTime.valid }" [readonly]="isChangeMode" class="form-control"
+                     formControlName="EndTime"
+                     type="time"/>
+              <app-control-messages [control]="EndTime" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'REQUIRED_INTERVIEWERS'|translate}}<span
+                class="required">*</span></label>
+              <app-employee-multiselect #requiredInerviewers
+                                        (selected)="requiredInterviewerSelected($event)"
+                                        [disabled]="isDelayMode"
+                                        [employeesToIgnore]="optionalInterviewMarkIds" [idEmployeeCollaborator]="idEmployeeCollaborator"
+                                        [selectedValue]="requiredInterviewMarkIds">
+
+              </app-employee-multiselect>
+              <app-control-messages [control]="interviewFormGroup.controls.InterviewMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'OPTIONAL_INTERVIEWERS'|translate}}</label>
+              <app-employee-multiselect #optionalInerviewers
+                                        (selected)="optionalInterviewerSelected($event)"
+                                        [disabled]="isDelayMode"
+                                        [employeesToIgnore]="requiredInterviewMarkIds" [idEmployeeCollaborator]="idEmployeeCollaborator"
+                                        [selectedValue]="optionalInterviewMarkIds">
+
+              </app-employee-multiselect>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label>{{'SUPERVISOR' | translate}}<span class="required">*</span></label>
+              <app-employee-dropdown [disabled]="isDelayMode" [form]="interviewFormGroup"
+                                     [idEmployeeColName]="'IdSupervisor'" [idEmployeeCollaborator]="idEmployeeCollaborator"
+                                     [isForInterview]="true" [requiredInterviewersIds]="requiredInterviewMarkIds">
+              </app-employee-dropdown>
+              <app-control-messages [control]="IdSupervisor" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <!-- End principal menu  part -->
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button class="btn btn-sm btn-save mx-1" (click)="save()">
+                <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'ADD') |translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

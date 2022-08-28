@@ -1,0 +1,108 @@
+
+<div class="row">
+  <div class="col-lg-3">
+    <label > {{'SEARCH_ITEM'|translate}}</label>
+    <input (afterValueChanged)="filter()" type="text" class="form-control"
+                aria-describedby="addon-wrapping"
+               [(ngModel)]='searchInput'/>
+  </div>
+  <div class="col-lg-4">
+      <label > {{'PRODUCT_BAND'|translate}}</label>
+      <app-product-dropdown (Selected)="selectedProduct($event)"></app-product-dropdown>
+  </div>
+  <div class="col-lg-3">
+                  <label >{{'supplier'|translate}}</label>
+                  <app-supplier-dropdown  [type]="2" (Selected)="selectedSupplier($event)"></app-supplier-dropdown>
+  </div>
+  <div class="col-lg-1">
+          <button class="btn btn-secondary" style="width:50px; margin-top:25px;" type="button" (click)="Search()">
+            <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+          </button>
+        </div>
+  </div>
+<kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+  [sort]="gridSettings.state.sort" (dataStateChange)="dataStateChange($event)" [sortable]="true"
+  [pageable]="pagerSettings" [filterable]="false" [reorderable]="true" [columnMenu]="true"
+  [selectable]="{enabled: true, checkboxOnly: true }" (selectedKeysChange)="onSelectedKeysChange($event)"
+  [selectedKeys]="selectedIds" [kendoGridSelectBy]="'Id'">
+  
+  <kendo-grid-checkbox-column [width]="80" [columnMenu]="false">
+    <ng-template kendoGridHeaderTemplate>
+      <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+        (selectAllChange)="onSelectAllChange($event)">
+      <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+    </ng-template>
+  </kendo-grid-checkbox-column>
+
+
+  <!-- customer -->
+  <kendo-grid-column [title]="gridSettings.columnsConfig[1].title | translate"
+    [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.columnsConfig[1].filter"
+    [filterable]="gridSettings.columnsConfig[1].filterable" [format]="gridSettings.columnsConfig[1].format"
+    [tooltip]="gridSettings.columnsConfig[1].title" [field]="gridSettings.columnsConfig[1].field" [columnMenu]="false">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+        theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+
+      <div class="row cursor-pointer">
+        <div class="col-auto">
+          <div class="customer-photo d-flex justify-content-center">
+            <img id="ThumbnailCostumer" class="imgSize" alt="Illustration des problèmes de suddation" border="0"
+              [src]="pictureItemSrc(dataItem) || 'assets/image/placeholder-logo.png'" />
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <span class="font-weight-bold" *ngIf="dataItem.LabelProduct">{{dataItem.Code}} ({{dataItem.LabelProduct}})</span>
+            <span class="font-weight-bold" *ngIf="!dataItem.LabelProduct">{{dataItem.Code}}</span>
+          </div>
+          <div class="row">
+            <span class="light-reference">{{dataItem.Description}}</span>
+          </div>
+        </div>  
+      </div>
+
+    </ng-template>
+  </kendo-grid-column>
+  <!-- end customer -->
+  <!--Supplier-->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+  [filterable]="gridSettings.columnsConfig[2].filterable"
+  [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+  [format]="gridSettings.columnsConfig[2].format" [hidden]="gridSettings.columnsConfig[2].hidden"
+  [headerStyle]="{'line-height': '1em'}" [class]="{'overflow-class': true}">>
+  <ng-template kendoGridHeaderTemplate>
+    <span tooltip=" {{gridSettings.columnsConfig[2].title|translate}}"
+      theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+  </ng-template>
+  <ng-template kendoGridCellTemplate let-dataItem>
+    <div class="row ml-1" *ngIf="dataItem.ItemTiers" style="overflow: initial;">
+      <span *ngIf="dataItem.ItemTiers[0]" tooltip="{{dataItem.ItemTiers[0].Name}}"
+        class="rounded-element-cell">
+        {{dataItem.ItemTiers[0].IdTiersNavigation.Name}}
+      </span>
+      <span *ngIf="dataItem.ItemTiers[1]" tooltip="{{dataItem.ItemTiers[1].Name}}"
+        class="rounded-element-cell">
+        {{dataItem.ItemTiers[1].IdTiersNavigation.Name}}
+      </span>
+      <span *ngIf="dataItem.ItemTiers && dataItem.ItemTiers.length > 2" class="dropdown">
+        <div class="show-more" type="button" id="testOfSupplier" data-toggle="dropdown" aria-haspopup="true"
+          aria-expanded="false">
+          +{{dataItem.ItemTiers.length - 2}}
+        </div>
+        <div class="dropdown-menu border" aria-labelledby="testOfSupplier">
+          <button class="dropdown-item disabled" *ngFor="let tier of dataItem.ItemTiers.slice(2)"
+            type="button">{{tier.IdTiersNavigation.Name}}</button>
+        </div>
+      </span>
+    </div>
+
+    <div class="container grid-cell" *ngIf="!dataItem.ItemTiers">
+      -
+    </div>
+  </ng-template>
+</kendo-grid-column>
+
+</kendo-grid>

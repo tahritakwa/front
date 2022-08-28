@@ -1,0 +1,842 @@
+<div class="card">
+  <form class="form-horizontal">
+    <div class="card-header" style="height: 75px;" [formGroup]="employeeFormGroup" *ngIf="!isModal">
+      <div class="row">
+        <div class="col-1 primaryColor mt-1">
+          <i class="fa fa-user-circle-o fa-3x"></i>
+        </div>
+        <div class="col-9 mt-2 TitleSize" style="display:inline-flex">
+          <div *ngIf="isUpdateMode; then isOld else IsNew"></div>
+          <ng-template #isOld>
+            <h2 class="card-title mb-0,00">{{employeeToUpdate.FirstName}} {{employeeToUpdate.LastName}}
+              <h4 *ngIf='!code' style="display: inline-flex;color: #4c9aae;">/</h4>
+            </h2>
+            <h4>
+              <input class="form-control form-control-sm" formControlName="Matricule" name="Matricule"
+                     autocomplete="off"
+                     [ngClass]="{ 'has-error': (Matricule.touched || Matricule.dirty) && !Matricule.valid }" style="display: inline-flex;color: #4c9aae; background: transparent; border: none;
+                   font-size: 90%; width: 150px; margin-left: 10px !important; margin-top: 1px !important;">
+              <app-control-messages [control]="Matricule" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </h4>
+          </ng-template>
+          <ng-template #IsNew>
+            <h2 class="card-title mb-0,00">{{'ADD_EMPLOYEE'|translate}}</h2>
+          </ng-template>
+        </div>
+        <div class="col-lg-1 mt-3">
+          <div class="row">
+            <div class="col-lg-2 col-md-12 col-sm-12">
+              <h4 *ngIf="employeeToUpdate && employeeToUpdate.Status == employeeStateEnumerator.Active">
+                <span class="badge badge-success" style="color: white !important">{{'ACTIVE'|translate}}</span>
+              </h4>
+              <h4 *ngIf="employeeToUpdate.Status == employeeStateEnumerator.Resigning">
+                <span class="badge badge-warning" style="color: white !important">{{'RESIGNING'|translate}}</span>
+              </h4>
+              <h4 *ngIf="employeeToUpdate.Status == employeeStateEnumerator.Resigned">
+                <span class="badge badge-danger" style="color: white !important">{{'RESIGNED'|translate}}</span>
+              </h4>
+            </div>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <!-- Begin tab part -->
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+
+          <!-- Begin tab headers -->
+          <ul class="nav nav-tabs nav-tabs-new" role="tablist">
+            <!-- Begin General header part -->
+            <li class="nav-item" [ngClass]='{"Error-Form-tab": !employeeFormGroup.valid && !employeeFormGroup.disabled && employeeFormGroup.touched}'>
+              <a class="nav-link nav-link-new active show"
+                [ngClass]='{"Error-Form-tab-text": !employeeFormGroup.valid && !employeeFormGroup.disabled && employeeFormGroup.touched}'
+                data-toggle="tab" href="#GENERAL" role="tab" aria-controls="home" aria-selected="false">
+                {{'GENERAL'|translate}}
+              </a>
+            </li>
+            <!-- End General header part -->
+            <!-- Begin IDENTITY header part -->
+            <li class="nav-item"
+              [ngClass]='{"Error-Form-tab": !IdentityPapersFormGroup.valid && !IdentityPapersFormGroup.disabled && !IdentityPapersFormGroup.pending}'>
+              <a class="nav-link nav-link-new"
+                [ngClass]='{"Error-Form-tab-text": !IdentityPapersFormGroup.valid && !IdentityPapersFormGroup.disabled && !IdentityPapersFormGroup.pending}'
+                data-toggle="tab" href="#IDENTITY" role="tab" aria-controls="home" aria-selected="false">
+                {{'IDENTITY_PAPERS'|translate}}
+              </a>
+            </li>
+            <!-- End IDENTITY header part -->
+            <!-- Begin CONTRACTS header part -->
+            <li class="nav-item" *ngIf="(hasAddContract && !isUpdateMode) || ((hasShowContractPermission || hasUpdateContract) && isUpdateMode)"
+              [ngClass]='{"Error-Form-tab": receivedFormGroup && !receivedFormGroup.valid && !receivedFormGroup.disabled && !ContractFormGroup.disabled}'>
+              <a class="nav-link nav-link-new"
+                [ngClass]='{"Error-Form-tab-text": receivedFormGroup && !receivedFormGroup.valid && !receivedFormGroup.disabled && !ContractFormGroup.disabled}'
+                data-toggle="tab" href="#CONTRACTS" role="tab" aria-controls="home" aria-selected="false">
+                {{'CONTRACTS'|translate}}
+              </a>
+            </li>
+            <!-- End CONTRACTS header part -->
+            <!-- Begin QUALIFICATION header part -->
+            <li class="nav-item"
+              [ngClass]='{"Error-Form-tab": !GraduationFormGroup.valid && !GraduationFormGroup.disabled}'>
+              <a class="nav-link nav-link-new"
+                [ngClass]='{"Error-Form-tab-text": !GraduationFormGroup.valid && !GraduationFormGroup.disabled}'
+                data-toggle="tab" href="#QUALIFICATION" role="tab" aria-controls="home" aria-selected="false">
+                {{'QUALIFICATION'|translate}}
+              </a>
+            </li>
+            <!-- End QUALIFICATION header part -->
+            <!-- Begin PAY header part -->
+            <li class="nav-item" [ngClass]='{"Error-Form-tab": !PayFormGroup.valid && !PayFormGroup.disabled}'
+              *ngIf="(hasPayPrivilege && isUpdateMode) || !isUpdateMode">
+              <a class="nav-link nav-link-new" [ngClass]='{"Error-Form-tab-text": !PayFormGroup.valid && !PayFormGroup.disabled}'
+                data-toggle="tab" href="#PAY" role="tab" aria-controls="home" aria-selected="false">
+                {{'PAY'|translate}}
+              </a>
+            </li>
+            <!-- End PAY header part -->
+            <!-- Begin ACTIFS header part -->
+            <li class="nav-item" *ngIf="isUpdateMode">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#ACTIFS" role="tab" aria-controls="home"
+                aria-selected="false">
+                {{'ACTIVES'|translate}}
+              </a>
+            </li>
+            <!-- End ACTIFS header part -->
+            <!-- Begin CONTACT header part -->
+            <li class="nav-item" [ngClass]='{"Error-Form-tab": !ContactFormGroup.valid && !ContactFormGroup.disabled}'>
+              <a class="nav-link nav-link-new"
+                [ngClass]='{"Error-Form-tab-text": !ContactFormGroup.valid && !ContactFormGroup.disabled}'
+                data-toggle="tab" href="#CONTACT" role="tab" aria-controls="home" aria-selected="false">
+                {{'CONTACT'|translate}}
+              </a>
+            </li>
+            <!-- End CONTACT header part -->
+            <!-- Begin Skills header part -->
+            <li class="nav-item" *ngIf="this.isUpdateMode">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#Skills" role="tab" aria-controls="home"
+                aria-selected="false">
+                {{'SKILLS'|translate}}
+              </a>
+            </li>
+            <!-- End Skills header part -->
+            <!-- Begin Teams header part -->
+            <li class="nav-item" *ngIf="this.isUpdateMode">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#Teams" role="tab" aria-controls="home" aria-selected="false">
+                {{'TEAMS'|translate}}
+              </a>
+            </li>
+            <!-- End Teams header part -->
+            <!-- Begin Notes header part -->
+            <li class="nav-item" *ngIf="isUserInSuperHierarchicalEmployeeList">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#Notes" role="tab" aria-controls="home" aria-selected="false">
+                {{'NOTES'|translate}}
+              </a>
+            </li>
+            <!-- End Notes header part -->
+          </ul>
+          <!-- End tab headers -->
+          <!-- Begin tab contents -->
+          <div class="tab-content border-0">
+            <!-- Begin ADRESS content part -->
+            <div class="tab-pane fade px-0 active show tab-class" id="GENERAL" role="tabpanel">
+              <div [formGroup]="employeeFormGroup" class="form-group">
+                <div class="col-lg-12 col-sm-12 col-md-12 row">
+
+                  <div class="col-lg-2 col-sm-12 col-md-4" style="min-width: 350px;margin-top: 10px;">
+                    <input type='file' (change)="uploadPictureFile($event);" #fileInput
+                      accept="image/x-png,image/gif,image/jpeg" />
+                    <img id="blah" (click)="hasUpdateEmployeePermission || hasAddEmployeePermission ? fileInput.click() : null"
+                      alt="Illustration des problèmes de suddation" border="0"
+                      [src]="pictureEmployesSrc || '../../../../assets/image/user-new-icon.png'" style="width: 200px; height: 200px;"/>
+                      <div style="cursor: pointer;margin-left: 190px;color: #222850;">
+                        <i *ngIf="isUpdateMode && pictureEmployesSrc" class="fa fa-download" (click)="downLoadFile(pictureEmployesSrc)"
+                          tooltip="{{'DOWNLOAD_PICTURE' | translate}}"></i>
+                      </div>
+                  </div>
+
+                  <div class="col-lg-8 col-sm-12 col-md-6 " style="margin-top: 10px;">
+                    <div class="row">
+                      <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'FIRST_NAME'|translate}}<span
+                            class="required">*</span></label>
+                        <input class="form-control" formControlName="FirstName" type="text"
+                          [ngClass]="{ 'has-error': ((FirstName.touched || FirstName.dirty) && (!FirstName.valid && !FirstName.disabled)) }">
+                        <app-control-messages [control]="FirstName" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+        
+                      <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'LAST_NAME'|translate}}<span
+                            class="required">*</span></label>
+                        <input class="form-control" formControlName="LastName" type="text" 
+                          [ngClass]="{ 'has-error': ((LastName.touched || LastName.dirty) && (!LastName.valid && !LastName.disabled)) }">
+                        <app-control-messages [control]="LastName" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+
+                      <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'GENDER'|translate}}<span
+                            class="required">*</span></label>
+                        <app-sex-dropdown [group]="employeeFormGroup"></app-sex-dropdown>
+                        <app-control-messages [control]="Sex" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                    
+                      <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'NATIONALITY'|translate}}<span
+                            class="required">*</span></label>
+                        <app-country-dropdown [group]="employeeFormGroup" [idCountryColName]="'IdCitizenship'">
+                        </app-country-dropdown>
+                        <app-control-messages [control]="IdCitizenship" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+
+                      <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'BIRTH_DATE'|translate}}</label>
+                        <kendo-datepicker [format]="dateFormat" formControlName="BirthDate" class="form-control">
+                          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                          </kendo-datepicker-messages>
+                        </kendo-datepicker>
+                        <app-control-messages [control]="BirthDate" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+        
+                      <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'BIRTH_PLACE'|translate}}</label>
+                        <input class="form-control" formControlName="BirthPlace" type="text" 
+                          [ngClass]="{ 'has-error': ((BirthPlace.touched || BirthPlace.dirty) && (!BirthPlace.valid && !BirthPlace.disabled)) }">
+                        <app-control-messages [control]="BirthPlace" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-lg-4 col-md-6 col-sm-12">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'COUNTRY'|translate}}</label>
+                        <app-country-dropdown [group]="employeeFormGroup" (Selected)="receiveCountryStatus($event)">
+                        </app-country-dropdown>
+                        <app-control-messages [control]="IdCountry" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+                      <div class="col-lg-4 col-md-6 col-sm-12">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'CITY'|translate}}</label>
+                        <app-city-dropdown [group]="employeeFormGroup"></app-city-dropdown>
+                        <app-control-messages [control]="IdCity" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+                      <div class="col-lg-4 col-md-6 col-sm-12">
+                        <label class="col-lg-12 col-md-12 col-sm-12"> {{'ZIPCODE'|translate}}</label>
+                        <input class="form-control" formControlName="ZipCode" type="number">
+                        <app-control-messages [control]="ZipCode" class="error-msg messages text-left text-danger">
+                        </app-control-messages>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+      
+                <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top: 20px;">
+                
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'MARITAL_STATUS'|translate}}</label>
+                      <app-marital-status-dropdown [form]="employeeFormGroup" ></app-marital-status-dropdown>
+                      <app-control-messages [control]="MaritalStatus" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'UPPER_HIERARCHY'|translate}}</label>
+                      <app-employee-dropdown [form]="employeeFormGroup" [idEmployeeColName]="'IdUpperHierarchy'"
+                        [showAddButton]="false"></app-employee-dropdown>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROFESSIONAL_EMAIL'|translate}}<span
+                          class="required">*</span></label>
+                      <input class="form-control" formControlName="Email" type="email"
+                        [ngClass]="{ 'has-error': ((Email.touched || Email.dirty) && (!Email.valid && !Email.disabled && !Email.pending)) }">
+                      <app-control-messages [control]="Email" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ADDRESS'|translate}} 1</label>
+                      <input class="form-control" formControlName="AddressLine1" type="text"
+                             [ngClass]="{ 'has-error': ((AddressLine1.touched || AddressLine1.dirty) && (!AddressLine1.valid && !AddressLine1.disabled)) }">
+                      <app-control-messages [control]="AddressLine1" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ADDRESS'|translate}} 2</label>
+                      <input class="form-control" formControlName="AddressLine2" type="text"
+                             [ngClass]="{ 'has-error': ((AddressLine2.touched || AddressLine2.dirty) && (!AddressLine2.valid && !AddressLine2.disabled)) }">
+                      <app-control-messages [control]="AddressLine2" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ADDRESS'|translate}} 3</label>
+                      <input class="form-control" formControlName="AddressLine3" type="text"
+                             [ngClass]="{ 'has-error': ((AddressLine3.touched || AddressLine3.dirty) && (!AddressLine3.valid && !AddressLine3.disabled)) }">
+                      <app-control-messages [control]="AddressLine3" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ADDRESS'|translate}} 4</label>
+                      <input class="form-control" formControlName="AddressLine4" type="text"
+                             [ngClass]="{ 'has-error': ((AddressLine4.touched || AddressLine4.dirty) && (!AddressLine4.valid && !AddressLine4.disabled)) }">
+                      <app-control-messages [control]="AddressLine4" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ADDRESS'|translate}} 5</label>
+                      <input class="form-control" formControlName="AddressLine5" type="text"
+                             [ngClass]="{ 'has-error': ((AddressLine5.touched || AddressLine5.dirty) && (!AddressLine5.valid && !AddressLine5.disabled)) }">
+                      <app-control-messages [control]="AddressLine5" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'PERSONAL_EMAIL'|translate}}</label>
+                      <input class="form-control" formControlName="PersonalEmail" type="email"
+                             [ngClass]="{ 'has-error': ((PersonalEmail.touched || PersonalEmail.dirty) && (!PersonalEmail.valid && !PersonalEmail.disabled)) }">
+                      <app-control-messages [control]="PersonalEmail" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <!-- End ADDRESS content part -->
+            <!-- Begin IDENTITY content part -->
+            <div class="tab-pane fade px-0 tab-class" id="IDENTITY" role="tabpanel">
+              <div class="card-body" [formGroup]="IdentityPapersFormGroup">
+                <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                  <!-- Begin CIN part -->
+                  <div class="form-group row" style="margin-bottom:-15px!important;">
+                    <div class="col-lg-4 col-md-4 col-sm-12 ">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'CIN'|translate}}</label>
+                      <input class="form-control" formControlName="Cin" type="text" pattern="^[0-9]\d*$"
+                             [ngClass]="{ 'has-error': ((Cin.touched || Cin.dirty) && (!Cin.valid && !Cin.disabled )) }">
+                      <app-control-messages [control]="Cin" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-12" [ngStyle]="{'margin-top': '32px'}">
+                      <app-upload-file [fileToUpload]="cinFileToUpload" [service]="employeeService"
+                        [canUpdateFile]="(hasAddEmployeePermission && !isUpdateMode || hasUpdateEmployeePermission && isUpdateMode) && !isDisabled">
+                      </app-upload-file>
+                    </div>
+                  </div>
+                  <!-- End CIN part -->
+                  <!-- Begin DOCUMENTS part -->
+                  <div style="margin-top:30px"></div>
+                  <div formArrayName="EmployeeDocument" *ngFor="let EDList of EmployeeDocument.controls; let i=index;">
+                    <app-manage-employee-document [service]="employeeService" class="col-lg-12 col-sm-12 col-md-12"
+                      [group]="EDList" *ngIf="!EDList.controls.IsDeleted.value"
+                      [canUpdateFile]="(hasAddEmployeePermission && !isUpdateMode || hasUpdateEmployeePermission && isUpdateMode) && !isDisabled">
+                    </app-manage-employee-document>
+                  </div>
+                  <!-- End DOCUMENTS part -->
+                  <br />
+                  <div class="form-group row">
+                    <button class="noPadding btn-Add k-button" type="button" dir="ltr" style="border: none!important;"
+                            *ngIf="(hasAddEmployeePermission && !isUpdateMode || hasUpdateEmployeePermission && isUpdateMode) && !isDisabled" (click)="addNewEmployeeDocument();">
+                      <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                      <span>&nbsp;{{'ADD_DOCUMENT'|translate}}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End IDENTITY content part -->
+            <!-- Begin CONTRACTS content part -->
+            <div class="tab-pane fade px-0 tab-class" id="CONTRACTS" role="tabpanel" *ngIf="(hasAddContract && !isUpdateMode)
+                || ((hasShowContractPermission || hasUpdateContract) && isUpdateMode)">
+              <div class="card-body" [formGroup]="ContractFormGroup">
+                <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'JOB'|translate}}</label>
+                      <app-job-multiselect [group]="ContractFormGroup"></app-job-multiselect>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'OFFICE'|translate}}</label>
+                      <app-office-dropdownlist [group]="ContractFormGroup"></app-office-dropdownlist>
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="hasAddContract && !isDisabled">
+                    <button class="noPadding btn-Add k-button" type="button" dir="ltr" style="border: none!important;"
+                            (click)="addNewContract();">
+                      <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                      <span>&nbsp;{{'ADD_CONTRACT'|translate}}</span>
+                    </button>
+                  </div>
+                  <br />
+                  <div class="card-body">
+                    <div style="overflow-y: auto;  overflow-x: hidden;">
+                      <ng-container #vc></ng-container>
+                    </div>
+                    <ng-template let-option="option" #addContract>
+                      <div class="card">
+                        <div [ngClass]="(receivedReference && option.viewReference == receivedReference && receivedFormGroup && !receivedFormGroup.valid)?'border border-danger':''">
+                          <div class="card-header" style="background-color:	white!important; cursor: pointer;"
+                               (click)="option.hidden = !option.hidden">
+                            <button class="noPadding btn-Add k-button"
+                                    style=" background: no-repeat!important;border: none!important;">
+                              <i [ngClass]="{'cui-chevron-bottom':option.hidden,'cui-chevron-top':!option.hidden}"
+                                 aria-hidden="true" style="color: #4c9aae!important;"></i>
+                            </button>
+                            <span>{{'CONTRACT'|translate}}</span>
+                            <b style="margin-right:30px!important;" *ngIf="option.data.IdContractTypeNavigation">
+                              {{option.data.IdContractTypeNavigation.Code }}
+                            </b>
+                            <span>{{'SALARY_STRUCTURE'|translate}}</span>
+                            <b style="margin-right:30px!important;" *ngIf="option.data.IdSalaryStructureNavigation">
+                              {{option.data.IdSalaryStructureNavigation.SalaryStructureReference }}
+                            </b>
+                            <span style="margin-right:5px!important;" *ngIf="option.data.EndDate">
+                              {{'FROM'|translate}}
+                            </span>
+                            <span style="margin-right:5px!important;" *ngIf="!option.data.EndDate">
+                              {{'FROM_2'|translate}}
+                            </span>
+                            <b style="margin-right:10px!important;">
+                              {{option.data.StartDate | date:dateFormat}}
+                            </b>
+                            <span style="margin-right:5px!important;"
+                                  *ngIf="option.data.EndDate">{{'UNTIL'|translate}}</span>
+                            <b style="margin-right:10px!important;" *ngIf="option.data.EndDate">
+                              {{option.data.EndDate | date:dateFormat}}
+                            </b>
+                            <span style="margin-left: 5% !important;"
+                                  *ngIf="option.data.State == contractStateEnumerator.New"
+                                  class="badge badge-primary">{{'NEW'|translate}}</span>
+                            <span style="margin-left: 5% !important;"
+                                  *ngIf="option.data.State == contractStateEnumerator.InProgress"
+                                  class="badge badge-success">{{'IN_PROGESS'|translate}}</span>
+                            <span style="margin-left: 5% !important;"
+                                  *ngIf="option.data.State == contractStateEnumerator.Done"
+                                  class="badge badge-danger">{{'DONE'|translate}}</span>
+                            <span style="margin-left: 5% !important;"
+                                  *ngIf="option.data.State == contractStateEnumerator.UpComing"
+                                  class="badge badge-warning">{{'UPCOMING'|translate}}</span>
+                            <button class="noPadding btn-Add k-button  pull-right"
+                                    *ngIf="hasDeleteContractPermission && (option && option.data && option.data.State != contractStateEnumerator.Done) && !isDisabled"
+                                    type="button" dir="ltr" style="border: none!important;"
+                                    (click)="removeContractFromContainer(option.viewReference)">
+                              <i class="fa fa-close fa-lg AddIcon"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="card-body" [hidden]="option.hidden">
+                          <app-add-contract [employeeContractToUpdate]="option.data" [employeeIsDisabled]="isDisabled"
+                                            [viewReference]="option.viewReference" [uuid]="uuid" (selectedValue)="option.data = $event" (referenceToSend) = "receivedReference = $event"
+                                            (formGroupToSend) = "receivedFormGroup = $event">
+                          </app-add-contract>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End CONTRACTS content part -->
+            <!-- Begin QUALIFICATION content part -->
+            <div class="tab-pane fade px-0 tab-class" id="QUALIFICATION" role="tabpanel">
+              <div class="card-body" [formGroup]="GraduationFormGroup">
+                <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'GRADE'|translate}}</label>
+                      <app-grade-dropdown [group]="GraduationFormGroup"></app-grade-dropdown>
+                      <app-control-messages [control]="IdGrade" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <button class="noPadding btn-Add k-button" type="button"
+                        dir="ltr" style="border: none!important;" (click)="addNewQualification();"
+                          *ngIf="(hasAddEmployeePermission && !isUpdateMode || hasUpdateEmployeePermission && isUpdateMode) && !isDisabled">
+                      <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                      <span>&nbsp;{{'ADD_QUALIFICATION'|translate}}</span>
+                    </button>
+                  </div>
+                  <br />
+                  <div formArrayName="Qualification" *ngFor="let qualification of Qualification.controls; let i=index;">
+                    {{qualification.controls.QualificationFileInfo.Name}}
+                    <div class="card" *ngIf="!qualification.controls.IsDeleted.value">
+                      <div class="card-header" style="background-color:	white!important;">
+                        <div>
+                          <button class="noPadding btn-Add k-button"
+                                  style=" background: no-repeat!important;border: none!important;"
+                                  (click)="qualification.controls.hide.value=!qualification.controls.hide.value;">
+                            <i [ngClass]="{'cui-chevron-bottom':qualification.controls.hide.value,'cui-chevron-top':!qualification.controls.hide.value}"
+                               aria-hidden="true" style="color: #4c9aae!important;"></i>
+                          </button>
+                          <span>{{'QUALIFICATION'|translate}}</span>
+                          <span
+                            *ngIf="qualification.controls.GraduationYearDate.value">{{'OBTAINED_IN'|translate}}</span>
+                          <b style="margin-right:10px!important;">
+                            {{qualification.controls.GraduationYearDate.value | date:'yyyy'}}
+                          </b>
+                          <button class="noPadding btn-Add k-button  pull-right"
+                            *ngIf="hasUpdateEmployeePermission" type="button" dir="ltr"
+                            style="border: none!important;" (click)="deleteQualification(i)">
+                            <i class="fa fa-close fa-lg AddIcon"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="card-body" [hidden]="qualification.controls.hide.value">
+                        <app-manage-qualification class="col-lg-12 col-sm-12 col-md-12" [group]="qualification"
+                          [service]="employeeService"
+                          [canUpdateFile]="!isDisabled"
+                          [parentIsDisabled]="isDisabled">
+                        </app-manage-qualification>
+                        <div class="col-lg-2 col-sm-2 col-md-2" style="margin-top: 2% !important;">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End QUALIFICATION content part -->
+            <!-- Begin PAY content part -->
+            <div class="tab-pane tab-class" id="PAY" role="tabpanel"
+              *ngIf="(hasPayPrivilege && isUpdateMode) || !isUpdateMode">
+              <div class="card-body" [formGroup]="PayFormGroup">
+                <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'PAYMENT_TYPE'|translate}}</label>
+                      <app-payment-type-dropdown [group]="PayFormGroup" (Selected)="receivedMessage($event)"
+                                                 (showAddButton)="false">
+                      </app-payment-type-dropdown>
+                      <app-control-messages [control]="IdPaymentType" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'RIB'|translate}} <span *ngIf="!disableRibBank"
+                                                                                              class="required">*</span> </label>
+                      <input class="form-control" [attr.disabled]="disableRibBank?'':null" formControlName="Rib"
+                             [ngClass]="{ 'has-error': ((Rib.touched || Rib.dirty) && (!Rib.valid && !Rib.disabled)) }">
+                      <app-control-messages [control]="Rib" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'BANK'|translate}} <span *ngIf="!disableRibBank"
+                                                                                               class="required">*</span> </label>
+                      <app-bank-dropdown  [group]="PayFormGroup" [disabled]="!disableRibBank?false:true">
+                      </app-bank-dropdown>
+                      <app-control-messages [control]="IdBank" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'SOCIAL_SECURITY_NUMBER'|translate}}</label>
+                      <kendo-maskedtextbox [mask]="socialSecurityNumberMask" [maskOnFocus]="true" class="form-control"
+                                           formControlName="SocialSecurityNumber" name="SocialSecurityNumber"
+                                           [ngClass]="{ 'has-error': (SocialSecurityNumber.touched || SocialSecurityNumber.dirty) && !SocialSecurityNumber.valid }">
+                      </kendo-maskedtextbox>
+                      <app-control-messages [control]="SocialSecurityNumber"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ECHELON'|translate}}</label>
+                      <input class="form-control" formControlName="Echelon" type="number" min="1" max="999"
+                             [ngClass]="{ 'has-error': ((Echelon.touched || Echelon.dirty) && (!Echelon.valid && !Echelon.disabled)) }">
+                      <app-control-messages [control]="Echelon" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'CATEGORY'|translate}}</label>
+                      <input class="form-control" formControlName="Category" type="text"
+                             [ngClass]="{ 'has-error': ((Category.touched || Category.dirty) && (!Category.valid && !Category.disabled)) }">
+                      <app-control-messages [control]="Category" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'DEPENDENT_CHILDREN_NUMBER'|translate}}</label>
+                      <input title="{{'AGE_LESS_THAN_20'|translate}}" class="form-control"
+                             formControlName="ChildrenNumber" type="number" name="ChildrenNumber" pattern="^(?:99|\d{1,2})(?:\.\d{1,2})?$"
+                             [ngClass]="{ 'has-error': ((ChildrenNumber.touched || ChildrenNumber.dirty) && (!ChildrenNumber.valid && !ChildrenNumber.disabled)) }">
+                      <app-control-messages [control]="ChildrenNumber" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'CHILDREN_NO_SCHOLAR'|translate}}</label>
+                      <input title="{{'AGE_GREATER_THAN_20'|translate}}" class="form-control"
+                             formControlName="ChildrenNoScholar" type="number" name="ChildrenNoScholar" pattern="^(?:99|\d{1,2})(?:\.\d{1,2})?$"
+                             [ngClass]="{ 'has-error': ((ChildrenNoScholar.touched || ChildrenNoScholar.dirty) && (!ChildrenNoScholar.valid && !ChildrenNoScholar.disabled)) }">
+                      <app-control-messages [control]="ChildrenNoScholar"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'CHILDREN_DISABLED'|translate}}</label>
+                      <input class="form-control" formControlName="ChildrenDisabled" type="number"
+                             name="ChildrenDisabled" pattern="^(?:99|\d{1,2})(?:\.\d{1,2})?$"
+                             [ngClass]="{ 'has-error': ((ChildrenDisabled.touched || ChildrenDisabled.dirty) && (!ChildrenDisabled.valid && !ChildrenDisabled.disabled)) }">
+                      <app-control-messages [control]="ChildrenDisabled"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'DEPENDENT_PARENT_NUMBER'|translate}}</label>
+                      <input class="form-control" formControlName="DependentParent" type="number" name="DependentParent" pattern="^([0-2])$"
+                             [ngClass]="{ 'has-error': ((DependentParent.touched || DependentParent.dirty) && (!DependentParent.valid && !DependentParent.disabled)) }">
+                      <app-control-messages [control]="DependentParent"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'HOME_LOAN'|translate}}</label>
+                      <input class="form-control" formControlName="HomeLoan" type="number" name="HomeLoan"
+                             [ngClass]="{ 'has-error': ((HomeLoan.touched || HomeLoan.dirty) && (!HomeLoan.valid && !HomeLoan.valid)) }">
+                      <app-control-messages [control]="HomeLoan" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-lg-4 col-md-6 col-sm-12 contact100-form-checkbox">
+                      <input class="input-checkbox100" id="ckb1" formControlName="FamilyLeader" name="FamilyLeader"
+                             type="checkbox">
+                      <label class="label-checkbox100 " for="ckb1" style="margin-top: 2%!important;">
+                        {{'FAMILY_LEADER' | translate}}&nbsp;
+                      </label>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12 contact100-form-checkbox">
+                      <input class="input-checkbox100" id="ckb2" formControlName="IsForeign" name="IsForeign"
+                             type="checkbox">
+                      <label class="label-checkbox100" for="ckb2" style="margin-top: 2%;">
+                        {{'IS_FOREIGN' | translate}}&nbsp;
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End PAY content part -->
+            <!-- Begin ACTIFS content part -->
+            <div class="tab-pane fade px-0 tab-class" id="ACTIFS" role="tabpanel" *ngIf="isUpdateMode">
+              <div class="card-body">
+                <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                  <div class="form-group row" *ngIf="!isEmptyActif">
+                    <table class="table table-responsive-sm table-striped">
+                      <thead>
+                      <tr>
+                        <th>{{'ACTIVE' | translate}}</th>
+                        <th>{{'ASSIGNMENT_DATE' | translate}}</th>
+                        <th>{{'ABANDONMENT_DATE' | translate}}</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let d of dataActives" class="col-lg-12 col-sm-12 col-md-12">
+                        <td>{{ d.IdActiveNavigation.Label }}</td>
+                        <td>{{d.AcquisationDate | date:dateFormat}}</td>
+                        <td>{{ d.AbandonmentDate | date:dateFormat}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div *ngIf="isEmptyActif">
+                    <img src="../../../../assets/image/empty-data.png" style="width: 800px; height: 500px;margin-left: 400px;"
+                      class="img-responsive">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End ACTIFS content part -->
+            <!-- Begin CONTACT content part -->
+            <div class="tab-pane fade px-0 tab-class" id="CONTACT" role="tabpanel">
+              <div class="card-body" [formGroup]="ContactFormGroup">
+                <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+                  <div class="form-group row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'PERSONAL_PHONE'|translate}}</label>
+                      <kendo-maskedtextbox [maskValidation]="false" [includeLiterals]="true"
+                                           [mask]="'(+990)000000000000'" class="form-control" formControlName="PersonalPhone"
+                                           name="PersonalPhone"></kendo-maskedtextbox>
+                      <app-control-messages [control]="PersonalPhone" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROFESSIONAL_PHONE'|translate}}</label>
+                      <kendo-maskedtextbox [maskValidation]="false" [includeLiterals]="true"
+                                           [mask]="'(+990)000000000000'" class="form-control" formControlName="ProfessionalPhone"
+                                           name="ProfessionalPhone"></kendo-maskedtextbox>
+                      <app-control-messages [control]="ProfessionalPhone"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'Facebook'|translate}}</label>
+                      <input class="form-control" formControlName="Facebook" type="text"
+                             [ngClass]="{ 'has-error': ((Facebook.touched || Facebook.dirty) && (!Facebook.valid && !Facebook.disabled)) }"
+                             placeholder="{{'FACEBOOK_FORMAT' | translate}}">
+                      <app-control-messages [control]="Facebook" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'Linkedin'|translate}}</label>
+                      <input class="form-control" formControlName="Linkedin" type="text"
+                             [ngClass]="{ 'has-error': ((Linkedin.touched || Linkedin.dirty) && (!Linkedin.valid && !Linkedin.disabled))}"
+                             placeholder="{{'LINKEDIN_FORMAT' | translate}}">
+                      <app-control-messages [control]="Linkedin" class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End CONTACT content part -->
+            <!-- Begin Skills content part -->
+            <div class="tab-pane fade px-0 tab-class" id="Skills" role="tabpanel">
+              <div class="card-body">
+                <div class="col-lg-12 col-sm-12 col-md-12">
+                  <div *ngIf="this.employeeToUpdate.EmployeeSkills && this.employeeToUpdate.EmployeeSkills.length <= 0">
+                    <img src="../../../../assets/image/empty-data.png" style="width: 800px; height: 500px;margin-left: 400px;"
+                      class="img-responsive">
+                  </div>
+                  <div class="form-group row" style="max-height: 400px; overflow-x: hidden "
+                       *ngIf="this.employeeToUpdate.EmployeeSkills && this.employeeToUpdate.EmployeeSkills.length > 0">
+                    <div class="col-lg-12 col-sm-12 col-md-12" style="margin-bottom: 10px;"
+                         *ngFor="let employeeSkills of this.employeeToUpdate.EmployeeSkills; let i=index; ">
+                      <div class="col-lg-6 col-sm-6 col-md-6" style="font-weight: bold;">
+                        {{employeeSkills.IdSkillsNavigation.Label}} ( {{ employeeSkills.Rate}} / 6 )</div>
+                      <div class="col-lg-6 col-sm-6 col-md-6">
+                        <div> {{ getLevel(employeeSkills.Rate) |translate}}</div>
+                        <bar-rating [(rate)]="employeeSkills.Rate" [theme]="'default'" [max]="6" [readOnly]="true">
+                        </bar-rating>
+                      </div>
+                      <hr>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End skills content part -->
+            <!-- Begin Teams content part -->
+            <div class="tab-pane fade px-0 tab-class" id="Teams" role="tabpanel">
+              <div class="card-body">
+                <div class="col-lg-12 col-sm-12 col-md-12">
+                  <div *ngIf="this.teams && this.teams.length <= 0">
+                    <img src="../../../../assets/image/empty-data.png" style="width: 800px; height: 500px;margin-left: 400px;"
+                      class="img-responsive">
+                  </div>
+                  <div class="form-group row" style="max-height: 400px; overflow-x: hidden "
+                       *ngIf="this.teams && this.teams.length > 0">
+                    <div class="col-lg-12 col-sm-12 col-md-12" style="margin-bottom: 10px;"
+                         *ngFor="let team of this.teams; let i=index; ">
+                      <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-12" style="font-weight: bold;">
+                          {{team.Name}}
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-12">
+                          {{'TEAM_MANAGER'|translate}}: <span
+                          style="font-weight: bold">{{team.IdManagerNavigation.FullName}}</span>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-12">
+                          {{'CREATION_DATE'|translate}}: <span
+                          style="font-weight: bold">{{team.CreationDate | date: dateFormat}}</span>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="col-lg-6 col-sm-6 col-md-6">
+                          <div *ngIf="team.EmployeeTeam.AssignmentDate"> <label>
+                            {{'ASSIGNMENT_DATE'|translate}}</label>
+                            :
+                            <span
+                              style="color: #008000;"><b>{{ team.EmployeeTeam.AssignmentDate| date: dateFormat}}</b></span>
+                          </div>
+                          <div *ngIf="team.EmployeeTeam.UnassignmentDate"> <label>
+                            {{'UN_ASSIGNMENT_DATE'|translate}}</label>
+                            :
+                            <span style="color: #FF0000;">
+                              <b>{{ team.EmployeeTeam.UnassignmentDate | date: dateFormat}}</b></span>
+                          </div>
+                          <div><label> {{'ASSIGNMENT_PERCENTAGE'|translate}}</label> :
+                            <b>{{ team.EmployeeTeam.AssignmentPercentage}} %</b></div>
+                        </div>
+                      </div>
+                      <hr>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End Teams content part -->
+            <!-- Begin Notes content part -->
+            <div class="tab-pane fade px-0 tab-class" id="Notes" role="tabpanel"
+              *ngIf="isUserInSuperHierarchicalEmployeeList">
+              <div class="card-body">
+                <div class="col-lg-12 col-sm-12 col-md-12">
+                  <app-add-notes [idEmployee]="id" [isDisabled]="isDisabled" [idConnectedUser]="connectedEmployee"></app-add-notes>
+                  <app-control-messages [control]="Notes" class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Notes content part -->
+          </div>
+          <!-- End tab contents -->
+        </div>
+      </div>
+      <!-- End tab part-->
+    </div>
+    <!--Begin Card footer Start-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="/main/payroll/employee" *ngIf="hasListEmployeePermission && !isModal">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button class="btn btn-sm btn-save mx-1" (click)="save()" type="submit"
+                *ngIf="(hasUpdateEmployeePermission && isUpdateMode) || (hasAddEmployeePermission && !isUpdateMode) && employeeToUpdate.Status !== employeeStateEnumerator.Resigned">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+              <button *ngIf="!employeeToUpdate.ResignedFromExitEmployee && hasResignationEmployeePermission && employeeToUpdate.Status === employeeStateEnumerator.Active && hasUpdateEmployeePermission"
+               class="btn btn-sm btn-dark active mx-1" type="button" (click)="resignationClick()">
+                {{'RESIGNATION'|translate}} &nbsp; <i class="fa fa-level-down"></i>
+              </button>
+              <button *ngIf="!employeeToUpdate.ResignedFromExitEmployee && hasCancelResignationEmployeePermission &&
+              (employeeToUpdate.Status === employeeStateEnumerator.Resigning || employeeToUpdate.Status === employeeStateEnumerator.Resigned) && hasUpdateEmployeePermission"
+               class="btn btn-sm btn-success mx-1" type="button" (click)="cancelResignationSwal()">
+                {{'CANCEL_RESIGNATION'|translate}} &nbsp; <i class="fa fa-level-up"></i>
+              </button>
+              <button *ngIf="(!employeeToUpdate.ResignedFromExitEmployee && hasResignationEmployeePermission && ((employeeToUpdate.ResignationDepositDate && employeeToUpdate.Status === employeeStateEnumerator.Active)
+              || employeeToUpdate.Status === employeeStateEnumerator.Resigning))" class="btn btn-sm btn-dark active mx-1" type="button"
+                (click)="resignationClick(employeeToUpdate)">
+                <i class="fa fa-pencil-square-o"></i> &nbsp; {{'EDIT_RESIGNATION'|translate}}
+              </button>
+    
+              <button *ngIf="hasUpdateEmployeePermission && hasPayslipPreviewEmployeePermission" class="btn btn-sm btn-secondary active mx-1" type="button"
+                (click)="save(true)">
+                <i class="fa fa-eye"></i> &nbsp; {{'PAYSLIP_PREVIEW'|translate}}
+              </button>
+              <button class="btn btn-sm btn-light active mx-1" type="button" *ngIf="isUpdateMode && hasSendEmployeeSharedDocumentsPasswordPermission"
+                title="{{'SEND_SHARED_DOCUMENTS_PASSWORD'|translate}}" (click)="generateAndSendSharedDocumentsPassword()">
+                <i class="fa fa-key"></i> &nbsp; {{'SHARED_DOCUMENTS_PASSWORD'|translate}}
+              </button>
+            </div>
+          </div>
+      </div>
+    </div>
+  </form>
+  <!--Begin Card footer End-->
+</div>

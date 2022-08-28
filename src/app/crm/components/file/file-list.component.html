@@ -1,0 +1,62 @@
+<div class="card">
+  <div class="card-body">
+
+    <div class="row" style=" display: inline-block;">
+
+      <form class="form-horizontal">
+        <kendo-grid [data]="gridSettings.gridData"
+                    [pageSize]="gridSettings.state.take"
+                    [skip]="gridSettings.state.skip"
+                    [sortable]="true"
+                    (pageChange)="onPageChange($event)"
+                    [pageable]="pagerSettings"
+                    [reorderable]="true"
+                    [columnMenu]="false"
+                    (remove)="removeHandler($event)"
+                    [sort]="gridSettings.state.sort"
+                    [filter]="gridSettings.state.filter"
+                    (dataStateChange)="dataStateChange($event)">
+          <ng-template kendoGridToolbarTemplate>
+            <div class="row" *ngIf="!fromRelatedArchiving" style="float :right; margin-right: 4px;">
+              <button  class="btn btn-sm addBtn" (click)="showPopupAddFile()" type="button" tabindex="0" [disabled]="!this.authService.hasAuthorities(['ADD_FILE_'+entityType])" >
+                <i class="fa fa-plus fa AddIcon" style="color: white"></i>
+                <span style="color: white">&nbsp;{{'ADD'|translate}}</span>
+              </button>
+            </div>
+          </ng-template>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                             [title]="gridSettings.columnsConfig[0].title | translate"
+                             [width]="gridSettings.columnsConfig[0]._width"
+                             [filter]="gridSettings.columnsConfig[0].filter"
+                             [filterable]="gridSettings.columnsConfig[0].filterable"
+                             [format]="gridSettings.columnsConfig[0].format">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.creationDate"><span>{{ dataItem.creationDate| date : formatDate }}</span>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                             [title]="gridSettings.columnsConfig[1].title | translate"
+                             [width]="gridSettings.columnsConfig[1]._width"
+                             [filter]="gridSettings.columnsConfig[1].filter"
+                             [filterable]="gridSettings.columnsConfig[1].filterable"
+                             [format]="gridSettings.columnsConfig[1].format">
+          </kendo-grid-column>
+
+          <kendo-grid-command-column [width]="130">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+              <!-- edit command directive-->
+              <i *ngIf="!fromRelatedArchiving && this.authService.hasAuthorities(['EDIT_FILE_'+entityType])"
+                 class="las la-pen cursor-pointer edit-pencil la-lg" tooltip="{{'SHOW' | translate}}"
+                 (click)="showDetails(dataItem)"></i>
+              <!-- remove command directive -->
+              <i *ngIf="!fromRelatedArchiving && this.authService.hasAuthorities(['DELETE_FILE_'+entityType])"
+                 class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+                 (click)="removeHandler(dataItem)" tooltip="{{'DELETE' | translate}}"></i>
+            </ng-template>
+          </kendo-grid-command-column>
+        </kendo-grid>
+      </form>
+    </div>
+  </div>
+</div>

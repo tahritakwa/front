@@ -1,0 +1,156 @@
+<div class="card">
+  <!--Begin Card Header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_SOURCE_DEDUCTION'|translate}}</h3>
+    </div>
+  </div>
+  <!--End Card Header-->
+  <!--Begin add form-->
+  <form class="form-horizontal">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <!--Begin session info form-->
+      <div class="col-lg-12 col-sm-12 col-md-12 ">
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-4 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}</label>
+            <input class="form-control" disabled placeholder="{{sourceDeductionSessionInfos.Code}}" type="text">
+          </div>
+          <div class="col-sm-12 col-md-5 col-lg-5">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}<span class="required">*</span></label>
+            <input class="form-control" disabled placeholder="{{sourceDeductionSessionInfos.Title}}" type="text">
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'YEAR'|translate}}</label>
+            <kendo-datepicker [(value)]="sessionYear" [bottomView]="'decade'" [format]="'yyyy'" class="form-control"
+                              disabled>
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+      </div>
+      <!--End add form-->
+      <br>
+      <!--Begin buttons zone-->
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div *ngIf="showProgress">
+          <app-progress-bar [progress]="progression"></app-progress-bar>
+        </div>
+
+        <div *ngIf="showGrid == false" align="right" class="col-lg-12 col-md-12 col-sm-12 col-sx-12">
+          <button (click)="onGenerateClick()" *ngIf="hasGeneratePermission && !showProgress"
+                  class="k-button btn-secondary ml-1">
+            <i class="fa fa-cogs fa-sm AddIcon"></i>
+            <span>&nbsp; {{'GENERATE'|translate}}</span>
+          </button>
+        </div>
+        <div *ngIf="showGrid == true" align="right" class="col-lg-12 col-md-12 col-sm-12 col-sx-12">
+          <button *ngIf = "hasPrintPermission" (click)="downloadAllSourceDeduction()" class="k-button btn-secondary ml-1">
+            <i class="fa fa-download fa-sm AddIcon"></i>
+            <span>&nbsp; {{'DOWNLOAD_ALL'|translate}}</span>
+          </button>
+          <button (click)="regenerateClick()" *ngIf="hasRegeneratePermission && !isClosed"
+                  class="k-button btn-secondary ml-1">
+            <i class="fa fa-refresh fa-sm AddIcon"></i>
+            <span>&nbsp; {{'REGENERATE'|translate}}</span>
+          </button>
+          <button *ngIf = "hasBroadcastPermission" (click)="distributeSourceDeduction()" class="k-button btn-secondary ml-1">
+            <i class="fa fa-share fa-sm AddIcon"></i>
+            <span>&nbsp; {{'DISTRIBUTE_SOURCE_DEDUCTION'|translate}}</span>
+          </button>
+        </div>
+      </div>
+      <!--End buttons zone-->
+      <!--Begin Employee List-->
+      <div *ngIf="showGrid" class="col-lg-12 col-sm-12 col-md-12" style="margin-top:20px">
+        <kendo-grid (dataStateChange)="dataStateChange($event)" [data]="gridSettings.gridData"
+                    [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings" [reorderable]="true"
+                    [selectable]="true"
+                    [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [sortable]="true">
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                             [title]="gridSettings.columnsConfig[0].title | translate"></kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                             [title]="gridSettings.columnsConfig[1].title | translate">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a [routerLink]="['/main/payroll/employee/edit', dataItem.IdEmployeeNavigation.Id]" class="employee-link"
+                 target="_blank">
+                {{dataItem.IdEmployeeNavigation.LastName}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                             [title]="gridSettings.columnsConfig[2].title | translate">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a [routerLink]="['/main/payroll/employee/edit', dataItem.IdEmployeeNavigation.Id]" class="employee-link"
+                 target="_blank">
+                {{dataItem.IdEmployeeNavigation.FirstName}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <!--IsActive-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                             [filter]="gridSettings.columnsConfig[3].filter"
+                             [filterable]="gridSettings.columnsConfig[3].filterable"
+                             [format]="gridSettings.columnsConfig[3].format"
+                             [title]="gridSettings.columnsConfig[3].title | translate"
+                             [width]="gridSettings.columnsConfig[3]._width">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.Status == sourceDeductionStatus.Correct"><span
+                class="badge badge-success">{{'CORRECT'|translate}}</span></div>
+              <div *ngIf="dataItem.Status == sourceDeductionStatus.Wrong"><span
+                class="badge badge-warning">{{'WRONG'|translate}}</span></div>
+              <div *ngIf="dataItem.Status == sourceDeductionStatus.NotCalculated"><span
+                class="badge badge-danger">{{'NOT_CALCULATED'|translate}}</span></div>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-command-column [width]="132">
+            <ng-template kendoGridCellTemplate let-dataItem let-isNew="isNew">
+              <button (click)="regenerateOneSourceDeduction(dataItem)" *ngIf="!isClosed && hasRegeneratePermission"
+                      class="btnKendoGrid k-button k-primary"
+                      data-placement="top" data-toggle="tooltip"
+                      title="{{'REGENERATE' | translate}}" style="background-color: transparent;">
+                <i class="fa fa-refresh AddIcon"></i>
+              </button>
+              <button (click)="downloadPayslip(dataItem)" class="btnKendoGrid" data-placement="top" data-toggle="tooltip" *ngIf = "hasPrintPermission"
+                      title="{{'DOWNLOAD' | translate}}" style="background-color: transparent;">
+                <i class="fa fa-download"></i>
+              </button>
+              <button (click)="distributeOneSourceDeduction(dataItem)" *ngIf="hasBroadcastPermission" class="btnKendoGrid" data-placement="top"
+                      data-toggle="tooltip"
+                      title="{{'UNIQUE_DISTRIBUTE_SOURCE_DEDUCTION' | translate}}" style="background-color: transparent;">
+                <i class="fa fa-share fa-sm AddIcon"></i>
+              </button>
+            </ng-template>
+          </kendo-grid-command-column>
+        </kendo-grid>
+      </div>
+      <!--End Employee List-->
+    </div>
+    <!--End Card body-->
+    <!--Begin Card footer-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer ml-0">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button [routerLink]="['/main/payroll/sourcedeductionsession']" class="btn btn-sm btn-primary btn-back-to-list" #BackToList>
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </button>
+              <button (click)="onPreviousClik()" class="btn btn-sm btn-primary mx-1">
+                <i class="fa fa-angle-left"></i> {{'PREVIOUS'|translate}}
+              </button>
+              <button (click)="closeSessionClick()" *ngIf="hasClosePermission && !isClosed" class="btn btn-sm btn-primary next mx-1"
+                  type="submit">
+                <i class="fa fa-floppy-o"></i> {{'CLOSEANYSESSION'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!--End Card footer-->
+  </form>
+  <!--End add form-->
+</div>

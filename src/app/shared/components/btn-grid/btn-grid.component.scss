@@ -1,0 +1,201 @@
+
+
+.favourite {
+  border-radius: 100px;
+  width: 20px;
+  overflow: hidden;
+  height: 20px;
+  cursor: pointer;
+  padding: 18px;
+  -webkit-box-shadow: 0px 0px 0px 2px #4b9aad;
+  box-shadow: 0px 0px 0px 2px #4b9aad;
+  color: #4b9aad;
+}
+.term-Billing-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: #4b9aad;
+  background: none;
+  border: none;
+  font-size: 28px;
+  margin-top : 4px;
+}
+
+.favourite_heart {
+  margin-top: -10px;
+  margin-left: -5px;
+}
+#action_grid_toggle{
+  left:-25px!important;
+}
+
+#action_toggle{
+  left:-25px!important;
+}
+
+
+
+
+/* Media quizzles */
+
+.nav {
+  position: absolute;
+}
+
+.toggleClass input{
+  display: none;
+}
+#crmToggle {
+  display: none;
+}
+.button {
+  width             : 42px;
+  height            : 40px;
+  background        : #ffffff;
+  border-radius     : 100%;
+  -webkit-transition: all 0.5s ease-in-out;
+  transition        : all 0.5s ease-in-out;
+  cursor            : pointer;
+  border            : 2px solid #4b9aad !important;
+}
+
+.nav {
+  transform    : translateY(-10%);
+  opacity      : 0;
+  top          : -2px;
+  margin-left  : -130px;
+  transition   : all 0.5s ease-in-out;
+  background   : #fff;
+  width        : 135px;
+  border-radius: 5px;
+  transform    : translateY(0%);
+  z-index      : 99;
+  border       : 1px solid #00000012 !important;
+  visibility   : hidden;
+}
+
+.nav.crm-nav {
+  transform: translateY(-10%);
+  opacity: 0;
+  top: 35px;
+  margin-left: -9%;
+  transition: all 0.5s ease-in-out;
+  background: #fff;
+  width: 200px;
+  border-radius: 5px;
+  transform: translateY(0%);
+  z-index: 99;
+  border: 1px solid #00000012 !important;
+  visibility: hidden;
+}
+
+.nav a {
+  text-align     : center;
+  display        : block;
+  color          : #516670;
+  text-decoration: none;
+  background     : transparent;
+}
+
+.toggleClass input:checked~.nav {
+  opacity   : 1;
+  transform : translateY(10%);
+  visibility: visible;
+}
+
+.nav.crm-nav a {
+  text-align: center;
+  display: block;
+  color: #516670;
+  text-decoration: none;
+  background: transparent;
+  width: 200px;
+  margin-bottom: 10%;
+}
+#toggle:checked ~ .nav {
+  opacity: 1;
+  transform: translateY(10%);
+  visibility: visible;
+}
+
+#modeltoggle:checked~.button {
+  box-shadow: 0 0 0 0 transparent;
+}
+#crmToggle:checked ~ .nav.crm-nav {
+  opacity: 1;
+  transform: translateY(10%);
+  visibility: visible;
+}
+#crmToggle:checked ~ .button {
+  box-shadow: 0 0 0 0 transparent;
+}
+#crmToggleAction {
+  display: none;
+}
+#crmToggleAction:checked ~ .nav.crm-nav {
+  opacity: 1;
+  transform: translateY(10%);
+  visibility: visible;
+}
+#crmToggleAction:checked ~ .button {
+  box-shadow: 0 0 0 0 transparent;
+}
+.config {
+  margin-right: 5px;
+  background: transparent;
+  padding-left: 3%;
+}
+
+#modeltoggle {
+  display: none;
+}
+
+.custom-file-upload {
+  border        : 2px solid #4c9ab8 !important;
+  padding-top   : 5px;
+  padding-bottom: 5px;
+  cursor        : pointer;
+  background    : transparent;
+  border-radius : 100%;
+  margin-right  : 9px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+a.dropdown-item.k-button.k-grid-pdf,
+a.dropdown-item.k-button.k-grid-excel{
+  position: relative;
+  padding: 10px 20px;
+  border-bottom: 1px solid #c8ced3;
+  border-radius: 0px;
+  font-size: 0.875rem;
+  text-align:left;
+  background: transparent;
+  margin-left :0px;
+  justify-content: left;
+
+}
+
+a.dropdown-item.k-button.k-grid-pdf:hover,
+a.dropdown-item.k-button.k-grid-excel:hover {
+  background-color: #f0f3f5;
+}
+
+
+.dpItem {
+  border-bottom: 1px solid #c8ced3!important;
+}
+
+.dpMenu {
+  border: 1px solid #c8ced3!important;
+}
+
+  button.btn.btn-sm.k-button.k-grid-add-command {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.765625rem;
+  line-height: 1.5;
+  border-radius: 0.2rem;
+}

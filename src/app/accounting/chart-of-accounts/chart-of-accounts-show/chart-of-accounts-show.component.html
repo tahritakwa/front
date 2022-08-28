@@ -1,0 +1,86 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'CHART_OF_ACCOUNTS'|translate}}</h3>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <form class="form-horizontal">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <br />
+              <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4">
+                  <div style="margin-left: 5px;">
+                    <div class="input-group flex-nowrap">
+                      <input type="text" min="1" class="form-control" name='value' [(ngModel)]='value'
+                        (keyup.enter)="onSearch()" (focusout)="onSearch()"
+                        placeholder="{{'SEARCH_CHART_ACCOUNT'|translate}}" aria-describedby="addon-wrapping">
+                      <div class="input-group-prepend">
+                        <button class="btn btn-secondary btn-search" type="button" id="button-addon2" (click)="onSearch()"
+                          [tooltip]="search" content-type="template">
+                            <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                          </button>
+                          <ng-template #search>
+                            <span>{{'SEARCH'|translate}}</span>
+                          </ng-template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-8 col-md-8 col-sm-8">
+                    <div class="row" style="float :right;">
+                      <div *ngIf="this.authService.hasAuthority(AccountingPermissions.ADD_CHART_OF_ACCOUNTS)"
+                        id="divButtonAdd" style="margin-left: 10px" [tooltip]="addNewClasse" content-type="template">
+                        <button data-placement="bottom"
+                                class="form-group btn btn-sm  addBtn ml-3 mr-2" type="button" tabindex="0"
+                                (click)="addNew(false,false)">
+                          <i class="fa fa-plus fa-lg addBtn"></i>
+                          <span class="addBtn">&nbsp;{{'ADD' | translate}}</span>
+                        </button>
+                      </div>
+                      <ng-template #addNewClasse>
+                        <span>{{'ADD_NEW_CHART_ACCOUNT'|translate}}</span>
+                      </ng-template>
+                      <app-chart-accounts-import-btn *ngIf="this.authService.hasAuthorities([AccountingPermissions.IMPORT_ACCOUNTING_TEMPLATE,AccountingPermissions.EXPORT_CHART_OF_ACCOUNTS])"
+                        [canExportCharts]="this.authService.hasAuthority(AccountingPermissions.EXPORT_CHART_OF_ACCOUNTS)"
+                        [canImportCharts]="this.authService.hasAuthority(AccountingPermissions.IMPORT_CHART_OF_ACCOUNTS)"
+                                                     [canExportModelCharts]="this.authService.hasAuthority(AccountingPermissions.EXPORT_MODEL_CHART_OF_ACCOUNTS)"
+                        style="margin-right:20px"></app-chart-accounts-import-btn>
+                    </div>
+                  </div>
+                </div>
+                <br />
+                <div class="border" [ngStyle]="{'height': '500px', 'overflow-y': 'auto'}">
+                  <kendo-treeview [nodes]="data" textField="code" kendoTreeViewExpandable="false"
+                    kendoTreeViewHierarchyBinding childrenField="children" (selectionChange)="handleSelection($event)">
+                    <ng-template kendoTreeViewNodeTemplate let-dataItem let-index="index">
+                      <span style="color: black">
+                        &nbsp;{{dataItem.code}}. &nbsp; {{dataItem.label}}</span>
+                      <i *ngIf="this.authService.hasAuthority(AccountingPermissions.DELETE_CHART_OF_ACCOUNTS)" id="divButtonUpdate"
+                        aria-hidden="true"  class="cursor-pointer suitable-color-icon fa fa-edit fa-lg aligned-icon zoom mr-2 ml-3"
+                        (click)="addNew(true,false)"></i>
+
+                      <i *ngIf="this.authService.hasAuthority(AccountingPermissions.DELETE_CHART_OF_ACCOUNTS)" id="divButtonDelete"
+                        aria-hidden="true" class="cursor-pointer suitable-color-icon fa fa-times fa-lg aligned-icon zoom"
+                        (click)="deleteChartOfAccounts()"></i>
+
+                    </ng-template>
+                  </kendo-treeview>
+                    <div *ngIf="this.authService.hasAuthority(AccountingPermissions.ADD_CHART_OF_ACCOUNTS)" class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+                      <button class="btn-Add k-button btn btn-add" type="button" (click)="addNew(false,true)">
+                        <i class="fa fa-plus fa AddIcon"></i>
+                        <span>&nbsp; {{'ADD_PARENT_CHART_ACCOUNT'|translate}}</span>
+                      </button>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <br />
+          </div>
+        </div>
+      </form>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+<div class="card">
+  <form [formGroup]="evaluationFormGroup" class="form-horizontal">
+    <!-- Begin principal menu  part-->
+    <div class="card-body">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <p-accordion *ngFor="let evaluationCriteriaTheme of evaluationCriteriaThemeList">
+          <div style="margin-top:10px">
+            <p-accordionTab header="{{evaluationCriteriaTheme.Label|translate}}">
+              <div *ngIf="GetCriteriaMarkFormArrayControlsByTheme(evaluationCriteriaTheme.Id).length > 0"
+                   class="form-group row">
+                <div *ngFor="let criteriaMark of GetCriteriaMarkFormArrayControlsByTheme(evaluationCriteriaTheme.Id); let i = index"
+                     class="col-lg-6 col-md-6 col-sm-12"
+                     formArrayName="CriteriaMark" style="display: flex;">
+                  <label class="col-lg-6 col-md-6 col-sm-6"> {{criteriaMark.controls['Label'].value|translate}}</label>
+                  <bar-rating [(ngModel)]="criteriaMark.controls['Mark'].value" [max]="6" [ngModelOptions]="{standalone: true}"
+                              [theme]="'default'" class="col-lg-6 col-md-6 col-sm-6"
+                              style="margin-top: -20px">
+                  </bar-rating>
+                </div>
+              </div>
+              <label
+                *ngIf="GetCriteriaMarkFormArrayControlsByTheme(evaluationCriteriaTheme.Id).length === 0">{{'NO_EVALUATION_CRITERIA' | translate}}</label>
+            </p-accordionTab>
+          </div>
+        </p-accordion>
+
+
+        <hr width=100%>
+
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'STRONG_POINT'|translate}}</label>
+            <textarea class="form-control" formControlName="StrongPoints" style="height:100px;"></textarea>
+          </div>
+          <div class="col-lg-6 col-md-12 col-sm-12" style="float: right !important;">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'WEAKNESS'|translate}}</label>
+            <textarea class="form-control" formControlName="Weaknesses" style="height:100px;"></textarea>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'OTHER_INFORMATION'|translate}}</label>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+            <p-editor [style]="{'height':'150px'}" formControlName="OtherInformations">
+            </p-editor>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12 col-md-12 col-sm-12"><span class="required">*</span>
+            <input [value]="1" formControlName="InterviewerDecision" id="yes-radio" name="InterviewerDecision"
+                   type="radio"><label for="yes-radio">{{'FAVORABLE'|translate}}</label>
+            <input [value]="2" formControlName="InterviewerDecision" id="maybe-radio" name="InterviewerDecision"
+                   type="radio"><label for="maybe-radio">{{'WAITING'|translate}}</label>
+            <input [value]="3" formControlName="InterviewerDecision" id="no-radio" name="InterviewerDecision"
+                   type="radio"><label for="no-radio">{{'TO_REFUSE'|translate}}</label>
+          </div>
+          <app-control-messages [control]="evaluationFormGroup.controls.InterviewerDecision"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+      </div>
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button class="btn btn-sm btn-save mx-1" (click)="save()">
+                <i class="fa fa-floppy-o"></i> {{ 'SAVE' |translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

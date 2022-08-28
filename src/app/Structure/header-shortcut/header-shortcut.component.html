@@ -1,0 +1,101 @@
+<li *ngIf="hasAddQuotationPermission || hasAddDeliveryPermission || hasQuickSalesPermission
+  || hasDeliveryListPermission || hasAddAssetPermission" class="nav-item dropdown show mr-0">
+  <a class="nav-link" [tooltip]="'FAVORITES' | translate " data-toggle="dropdown" href="#" role="button"
+     aria-haspopup="true" aria-expanded="true" >
+    <i
+      class="las la-bookmark star-style"></i>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-right dropdown-menu-lg drop-down-list"
+      style="right: auto">
+    <li class="dropdown-header stark-drop-down-header" style="text-align: center">
+      <strong class="float-center">{{'FAVORITES'|translate}}</strong>
+    </li>
+    <div>
+      <ul class="nav navbar-nav d-sm-down-none body">
+        <div class="col-lg-12 col-sm-12 col-md-12" role="group" aria-label="Button group" style="margin-top: 10px">
+          <div class="row form-group">
+            <div *ngIf="hasAddQuotationPermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'QUOTATION'|translate}}"
+                      (click)="goToQuotation()">
+                <i class="las la-paste icon-style"></i>
+              </button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem; ">{{'QUOTATION' | translate}}</span></label>
+            </div>
+
+            <div *ngIf="hasAddDeliveryPermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'DELIVERY_FORM'|translate}}"
+                      (click)="goToDelivery()">
+                <i class="las la-file icon-style"></i>
+              </button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem; ">{{'DELIVERY_FORM' | translate}}</span></label>
+            </div>
+
+            <div *ngIf="hasQuickSalesPermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'FASTE_SALES_MENU'|translate}}"
+                      (click)="goToSearchItem()">
+                <i class="las la-mobile-alt icon-style"></i></button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem;">{{'FASTE_SALES_MENU' | translate}}</span></label>
+            </div>
+
+          </div>
+
+
+          <div class="row form-group">
+            <div class="col-sm-12 col-md-6 col-lg-4" *ngIf="haveCounterSalesPermission">
+              <button class="btn btn-collapsable" type="button" title="{{'COUNTER_SALES'|translate}}"
+                      (click)="goToCounterSales()">
+                <i class="las la-mobile-alt icon-style"></i></button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem;">{{'COUNTER_SALES' | translate}}</span></label>
+            </div>
+            <div *ngIf="hasDeliveryListPermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'DELIVERY_FORMS_LIST'|translate}}"
+                      (click)="goToDeliveryList()">
+                <i class="las la-file-alt icon-style"></i></button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem;">{{'DELIVERY_FORMS_LIST' | translate}}</span></label>
+            </div>
+            <div *ngIf="hasAddAssetPermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'ADD_ASSET'|translate}}"
+                  (click)="goToAddAsset()">
+                <i class="fa fa-plus icon-style"></i>
+              </button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem; ">{{'ADD_ASSET' | translate}}</span></label>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div *ngIf="hasAddLeavePermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'ADD_LEAVE'|translate}}"
+                  (click)="goToAddLeave()">
+                <i class="fa fa-plus-square icon-style"></i>
+              </button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem; ">{{'ADD_LEAVE' | translate}}</span></label>
+            </div>
+            <div *ngIf="hasTimesheetListPermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'MY_TIMESHEET'|translate}}"
+                  (click)="goToListMyTimesheet()">
+                <i class="fa fa-calendar icon-style"></i>
+              </button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem; ">{{'MY_TIMESHEET' | translate}}</span></label>
+            </div>
+            <div *ngIf="hasAddDocumentRequestPermission" class="col-sm-12 col-md-6 col-lg-4">
+              <button class="btn btn-collapsable" type="button" title="{{'DOCUMENT_REQUEST'|translate}}"
+                  (click)="goToAddDocumentRequest()">
+                <i class="fa fa-file-pdf-o icon-style"></i>
+              </button>
+              <label class="col-lg-12 col-md-12 col-sm-12"><span
+                style="padding: 0.2rem; ">{{'DOCUMENT_REQUEST' | translate}}</span></label>
+            </div>
+          </div>
+        </div>
+      </ul>
+    </div>
+  </ul>
+</li>

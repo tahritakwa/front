@@ -1,0 +1,22 @@
+<app-current-fiscal-year-header [currentFiscalYearId]="currentFiscalYearId"></app-current-fiscal-year-header>
+<nav class="navbar navbar-expand-lg" style="background-color: white !important; height: 50px;">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+          aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class=" las la-chevron-down fa-lg suitable-color-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <ng-container>
+      <div class="dropdown">
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/accounting/reporting/editions/trialBalance']"
+           routerLinkActive="active-link">{{'TRIAL_BALANCE'|translate}}</a>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div class="dropdown">
+        <a class="nav-link nav-style dropbtn" [routerLink]="['/main/accounting/reporting/editions/generalLedger']"
+           routerLinkActive="active-link">{{'GENERAL_LEDGER'|translate}}</a>
+      </div>
+    </ng-container>
+  </div>
+</nav>

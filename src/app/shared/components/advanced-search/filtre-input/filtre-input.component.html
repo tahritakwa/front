@@ -1,0 +1,20 @@
+<span tooltip="{{'FILTRE'|translate}}">
+<button *ngIf = "filtreFieldsInputs.length > 0"class="btn btn-sm btn-filter" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+  aria-expanded="false">
+  <i class="fa fa-filter" aria-hidden="false"></i>
+</button>
+<div class="dropdown-menu" id="action_grid_toggle" aria-labelledby="dropdownMenuButton">
+  <div class="dropdown-item" *ngFor="let filtreInput of filtreFieldsInputs ; let i= index;"
+    (click)="onLabelClick(filtreInput,i)">
+    <div class="input-group">
+      <label>
+        <input *ngIf="!onlyOneCheckedDropdown" id="{{i}}" class="k-checkbox" type="checkbox" [checked]="checkedInput[i]"
+          (click)="changeFiltre(filtreInput,i)">
+        <span [ngClass]="{'k-checkbox-label':!onlyOneCheckedDropdown}">
+          {{filtreInput.label|translate }}
+        </span>
+      </label>
+    </div>
+  </div>
+</div>
+</span>

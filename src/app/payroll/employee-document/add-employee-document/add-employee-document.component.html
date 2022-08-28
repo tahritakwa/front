@@ -1,0 +1,56 @@
+<div class="card">
+  <div *ngIf="!isModal" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ADD_DOCUMENT'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="employeeDocumentFormGroup" class="form-horizontal">
+
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+
+          <div class="form-group row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'TYPE'|translate}}<span class="required">*</span></label>
+              <app-employee-document-type-dropdown
+                [group]="employeeDocumentFormGroup"></app-employee-document-type-dropdown>
+              <app-control-messages [control]="employeeDocumentFormGroup.controls.Type"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+          <div class="form-group row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'LABEL'|translate}}<span class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (employeeDocumentFormGroup.controls.Label.touched || employeeDocumentFormGroup.controls.Label.dirty) && !employeeDocumentFormGroup.controls.Label.valid }" class="form-control" formControlName="Label" name="Label"
+                     type="text">
+              <app-control-messages [control]="employeeDocumentFormGroup.controls.Label"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+      <!-- End principal menu  part -->
+
+      <br/>
+      <a *ngIf="!isModal" routerLink="/main/payroll/employee">
+        <span class="btn btn-sm btn-primary">
+          <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+        </span>
+      </a>
+      <button (click)="save()" *ngIf="!isModal" class="btn btn-sm btn-danger" type="submit">
+        <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+      </button>
+      <button (click)="save()" *ngIf="isModal" class="btn btn-sm btn-danger" type="submit">
+        <i class="fa fa-floppy-o"></i> {{'ADD'|translate}}
+      </button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+<div class="card">
+  <!--Begin Card header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'APPOINTMENT_REQUEST_TITLE'|translate}}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin Card body-->
+  <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <div class="row">
+        <!-- garage -->
+        <div class="col-lg-4 col-md-12 col-sm-12">
+          <div class="row">
+            <label class="col-lg-auto col-md-12 col-sm-12" style="padding-top: 5px">{{'GARAGE' | translate}}
+            </label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <app-garage-dropdown [group]="searchFormGroup"></app-garage-dropdown>
+            </div>
+          </div>
+        </div>
+        <!-- vehicle dropdown -->
+        <div class="col-lg-4 col-md-12 col-sm-12">
+          <div class="row">
+            <label class="col-lg-auto col-md-12 col-sm-12" style="padding-top: 5px">{{'VEHICLE' | translate}}
+            </label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <app-registration-number-of-vehicle-dropdwon [group]="searchFormGroup" [category]="vehicleCategory">
+              </app-registration-number-of-vehicle-dropdwon>
+            </div>
+          </div>
+        </div>
+        <!-- serach button -->
+        <div class="col-lg-4 col-md-12 col-sm-12 p-1">
+        <div class="row">
+          <div class="col-lg-auto p-1">
+          <i class="fa fa-search fa-lg" aria-hidden="true" (click)='initDataSource()'></i>
+          </div>
+        </div>
+      </div>
+      </div>
+      <!-- Add Button Start -->
+      <div class="row justify-content-end">
+        <div class="col-auto mt-1">
+          <button class="btn btn-sm" style="background-color: #20a8d8 !important;" type="button"
+            (click)="addNewAppointment()">
+            <i class="fa fa-plus fa AddIcon" style="color: white"></i>
+            <span style="color: white">&nbsp; {{'ADD'|translate }}</span>
+          </button>
+        </div>
+      </div>
+      <!-- Add Button End -->
+    </div>
+    <div class="h-100 w-100" style="padding-top: 20px; overflow-x: scroll;">
+
+      <kendo-scheduler [selectedDate]="todayDate" [modelFields]="eventFields" [startTime]="'00:00'" [endTime]="'00:00'"
+        [kendoSchedulerBinding]="events" [selectedViewIndex]="1" style="height: 800px; min-width: 1000px;"
+        (dateChange)="loadDataSource($event)">
+
+        <ng-template kendoSchedulerEventTemplate kendoSchedulerAllDayEventTemplate let-event>
+          <div class="dropright" title="">
+            <div class="dropdown-menu calendar-window" onclick="event.stopPropagation()">
+              <div class="card-header div-details-header">
+                <span>{{'APPOINTMENT_DETAILS'| translate}}</span>
+                <span style="float: right;" (click)="removeEvent(event.dataItem)"
+                 *ngIf="event.dataItem && !event.dataItem.IdIntervention && hasDeletePermission">
+                  <i class="fa fa-trash-o" style="color: white;"></i>
+                </span>
+              </div>
+              <div class="card-body" style="margin-left: 9px;">
+                <!-- Event State -->
+                <div class="form-group row" *ngIf="event.dataItem.State === appointmentStateEnumerator.Completed">
+                  <span style="margin-left: 0.5em; color: #e30505;" *ngIf="!event.dataItem.IsAllDay">
+                    {{'COMPLETED' | translate}}
+                  </span>
+                  <span style="margin-left: 0.5em; color: #e30505;" *ngIf="event.dataItem.IsAllDay">
+                    {{'COMPLETED' | translate}}
+                  </span>
+                </div>
+                <!-- Event dates -->
+                <div class="form-group row">
+                  <i class="fa fa-clock-o icon-style" aria-hidden="true"></i>
+                  <span style="margin-left: 0.5em;" *ngIf="!event.dataItem.IsAllDay">
+                    {{event.dataItem.StartDate | date: dateTimeFormat}}&nbsp;-
+                    {{event.dataItem.EndDate | date: dateTimeFormat}}
+                  </span>
+                  <span style="margin-left: 0.5em;" *ngIf="event.dataItem.IsAllDay">
+                    {{event.dataItem.StartDate | date: dateFormat}}&nbsp;-
+                    {{event.dataItem.EndDate | date: dateFormat}}
+                  </span>
+                  <span style="margin-left: 19px; color: #e30505;" *ngIf="event.dataItem.IsAllDay">
+                    {{'IS_ALL_DAY' | translate}}
+                  </span>
+                </div>
+                <!-- Vehicle -->
+                <div class="form-group row">
+                  <i class="fa fa-car icon-style" aria-hidden="true"> </i>
+                  <span style="margin-left: 0.3em;" class="pointer code-style"
+                    (click)="goToVehicleDetails(event.dataItem.IdVehicle)" theme="light">
+                    {{event.dataItem.VehicleImmatriculation}}
+                  </span>
+                </div>
+                <!-- Garage -->
+                <div class="form-group row">
+                  <i class="fa fa-map-marker icon-style" aria-hidden="true"></i>
+                  <span style="margin-left: 0.8em;">
+                    {{event.dataItem.GarageName}}
+                  </span>
+                </div>
+                <!-- Note -->
+                <div class="form-group row" style="margin-bottom: 0px !important;">
+                  <i class="fa fa-file-o icon-style" aria-hidden="true"></i>
+                  <span style="margin-left: 0.5em;" [innerHTML]="event.dataItem.Description"> </span>
+                </div>
+              </div>
+              <div class="card-footer" style="background-color: #73a1c0; padding: 0.2em;">
+                <button (click)="editTheEvent(event)" class="btn btn-sm btn-default" style="color: white;" *ngIf="hasUpdatePermission || hasShowPermission">
+                  <span theme="light">
+                    <i class="las la-pen"></i>
+                    {{'UPDATE_EVENT_SHORTCUT'|translate}}
+                  </span>
+                </button>
+                <button *ngIf="(event && event.dataItem) && !event.dataItem.IdIntervention && hasAddInterventionToTheEvent"
+                  (click)="addInterventionToTheEvent(event)" class="btn btn-sm btn-default"
+                  style="color: white; float: right;">
+                  <span theme="light">
+                    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+                    {{'ADD_INTERVENTION_SHORTCUT'|translate}}
+                  </span>
+                </button>
+                <button *ngIf="event && event.dataItem && event.dataItem.IdIntervention && hasUpdateInterventionToTheEvent"
+                  (click)="updateInterventionOfTheEvent(event)" class="btn btn-sm btn-default"
+                  style="color: white; float: right;">
+                  <span theme="light">
+                    <i class="fa fa-pencil-square-o"></i>
+                    {{'UPDATE_INTERVENTION_SHORTCUT'|translate}}
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div class="event-title-style" data-toggle="dropdown">
+              <span>
+                {{event.title}}
+              </span>
+            </div>
+          </div>
+        </ng-template>
+
+        <kendo-scheduler-day-view showWorkHours="true">
+        </kendo-scheduler-day-view>
+
+        <kendo-scheduler-week-view showWorkHours="true">
+        </kendo-scheduler-week-view>
+
+        <kendo-scheduler-agenda-view showWorkDay="true">
+        </kendo-scheduler-agenda-view>
+
+        <kendo-scheduler-messages today="{{'TODAY'| translate}}" weekViewTitle="{{'WEEK'| translate}}"
+          dayViewTitle="{{'DAY' | translate}}" timelineViewTitle="{{'TIMELINE' | translate}}"
+          monthViewTitle="{{'MONTH'| translate}}" showWorkDay="{{'SHOW_BUSINESS_HOURS'|translate}}"
+          showFullDay="{{'SHOW_FULL_DAY'|translate}}" allDay="{{'ALL_DAY' | translate}}">
+        </kendo-scheduler-messages>
+      </kendo-scheduler>
+    </div>
+
+  </div>
+  <!-- End card body-->
+  <!--Begin Card footer Start-->
+  <div class="card-footer">
+
+  </div>
+  <!--Begin Card footer End-->
+</div>

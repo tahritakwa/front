@@ -1,0 +1,68 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <form class="form-horizontal" [formGroup]="mailingFormGroup">
+        <div class="card" style="margin-bottom: 0px">
+          <div class="card-body">
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMAIL'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="text" formControlName="email"
+                           [ngClass]="{ 'has-error': (mailingFormGroup.controls.email.touched ||
+                               mailingFormGroup.controls.email.dirty) && !mailingFormGroup.controls.email.valid }">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="mailingFormGroup.controls.email"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'PASSWORD'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="password" formControlName="password"
+                           [ngClass]="{ 'has-error': (mailingFormGroup.controls.password.touched ||
+                               mailingFormGroup.controls.password.dirty) && !mailingFormGroup.controls.password.valid }">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="mailingFormGroup.controls.password"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Begin Card footer-->
+          <div class="card-footer" style="float: right;margin-right: 1%; background: transparent; padding-bottom: 0;">
+            <div class="row" style="float: right;">
+              <div class="col-lg-12 col-md-12">
+                <button class="btn btn-sm btn-primary" (click)="onBackToListOrCancel()">
+                  <i class="fa fa-close"></i> {{!isModal ? 'BACK_TO_LIST' : 'CANCEL' |translate}}
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="save()">
+                  <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

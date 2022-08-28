@@ -1,0 +1,15 @@
+.tec-doc {
+  text-align: center;
+  padding: 0;
+  color: rgb(76, 154, 174);
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  kendo-splitter.k-widget.k-splitter.k-splitter-flex {
+    min-width: 500px;
+  }
+  .card-body {
+    overflow-x: scroll !important;
+  }
+}

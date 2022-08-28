@@ -1,0 +1,64 @@
+<div class="row">
+  <div class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" *ngFor="let dataItem of gridSettings.gridData.data; let i=index;">
+    <div class="card" [ngClass]="isElementCardSelected(dataItem) ? 'selected-card': ''" (click)="onItemClick(dataItem)"
+      *ngIf="dataItem">
+      <div class="card-body">
+        <div class="row d-flex mb-3">
+          <div class="col-auto">
+            <div class="row">
+              <div class="col-auto">
+                <img [src]="dataItem.image" class="rounded-circle item-card-img" alt="supplier photo" />
+              </div>
+              <div class="col pl-0">
+                <span class="item-identifier"><a>{{dataItem.Code}} - {{dataItem.Description}}</a> </span>
+                <div>{{dataItem.LabelProduct}}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-auto p-0 ml-auto">
+            <!--Open advanced edit form -->
+            <i *ngIf = "hasShowPermission || hasUpdatePermission" (click)="colneItem(dataItem.Id)" class="fa fa-clone cursor-pointer edit-pencil mr-2 ml-auto"></i>
+            <i *ngIf = "hasShowPermission || hasUpdatePermission" (click)="edit(dataItem)" class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+            <i *ngIf = "hasDeletePermission" (click)="removeHandler(dataItem)" class=" fa fa-trash-o la-lg mx-2 text-danger" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col ml-5">
+            <div class="mb-2">
+              <span class="label-prices">
+                <i class="fa fa-money fa-lg ml-2" style="color: #61a8ad" aria-hidden="true"></i>
+                {{'PUHT'|translate}}: </span>
+              <span class="value-prices"> {{dataItem.UnitHtsalePrice}} </span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-2">
+              <div *ngIf="dataItem.ListTiers">
+                <span *ngIf="dataItem.ListTiers[0]" tooltip="{{dataItem.ListTiers[0].Name}}"
+                  class="rounded-element-cell">
+                  {{dataItem.ListTiers[0].Name}}
+                </span>
+                <span *ngIf="dataItem.ListTiers[1]" tooltip="{{dataItem.ListTiers[1].Name}}"
+                  class="rounded-element-cell">
+                  {{dataItem.ListTiers[1].Name}}
+                </span>
+                <span *ngIf="dataItem.ListTiers.length > 2" tooltip="{{'SHOW_MORE'|translate}}">
+                  {{'+' }}{{dataItem.ListTiers.length - 2 }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Cards end-->
+<!-- Paginator start-->
+<app-kendo-pager [dataSource]="gridSettings" (pageChangeEvent)="paginate($event)"
+  (stateChangeEvent)="dataStateChange($event)">
+</app-kendo-pager>
+<!-- Paginator end-->

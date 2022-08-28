@@ -1,0 +1,168 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row form-group">
+    <div class="col-lg-4 col-sm-12 col-md-12 ">
+      <div class="d-flex justify-content-center">
+        <div class="col-12">
+          <div class="form-group row">
+            <div class="col-10">
+              <input type="text" class="form-control"
+                     placeholder="{{'SEARCH'|translate}}" name='search'
+                     aria-label="search" aria-describedby="addon-wrapping">
+            </div>
+            <div class="col-2 p-1">
+              <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+    <kendo-grid
+      [data]="gridSettings.gridData"
+      [pageSize]="gridSettings.state.take"
+      [skip]="gridSettings.state.skip"
+      [sort]="gridSettings.state.sort"
+      [reorderable]="true"
+      [sortable]="true">
+
+      <!-- checkbox Start-->
+      <kendo-grid-column
+        [field]="gridSettings.columnsConfig[0].field"
+        [title]="gridSettings.columnsConfig[0].title | translate"
+        [width]="80">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+    <span (click)="setHoldingTaxVerification(dataItem)" class="button-checkbox">
+      <button type="button" class="action-btn bill-default-btn" data-color="primary">
+         <i *ngIf="!dataItem.IsChecked" class="fa fa-square-o bill-icon-style"></i>
+         <i *ngIf="dataItem.IsChecked" class="fa fa-check-square bill-icon-style"></i>
+      </button>
+    </span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- checkbox End-->
+      <!-- Label Start-->
+      <kendo-grid-column
+        [field]="gridSettings.columnsConfig[1].field"
+        [title]="gridSettings.columnsConfig[1].title | translate"
+        [width]="240">
+      </kendo-grid-column>
+      <!-- Label End-->
+      <!--Type-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [title]="gridSettings.columnsConfig[2].title | translate"
+      [width]="100" >
+      <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+        <span *ngIf="dataItem.IdWithholdingTaxNavigation.Type == withholdingTaxTypeEnumerator.Ttc"> {{"TTC" | translate}}</span>
+        <span *ngIf="dataItem.IdWithholdingTaxNavigation.Type == withholdingTaxTypeEnumerator.Vat"> {{"VAT" | translate}}</span>
+      </ng-template>
+      </kendo-grid-column>
+      <!-- Amount TTC Start -->
+      <kendo-grid-column
+        [field]="gridSettings.columnsConfig[3].field"
+        [title]="gridSettings.columnsConfig[3].title | translate"
+        [width]="200"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+        [headerStyle]="{'text-align':'right'}"
+        [footerStyle]="{'text-align':'right'}">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <kendo-numerictextbox class="form-control" [(ngModel)]="dataItem.AmountWithCurrency"
+                            [format]="formatOptions" *ngIf="(currentDocument.IdDocumentStatus === statusCode.Valid || (currentDocument.IdDocumentStatus == statusCode.PartiallySatisfied && haveOnlyDepositSettlement))
+                             && dataItem.IsChecked && dataItem.editAmount"
+                            (valueChange)="changeDeductionAmount(dataItem)" (blur)="closeinput(dataItem)">
+            </kendo-numerictextbox>
+          <span *ngIf="((currentDocument.IdDocumentStatus !== statusCode.Valid && currentDocument.IdDocumentStatus != statusCode.PartiallySatisfied) ||
+          (currentDocument.IdDocumentStatus !== statusCode.Valid && currentDocument.IdDocumentStatus == statusCode.PartiallySatisfied && !haveOnlyDepositSettlement))  && dataItem.AmountWithCurrency!='0'">
+          {{dataItem.AmountWithCurrency?.toLocaleString(language, {
+            minimumFractionDigits: currency.Precision
+        })}}
+        </span>
+        <span *ngIf="(currentDocument.IdDocumentStatus === statusCode.Valid && !dataItem.IsChecked)
+         || (currentDocument.IdDocumentStatus !== statusCode.Valid  && dataItem.AmountWithCurrency === '0')">
+          -
+        </span>
+        <span *ngIf="((currentDocument.IdDocumentStatus === statusCode.Valid || (currentDocument.IdDocumentStatus == statusCode.PartiallySatisfied && haveOnlyDepositSettlement))
+         && dataItem.IsChecked && !dataItem.editAmount)" (click)="cellClickHandler(dataItem)">
+          {{dataItem.AmountWithCurrency?.toLocaleString(language, {
+            minimumFractionDigits: currency.Precision
+        })}}
+        </span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Amount TTC End -->
+
+      <!-- Withholding Tax Start-->
+      <kendo-grid-column
+        [field]="gridSettings.columnsConfig[4].field"
+        [title]="gridSettings.columnsConfig[4].title | translate"
+        [width]="220"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+        [headerStyle]="{'text-align':'right'}"
+        [footerStyle]="{'text-align':'right'}">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="dataItem.IsChecked" style="text-align: right;">
+          {{dataItem.WithholdingTaxWithCurrency}}
+        </span>
+        <span *ngIf="!dataItem.IsChecked" style="text-align: right;">-</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Withholding Tax End-->
+
+      <!-- Amount to be paid Start-->
+      <kendo-grid-column
+        [field]="gridSettings.columnsConfig[5].field"
+        [title]="gridSettings.columnsConfig[5].title | translate"
+        [width]="200"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+        [headerStyle]="{'text-align':'right'}"
+        [footerStyle]="{'text-align':'right'}">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="dataItem.AmountToBePaid" style="text-align: right;">
+          {{dataItem.AmountToBePaid}}
+        </span>
+        <span *ngIf="!dataItem.AmountToBePaid" style="text-align: right;">-</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Amount to be paid End-->
+    </kendo-grid>
+
+    <!-- Invoice total amount start -->
+    <div style="text-align: right;font-weight:bold;font-size: 16px;margin-left: 4px;"
+         *ngIf="currentDocument && currentDocument.IdUsedCurrencyNavigation && currentDocument.DocumentTtcpriceWithCurrency">
+      {{'INVOICE_AMOUNT'|translate }} : {{currentDocument.DocumentTtcpriceWithCurrency.toLocaleString(language, {
+        minimumFractionDigits: currentDocument.IdUsedCurrencyNavigation.Precision,
+        style: 'currency', currency: currentDocument.IdUsedCurrencyNavigation.Code, currencyDisplay: 'code'
+    })}}
+    </div>
+    <!-- Invoice total amount end -->
+
+    <!-- total withholdingTax start -->
+    <div style="text-align: right;font-weight:bold;font-size: 16px;margin-left: 4px;"
+         *ngIf="currentDocument && currentDocument.IdUsedCurrencyNavigation">
+      {{'WITHHOLDING'|translate }} : {{TotalHoldingTax.toLocaleString(language, {
+        minimumFractionDigits: currency.Precision,
+        style: 'currency', currency: currentDocument.IdUsedCurrencyNavigation.Code, currencyDisplay: 'code'
+    })}}
+    </div>
+    <!-- total withholdingTax end -->
+
+    <!-- total amount to be paid start -->
+    <div style="text-align: right;font-weight:bold;font-size: 16px;margin-left: 4px;"
+         *ngIf="currentDocument && currentDocument.IdUsedCurrencyNavigation">
+      {{'AMOUNT_TO_BE_PAID'|translate }} : {{(currentDocument.DocumentTtcpriceWithCurrency-TotalHoldingTax).toLocaleString(language, {
+        minimumFractionDigits: currency.Precision,
+        style: 'currency', currency: currentDocument.IdUsedCurrencyNavigation.Code, currencyDisplay: 'code'
+    })}}
+    </div>
+    <!-- total amount to be paid vat end -->
+    <!-- Save Button start -->
+    <div>
+<span [ngStyle]="{'margin-left': '4px'}" *ngIf="hasAddPermission && (currentDocument.IdDocumentStatus === statusCode.Valid || (currentDocument.IdDocumentStatus == statusCode.PartiallySatisfied && haveOnlyDepositSettlement))">
+  <button (click)='save()' type="button" class="btn btn-primary btn-sm">
+    <i class="fa fa-floppy-o"></i> &nbsp;{{'SAVE'|translate}}
+  </button>
+</span>
+      <!-- Save Button end -->
+    </div>
+</div>

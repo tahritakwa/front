@@ -1,0 +1,112 @@
+<div style="padding-top: 30px;">
+  <!-- Filters start -->
+  <div class="row" style="margin-bottom: 30px;">
+    <!-- Type Start -->
+    <div class="col-lg-4 col-md-12 col-sm-12 margin">
+      <label class="col-lg-12 col-md-12 col-sm-12">
+        {{'TYPE'|translate}} :
+      </label>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-combobox class="form-control" [data]="[]"> </kendo-combobox>
+      </div>
+    </div>
+    <!-- Type end -->
+    <!-- Source Start -->
+    <div class="col-lg-4 col-md-12 col-sm-12 margin">
+      <label class="col-lg-12 col-md-12 col-sm-12">
+        {{'SOURCE'|translate}} :
+      </label>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-combobox class="form-control" [data]="[]"> </kendo-combobox>
+      </div>
+    </div>
+    <!-- Source end -->
+    <!-- Destination Start -->
+    <div class="col-lg-4 col-md-12 col-sm-12 margin">
+      <label class="col-lg-12 col-md-12 col-sm-12">
+        {{'DESTINATION'|translate}} :
+      </label>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-combobox class="form-control" [data]="[]"> </kendo-combobox>
+      </div>
+    </div>
+    <!-- Destination end -->
+    <!-- begin start date -->
+    <div class="col-lg-4 col-md-12 col-sm-12 margin">
+      <label class="col-lg-auto col-md-12 col-sm-12">
+        {{'STARTDATE'|translate}} :
+      </label>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker class="form-control">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+    </div>
+    <!-- end start date -->
+    <!-- end-date start -->
+    <div class="col-lg-4 col-md-12 col-sm-12 margin">
+      <label class="col-lg-auto col-md-12 col-sm-12">
+        {{'ENDDATE'|translate}} :
+      </label>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <kendo-datepicker class="form-control">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+    </div>
+    <!-- end-date end -->
+    <div class="col-lg-2 col-md-12 col-sm-12 margin">
+      <button class="btn btn-secondary" style="width:50px; margin-top: 30px; margin-left: 20px;" type="button"
+        (click)="doSearch()">
+        <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+  <!-- Filters End -->
+  <!-- Add fund transfert button -->
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-12">
+      <button data-placement="bottom" class="k-button btn-secondary ml-3 mr-2 pull-right" type="button" tabindex="0"
+        (click)="addNewFundTransfert()" style="font-size: inherit;">
+        <i class="fa fa-plus fa-lg AddIcon"></i>
+        <span>&nbsp;{{'ADD_FUND_TRANSFERT' | translate}}</span>
+      </button>
+    </div>
+  </div>
+  <!-- End add fund transfert button -->
+  <!-- Grid Start -->
+  <div class="row">
+    <kendo-grid [data]="gridData" [pageable]="pagerSettings" [pageSize]="gridState.take" [skip]="gridState.skip"
+      [sortable]="true" [sort]="gridState.sort" [reorderable]="true">
+      <!-- Date start -->
+      <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate" [width]="200">
+      </kendo-grid-column>
+      <!-- Date end -->
+      <!-- Code start-->
+      <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate" [width]="200">
+      </kendo-grid-column>
+      <!-- Code end-->
+      <!-- Type start-->
+      <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate" [width]="200">
+      </kendo-grid-column>
+      <!-- Type end-->
+      <!-- Source start-->
+      <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate" [width]="200">
+      </kendo-grid-column>
+      <!-- Source end-->
+      <!-- Destination start-->
+      <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate" [width]="200">
+      </kendo-grid-column>
+      <!-- Destination end-->
+      <!-- Amount start-->
+      <kendo-grid-column [field]="columnsConfig[5].field" [title]="columnsConfig[5].title | translate" [width]="200"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right","padding-right": "4%"}'
+        [headerStyle]="{'text-align':'right','padding-right':'4%'}">
+      </kendo-grid-column>
+      <!-- Amount end-->
+    </kendo-grid>
+  </div>
+  <!-- Grid End -->
+</div>

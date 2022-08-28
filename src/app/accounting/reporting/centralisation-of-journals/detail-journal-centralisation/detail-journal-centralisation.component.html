@@ -1,0 +1,42 @@
+<kendo-grid [data]="gridSettings.gridData"[skip]="gridSettings.state.skip" [sortable]="true"
+            [navigable]="true" (dataStateChange)="dataStateChange($event)" class="bulk-table">
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="month"
+                     [title]="'MONTH'| translate" width="640px" [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}">
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.month|translate}}
+    </ng-template>
+    <ng-template kendoGridFooterTemplate>
+      <div> {{'TOTAL'|translate}}</div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}" field="debitAmount" [style]="{'text-align': 'right','padding-right':'3rem !important'}"
+  [title]="'DEBIT'|translate" width="150px"
+  [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}"
+  [format]="formatNumberOptions">
+ <ng-template kendoGridFooterTemplate>
+    <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" [value]="totalDebitAmount" style="text-align: right; padding-right:1rem">
+      </kendo-numerictextbox>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}" field="creditAmount" [style]="{'text-align': 'right','padding-right':'3rem !important'}"
+                     [title]="'CREDIT'|translate" width="150px"
+                     [headerStyle]="{'color': 'black', 'padding' : '0.75rem 0'}"
+                     [format]="formatNumberOptions">
+    <ng-template kendoGridFooterTemplate>
+      <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" [value]="totalCreditAmount" style="text-align: right; padding-right:1rem">
+      </kendo-numerictextbox>
+
+    </ng-template>
+
+  </kendo-grid-column>
+  <div *kendoGridDetailTemplate="let dataItem">
+    <app-detail-journal-centralisation-by-month [journal]="journal" [journalDetails]="dataItem">
+    </app-detail-journal-centralisation-by-month>
+  </div>
+  <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                       pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+  </kendo-grid-messages>
+</kendo-grid>

@@ -1,0 +1,13 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="projectFiltredDataSource"
+                      class="form-control HistoryCommandMargin"
+                      name="IdProject"
+                      formControlName="IdProject"
+                      textField="ProjectLabel"
+                      valueField="Id"
+                      [valuePrimitive]="true"
+                      [filterable]="true"
+                      (filterChange)="handleFilter($event)"
+                      (valueChange)="valueChange($event)">
+  </kendo-combobox>
+</div>

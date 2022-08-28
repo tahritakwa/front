@@ -1,0 +1,9 @@
+<div *ngIf="group" [formGroup]="group">
+  <kendo-combobox [data]="postFilterDataSource" class="form-control" formControlName="IdPost" textField="Name"
+    valueField="Id" [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="onSelectPost($event)" [placeholder]="placeholder|translate">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.Name | translate }}
+    </ng-template>
+  </kendo-combobox>
+</div>

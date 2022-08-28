@@ -1,0 +1,11 @@
+<b>{{'CONTRACT'|translate}}</b> : {{data.IdContractTypeNavigation ? data.IdContractTypeNavigation.Label : ''}}
+<br />
+<b>{{'START_DATE'|translate}}</b> : {{data.StartDate | date:formatDate}}
+<br />
+<div *ngIf="data.EndDate!== null">
+  <b>{{'END_DATE'|translate}}</b> : {{data.EndDate | date:formatDate}}
+  <br />
+</div>
+<b>{{'MIN_NOTICE_PERIOD'|translate}}</b> : {{data.IdContractTypeNavigation.MinNoticePeriod}}
+<br />
+<b>{{'MAX_NOTICE_PERIOD'|translate}}</b> : {{data.IdContractTypeNavigation.MaxNoticePeriod}}

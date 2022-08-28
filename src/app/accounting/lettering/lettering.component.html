@@ -1,0 +1,391 @@
+<div class="card full-screen-card mb-5">
+  <app-current-fiscal-year-header [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-header>
+  <div class="card-header d-flex justify-content-between pr-0 border-0 bg-white">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ACCOUNTING_LETTERING'|translate}}</h3>
+    </div>
+    <div class="col-sm-5 mt-1">
+      <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+    </div>
+  </div>
+
+  <div class="card-body">
+      <div class="row">
+
+        <div class="col-lg-4">
+          <form class="form-horizontal" [formGroup]="letteringOperationTypeFormGroup">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'OPERATION_TYPE'|translate}}<span class="required">*</span>
+            </label>
+            <kendo-combobox [data]="letteringOperationTypeData" formControlName="letteringOperationType"
+                            (valueChange)="handleChangeLetteringOperationType($event)"
+                            [valueField]="'letteringOperationType'"
+                            [textField]="'text'" [valuePrimitive]="true" [clearButton]="false" class="form-control"
+                            required
+                            [filterable]="true" (filterChange)="handleFilterChange($event)">
+
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              <!--end No data template-->
+            </kendo-combobox>
+            <app-control-messages [control]="letteringOperationTypeFormGroup.controls.letteringOperationType"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </form>
+        </div>
+
+        <div class="col-lg-4">
+          <form class="form-horizontal" [formGroup]="letteringFilterFormGroup">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE'|translate}}<span
+              class="required">*</span></label>
+            <kendo-datepicker formControlName="startDate" class="form-control" [format]="formatDate" [min]="startDate"
+                              [max]="endDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="letteringFilterFormGroup.controls.startDate"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </form>
+        </div>
+
+        <div class="col-lg-4">
+          <form class="form-horizontal" [formGroup]="letteringFilterFormGroup">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE'|translate}}<span class="required">*</span></label>
+            <kendo-datepicker formControlName="endDate" class="form-control" formatPlaceholder="formatDate"
+                              [min]="startDate" [max]="endDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="letteringFilterFormGroup.controls.endDate"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </form>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-lg-4">
+          <form class="form-horizontal" [formGroup]="letteringFilterFormGroup">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'BEGIN_ACCOUNT'|translate}}</label>
+            <kendo-combobox id="beginAccountInput" formControlName="beginAccountId" [data]="accountFiltredList"
+                            [textField]="'code'" [valueField]="'id'" [valuePrimitive]="true" class="form-control"
+                            [filterable]="true"
+                            (valueChange)="onSelectBeginAccount($event)" (filterChange)="handleFilterAccount($event)"
+                            (selectionChange)="selectionChangeAccountDropdown($event)">
+              <ng-template kendoComboBoxItemTemplate let-dataItem>
+                <div class="container">
+                  <div class="row">
+                    <b>{{dataItem.code}}</b>
+                  </div>
+                  <div class="row">
+                    <span class="small">{{dataItem.label}}</span>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template kendoDropDownListFooterTemplate>
+                <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS)"
+                                      [addNew]="addNewBeginAccount.bind(this)"></app-drop-down-footer>
+              </ng-template>
+
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              <!--end No data template-->
+            </kendo-combobox>
+          </form>
+        </div>
+
+        <div class="col-lg-4">
+          <form class="form-horizontal" [formGroup]="letteringFilterFormGroup">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_ACCOUNT'|translate}}</label>
+            <kendo-combobox id="endAccountInput" formControlName="endAccountId" [data]="accountFiltredList"
+                            [textField]="'code'" [valueField]="'id'" [valuePrimitive]="true" class="form-control"
+                            [filterable]="true"
+                            (valueChange)="onSelectEndAccount($event)" (filterChange)="handleFilterAccount($event)"
+                            (selectionChange)="selectionChangeAccountDropdown($event)">
+              <ng-template kendoComboBoxItemTemplate let-dataItem>
+                <div class="container">
+                  <div class="row">
+                    <b>{{dataItem.code}}</b>
+                  </div>
+                  <div class="row">
+                    <span class="small">{{dataItem.label}}</span>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template kendoDropDownListFooterTemplate>
+                <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS)"
+                                      [addNew]="addNewEndAccount.bind(this)"></app-drop-down-footer>
+              </ng-template>
+
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              <!--end No data template-->
+            </kendo-combobox>
+          </form>
+        </div>
+
+        <div class="col-lg-4">
+          <form class="form-horizontal" [formGroup]="letteringCodeFormGroup">
+            <label class="col-lg-12 col-md-12 col-sm-12 ml-3" 
+            *ngIf="this.authService.hasAuthority(this.AccountingPermissions.PERFORM_LETTERING) !isDelettering">{{'LETTER'|translate}}</label>
+            <div class="col-lg-12 col-sm-12 col-md-12 input-group" style="padding: 0px">
+              <div class="input-group mb-3">
+                <input *ngIf="!isDelettering" class="form-control input-sm" formControlName="letteringCode">
+                <div class="input-group-prepend">
+                  <button class="cursor-pointer input-group-text fa fa-refresh save-icon"
+                          [disabled]="!this.authService.hasAuthority(AccountingPermissions.PERFORM_LETTERING)" *ngIf="!isDelettering" [tooltip]="refreshL"
+                          content-type="template"
+                          type="button" (click)="generateLetterCode()">
+                  </button>
+                </div>
+              </div>
+              <ng-template #refreshL>
+                <span>{{ 'REFRESH'|translate}}</span>
+              </ng-template>
+            </div>
+            <div class="col-sm-12 col-md-12">
+              <app-control-messages [control]="letteringCodeFormGroup.controls.letteringCode"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row" style="direction: rtl">
+
+      </div>
+
+      <div class="row d-flex flex-row-reverse">
+        <div class="col-lg-12 d-flex justify-content-between">
+          <div>
+            <div class="col-lg-12 col-sm-12 col-md-12 input-group" style="padding: 0;direction: ltr;">
+              <input type="checkbox" id="amount-check-box" class="input-checkbox100" [(ngModel)]="sameAmount"/>
+              <label class="label-checkbox100" for="amount-check-box">{{'AMOUNT'|translate}}</label>
+            </div>
+          </div>
+          <div class="mt-5">
+            <button class="btn btn-sm btn-secondary" type="button" [tooltip]="history" content-type="template"
+                    type="button"  (click)="goToHistoric()">
+              <i class="fa fa-history fa-lg" aria-hidden="true"></i>
+            </button>
+            <button class="btn btn-sm btn-search"
+                    content-type="template" type="button"
+                    (click)="search()">
+              <i class="fa fa-search fa-lg" style="color: white" aria-hidden="true"></i> {{'SEARCH'|translate}}
+            </button>
+            <ng-template #searchLC>
+              <span>{{ 'SEARCH'|translate}}</span>
+            </ng-template>
+
+            <ng-template #history>
+              <span>{{ 'HISTORY'|translate}}</span>
+            </ng-template>
+          </div>
+        </div>
+
+      </div>
+
+    <div class="d-flex justify-content-center m-3">
+      <i class="cursor-pointer AddIcon  mr-3 ml-3 fa fa-angle-double-left fa-2x"
+         [ngClass]="{'disabled-arrow':accountPage === 0}"
+         (click)="findDocumentAccountLinesForAFirstLiterableAccount()">
+      </i>
+
+      <i class="cursor-pointer AddIcon  mr-3 ml-3 fa fa-angle-left fa-2x"
+         [ngClass]="{'disabled-arrow':accountPage === 0}"
+         (click)="findDocumentAccountLinesForAPreviousLiterableAccount()">
+      </i>
+
+      <h5 class="font-weight-bold mb-0 mr-4 ml-4 mt-1" data-toggle="tooltip" data-placement="top"
+          title="{{displayedLabelOfChoosenAccountCode}}">{{displayedCodeOfChoosenAccountCode}}</h5>
+
+      <i class="cursor-pointer AddIcon mr-3 ml-3 fa fa-angle-right fa-2x"
+         [ngClass]="{'disabled-arrow':accountPage === letteringDataSource.totalElementsOfAccounts-1 || letteringDataSource.totalElementsOfAccounts===0}"
+         (click)="findDocumentAccountLinesForANextLiterableAccount()">
+      </i>
+
+      <i class="cursor-pointer AddIcon  mr-3 ml-3 fa fa-angle-double-right fa-2x"
+         [ngClass]="{'disabled-arrow': accountPage === letteringDataSource.totalElementsOfAccounts-1 || letteringDataSource.totalElementsOfAccounts===0}"
+         (click)="findDocumentAccountLinesForALastLiterableAccount()">
+      </i>
+
+    </div>
+
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+                [sortable]="!sameAmount" [reorderable]="true" [columnMenu]="true" [resizable]="true"
+                (dataStateChange)="linesDataStateChange($event)" (pageChange)="onChangeLinesPage($event)"
+                [pageable]="pagerSettings" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+                [kendoGridSelectBy]="'id'"
+                [selectable]="{enabled:this.fiscalYearIsOpened && 
+                  ((this.authService.hasAuthority(this.AccountingPermissions.PERFORM_LETTERING) && !isDelettering)
+                  || (this.authService.hasAuthority(this.AccountingPermissions.PERFORM_DELETTERING) && isDelettering))
+                  , checkboxOnly: true}"
+                [selectedKeys]="selectedKeys" (selectedKeysChange)="onSelectedKeysChange()" (sortChange)="sortChange()">
+
+      <kendo-grid-checkbox-column
+      *ngIf="((this.authService.hasAuthority(this.AccountingPermissions.PERFORM_LETTERING) && !isDelettering && this.letteringCodeFormGroup.controls.letteringCode.valid) || (this.authService.hasAuthority(this.AccountingPermissions.PERFORM_DELETTERING) && isDelettering)) && this.fiscalYearIsOpened "
+      [showSelectAll]="((this.authService.hasAuthority(this.AccountingPermissions.PERFORM_LETTERING) && !isDelettering) || (this.authService.hasAuthority(this.AccountingPermissions.PERFORM_DELETTERING) && isDelettering)) && this.fiscalYearIsOpened"
+      [width]="70">
+      </kendo-grid-checkbox-column>
+
+      <kendo-grid-column *ngIf="this.letteringCodeFormGroup.controls.letteringCode.invalid" [width]="150"
+                         [columnMenu]="false">
+      </kendo-grid-column>
+
+      <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" [field]="gridSettings.columnsConfig[0].field"
+                         [headerStyle]="{'padding' : '0.75rem 0'}"
+                         [title]="gridSettings.columnsConfig[0].title | translate"
+                         [locked]="false" [width]="150" [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          {{dataItem.documentAccountDate | date: formatDate}}
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                         [title]="gridSettings.columnsConfig[1].title | translate" [locked]="false" width="130"
+                         [headerStyle]="{'padding' : '0.75rem 0'}" [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [headerStyle]="{'padding' : '0.75rem 0'}"
+                         [title]="gridSettings.columnsConfig[2].title | translate" [locked]="false" width="200"
+                         [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [headerStyle]="{'padding' : '0.75rem 0'}"
+                         [title]="gridSettings.columnsConfig[3].title | translate" [locked]="false" width="200"
+                         [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[4].field" [headerStyle]="{'padding' : '0.75rem 0'}"
+                         [title]="gridSettings.columnsConfig[4].title | translate" [locked]="false" width="170"
+                         [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+                         [title]="gridSettings.columnsConfig[5].title | translate" [locked]="false" width="100"
+                         [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[5].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[5].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate>
+          <div class="total-class"> {{'TOTAL'|translate}}</div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" [field]="gridSettings.columnsConfig[6].field"
+                         [title]="gridSettings.columnsConfig[6].title | translate" [locked]="false" width="150"
+                         [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[6].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[6].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate>
+          <kendo-numerictextbox class="totalNumericTextBox" [readonly]="true" [format]="formatNumberOptions"
+                                value="{{totalDebitAmount}}">
+
+          </kendo-numerictextbox>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" value="{{dataItem.debit}}">
+          </kendo-numerictextbox>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" [field]="gridSettings.columnsConfig[7].field"
+                         [title]="gridSettings.columnsConfig[7].title | translate" [locked]="false" width="150"
+                         [columnMenu]="false">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[7].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[7].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridFooterTemplate>
+          <kendo-numerictextbox class="totalNumericTextBox" [readonly]="true" [format]="formatNumberOptions"
+                                value="{{totalCreditAmount}}">
+
+          </kendo-numerictextbox>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" value="{{dataItem.credit}}">
+          </kendo-numerictextbox>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-command-column [width]="80" [columnMenu]="true">
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <i class="las la-pen cursor-pointer edit-pencil la-lg" (click)="redirectTo(dataItem)"
+             tooltip="{{ 'DETAILS_DOCUMENT_ACCOUNT'|translate}}"></i>
+        </ng-template>
+      </kendo-grid-command-column>
+      <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                           pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+      </kendo-grid-messages>
+    </kendo-grid>
+  </div>
+
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer" *ngIf="fiscalYearIsOpened">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button class="btn btn-sm btn-secondary text-white  mr-2" type="button"
+                    (click)="refreshLetteringInterface()">
+              <i class="fa fa-refresh"></i> {{'REFRESH_LINES'|translate}}
+            </button>
+
+            <button *ngIf="this.authService.hasAuthority(this.AccountingPermissions.PERFORM_LETTERING)"
+              [disabled]="isDelettering || !isCurrentLetteringOperationNotStartedYet() || this.letteringCodeFormGroup.controls.letteringCode.invalid"
+              class="btn btn-sm btn-special mr-2" type="button" (click)="autoGenerateLetterToLiterableDocumentAccountLine()">
+              <i class="fa fa-pencil-square"></i> {{'AUTO_LITERATE'|translate}}
+            </button>
+
+            <button *ngIf="(this.authService.hasAuthority(this.AccountingPermissions.PERFORM_LETTERING) && !isDelettering) || this.authService.hasAuthority(this.AccountingPermissions.PERFORM_DELETTERING) && isDelettering"
+              [disabled]="isCurrentLetteringOperationNotStartedYet() || this.letteringCodeFormGroup.controls.letteringCode.invalid"    
+              class="btn btn-sm btn-save mr-2" type="button" (click)="save()">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+
+</div>

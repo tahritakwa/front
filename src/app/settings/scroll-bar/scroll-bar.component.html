@@ -1,0 +1,20 @@
+<div class="scroller-container w-100 bg-white">
+  <div class="scroller scroller-left float-left mt-2" (click)="onLeftClick()">
+    <i class="fa fa-chevron-left"></i>
+  </div>
+  <div class="scroller scroller-right float-right mt-2" (click)="onRightClick()">
+    <i class="fa fa-chevron-right"></i>
+  </div>
+  <div class="wrapper">
+    <nav class="nav nav-tabs list h-100" id="myTab" role="tablist">
+      <ng-container *ngFor="let item of allMenus">
+        <a id="{{item.menu}}" [ngClass]="{'active disabled': item.menu === activeMenu}"
+           *ngIf="item.permission && this.authService.hasAuthorities(item.permission)"
+           (click)="onClick(item.menu)"
+           class="nav-item nav-link">
+          {{item.menu | translate}}
+        </a>
+      </ng-container>
+    </nav>
+  </div>
+</div>

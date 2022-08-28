@@ -1,0 +1,38 @@
+<div class="row col-lg-12 col-md-12 col-sm-12">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist">
+            <li class="nav-item" *ngFor="let operationKit of operationsKit; let i = index;">
+                <a class="nav-link nav-link-new" [ngClass]="{'active':i===0}" id="{{i}}-tab" data-toggle="tab"
+                    href="#tab-{{i}}" role="tab" attr.aria-controls="tab-{{i}}"
+                    aria-selected="true">{{operationKit.Name}}</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="tab-content tab-content-new" id="tabContent">
+    <div class="tab-pane fade px-2" *ngFor="let operationKit of operationsKit; let i = index;"
+        [ngClass]="{'show active':i===0}" id="tab-{{i}}" role="tabpanel" attr.aria-labelledby="{{i}}-tab">
+        <div class="card">
+            <div class="card-body" style="min-height: fit-content;" [ngStyle]="{'overflow-x': 'auto'}">
+                <!-- Begin accordion -->
+                <p-accordion [multiple]="true" class="w-100">
+                    <!-- Begin Operations grid -->
+                    <p-accordionTab [selected]="true" header="{{'OPERATIONS'| translate}}" id="ui-accordiontab-{{i}}-1">
+                        <div class="row">
+                            <app-operation-for-kit-operation [isModal]="true" [idOperationKit]="operationKit.Id">
+                            </app-operation-for-kit-operation>
+                        </div>
+                    </p-accordionTab>
+
+                    <!-- Begin items grid -->
+                    <p-accordionTab header="{{'NECESSARY_PARTS'| translate}}" id="ui-accordiontab-{{i}}-2">
+                        <div class="row">
+                            <app-grid-spare-parts [isModal]="true" [idOperationKit]="operationKit.Id">
+                            </app-grid-spare-parts>
+                        </div>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
+        </div>
+    </div>
+</div>

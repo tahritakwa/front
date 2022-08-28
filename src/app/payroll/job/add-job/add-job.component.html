@@ -1,0 +1,226 @@
+<div>
+  <form [formGroup]="jobFormGroup" class="form-horizontal">
+
+
+    <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+      <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+        <label>
+          <b> {{'DESIGNATION'|translate}} <span class="required">*</span> :</b>
+        </label>
+        <input [ngClass]="{ 'has-error': (jobFormGroup.controls.Designation.touched || jobFormGroup.controls.Designation.dirty) && !jobFormGroup.controls.Designation.valid }" class="form-control" formControlName="Designation"
+               type="text">
+        <app-control-messages [control]="jobFormGroup.controls.Designation"
+                              class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+        <label>
+          <b> {{'UPPER_JOB'|translate}} :</b>
+        </label>
+        <app-job-dropdown *ngIf="!isUpdateMode || (isUpdateMode && jobToIgnore)" [group]="jobFormGroup"
+                          [isModal]="isModal"
+                          [jobToIgnore]="jobToIgnore"></app-job-dropdown>
+      </div>
+    </div>
+    <br/>
+
+    <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <label>
+          <b> {{'FUNCTION_SHEET'|translate}} :</b>
+        </label>
+      </div>
+    </div>
+    <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <p-editor [style]="{'height':'150px'}" formControlName="FunctionSheet">
+        </p-editor>
+        <br/>
+      </div>
+    </div>
+    <div class="row col-lg-12 col-md-12 col-sm-12 col-12">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <p-accordion [multiple]="true">
+          <p-accordionTab header="{{'SKILLS'|translate}}">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-12" style="display: flex;">
+
+              <div class="vertical-center" id="divButtonAddSkill">
+                <div (click)="addNewSkill()" class="favourite" >
+                  <div class="favourite_heart">
+                    <i aria-hidden="true" class="fa fa-plus" style="margin-left:-1px;"></i>
+                  </div>
+                </div>
+              </div>
+              <div *ngFor="let skill of skills; let i=index">
+                <div style="display: flex;">
+                  <div class="text-bloc-skill">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                      <label class="">{{'CODE'|translate}} <span class="required">*</span></label>
+                    </div>
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                      <app-skill-dropdown (Selected)='onSelectSkill($event,skill)' [(disabled)]="skill.IsShowSkill"
+                                          [ngClass]="{ 'has-error': (skill.HasError)}"
+                                          [selectedSkill]="skill.IdSkill"></app-skill-dropdown>
+                      <div *ngIf="skill.HasError"
+                           class="col-lg-12 col-md-12 col-sm-12 col-12 error-msg messages text-left text-danger">
+                        {{skill.errorValidationSkill}}
+
+                      </div>
+                    </div>
+
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                      <bar-rating (rateChange)="rateChange($event, skill)"
+                                  [(rate)]="skill.Rate"
+                                  [(readOnly)]="skill.IsShowSkill"
+                                  [max]="6"
+                                  [ngClass]="{ 'has-error': skill.Rate === 0 }" [theme]="'default'"
+                                  class="form-control"
+                                  style="border: none;">
+                      </bar-rating>
+                      <div *ngIf="skill.Rate === 0"
+                           class="col-lg-12 col-md-12 col-sm-12 col-12 error-msg messages text-left text-danger"
+                           style="margin-top: 10px;">
+                        {{skill.errorValidationRate}}
+                      </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                      <hr/>
+                    </div>
+                    <div *ngIf="skill.IsNewSkill" class="col-lg-12 col-md-12 col-sm-12 col-12">
+                      <button (click)="saveSkill(skill)" class="btn btn-sm btn-success">
+                        <i class="fa fa-check"></i>
+                      </button>
+                      <button (click)="deleteSkill(skill)" class="btn btn-sm btn-danger">
+                        <i class="fa fa-times fa-lg"></i>
+                      </button>
+                    </div>
+
+                    <div *ngIf="!skill.IsNewSkill" class="col-lg-12 col-md-12 col-sm-12 col-12">
+                      <button (click)="editSkill(skill)" class="btn btn-sm btn-success">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      <button (click)="deleteSkill(skill)" class="btn btn-sm btn-danger">
+                        <i class="fa fa-times fa-lg"></i>
+                      </button>
+                    </div>
+                    <br/>
+                  </div>
+                  &nbsp;&nbsp;&nbsp;
+                </div>
+              </div>
+            </div>
+          </p-accordionTab>
+          <br/>
+          <p-accordionTab *ngIf="!isModal" header="{{'EMPLOYEE'|translate}}">
+            <p-dataView #dv [paginator]="true" [rows]="5" [value]="employees" emptyMessage="{{'NO_RECORDS_FOUND'|translate}}"
+                        filterBy="FullName">
+              <p-header>
+                <div class="row ui-helper-clearfix">
+                  <div *ngIf="employees.length > 0" class="col-lg-7 col-md-7 col-sm-7 col-7" style="position:center;">
+                    <input (keyup)="dv.filter($event.target.value)" [(ngModel)]="searchValueEmployee" [ngModelOptions]="{standalone: true}"
+                           aria-describedby="addon-wrapping" class="form-control"
+                           placeholder="{{'SEARCHE'|translate}}" type="text">
+                  </div>
+                  <div class="col-6" style="position:center;">
+                    <app-employee-dropdown (Selected)='onSelectEmployee($event)'
+                                           [ngClass]="{ 'has-error': (employeeError)}"></app-employee-dropdown>
+                    <div *ngIf="employeeError"
+                         class="col-lg-12 col-md-12 col-sm-12 col-12 error-msg messages text-left text-danger">
+                      {{employeeError}}
+                    </div>
+                  </div>
+                  <div class="disabledDiv" id="divButtonAddEmployee" style="margin-right: auto;">
+                    <div (click)="addNewEmployee(dv)" class="favourite">
+                      <div class="favourite_heart">
+                        <i aria-hidden="true" class="fa fa-plus" style="margin-left:-1px;"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </p-header>
+              <ng-template let-employee pTemplate="listItem">
+                <div class="ui-g-3 ui-md-3" style="padding:.5em">
+                  <p-panel>
+                    <div class="row">
+                      <div class="roundedImage col-lg-2 col-md-2 col-sm-2 col-2">
+                        <img src="{{employee.SrcImg}}" style="width:90px; height:90px;">
+                      </div>
+                      <div class="col-md-9 col-sm-9 col-9">
+                        <div class="row">
+                          <div class="col-md-6 col-sm-6 col-6">
+                            <label>
+                              &nbsp; <b> {{'FIRST_NAME'|translate}} :</b> {{employee.FirstName}}<br/>
+                            </label>
+                          </div>
+                          <div class="col-md-6 col-sm-6 col-6">
+                            <label>
+                              &nbsp; <b> {{'LAST_NAME'|translate}} :</b> {{employee.LastName}}<br/>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6 col-sm-6 col-6">
+                            <label>
+                              &nbsp; <b> {{'EMAIL'|translate}} :</b> {{employee.Email}}<br/>
+                            </label>
+                          </div>
+                          <div class="col-md-6 col-sm-6 col-6">
+                            <label>
+                              &nbsp; <b> {{'PHONE'|translate}} :</b> {{employee.ProfessionalPhone}}<br/>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6 col-sm-6 col-6">
+                            <label>
+                              &nbsp; <b> {{'FUNCTION'|translate}} :</b> {{DesignationJob}}<br/>
+                            </label>
+                          </div>
+                          <div class="col-md-6 col-sm-6 col-6">
+                            <label *ngIf="employee.IdTeamNavigation !=undefined">
+                              &nbsp; <b> {{'TEAM'|translate}} :</b> {{employee.IdTeamNavigation.Name}}<br/>
+                            </label>
+
+                            <label *ngIf="employee.IdTeamNavigation == undefined">
+                              &nbsp; <b> {{'TEAM'|translate}} :</b> <br/>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-1 col-sm-1 col-1" style="margin-top: auto; margin-bottom: auto;">
+                        <button (click)="deleteEmployee(employee,dv)" class="noPadding btn-Add k-button"
+                                dir="ltr"
+                                style="border: none; color: #E91E63 !important;" type="button">
+                          <i class="fa fa-times fa-lg"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </p-panel>
+                </div>
+              </ng-template>
+            </p-dataView>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </div>
+
+    <br/>
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button (click)="cancelAddJob()" class="btn btn-sm btn-primary">
+              <i class="fa fa-chevron-circle-left"></i> {{'CANCEL'|translate}}
+            </button>
+            <button (click)="saveJob()" class="btn btn-sm btn-success mx-1">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br/>
+  </form>
+</div>

@@ -1,0 +1,183 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0"><i class="fa fa-balance-scale"></i>
+        {{'BANK_SCORE' | translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="col-12">
+      <h5 class="card-title mb-0" style="color: #4c9aae; margin-top: 1em;">{{ 'BANK_ACCOUNT' | translate}}</h5>
+      <div class="form-group row col-lg-12 col-md-12 col-sm-12" style="margin-top: 2em;">
+        <!-- BankAccount sold information -->
+        <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom: 15px; font-weight: bold;"
+          *ngIf="bankAccountDetailsData && bankAccountDetailsData.CodeCurrency">
+          {{'REAL_BALANCE'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{currentBalance.toLocaleString(language,{minimumFractionDigits: bankAccountDetailsData.Precision,
+              style: 'currency', currency: bankAccountDetailsData.CodeCurrency, currencyDisplay:'code'})}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom: 15px; font-weight: bold;"
+          *ngIf="bankAccountDetailsData && bankAccountDetailsData.CodeCurrency">
+          {{'FORECAST_BALANCE'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{forecastBalance.toLocaleString(language,{minimumFractionDigits: bankAccountDetailsData.Precision,
+              style: 'currency', currency: bankAccountDetailsData.CodeCurrency, currencyDisplay:'code'})}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.CodeCurrency"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'CUMULS_OF_UNRECONCILED_REGULATIONS'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{cumulOfUnreconciledRegulation.toLocaleString(language,{minimumFractionDigits: bankAccountDetailsData.Precision,
+              style: 'currency', currency: bankAccountDetailsData.CodeCurrency, currencyDisplay:'code'})}}
+          </span>
+        </div>
+        <!-- BankAccount identity -->
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'BANK'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.BankName}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'AGENCY'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Agency}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'AGENCY_CODE'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Code}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'ENTITLED'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Entitled}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.Email"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'EMAIL'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Email}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.Telephone"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'TELEPHONE'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{'bankAccountDetailsData.Telephone'|translate}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.Fax"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'FAX'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Fax}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12"
+          *ngIf="bankAccountDetailsData && (bankAccountDetailsData.BankCountryNameFr || bankAccountDetailsData.BankCountryNameEn)"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'COUNTRY'|translate}} :&nbsp;
+          <span *ngIf="language === 'fr'" style="font-weight: normal;">
+            {{bankAccountDetailsData.BankCountryNameFr}}
+          </span>
+          <span *ngIf="language === 'en'" style="font-weight: normal;">
+            {{bankAccountDetailsData.BankCountryNameEn}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.BankCityName"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'CITY'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.BankCityName}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.ZipCode"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'ZIPCODE'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.ZipCode}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.Locality"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'ADRESS'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Locality}}
+          </span>
+        </div>
+        <!-- BankAccount domiciliation -->
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'RIB'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Rib}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData  && bankAccountDetailsData.Bic"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'BIC'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Bic}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'IBAN'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.Iban}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.CodeCurrency"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'GENERAL_LEDGER_INITIAL_BALANCE'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.InitialBalance.toLocaleString(language,{minimumFractionDigits: bankAccountDetailsData.Precision,
+              style: 'currency', currency: bankAccountDetailsData.CodeCurrency, currencyDisplay:'code'})}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12"
+          *ngIf="bankAccountDetailsData && bankAccountDetailsData.CurrencyDescription"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'CURRENCY'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.CurrencyDescription}}
+          </span>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="bankAccountDetailsData && bankAccountDetailsData.TypeAccount"
+          style="margin-bottom: 15px; font-weight: bold;">
+          {{'TYPE_ACCOUNT'|translate}} :&nbsp;
+          <span style="font-weight: normal;">
+            {{bankAccountDetailsData.TypeAccount}}
+          </span>
+        </div>
+      </div>
+
+    </div>
+    <!-- Bank reconciliation -->
+    <div class="col-12" *ngIf="dataLoaded" style="margin-top: 2em;">
+      <h5 class="card-title mb-0" style="color: #4c9aae;">{{ 'BANK_SCORE' | translate}}</h5>
+      <app-bank-reconciliation [id]="id" (refreshBanAccountSoldEvent)="refreshBankAccountAfterReconciliation($event)">
+      </app-bank-reconciliation>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div align="left" class="col-lg-12 col-md-12">
+      <a>
+        <span class="btn btn-sm btn-back-to-list btn-primary float-right" (click)="goBackToList()">
+          <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+        </span>
+      </a>
+    </div>
+  </div>
+</div>

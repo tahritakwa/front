@@ -1,0 +1,151 @@
+<div class="card" style="margin-right: 15px;margin-left: 15px;">
+  <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12 ">
+      <form class="form-horizontal">
+        <div class="form-group row" style="font-size:15px ;">
+          <div class="col-lg-3 col-md-6 col-sm-12 margin"
+            *ngIf="financialCommitment && financialCommitment.IdDocumentNavigation">
+            <label>
+              <span style="font-weight: bold;">{{'CODE_BILL'|translate}} :</span>
+              {{financialCommitment.IdDocumentNavigation.Code}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 margin"
+            *ngIf="financialCommitment && financialCommitment.CommitmentDate">
+            <label>
+              <span style="font-weight: bold;">{{'COMMITMENT_DATE'|translate}} :</span>
+              {{financialCommitment.CommitmentDate | date: formatDate}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 margin" *ngIf="financialCommitment">
+            <label>
+              <span style="font-weight: bold;">{{'AMOUNTTTC'|translate}} :</span>
+              {{financialCommitment.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 margin"
+            *ngIf="financialCommitment && financialCommitment.WithholdingTaxWithCurrency">
+            <label>
+              <span style="font-weight: bold;">{{'HOLDING_TAX'|translate}} :</span>
+              {{financialCommitment.WithholdingTaxWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 margin">
+            <label>
+              <span style="font-weight: bold;">{{'AMOUNT_TO_BE_PAID'|translate}} :</span>
+              {{financialCommitment.AmountWithoutWithholdingTaxWithCurrency.toLocaleString(language,{minimumFractionDigits:
+              tiersCurrency.Precision,
+              style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 margin" *ngIf="financialCommitment">
+            <label>
+              <span style="font-weight: bold;">{{'REMAINING_AMOUNT_TO_BE_PAID'|translate}} :</span>
+              {{financialCommitment.RemainingAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12 margin"
+            *ngIf="financialCommitment && (financialCommitment.RemainingWithholdingTax || financialCommitment.RemainingVatWithholdingTaxWithCurrency)">
+            <label>
+              <span style="font-weight: bold;"
+                tooltip="{{'FORM_REMAINING_WITHHOLDING_TAX' | translate}}">{{'REMAINING_WITHHOLDING_TAX'|translate}}
+                :</span>
+              {{(financialCommitment.RemainingWithholdingTax + financialCommitment.RemainingVatWithholdingTaxWithCurrency).toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+        </div>
+      </form>
+      <div style="padding-bottom: 40px;">
+        <label style=" color: #4c9aae; font-weight: bold;  font-size: 16px; padding-top: 10px;">
+          {{'FINANCIAL_COMMITMENT_PAYMENT_HISTORY'|translate}}
+        </label>
+        <kendo-grid [data]="gridData" [pageSize]="gridState.take" [skip]="gridState.skip" [reorderable]="true"
+          [sortable]="true">
+
+          <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate"
+            [width]="150">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[0].tooltip|translate}}"
+                theme="light">{{columnsConfig[0].title|translate}}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate"
+            [width]="150">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[1].tooltip|translate}}"
+                theme="light">{{columnsConfig[1].title|translate}}
+              </span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.Settlement.SettlementDate | date: formatDate}}
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate" [width]="150"
+            [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+            [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[2].tooltip|translate}}"
+                theme="light">{{columnsConfig[2].title|translate}}
+              </span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{financialCommitment.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+              style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate" [width]="150"
+            [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+            [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[3].tooltip|translate}}"
+                theme="light">{{columnsConfig[3].title|translate}}
+              </span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{financialCommitment.WithholdingTaxWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate" [width]="150"
+            [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+            [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[4].tooltip|translate}}"
+                theme="light">{{columnsConfig[4].title|translate}}
+              </span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.AssignedAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="columnsConfig[5].field" [title]="columnsConfig[5].title | translate" [width]="150"
+            [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+            [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[5].tooltip|translate}}"
+                theme="light">{{columnsConfig[5].title|translate}}
+              </span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span *ngIf="dataItem.AssignedWithholdingTaxWithCurrency">
+                {{dataItem.AssignedWithholdingTaxWithCurrency.toLocaleString(language,{minimumFractionDigits: tiersCurrency.Precision,
+                style: 'currency', currency: tiersCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+              <span *ngIf="!dataItem.AssignedWithholdingTaxWithCurrency"> - </span>
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+      </div>
+    </div>
+  </div>
+</div>

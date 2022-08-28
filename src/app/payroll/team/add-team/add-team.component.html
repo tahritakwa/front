@@ -1,0 +1,215 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="!isModal" class="card-header">
+        <div class="row">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_TEAM' : 'ADD_TEAM') |translate }}</h3>
+            <div class="small text-muted">
+              {{(isUpdateMode ? 'AVANCED_EDIT' : 'ADVENCED_ADD')|translate}}
+            </div>
+          </div>
+          <div class="col-lg-7 col-md-7 col-sm-12" style="text-align:right">
+            <h4 *ngIf=" teamToUpdate && teamToUpdate.State" class="statusAlignment">
+              <span class="badge badge-success">{{ "ACTIVE" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" teamToUpdate && !teamToUpdate.State" class="statusAlignment">
+              <span class="badge badge-danger">{{ "INACTIVE" | translate }}</span>
+            </h4>
+          </div>
+        </div>
+      </div>
+      <form [formGroup]="teamFormGroup" class="form-horizontal">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{'NAME'|translate}}<span class="required">*</span></label>
+                <div class="col-lg-6 col-md-10 col-sm-10">
+                  <input [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && (!Name.valid && !Name.pending) }"
+                    class="form-control" formControlName="Name" type="text">
+                  <app-control-messages [control]="Name" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- TEAM_MANAGER -->
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{'TEAM_MANAGER'|translate}}<span
+                    class="required">*</span></label>
+                <div class="col-lg-6 col-md-10 col-sm-10">
+                  <app-employee-dropdown (Selected)="IdManagerValueChange($event)" [form]="teamFormGroup"
+                    [idEmployeeColName]="'IdManager'">
+                  </app-employee-dropdown>
+                  <app-control-messages [control]="IdManager" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!--End TEAM_MANAGER -->
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{'TEAM_CODE'|translate}}<span class="required">*</span>
+                </label>
+                <div class="col-lg-6 col-md-10 col-sm-10">
+                  <input
+                    [ngClass]="{ 'has-error': (TeamCode.touched || TeamCode.dirty) && !TeamCode.valid && !TeamCode.pending && !TeamCode.disabled }"
+                    class="form-control" formControlName="TeamCode" type="text">
+                  <app-control-messages [control]="TeamCode" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">{{'CREATION_DATE'|translate}}<span
+                    class="required">*</span></label>
+                <div class="col-lg-6 col-md-10 col-sm-10">
+                  <kendo-datepicker [format]="dateFormat" class="form-control" formControlName="CreationDate">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="CreationDate" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <div class="row">
+                <label class="col-lg-3 col-md-12 col-sm-12">
+                  {{'TEAM_TYPE'|translate}}<span class="required">*</span>
+                </label>
+                <div class="col-lg-6 col-md-10 col-sm-10">
+                  <app-team-type-dropdown [group]="teamFormGroup"></app-team-type-dropdown>
+                  <app-control-messages [control]="teamFormGroup.controls.IdTeamType"
+                    class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+              <div class="row">
+                <input class="input-checkbox100" formControlName="State" id="ckb1" name="State" type="checkbox">
+                <label class="label-checkbox100" for="ckb1" style="margin-top: 2%;margin-left: 3%;">
+                  {{'ACTIVE' | translate}}&nbsp;
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+
+      <div class="card-header">
+        <div class="col-sm-5 mt-1">
+          <h3 class="card-title mb-0">{{'EMPLOYEE_ASSIGNMENT'|translate}}</h3>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top: 2%">
+          <p-pickList [disabled]="!status || (isUpdateMode && !hasUpdatePermission)"
+            (onMoveToSource)="onMoveToFreeResources($event)" (onMoveToTarget)="onMoveToAssignResources($event)"
+            [responsive]="true" [showSourceControls]="false" [showTargetControls]="false"
+            [sourceStyle]="{'height':'300px'}" [source]="freeResources" [targetStyle]="{'height':'300px'}"
+            [target]="assignResources" dragdrop="true" filterBy="IdEmployeeNavigation.FullName"
+            sourceFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}"
+            sourceHeader="{{'FREE_RESOURCES'|translate}}"
+            targetFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}"
+            targetHeader="{{'TEAM_MEMBERS'|translate}}">
+            <ng-template let-employeeTeam pTemplate="item">
+              <div class="ui-helper-clearfix">
+                <div class="row">
+                  <div class="col-lg-3">
+                    <div class="employee">
+                      <img
+                        [src]="employeeTeam.IdEmployeeNavigation.pictureEmployesSrc ||'../../../../assets/image/user-new-icon.png'"
+                        class="main-profile-img" />
+                      <span (click)="setAssignementInformations(employeeTeam)" class="icon"><i
+                          class="fa fa-info-circle fa-1x"></i></span>
+                    </div>
+                  </div>
+                  <div class="col-lg-8 py-2 full-name-employee">
+                    <span style="font-size:16px;">{{employeeTeam.IdEmployeeNavigation.FullName}}</span>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </p-pickList>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="card"
+    *ngIf="isUpdateMode && this.teamToUpdate && (this.teamToUpdate.EmployeeTeam != null && this.teamToUpdate.EmployeeTeam.length != 0)">
+    <div class="card-body">
+
+      <div class="card-header">
+        <div class="col-sm-5 mt-1">
+          <h3 class="card-title mb-0">{{'ASSIGNMENT_HISTORY'|translate}}</h3>
+        </div>
+      </div>
+      <div style="max-height: 195px; overflow-x: hidden ">
+        <div *ngFor="let employeeTeam of this.teamToUpdate.EmployeeTeam">
+          <div class="row py-2">
+            <span
+              style="font-size:16px;padding-left:18px;margin-top: 18px">{{employeeTeam.IdEmployeeNavigation.FullName}}</span>
+            <span *ngIf="employeeTeam.AssignmentDate" class="px-2"
+              style="color: #008000;margin-top: 18px"><b>{{ 'ASSIGNED_ON' | translate}}
+                {{employeeTeam.AssignmentDate|date: dateFormat}}</b></span>
+            <span class="px-2" style="margin-top: 18px">{{'WITH_ASSIGNMENT_PERCENTAGE' | translate}} </span>
+
+            <div class="progress" [attr.data-percentage]="employeeTeam.AssignmentPercentage">
+              <span class="progress-left">
+                <span class="progress-bar" style="border-color:#73b4ff"></span>
+              </span>
+              <span class="progress-right">
+                <span class="progress-bar" style="border-color:#73b4ff"></span>
+              </span>
+              <div class="progress-value">
+                <div>
+                  <div *ngIf="employeeTeam.AssignmentPercentage" class="h5 ">
+                    {{employeeTeam.AssignmentPercentage}}<sup class="small">%</sup></div>
+                  <div *ngIf="!employeeTeam.AssignmentPercentage" class="h2 font-weight-bold">
+                    0<sup class="small">%</sup></div>
+                </div>
+              </div>
+            </div>
+            <p *ngIf="employeeTeam.UnassignmentDate && (showUnassignmentDate(employeeTeam.UnassignmentDate))">
+              <span class="px-2"
+                style="font-size:16px;padding-left:18px;">{{employeeTeam.IdEmployeeNavigation.FullName}}</span>
+              <span class="px-2" style="color: #FF0000;">
+                <b>{{ 'UNASSIGNED_ON' | translate}}
+                  {{employeeTeam.UnassignmentDate|date: dateFormat}}</b></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="fixed-card-footer">
+  <div class="footerStyle">
+    <footer class="app-footer">
+      <div class="w-100">
+        <div class="d-flex justify-content-end p-3 footer-content">
+          <a routerLink="/main/payroll/team">
+            <span class="btn btn-sm btn-primary btn-back-to-list" #BackToList>
+              <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+            </span>
+          </a>
+          <span>
+            <button *ngIf="status && (hasAddPermission && !isUpdateMode || hasUpdatePermission && isUpdateMode)"
+              (click)="save()" class="btn btn-sm btn-success" type="submit">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>

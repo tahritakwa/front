@@ -1,0 +1,7 @@
+<div [formGroup]="group">
+<kendo-combobox class="form-control"  [valueField]="'value'"
+                [data]="values" [valuePrimitive]="true" [filterable]="true" [value]="valueBooleanFilter"
+                [textField]="'name'" (valueChange)="onSelect($event)" >
+
+</kendo-combobox>
+</div>

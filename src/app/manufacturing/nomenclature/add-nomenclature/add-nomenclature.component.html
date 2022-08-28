@@ -1,0 +1,274 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 style=" float:left;" class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_NOMENCLATURE' : 'NEW_NOMENCLATURE')
+        |translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="formGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'Product'|translate}}<span class="required">*</span></label>
+            <kendo-combobox formControlName="typeNomenclature" [data]="typesList" [textField]="'name'"
+                            [(ngModel)]="selectedValue" [valueField]="'value'" class="form-control"
+                            (valueChange)="valueChange($event)" [valuePrimitive]="true" [filterable]="true">
+            </kendo-combobox>
+
+            <app-control-messages [control]="formGroup.controls['typeNomenclature']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12" *ngIf="!selectedValue && !isPF && !isPSF">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'ARTICLE'|translate}}<span class="required">*</span></label>
+            <app-dropdown-product-items [disabled]="!isPF && !isPSF"
+                                        [itemForm]="formGroup" [parentViewContainerRef]="viewRef" [showFilter]='true'
+                                        [ignoreCharges]='false' (Selected)="itemNomenclatureSelect($event)"
+                                        [activeKeyPress]='true'
+                                        [hideSearch]="hideSearch"
+                                        [removeFilter]='true' #item>
+            </app-dropdown-product-items>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12" *ngIf="isPF || selectedValue === 'PF'">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'ARTICLE'|translate}}<span class="required">*</span></label>
+            <app-dropdown-product-items [itemForm]="formGroup" [parentViewContainerRef]="viewRef" [showFilter]='true'
+                                        [ignoreCharges]='false' (Selected)="itemNomenclatureSelect($event)"
+                                        [activeKeyPress]='true'
+                                        [source]="'NOMENCLATURE'"
+                                        [isSubFinal]='true' [isOnlyProductNature]='true' [hideSearch]="hideSearch"
+                                        [removeFilter]='true' #item>
+            </app-dropdown-product-items>
+            {{item.id}}
+            <app-control-messages [control]="formGroup.controls.IdItem"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-4 col-md-12 col-sm-12" *ngIf="isPSF || selectedValue === 'PSF'">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'ARTICLE'|translate}}<span class="required">*</span></label>
+            <app-dropdown-product-items [itemForm]="formGroup" [parentViewContainerRef]="viewRef" [showFilter]='true'
+                                        [ignoreCharges]='true' (Selected)="itemNomenclatureSelect($event)"
+                                        [source]="'NOMENCLATURE'"
+                                        [activeKeyPress]='true' [isOnlyProductNature]='true'
+                                        [hideSearch]="hideSearch" [removeFilter]='true' #item>
+            </app-dropdown-product-items>
+            {{item.id}}
+            <app-control-messages [control]="formGroup.controls.IdItem"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REFERENCE'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" name="reference" formControlName="reference" disabled>
+            <app-control-messages [control]="formGroup.controls['reference']"
+                                  class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <ul class="nav nav-tabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active show" data-toggle="tab" href="#home1" role="tab" aria-controls="home1"
+               aria-selected="true" style="font-size: larger;">
+              <i class="cui-list"></i> {{'COMPOSANT_NOMENCATURE'|translate}}
+            </a>
+          </li>
+          <li class="nav-item" *ngIf="isUpdateMode">
+            <a class="nav-link" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" aria-selected="false"
+               (click)="loadNomenclaturesDetails()">
+              <i class="fa fa-sitemap"></i> {{'STRUCTURE_NOMENCLATURE'|translate}}
+            </a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <div class="tab-pane active show" id="home1" role="tabpanel"
+               [ngStyle]="{'min-height': 'auto', 'max-height': 'auto', 'overflow-y': 'auto'}">
+            <kendo-grid [data]="gridSettingsNomenclatures.gridData"
+                        [pageSize]="gridSettingsNomenclatures.state.take"
+                        [skip]="gridSettingsNomenclatures.state.skip"
+                        (pageChange)="onPageChange($event)"
+                        (dataStateChange)="dataStateChange($event)"
+                        [sort]="gridSettingsNomenclatures.state.sort"
+                        [filter]="gridSettingsNomenclatures.state.filter"
+                        [sortable]="true"
+                        [columnMenu]="false"
+                        [pageable]="pagerSettings"
+                        filterable="menu"
+                        [reorderable]="true"
+                        (edit)="editHandler($event)"
+                        (cancel)="cancelHandler($event)"
+                        (save)="saveHandler($event)"
+                        (remove)="removeProductHandler($event)"
+                        (add)="addHandler($event)"
+                        (cellClick)="getCurrentDataItem($event)">
+              <!--Grid Toolbar-->
+              <ng-template kendoGridToolbarTemplate [position]="'bottom'" id="addButton">
+                <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" id="addButton1">
+                  <a kendoGridAddCommand id="addButton2" class="btn-Add k-button btn btn-add"
+                     style=" border: 2px double #4c9aae!important;">
+                    <i class="fa fa-plus fa AddIcon"></i>
+                    <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+                  </a>
+                </div>
+              </ng-template>
+              <!--End Grid toolbar-->
+
+              <kendo-grid-column *ngFor="let col of gridSettingsNomenclatures.columnsConfig; let i = index"
+                                 [field]="col.field" [title]="col.title | translate" [width]="col._width"
+                                 [filter]="col.filter"
+                                 [filterable]="col.filterable" [format]="col.format">
+
+                <ng-template kendoGridEditTemplate>
+
+                  <form [formGroup]="productLineFormGroup">
+
+                    <div *ngIf="col.field === 'description'">
+                      <!-- [idItemToIgnore]='nomenclature.Id' -->
+                      <app-dropdown-product-items [itemForm]="productLineFormGroup" [parentViewContainerRef]="viewRef"
+                                                  [showFilter]='true' [ignoreCharges]='true' [activeKeyPress]='true'
+                                                  [hideSearch]="hideSearch"
+                                                  [filtersItemDropdown]="filtersItemDropdown"
+                                                  [idItemToIgnore]='itemClicked'
+                                                  [removeFilter]='true'
+                                                  [isOnlyProductNature]='true'
+                                                  #item></app-dropdown-product-items>
+                      <i #anchorProductId></i>
+                      <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorProductId"
+                                                     controlName="IdItem">
+                      </app-control-message-grid-cell>
+                    </div>
+
+                    <div *ngIf="col.field === 'quantity'">
+                      <input class="form-control" type="number" min="0"
+                             (keydown)="checkPositive($event, inputProductQty)" #inputProductQty
+                             *ngIf="col.field == 'quantity'" name="quantity"
+                             (input)="onUpdateTauxChuteOrQuantityChute($event)" formControlName="quantity">
+                      <i #anchorQuantity></i>
+                      <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorQuantity"
+                                                     controlName="quantity">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'unite' && isUpdateMode">
+                      <input disabled class="form-control" type="text" *ngIf="col.field == 'unite'" name="unite"
+                             formControlName="unite">
+                      <i #anchorUnite></i>
+                      <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorUnite"
+                                                     controlName="unite">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'tauxChute'">
+                      <input class="form-control" type="number" min="0" style="text-align: right;"
+                             (keydown)="checkPositive($event, inputTauxChute)" #inputTauxChute
+                             *ngIf="col.field == 'tauxChute'" name="tauxChute"
+                             (input)="onUpdateTauxChuteOrQuantityChute($event)" formControlName="tauxChute">
+                      <i #anchorTauxChute></i>
+                      <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorTauxChute"
+                                                     controlName="tauxChute">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'quantityChute'">
+                      <input class="form-control" type="number" min="0" [max]="productLineFormGroup.value['quantity']"
+                             style="text-align: right;" *ngIf="col.field == 'quantityChute'"
+                             name="quantityChute" formControlName="quantityChute"
+                             (input)="onUpdateTauxChuteOrQuantityChute($event)">
+                      <i #anchorQuantityChute></i>
+                      <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorQuantityChute"
+                                                     controlName="quantityChute">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'quantityNet'">
+                      <input class="form-control" type="number" *ngIf="col.field == 'quantityNet'" name="quantityNet"
+                             formControlName="quantityNet" [readOnly]="true">
+                      <i #anchorQuantityNet></i>
+                      <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorQuantityNet"
+                                                     controlName="quantityNet">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'unitHtpurchasePrice'&&isUpdateMode">
+                      <input disabled class="form-control" type="text" *ngIf="col.field == 'unitHtpurchasePrice'"
+                             name="unitHtpurchasePrice" formControlName="unitHtpurchasePrice">
+                      <i #anchorUnitHtpurchasePrice></i>
+                      <app-control-message-grid-cell [group]="productLineFormGroup" [anchor]="anchorUnitHtpurchasePrice"
+                                                     controlName="unitHtpurchasePrice">
+                      </app-control-message-grid-cell>
+                    </div>
+                  </form>
+                </ng-template>
+
+              </kendo-grid-column>
+              <kendo-grid-command-column title="{{'ACTION' | translate}}">
+                <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                  <button *ngIf="!editMode" (click)="handleEditHandler()" kendoGridEditCommand
+                          style="background-color: white;" dir="ltr">
+                    <i class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+                  </button>
+                  <button (click)="handledEditHandler()" kendoGridSaveCommand class="noPadding btn-Add k-button"
+                          dir="ltr">
+                    <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+                  </button>
+                  <button (click)="handledEditHandler()" kendoGridCancelCommand class="noPadding btn-Add k-button"
+                          dir="ltr"
+                          style="border: none; color: #E91E63 !important;">
+                    <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+                  </button>
+                  <button kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr"
+                          style="border: none; color: #E91E63 !important;">
+                    <i class="fa fa-times fa-lg"></i>
+                  </button>
+                </ng-template>
+              </kendo-grid-command-column>
+            </kendo-grid>
+          </div>
+          <div class="tab-pane" id="home2" role="tabpanel"
+               [ngStyle]="{'min-height': '400px', 'max-height': '400px', 'overflow-y': 'auto'}">
+            <div class="form-group row">
+
+              <app-tree-nomenclature [idNomenclatureOnUpdate]="idNomenclatureOnUpdate"
+                                     *ngIf="loadComponentNomenclatureTreeView"></app-tree-nomenclature>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="montant" *ngIf="isUpdateMode"> {{'COST_NOMENCLATURE'|translate}}
+        : {{montantTotal.toFixed(3).toString() != 'NaN' ?
+          montantTotal.toFixed(3).toString() + currentCurrency : '0' + currentCurrency}}
+      </div>
+      <!--Begin card Footer -->
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <footer class="app-footer" style="margin-left: 0;">
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 footer-content">
+                <a routerLink='/main/manufacturing/nomenclature'>
+                  <span class="btn btn-sm btn-back-to-list btn-primary">
+                    <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                  </span>
+                </a>
+                <button *ngIf="!isUpdateMode" (click)="saveNomenclatureClick()" class="btn btn-sm btn-save mx-1"
+                        type="button">
+                  <i class="fa fa-floppy-o"></i>{{'SAVE_NOMENCLATURE' |translate }}
+                </button>
+                <button *ngIf="isUpdateMode" (click)="editNomenclatureClick()" class="btn btn-sm btn-save mx-1"
+                        type="button">
+                  <i class="fa fa-floppy-o"></i> {{'EDIT_NOMENCLATURE' |translate }}
+                </button>
+
+                <button *ngIf="isUpdateMode&&this.oldIdNomenclatureOnUpdate"
+                        class="btn btn-sm btn-back-to-list btn-primary" (click)="backtoOldNomenclatureClick()">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_OLD_NOMENCLATURE_LIST' |translate }}
+                </button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <!--End card Footer -->
+    </form>
+  </div>
+</div>

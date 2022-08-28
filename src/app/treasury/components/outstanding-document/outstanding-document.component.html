@@ -1,0 +1,149 @@
+<div class="col-lg-12 col-md-12 col-sm-122">
+  <div class="row">
+    <div class="card" style="width:100%;">
+      <div class="card-content">
+        <!--Begin card body-->
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 15px;">
+              <h2> {{ (tiersType == tiersTypeEnum.Customer ? 'CUSTOMER_OUTSTANDING' : 'SUPPLIER_OUTSTANDING')|translate}}
+              </h2>
+            </div>
+            <div class="col-lg-12 col-md-12">
+              <app-add-settlement *ngIf="displayForm"
+                                  [companyWithholdingTax]="companyWithholdingTax"
+                                  [tiersType]="tiersType" [tiersCurrency]="tiersCurrency"
+                                  [selectedTiers]="selectedTiers"
+                                  [selectedTiersFromPos]="selectedTiersFromPos"
+                                  [listTicketsSelected]="listTicketsSelected"
+                                  [paymentType] = "selectedPaymentType"
+                                  [isForPos]="isForPos"
+                                  [totalAmount]="totalAmount"
+                                  [totalAmountWithholdingTax]="totalAmountWithholdingTax"
+                                  [listFinancialCommitmentSelected]="listFinancialCommitmentSelected"
+                                  (tiersSelectedChange)="onTiersChange($event)"
+                                  (savingDone)="initialiseComponent()"
+                                  (cancelButtonClicked)="openForm($event)">
+              </app-add-settlement>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="listFinancialCommitmentSelected.length > 0 || listTicketsSelected.length > 0">
+        <div class="col-lg-12 md-12 sm-12" align="right" *ngIf="tiersCurrency">
+          <b style="margin-right: 26px;">{{'TOTAL_AMOUNT'|translate}} : {{totalAmount.toLocaleString(language, {
+            minimumFractionDigits: tiersCurrency.Precision,
+            style: 'currency', currency: tiersCurrency.Code, currencyDisplay: 'code'
+          })}}</b>
+        </div>
+      </div>
+      <div class="row card-margin">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link nav-link-new active" data-toggle="tab" href="#bill" role="tab"
+                 aria-controls="home" aria-selected="true" (click)="clickTab('bill',$event)">
+                {{'INVOICES'|translate}}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#invoice" role="tab"
+                 aria-controls="history" aria-selected="false"
+                 (click)="clickTab('invoice',$event)">
+                {{'FINANCIAL_COMMITMENTS'|translate}}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#asset" role="tab"
+                 aria-controls="history" aria-selected="false"
+                 (click)="clickTab('asset',$event)">
+                {{'ASSETS'|translate}}
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="tiersType==tiersTypeEnum.Customer">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#deliveryFormNotBiled" role="tab"
+                 aria-controls="history" aria-selected="false"
+                 (click)="clickTab('deliveryFormNotBiled',$event)">
+                {{'DELIVERY_FORM_NOT_BILLED'|translate}}
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="tiersType==tiersTypeEnum.Customer">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#cashRegister" role="tab" id="test"
+                 aria-controls="history" aria-selected="false"
+                 (click)="clickTab('cashRegister',$event)">
+                {{'CASH_REGISTERS'|translate}}
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active pt-0 show" id="bill" role="tabpanel">
+              <app-invoice-commitment-not-billed [tiersType]="tiersType"
+                                                 [companyWithholdingTax]="companyWithholdingTax"
+                                                 [listFinancialCommitmentSelected]="listFinancialCommitmentSelected"
+                                                 [selectedTiers]="selectedTiers"
+                                                 [disableCheckBox]="listTicketsSelected.length > 0"
+                                                 (itemSelectedChange)="onSelectedFinancialCommitmentChange($event)"
+                                                 [displayAddButton]="!displayForm"
+                                                 (tiersSelectedChange)="onTiersChange($event)"
+                                                 (openFormClicked)="openForm($event)"
+                                                 >
+              </app-invoice-commitment-not-billed>
+            </div>
+            <div class="tab-pane pt-0" id="invoice" role="tabpanel">
+              <!-- FC incoice start-->
+              <app-invoice-financial-commitment-not-billed
+                [companyWithholdingTax]="companyWithholdingTax"
+                [tiersType]="tiersType"
+                [listFinancialCommitmentSelected]="listFinancialCommitmentSelected"
+                [selectedTiers]="selectedTiers"
+                [disableCheckBox]="listTicketsSelected.length > 0"
+                (itemSelectedChange)="onSelectedFinancialCommitmentChange($event)"
+                [displayAddButton]="!displayForm"
+                (tiersSelectedChange)="onTiersChange($event)"
+                (openFormClicked)="openForm($event)">
+              </app-invoice-financial-commitment-not-billed>
+              <!-- FC incoice End-->
+            </div>
+            <div class="tab-pane pt-0" id="asset" role="tabpanel">
+              <!-- FC assets start-->
+              <app-asset-financial-commitment-not-billed
+                [companyWithholdingTax]="companyWithholdingTax"
+                [tiersType]="tiersType"
+                [listFinancialCommitmentSelected]="listFinancialCommitmentSelected"
+                [selectedTiers]="selectedTiers"
+                [displayAddButton]="!displayForm"
+                [disableCheckBox]="listTicketsSelected.length > 0"
+                (itemSelectedChange)="onSelectedFinancialCommitmentChange($event)"
+                (tiersSelectedChange)="onTiersChange($event)"
+                (openFormClicked)="openForm($event)">
+              </app-asset-financial-commitment-not-billed>
+              <!-- FC assets end-->
+            </div>
+
+            <div class="tab-pane pt-0" id="deliveryFormNotBiled" role="tabpanel"
+                 *ngIf="tiersType==tiersTypeEnum.Customer">
+              <app-delivery-form-not-billed [selectedTiers]="selectedTiers"
+                                            (tiersSelectedChange)="onTiersChange($event)"
+                                          >
+              </app-delivery-form-not-billed>
+            </div>
+            <div class="tab-pane pt-0" id="cashRegister" role="tabpanel">
+              <!-- ticket start-->
+              <app-ticket-list
+                [displayAddButton]="!displayForm"
+                [listSelectedTicket] = "listTicketsSelected"
+                [disableCheckBox]="listFinancialCommitmentSelected.length > 0"
+                (isForPosNotification)="posNotify($event)"
+                (tiersSelectedChange)="onTiersChange($event)"
+                (itemSelectedChange)="onSelectedFTicketChange($event)"
+                (openFormClicked)="openForm($event)"
+                [activeCashTab] = "activeCashTab">
+              </app-ticket-list>
+              <!-- ticket End-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,193 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <form class="form-horizontal" [formGroup]="sendMailFormGroup">
+        <div class="card" style="margin-bottom: 0px">
+          <div class="card-body">
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-6 col-md-6 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TEMPLATE'|translate}}</label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <kendo-dropdownlist [data]="templateList" [(ngModel)]="selectedTemplateId"
+                                        (valueChange)="selected($event)"
+                                        formControlName="template" style="width: 100%"
+                                        textField="name"
+                                        valueField="id"
+                                        [filterable]="true"
+                                        [valuePrimitive]="true"
+                                        (filterChange)="handleFilter($event)">
+                    </kendo-dropdownlist>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-6 col-md-6 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'RECEPIENT'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <p-chips [(ngModel)]="listrecipients"
+                             (onAdd)="validateEmailAddress('to')"
+                             [allowDuplicate]="false" [addOnTab]="true" [addOnBlur]="true"
+                             (onBlur)="validateEmailAddress('to')"
+                             (onRemove)="validateEmailAddress('to')"
+                             [style]="{'width':'100%' }" #model="ngModel" [ngModelOptions]="{standalone: true}">
+                      <ng-template let-item pTemplate="item">
+                        <div class="ui-helper-clearfix"
+                             [ngStyle]="!mailMatch(item) ? {'text-decoration':'underline','text-decoration-color':'red','text-decoration-style': 'wavy'} : ''">
+                          {{item}} <i class="fa fa-user"
+                                      style="margin-right:2em; padding-bottom: 2px;vertical-align: middle"></i>
+                        </div>
+                      </ng-template>
+                    </p-chips>
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                   <span *ngIf="listrecipients.length === 0 && savedAction" class="error-message" style="color:red">
+                          {{'REQUIRED'|translate}}
+                        </span>
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                   <span *ngIf="checkListToNotValid()" class="error-message" style="color:red">
+                          {{'INVALID_MAIL'|translate}}
+                        </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-right: 8px">
+              <button class="MybtnLink" (click)="showCC()" title="{{'ADDCCRECIPIENTS' |translate}}"
+                      *ngIf="!showCCRecipient">Cc
+              </button>
+              <button class="MybtnLink" (click)="showBCC()" title="{{'ADDBCCRECIPIENTS' |translate}}"
+                      *ngIf="!showBCCRecipient">Bcc
+              </button>
+            </div>
+            <br>
+            <div class="row form-group" *ngIf="showCCRecipient">
+              <div class="col-lg-3 col-sm-6 col-md-6 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'RECEPIENTCC'|translate}}</label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <p-chips [(ngModel)]="listrecipientsCc"
+                             (onAdd)="validateEmailAddress('cc')"
+                             [allowDuplicate]="false" [addOnTab]="true" [addOnBlur]="true"
+                             (onBlur)="validateEmailAddress('cc')"
+                             (onRemove)="validateEmailAddress('cc')"
+                             [style]="{'width':'100%' }" [ngModelOptions]="{standalone: true}">
+                      <ng-template let-item pTemplate="item">
+                        <div class="ui-helper-clearfix"
+                             [ngStyle]="!mailMatch(item) ? {'text-decoration':'underline','text-decoration-color':'red','text-decoration-style': 'wavy'} : ''">
+                          {{item}} <i class="fa fa-user"
+                                      style="margin-right:2em; padding-bottom: 2px;vertical-align: middle"></i>
+                        </div>
+                      </ng-template>
+                    </p-chips>
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                   <span *ngIf="checkListCcNotValid()" class="error-message" style="color:red">
+                          {{'INVALID_MAIL'|translate}}
+                        </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br *ngIf="showBCCRecipient">
+            <div class="row form-group" *ngIf="showBCCRecipient">
+              <div class="col-lg-3 col-sm-6 col-md-6 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'RECEPIENTBCC'|translate}}</label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <p-chips [(ngModel)]="listrecipientsBcc"
+                             (onAdd)="validateEmailAddress('bcc')"
+                             [allowDuplicate]="false" [addOnTab]="true" [addOnBlur]="true"
+                             (onBlur)="validateEmailAddress('bcc')"
+                             (onRemove)="validateEmailAddress('bcc')"
+                             [style]="{'width':'100%' }" [ngModelOptions]="{standalone: true}">
+                      <ng-template let-item pTemplate="item">
+                        <div class="ui-helper-clearfix"
+                             [ngStyle]="!mailMatch(item) ? {'text-decoration':'underline','text-decoration-color':'red','text-decoration-style': 'wavy'} : ''">
+                          {{item}} <i class="fa fa-user"
+                                      style="margin-right:2em; padding-bottom: 2px;vertical-align: middle"></i>
+                        </div>
+                      </ng-template>
+                    </p-chips>
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                   <span *ngIf="checkListBccNotValid()" class="error-message" style="color:red">
+                          {{'INVALID_MAIL'|translate}}
+                        </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br *ngIf="showBCCRecipient || showCCRecipient">
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-6 col-md-6 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'OBJECT'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="text" formControlName="subject"
+                           [ngClass]="{ 'has-error': (sendMailFormGroup.controls.subject.touched ||
+                               sendMailFormGroup.controls.subject.dirty) && !sendMailFormGroup.controls.subject.valid }">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="sendMailFormGroup.controls.subject"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <app-upload-files (fileValid)= "checkFile($event)" (deleteFileEvent)="deleteFileEvent($event)"
+                            (messageEvent)="receiveMessage($event)"></app-upload-files>
+          <br/>
+          <div *ngIf="!editBeforeSending && widhTemplate">
+            <p-panel>
+              <div [innerHTML]="selectedTemplateDetails | safePipe"></div>
+            </p-panel>
+          </div>
+          <div *ngIf="editBeforeSending || widhoutTemplate">
+            <div class="mycloseButton" style="position:absolute; right: 22px;">
+            </div>
+            <p-editor [(ngModel)]="editorContent" id="htmlEditor" [style]="{'height':'320px'}" [ngModelOptions]="{standalone: true}">
+            </p-editor>
+
+          </div>
+        <!--Begin Card footer-->
+        <div class="card-footer" style="float: right;margin-right: 1%; background: transparent; padding-bottom: 0;">
+          <div class="row" style="float: right;">
+            <div class="col-lg-12 col-md-12">
+              <button class="btn btn-sm btn-primary" (click)="onBackToListOrCancel()">
+                <i class="fa fa-close"></i> {{!isModal ? 'BACK_TO_LIST' : 'CANCEL' |translate}}
+              </button>
+              <button class="btn btn-sm btn-primary" *ngIf="!editBeforeSending && widhTemplate" (click)="edit()">
+                <i class="fa fa-edit"></i> {{'EDIT BEFORE SENDING' |translate}}
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="send()">
+                <i class="fa fa-floppy-o"></i> {{'SEND'|translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+

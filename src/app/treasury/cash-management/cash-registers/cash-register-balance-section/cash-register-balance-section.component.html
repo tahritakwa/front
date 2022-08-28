@@ -1,0 +1,60 @@
+<div class="body">
+  <div class="col-12">
+    <!-- Filters start -->
+    <div class="row" style="margin-bottom: 30px; margin-top: 30px;">
+      <!-- begin start date -->
+      <div class="col-lg-5 col-md-12 col-sm-12">
+        <div class="row">
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label>
+              {{'START_DATE'|translate}} :
+            </label>
+          </div>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <kendo-datepicker class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+      </div>
+      <!-- end start date -->
+      <!-- col for space -->
+      <div class="col-lg-1 col-md-1 col-sm-1 margin">
+      </div>
+      <!-- End col for space -->
+      <!-- end-date start -->
+      <div class="col-lg-5 col-md-12 col-sm-12">
+        <div class="row">
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label>
+              {{'END_DATE'|translate}} :
+            </label>
+          </div>
+          <div class="col-lg-8 col-md-12 col-sm-12">
+            <kendo-datepicker class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+      </div>
+      <!-- end-date end -->
+      <div class="col-lg-1 col-md-12 col-sm-12">
+        <button class="btn btn-secondary" style="width:50px;" type="button" (click)="doSearch()">
+          <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <!-- End filter -->
+    <div class="row">
+      <!-- To be replaced with the new chart lib ECHARTS-->
+      <!-- <canvas baseChart [labels]="lineChartLabels" [options]="lineChartOptions" [colors]="lineChartColors"
+        [legend]="lineChartLegend" [chartType]="lineChartType" [datasets]="lineChartData"
+        #canvasBalanceLineChart></canvas> -->
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+input[type="file"] {
+  display: none;
+}
+
+.image-area {
+  position: relative;
+  float: left;
+}
+
+.imgSize {
+  border: 3px groove #8aa5d72e;
+  padding: 3px;
+  height: 150px;
+  width: 200px;
+}
+
+.close {
+  right: 8px;
+  z-index: 100;
+  padding: 4px 3px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  font-size: 22px;
+  line-height: 10px;
+}
+

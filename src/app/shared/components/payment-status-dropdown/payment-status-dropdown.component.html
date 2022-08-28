@@ -1,0 +1,6 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="paymentStatusDataSourceFilter" class="form-control HistoryCommandMargin" name="IdPaymentStatus"
+    formControlName="IdPaymentStatus" textField="name" valueField="value" [valuePrimitive]="true" [allowCustom]="true"
+    [filterable]="true" (filterChange)="handleFilter($event)" (valueChange)="onValueChanged($event)">
+  </kendo-combobox>
+</div>

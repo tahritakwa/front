@@ -1,0 +1,11 @@
+<div [formGroup]="form">
+    <kendo-combobox class="form-control" [data]="prices" [textField]="'name'" [allowCustom]="allowCustom"
+        [valueField]="'id'" formControlName="TypeValue" name="TypeValue" [valuePrimitive]="true"
+        (valueChange)="onSelect(this)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+            <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+    </kendo-combobox>
+</div>

@@ -1,0 +1,40 @@
+.navigation-btn {
+  text-align: center;
+  margin-bottom: 20px;
+  border: solid 1px lightgray;
+}
+a.active {
+  background-color: rgb(76, 154, 174) !important;
+  border: none;
+}
+.mini-card {
+  border: solid 1px lightgray;
+  padding: 18px;
+  border-radius: 3px;
+  overflow: auto;
+
+  p {
+    margin-bottom: 0px;
+  }
+  h5 {
+    color: rgb(76, 154, 174);
+    font-weight: bold;
+    font-size: medium;
+  }
+
+  h6 {
+    font-weight: bold;
+  }
+}
+.badge-brand {
+  color: #fff;
+  background-color: rgb(76, 154, 174);
+}
+.carousel-inner {
+  height: 100%;
+}
+td.tab-header {
+  font-weight: bold;
+  text-align: end;
+  width: 170px;
+}

@@ -1,0 +1,191 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'ACTIVE_ASSIGNMENT'|translate}}</h3>
+          </div>
+        </div>
+        <form class="form-horizontal" [formGroup]="assignmentFormGroup" (ngSubmit)="onAddActiveAssignmentClick()">
+          <div class="card-body">
+            <div class="form-group row">
+              <div class="col-lg-3 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ACTIVE'|translate}}</label>
+                <app-active-dropdown [form]="assignmentFormGroup" [valueChange]="onChangeValueActive()"
+                  [onlyDMSactive]="true"></app-active-dropdown>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'EMPLOYEE'|translate}}<span
+                    class="required">*</span></label>
+                <app-employee-dropdown [form]="assignmentFormGroup"> </app-employee-dropdown>
+                <app-control-messages [control]="assignmentFormGroup.controls.IdEmployee"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ASSIGNMENT_DATE'|translate}}<span
+                    class="required">*</span></label>
+                <app-acquisation-date-datepicker [form]="assignmentFormGroup" [DateName]="'AcquisationDate'"
+                  [change]="changeAcquisationDate()" [max]="maxAcquisationDate" [min]="minAcquisationDate">
+                </app-acquisation-date-datepicker>
+
+                <app-control-messages [control]="assignmentFormGroup.controls.AcquisationDate"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+
+              </div>
+              <div class="col-lg-3 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ABANDONMENT_DATE'|translate}}</label>
+                <app-acquisation-date-datepicker [form]="assignmentFormGroup" [DateName]="'AbandonmentDate'"
+                  [change]="changeAbandonmentDate()" [min]="minAbandonmentDate">
+                </app-acquisation-date-datepicker>
+
+                <app-control-messages [control]="assignmentFormGroup.controls.AbandonmentDate"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+
+              </div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-danger" type="submit" [disabled]="isDisabled" *ngIf="haveAddPermission">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+            <br>
+            <div>
+              <code class="highlighter-rouge" *ngIf="showErrorMessage==true">
+                {{nameCurrentActive}} {{'Error_ASSIGNEMENT_ACTIVE'|translate}}
+              </code>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active show" data-toggle="tab" href="#home3" role="tab" aria-controls="home"
+                      aria-selected="true">
+                      <i class="icon-calculator"></i> {{'ASSIGNMENT_LIST'|translate}}
+                    </a>
+                  </li>
+
+
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane active show" id="home3" role="tabpanel">
+
+                    <!--[class]="classGrid"-->
+                    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                      [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+                      [filter]="gridSettings.state.filter" (edit)="editHandler($event)" (cancel)="cancelHandler($event)"
+                      (save)="saveHandler($event)" (remove)="removeHandler($event)"
+                      (dataStateChange)="dataStateChange($event)" [sortable]="true" [pageable]="true" filterable="menu"
+                      [reorderable]="true" [columnMenu]="true">
+
+                      <!--Employee-->
+                      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                        [title]="gridSettings.columnsConfig[0].title | translate"
+                        [width]="gridSettings.columnsConfig[0]._width" [filter]="gridSettings.columnsConfig[0].filter"
+                        [filterable]="gridSettings.columnsConfig[0].filterable"
+                        [format]="gridSettings.columnsConfig[0].format">
+                        <ng-template kendoGridHeaderTemplate>
+                          <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+                            theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+                        </ng-template>
+                        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                          <app-employee-dropdown [form]="activeAssignmentFormGroup">
+                          </app-employee-dropdown>
+                        </ng-template>
+                      </kendo-grid-column>
+
+                      <!--Acquisition date-->
+                      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                        [title]="gridSettings.columnsConfig[1].title | translate"
+                        [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.columnsConfig[1].filter"
+                        [filterable]="gridSettings.columnsConfig[1].filterable"
+                        [style]='{"text-align": "right", "padding-right": "2%"}'
+                        [format]="gridSettings.columnsConfig[1].format">
+                        <ng-template kendoGridHeaderTemplate>
+                          <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+                            theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+                        </ng-template>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                          {{dataItem.AcquisationDate|date: gridSettings.columnsConfig[1].format}}
+                        </ng-template>
+                        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                          <app-acquisation-date-datepicker [form]="activeAssignmentFormGroup"
+                            [DateName]="'AcquisationDate'" [change]="changeAcquisationDateInGrid()"
+                            [max]="maxAcquisationDateInGrid" [min]="minAcquisationDateInGrid">
+                          </app-acquisation-date-datepicker>
+
+                          <i #anchor></i>
+                          <app-control-message-grid-cell [group]="activeAssignmentFormGroup" [anchor]="anchor"
+                            controlName="AcquisationDate">
+
+                          </app-control-message-grid-cell>
+                        </ng-template>
+                      </kendo-grid-column>
+
+                      <!--Abandonment date-->
+                      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                        [title]="gridSettings.columnsConfig[2].title | translate"
+                        [width]="gridSettings.columnsConfig[2]._width" [filter]="gridSettings.columnsConfig[2].filter"
+                        [filterable]="gridSettings.columnsConfig[2].filterable"
+                        [style]='{"text-align": "right", "padding-right": "2%"}'
+                        [format]="gridSettings.columnsConfig[2].format">
+                        <ng-template kendoGridHeaderTemplate>
+                          <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+                            theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+                        </ng-template>
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                          {{dataItem.AbandonmentDate|date: gridSettings.columnsConfig[2].format}}
+                        </ng-template>
+                        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                          <app-acquisation-date-datepicker [form]="activeAssignmentFormGroup"
+                            [DateName]="'AbandonmentDate'" [change]="changeAbandonmentDateInGrid()"
+                            [min]="minAbandonmentDateInGrid">
+                          </app-acquisation-date-datepicker>
+                          <i #anchor></i>
+                          <app-control-message-grid-cell [group]="activeAssignmentFormGroup" [anchor]="anchor"
+                            controlName="AbandonmentDate">
+
+                          </app-control-message-grid-cell>
+                        </ng-template>
+                      </kendo-grid-column>
+
+                      <kendo-grid-command-column [width]="170">
+                        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                          <!-- edit command directive, will be visible when not in edit mode -->
+                          <button kendoGridEditCommand [primary]="true" class="btnKendoGrid" type="button" *ngIf="haveUpdatePermission">
+                            <i class="fa fa-pencil-square-o"></i>
+                          </button>
+                          <!-- remove command directive, will be visible when not in edit mode -->
+                          <button kendoGridRemoveCommand class="btnKendoGrid" type="button" *ngIf="haveDeletePermission">
+                            <i class="fa fa-trash-o"></i>
+                          </button>
+                          <!--Open advanced edit form -->
+                          <button *ngIf="btnEditVisible" class="k-button btnKendoGrid"
+                            (click)="goToAdvancedEdit(dataItem)" type="button">
+                            <i class="fa fa-chevron-circle-right"></i>
+                          </button>
+                          <!-- save command directive, will be visible when in edit mode -->
+                          <button kendoGridSaveCommand class="btnKendoGrid" type="button"><span
+                              class="fa fa-save"></span></button>
+                          <!-- cancel command directive, will be visible when in edit mode -->
+                          <button kendoGridCancelCommand class="btnKendoGrid" type="button"><span
+                              class="fa fa-close"></span></button>
+
+                        </ng-template>
+                      </kendo-grid-command-column>
+                    </kendo-grid>
+                  </div>
+                  <div class="tab-pane" id="profile3" role="tabpanel">
+                    Historique des affectations
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-lg-2 col-sm-12 col-md-12 col-xs-12"></div>
+  </div>
+</div>

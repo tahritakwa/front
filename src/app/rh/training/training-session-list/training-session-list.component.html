@@ -1,0 +1,88 @@
+<div class="card">
+  <div style="margin-left: 40px; margin-top: 20px;">
+    <h3 class="card-title mb-0">{{ 'TRAINING_SESSION_LIST' |translate }}</h3>
+  </div>
+  <div style="margin: auto;">
+    <label style="padding-right: 10px;">{{'STATE_TITLE'|translate}}</label>
+    <kendo-dropdownlist (valueChange)="onStatusFilterChanged($event)" [data]="statusFilter" [defaultItem]="defaultStatus" textField="name"
+                        valueField="id">
+      <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+        {{ dataItem?.name | translate }}
+      </ng-template>
+    </kendo-dropdownlist>
+  </div>
+  <form class="form-horizontal" style="margin-top: 20px;">
+    <div class="card-body">
+      <kendo-grid (dataStateChange)="dataStateChange($event)" (remove)="removeHandler($event)" [columnMenu]="true"
+                  [data]="gridSettings.gridData" [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+                  [reorderable]="true"
+                  [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+                  [sortable]="true"
+                  filterable="menu">
+        <!-- Head Start-->
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row toolbar_template">
+            <app-btn-grid [addLink]='"add"' [add]='false' [advencedAdd]='false' [export]='true'
+                          style="display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!-- Head end-->
+
+        <!-- Columns data -->
+        <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+                           [filter]="col.filter" [filterable]="col.filterable" [format]="col.format"
+                           [hidden]="col.hidden"
+                           [title]="col.title | translate" [width]="col._width">
+          <ng-template kendoGridHeaderTemplate>
+            <span theme="light"
+                  tooltip="{{col.title|translate}}">{{col.title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <span *ngIf="col.field === 'Name'" title="dataItem.Name">
+              {{dataItem.Name}}
+            </span>
+            <span *ngIf="col.field === 'IdTrainingNavigation'" title="dataItem.IdTrainingNavigation.Name">
+              {{dataItem.IdTrainingNavigation.Name}}
+            </span>
+            <span *ngIf="col.field === 'NumberOfSeance'" title="dataItem.NumberOfSeance">
+              {{dataItem.NumberOfSeance}}
+            </span>
+            <span *ngIf="col.field === 'NumberOfParticipant'" title="dataItem.NumberOfParticipant">
+              {{dataItem.NumberOfParticipant}}
+            </span>
+            <span *ngIf="col.field === 'Status'" title="dataItem.Status">
+              <div *ngIf="dataItem.Status == trainingSessionState.Open"><span
+                class="badge badge-warning">{{'OPEN'|translate}}</span></div>
+              <div *ngIf="dataItem.Status == trainingSessionState.Closed"><span
+                class="badge badge-success">{{'CLOSED'|translate}}</span></div>
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- End Columns data -->
+
+        <!-- Command-->
+        <kendo-grid-command-column [width]="130">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <!--Open advanced edit form -->
+            <button (click)="goToAdvancedEdit(dataItem)" *ngIf="hasShowPermission" class="k-button btnKendoGrid">
+              <i class="fa fa-chevron-circle-right"></i>
+            </button>
+            <!-- remove command directive, will be visible when the state is not closed-->
+            <button *ngIf="hasDeletePermission && dataItem.Status === trainingSessionState.Open" class="btnKendoGrid"
+                    kendoGridRemoveCommand>
+              <i class="fa fa-trash-o"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" [predicate]="predicate" [service]="trainingSessionService"
+                         excel="true"
+                         fileName="{{'TRAINING_SESSION_LIST'|translate}}" pdf="true">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+        <!-- End Command-->
+
+      </kendo-grid>
+    </div>
+  </form>
+</div>

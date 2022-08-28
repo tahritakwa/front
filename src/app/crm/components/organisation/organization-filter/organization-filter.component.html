@@ -1,0 +1,124 @@
+
+<!--
+<div >
+  <fieldset [ngStyle]="{border:fieldsetBorderStyle }">
+    <legend>{{"ADVANCED_SEARCH"|translate}}
+      <i *ngIf="!isContentVisible" class="las la-angle-double-down la-angle-color" (click)="showContent()"></i>
+      <i *ngIf="isContentVisible" class="las la-angle-double-up la-angle-color" (click)="hideContent()"></i>
+    </legend>
+    <div *ngIf="isContentVisible">
+      <div class="col-12">
+        <div class="row form-group">
+
+
+          <div class="col-sm-12 col-md-6 col-xs-12 col-lg-3">
+            <div class="row mt-2">
+              <div class="col-lg-4 col-md-4 col-sm-4 p-0">
+                <label>{{'ACTIVITY_SECTOR' | translate}}</label>
+              </div>
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <kendo-dropdownlist id="activitySector-dropdownlist"
+                                    [data]="activitySectors"
+                                    [(ngModel)]="activitySectorFromFilter"
+                                    (selectionChange)=filterByActivitySector($event)
+                                    [valuePrimitive]="true"
+                                    style="float: left;width: 100%;">
+                  <ng-template kendoDropDownListValueTemplate let-dataItem>
+                    <span> {{dataItem | translate}}</span>
+                  </ng-template>
+                  <ng-template kendoDropDownListItemTemplate let-dataItem>
+                    <span> {{dataItem | translate}}</span>
+                  </ng-template>
+                </kendo-dropdownlist>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col-sm-12 col-md-6 col-xs-12 col-lg-3">
+            <div class="row mt-2">
+              <div class="col-lg-4 col-md-4 col-sm-4 p-0">
+                <label>{{'COUNTRY' | translate}}</label>
+              </div>
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <kendo-combobox [data]="countries"
+                                class="form-control HistoryCommandMargin"
+                                name="idCountryColName"
+                                textField="NameFr"
+                                allowCustom="true"
+                                [valuePrimitive]="true"
+                                [filterable]="true"
+                                (filterChange)="handleCountriesFilter($event)"
+                                (valueChange)="fillRelatedCities($event)" [(ngModel)]="selectedCountry">
+                </kendo-combobox>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-12 col-md-6 col-xs-12 col-lg-3">
+            <div class="row mt-2">
+              <div class="col-lg-4 col-md-4 col-sm-4 p-0">
+                <label>{{'CITY' | translate}}</label>
+              </div>
+              <div class="col-lg-7 col-md-7 col-sm-7">
+                <kendo-combobox [data]="cities"
+                                class="form-control HistoryCommandMargin"
+                                name="idCountryColName"
+                                textField="Code"
+                                valueField="Code"
+                                allowCustom="true"
+                                [valuePrimitive]="true"
+                                (valueChange)="filterByCity($event)"
+                                (filterChange)="handleCitiesFilter($event)"
+                                [filterable]="true" [(ngModel)]="selectedCity" [readonly]="!selectedCountry">
+                </kendo-combobox>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row d-flex justify-content-end">
+        <div class="col-lg-4">
+          <div class="row d-flex justify-content-end m-2 mt-5">
+            <button class="btn btn-sm mr-2" type="button" style="background-color: #c8ced3 !important;"
+                    (click)="resetFieldValues()"
+            >
+              <i style="color: white" class="fa fa-times fa"></i>
+              <span style="color:white">&nbsp; {{'RESET'|translate}}</span>
+            </button>
+            <button class="btn btn-sm btn-search" type="button" (click)="searchFilter()"
+                    [disabled]="isBtnSearchDisabled">
+              <i class="fa fa-search fa"></i>
+              <span *ngIf="isBtnSearchDisabled" tooltip="{{'NO_SELECTED_SUPPLIER' | translate}}" theme="light">&nbsp;
+                {{'SEARCH'|translate}}</span>
+              <span *ngIf="!isBtnSearchDisabled">&nbsp; {{'SEARCH'|translate}}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+  </fieldset>
+</div>
+
+
+<div style="text-align: center;" style="margin-left:2%;" *ngIf="paramsFromOrgList.showSearchFilterComp && prospectType">
+-->
+<div class="d-flex justify-content-center">
+  <div class="col-12">
+    <div class="form-group row">
+      <div class="col-10">
+
+          <input type="text" class="form-control input-text" placeholder="{{'SEARCH_ORGANIZATION'|translate}}"
+                 [(ngModel)]='searchValue' (afterValueChanged)="search()">
+        </div>
+      <div  class="col-2 p-1">
+        <i class="fa fa-search fa-lg" aria-hidden="true" ></i>
+      </div>
+      </div>
+    </div>
+  </div>

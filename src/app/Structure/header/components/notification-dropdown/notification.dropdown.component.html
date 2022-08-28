@@ -1,0 +1,142 @@
+<!-- Begin Notification mode dropdown -->
+<li class="nav-item dropdown show mr-0" *ngIf="!isListMode">
+  <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+    <i class="fa fa-bell-o fa-lg"></i>
+    <span class="badge badge-pill badge-danger small-text"
+          *ngIf="unreadNotificationCounter>0">{{unreadNotificationCounter}}</span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-right dropdown-menu-lg stark-drop-down-notification-list">
+    <li class="dropdown-header stark-drop-down-header">
+      <strong>{{'NOTIFICATIONS'|translate}}</strong>
+      <a class="stark-link float-right stark-notification-settings-link"
+         (click)="onSettings()"><strong>{{'SETTINGS' | translate}}</strong></a>
+      <a class="stark-link float-right"
+         (click)="onDismissAll()"><strong>{{'NOTIFICATION_DISMISS_ALL' | translate}}</strong></a>
+    </li>
+    <!--NotificationItem-->
+    <div infiniteScroll class="scroll-container" #scroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="10"
+         [scrollWindow]="false" (scrolled)="onScroll()" (scrolledUp)="onScrollUp()">
+
+      <div>
+        <div style="border-bottom: 1px solid #c8ced3;" *ngFor="let notification of notificationTaskList; let i=index;">
+          <li class="dropdown-item" [ngClass]="{'notification-unread':!notification.viewed}">
+            <a class="notification-link">
+              <div class="message" (click)="onReadTaskNotification(notification.id, i, notification)">
+                <!--Notification user from-->
+                <div>
+                  <small class="text-muted" [ngClass]="{'stark-text-muted':!notification.viewed}"><b>Task Notification</b></small>
+                  <span class="fa fa-close fa-lg mt-2 mr-1 float-right delete-notification" (click)="onDeleteTaskNotification(notification.id, i)"></span>
+                </div>
+                <!--End Notification user from-->
+                <!--Notification content-->
+                <div class="text-truncate stark-notification-content" routerLink="{{'/main'+notification.Link}}">
+                  <div class="text-muted" [ngClass]="{'stark-text-muted':!notification.viewd}" [innerHTML]="notification.taskDescription">}</div>
+                  <small class="text-muted float-right mt-1 py-1" [ngClass]="{'stark-text-muted':!notification.Viewed}">{{notification.createdDate}}</small>
+                </div>
+                <!--End Notification content-->
+              </div>
+            </a>
+          </li>
+        </div>
+        <div style="border-bottom: 1px solid #c8ced3;" *ngFor="let notification of notifications; let i=index;">
+          <li class="dropdown-item" [ngClass]="{'notification-unread':!notification.Viewed}">
+            <a class="notification-link">
+              <div class="message" (click)="onRead(notification.IdNotification, i, notification)">
+                <!--Notification user from-->
+                <div>
+                  <small class="text-muted"
+                         [ngClass]="{'stark-text-muted':!notification.Viewed}"><b>{{notification.Creator?.FirstName}}&nbsp;{{notification.Creator?.LastName}}</b></small>
+                  <span class="fa fa-close fa-lg mt-2 mr-1 float-right delete-notification"
+                        (click)="onDelete(notification, i)"></span>
+                </div>
+                <!--End Notification user from-->
+                <!--Notification content-->
+                <div class="text-truncate stark-notification-content" routerLink="{{'/main'+notification.Link}}">
+                  <div class="text-muted" [ngClass]="{'stark-text-muted':!notification.Viewed}"
+                       [innerHTML]="notification.Text">}
+                  </div>
+                  <small class="text-muted float-right mt-1 py-1"
+                         [ngClass]="{'stark-text-muted':!notification.Viewed}">{{notification.CreationDateString}}</small>
+                </div>
+                <!--End Notification content-->
+              </div>
+            </a>
+          </li>
+        </div>
+      </div>
+      <!--Loading sipnner-->
+      <div class="loader">
+        <i class="fa fa-circle-o-notch fa-spin" *ngIf="loading"></i>
+      </div>
+      <!--End Loading sipnner-->
+
+    </div>
+
+    <!--Mark all as viewed-->
+    <li class="dropdown-item stark-link text-center stark-drop-down-footer">
+      <a class="stark-link" (click)="onReadAll()"><strong>{{'NOTIFICATION_MARK_ALL_AS_VIEWED' | translate}}</strong></a>
+    </li>
+    <!--End Mark all as viewed-->
+  </ul>
+</li>
+<!--End notification item-->
+<!-- End Notification mode dropdown -->
+
+<!-- Begin Notification mode list-->
+<div class="card" *ngIf="isListMode">
+  <div class="stark-drop-down-notification-list w-100">
+    <div class="dropdown-header stark-drop-down-header">
+       <i [routerLink]="['/main/user_actions/']" class="fa fa-mail-reply fa-lg text-primary"></i>
+      <a class="stark-link float-right stark-notification-settings-link"
+         (click)="onSettings()"><strong>{{'SETTINGS' | translate}}</strong></a>
+      <a class="stark-link float-right"
+         (click)="onDismissAll()"><strong>{{'NOTIFICATION_DISMISS_ALL' | translate}}</strong></a>
+    </div>
+    <!--NotificationItem-->
+    <div infiniteScroll class="scroll-container w-100" #scroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="10"
+         [scrollWindow]="false" (scrolled)="onScroll()" (scrolledUp)="onScrollUp()">
+
+      <div>
+        <div style="border-bottom: 1px solid #c8ced3;" *ngFor="let notification of notifications; let i=index;">
+          <div class="dropdown-item" [ngClass]="{'notification-unread':!notification.Viewed}">
+            <a class="notification-link">
+              <div class="message" (click)="onRead(notification.IdNotification, i, notification)">
+                <!--Notification user from-->
+                <div>
+                  <small class="text-muted"
+                         [ngClass]="{'stark-text-muted':!notification.Viewed}"><b>{{notification.Creator?.FirstName}}&nbsp;{{notification.Creator?.LastName}}</b></small>
+                  <span class="fa fa-close fa-lg mt-2 mr-1 float-right delete-notification"
+                        (click)="onDelete(notification, i)"></span>
+                </div>
+                <!--End Notification user from-->
+                <!--Notification content-->
+                <div class="text-truncate stark-notification-content" routerLink="{{'/main'+notification.Link}}">
+                  <div class="text-muted" [ngClass]="{'stark-text-muted':!notification.Viewed}"
+                       [innerHTML]="notification.Text">}
+                  </div>
+                  <small class="text-muted float-right mt-1 py-1"
+                         [ngClass]="{'stark-text-muted':!notification.Viewed}">{{notification.CreationDateString}}</small>
+                </div>
+                <!--End Notification content-->
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!--Loading sipnner-->
+      <div class="loader">
+        <i class="fa fa-circle-o-notch fa-spin" *ngIf="loading"></i>
+      </div>
+      <!--End Loading sipnner-->
+
+    </div>
+
+    <!--Mark all as viewed-->
+    <div class="dropdown-item stark-link text-center stark-drop-down-footer">
+      <a class="stark-link" (click)="onReadAll()"><strong>{{'NOTIFICATION_MARK_ALL_AS_VIEWED' | translate}}</strong></a>
+    </div>
+    <!--End Mark all as viewed-->
+  </div>
+</div>
+<!--End notification item-->
+<!-- End Notification mode list-->

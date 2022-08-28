@@ -1,0 +1,38 @@
+.navbar-brand {
+  pointer-events: initial !important;
+}
+@media (max-width: 991.98px) {
+  .btn-collapsable {
+    font-size: 0;
+  }
+  .btn > .fa {
+    font-size: initial;
+  }
+  .btn-group > .btn {
+    margin-left: 6px;
+    margin-right: 6px;
+  }
+}
+.btn-group > .btn {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+.nav-icon{
+  margin-right: 10px;
+}
+.nav-icon-b2b{
+  margin-right: 20px;
+}
+.btnConfigDashboard{
+  float: right; margin-bottom: 0px; line-height: 2.5em; color:white;
+}
+.btnConfigDashboard:hover{
+  color: #3e98b3;
+}
+.breadcrumb {
+  border: 0;
+  margin-bottom: 0;
+}
+.breadcrumb-item {
+  margin-top: 5px;
+}

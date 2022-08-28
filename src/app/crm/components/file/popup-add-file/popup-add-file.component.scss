@@ -1,0 +1,8 @@
+ ::ng-deep .modal-backdrop.show{
+  z-index :5 !important;
+}
+ @media (min-width: 576px) {
+   .modal-dialog{
+     max-width: 721px !important;
+   }
+ }

@@ -1,0 +1,34 @@
+<div class="card-deck" *ngIf="listArticles">
+  <div class="card p-3" *ngFor="let Article of listArticles; last as isLast">
+    <div class="px-3 mb-2 row d-flex justify-content-center">
+      <div class="img-border" for="file-input" #fileInput>
+        <img id="ArticlePhoto" class="w-100" alt="ARTICLE_PHOTO" [src]="'assets/image/placeholder-logo.png'" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <p>{{Article.Code}}</p>
+        <h4>{{Article.Description}}</h4>
+      </div>
+      <div class="col-auto">
+        <h5>
+          {{Article.price}}
+        </h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        {{Article.Note}}
+      </div>
+    </div>
+    <div class="overlay-number-detail cursor-pointer" *ngIf="isLast && total>0" (click)="goToDocument()">
+      <div class="number-detail d-flex justify-content-center align-items-center">+{{total}}</div>
+    </div>
+  </div>
+</div>
+<div class="row mt-3 d-flex justify-content-end" *ngIf="document && document.Id !== 0">
+  <div class="col-auto">
+    <button class="btn btn-primary" (click)="goToDocument()"><i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+      {{'SHOW_ALL'|translate}}</button>
+  </div>
+</div>

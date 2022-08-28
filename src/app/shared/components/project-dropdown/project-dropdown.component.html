@@ -1,0 +1,19 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="projectFilterDataSource"
+    class="form-control HistoryCommandMargin"
+    name="IdProject"
+    formControlName="IdProject"
+    textField="Name"
+    valueField="Id"
+    [valuePrimitive]="true"
+    [allowCustom]="allowCustom"
+    [filterable]="true"
+    (filterChange)="handleFilter($event)"
+    (valueChange)="onValueChanged($event)">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>

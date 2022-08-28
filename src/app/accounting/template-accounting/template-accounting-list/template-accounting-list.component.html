@@ -1,0 +1,98 @@
+<div class="card">
+   <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+      <div class="row">
+        <kendo-combobox  style="width: 250px; font-size: 1rem" [data]="journalFiltredList" [(ngModel)]="selectedJournalInFilter"
+                        (filterChange)="handleFilterJournal($event)" [textField]="'label'" [valueField]="'id'"
+                        [filterable]="true" (valueChange)="journalValueChange()" placeholder="{{'SEARCH_BY_JOURNAL'|translate}}">
+                        <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+        </kendo-combobox>
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+          [skip]="gridSettings.state.skip" (dataStateChange)="dataStateChange($event)" [sort]="gridSettings.state.sort"
+          [filter]="gridSettings.state.filter" [selectable]="true" [sortable]="true" [filterable]="false"
+          [reorderable]="true" (remove)="removeHandler($event)" (sortChange)="sortChange()"
+          (filterChange)="filterChange()" (pageChange)="onPageChange()">
+          <ng-template kendoGridToolbarTemplate>
+            <!-- search div-->
+            <div class="row d-flex justify-content-between mt-3">
+              <div class="d-flex justify-content-center col-lg-">
+                <div class="col-12 pl-2">
+                  <div class="form-group row">
+                    <div class="col-9">
+                      <input type="text" class="form-control" placeholder="{{'SEARCH_TEMPLATE'|translate}}"
+                             aria-describedby="addon-wrapping" style="width: 250px; font-size: 1rem" [(ngModel)]='labelTemplate'
+                             (afterValueChanged)='filter()'>
+                    </div>
+                    <div class="col-sm-3">
+                      <i class="fa fa-search fa-lg d-flex justify-content-end mt-2" aria-hidden="true" (click)='filter()'></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- search div-->
+            <div class="row" style="float :right;">
+              <app-btn-grid [advencedAdd]='true' [add]='false' [addLink]='"add"'
+                style="display: inline-flex;margin-right: 4px;margin-top: 1px;"
+                *ngIf="this.authService.hasAuthority(AccountingPermissions.ADD_ACCOUNTING_TEMPLATE)">
+              </app-btn-grid>
+              <div style="float :right;">
+                <app-accounting-template-import-grid-btn [title]=titleBtnGrid [advancedAdd]='true' [addLink]='"add"'
+                                                         style="margin-top: -5%; display: inline-flex;"
+                                                         [canImport]="this.authService.hasAuthority(AccountingPermissions.IMPORT_ACCOUNTING_TEMPLATE)"
+                                                         [export]="this.authService.hasAuthority(this.AccountingPermissions.EXPORT_ACCOUNTING_TEMPLATE)"
+                [exportModelForImport]="this.authService.hasAuthority(this.AccountingPermissions.EXPORT_MODEL_ACCOUNTING_TEMPLATE)" >
+                </app-accounting-template-import-grid-btn>
+              </div>
+            </div>
+            </div>
+          </ng-template>
+
+          <!--label-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+            [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+            [filter]="gridSettings.columnsConfig[0].filter" [format]="gridSettings.columnsConfig[0].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+
+
+          <!--journal-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+            [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+            [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+            [format]="gridSettings.columnsConfig[1].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+
+          <!--Actions-->
+          <kendo-grid-command-column [width]="170" [title]="'ACTIONS'| translate"
+                                     [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+              <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true" (click)="goToAdvancedEdit(dataItem)"
+                 *ngIf="this.authService.hasAuthorities([AccountingPermissions.UPDATE_ACCOUNTING_TEMPLATE,AccountingPermissions.VIEW_ACCOUNTING_TEMPLATE])"></i>
+              <i class="las la-trash-alt text-danger cursor-pointer la-lg" aria-hidden="true"
+                 (click)="removeHandler(dataItem)" *ngIf="this.authService.hasAuthority(AccountingPermissions.DELETE_ACCOUNTING_TEMPLATE)"></i>
+            </ng-template>
+          </kendo-grid-command-column>
+          <!--End Actions-->
+          <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+            pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+          </kendo-grid-messages>
+        </kendo-grid>
+      </div>
+
+
+    </div>
+  </div>
+  <!--End add form -->
+
+</div>

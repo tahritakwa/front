@@ -1,0 +1,214 @@
+<kendo-grid #grid [data]="gridSettings.gridData" [pageable]="pagerSettings" [pageSize]="gridSettings.state.take"
+  [skip]="gridSettings.state.skip" [reorderable]="true" [sortable]="true" (dataStateChange)="dataStateChange($event)"
+  (add)="addHandler($event)" (edit)="editHandler($event)" (save)="saveHandler($event)" (cancel)="cancelHandler($event)"
+  (remove)="removeHandler($event)">
+  <ng-template kendoGridToolbarTemplate>
+    <div class="form-group row">
+      <app-btn-grid *ngIf="!(isUpdateMode && ((!isForRepairOrder && isInterventionCompleted)
+      ||(isForRepairOrder && isRepairOrderValid)))" class="col" [add]='true' [relativeStyle]="false">
+      </app-btn-grid>
+    </div>
+  </ng-template>
+
+  <!-- Operation -->
+  <kendo-grid-column [field]="columnsConfig[0].field" [width]="150">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{columnsConfig[0].tooltip|translate}}" theme="light">{{columnsConfig[0].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span *ngIf="dataItem.IdOperationNavigation">
+        {{dataItem.IdOperationNavigation.Name}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" let-isNew="isNew">
+      <div class="row" *ngIf="isNew">
+        <div class="col-lg-12 col-md-11 col-sm-11">
+          <app-operation-dropdown [group]="formGroup" [operationListIdsToIgnore]="operationListIdsToIgnore"
+            (Selected)="onSelectOperation($event)">
+          </app-operation-dropdown>
+          <i #anchor></i>
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="IdOperation">
+          </app-control-message-grid-cell>
+        </div>
+      </div>
+      <div class="row" *ngIf="!isNew">
+        {{dataItem && dataItem.IdOperationNavigation ? dataItem.IdOperationNavigation.Name : ''}}
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- ValidateBy -->
+  <kendo-grid-column [field]="columnsConfig[1].field" [width]="150" *ngIf="!this.isForRepairOrder">
+    <ng-template kendoGridHeaderTemplate>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span tooltip="{{'VALIDATE_BY_USER' | translate}}"
+        *ngIf="dataItem.ValidateBy === operationValidateByEnumerator.ValidateByUser">
+        <i class="fa fa-check-square-o validate-by-user-icon" aria-hidden="true"></i>
+      </span>
+      <span tooltip="{{'VALIDATE_BY_PHONE' | translate}}"
+        *ngIf="dataItem.ValidateBy === operationValidateByEnumerator.ValidateByPhone">
+        <i class="fa fa-phone-square validate-by-phone-icon" aria-hidden="true"></i>
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+      <div class="row">
+        <div class="col-lg-12 col-md-11 col-sm-11">
+          <app-operation-validate-by-dropdown [group]="formGroup"></app-operation-validate-by-dropdown>
+          <i #anchor></i>
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="ValidateBy">
+          </app-control-message-grid-cell>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Durée prévue -->
+  <kendo-grid-column [field]="columnsConfig[2].field" [width]="150">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'DURATION' | translate}}" theme="light">{{ 'DURATION' |translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <span *ngIf="dataItem && dataItem.IdOperationNavigation">
+        {{getDurationAsString(dataItem.IdOperationNavigation)}}
+      </span>
+      <span *ngIf="!(dataItem && dataItem.IdOperationNavigation)">
+        0&nbsp;{{'MINUTES' | translate}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-formGroup="formGroup" let-dataItem="dataItem">
+      <span *ngIf="formGroup.controls.IdOperationNavigation.value">
+        {{getDurationAsString(formGroup.controls.IdOperationNavigation.value)}}
+      </span>
+      <span *ngIf="!formGroup.controls.IdOperationNavigation.value">
+        0&nbsp;{{'MINUTES' | translate}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Htprice -->
+  <kendo-grid-column [field]="columnsConfig[3].field" [width]="140" *ngIf="this.isForRepairOrder"
+    [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right", "padding-right": "9%"}'>
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{columnsConfig[3].tooltip|translate}}" theme="light">{{columnsConfig[3].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+      <span *ngIf="companyCurrency && dataItem.Htprice > 0">
+        {{dataItem.Htprice.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+        style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})
+        }}
+      </span>
+      <span *ngIf="!companyCurrency">
+        {{dataItem.Htprice}}
+      </span>
+      <span *ngIf="companyCurrency && !dataItem.Htprice">
+        0&nbsp;{{companyCurrency.Code}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+      <span *ngIf="companyCurrency && formGroup.controls.Htprice.value > 0">
+        {{formGroup.controls.Htprice.value.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+        style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})
+        }}
+      </span>
+      <span *ngIf="!companyCurrency">
+        {{formGroup.controls.Htprice.value}}
+      </span>
+      <span *ngIf="companyCurrency && !formGroup.controls.Htprice.value">
+        0&nbsp;{{companyCurrency.Code}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- prix ttc -->
+  <kendo-grid-column [field]="columnsConfig[4].field" [width]="180" *ngIf="!this.isForRepairOrder"
+    [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right", "padding-right": "9%"}'>
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{columnsConfig[4].tooltip|translate}}" theme="light">{{columnsConfig[4].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+      <span *ngIf="companyCurrency && dataItem.Ttcprice > 0">
+        {{dataItem.Ttcprice.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+        style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})
+        }}
+      </span>
+      <span *ngIf="!companyCurrency">
+        {{dataItem.Ttcprice}}
+      </span>
+      <span *ngIf="companyCurrency && !dataItem.Ttcprice">
+        0&nbsp;{{companyCurrency.Code}}
+      </span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-formGroup="formGroup">
+      <span *ngIf="companyCurrency && formGroup.controls.Ttcprice.value > 0">
+        {{formGroup.controls.Ttcprice.value.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+        style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})
+        }}
+      </span>
+      <span *ngIf="!companyCurrency">
+        {{formGroup.controls.Ttcprice.value}}
+      </span>
+      <span *ngIf="companyCurrency && !formGroup.controls.Ttcprice.value">
+        0&nbsp;{{companyCurrency.Code}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- State -->
+  <kendo-grid-column [field]="columnsConfig[5].field" [width]="150" *ngIf="!this.isForRepairOrder">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{columnsConfig[5].tooltip|translate}}" theme="light">{{columnsConfig[5].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span class="badge badge-primary" *ngIf="dataItem.Status === operationStatusEnumerator.New">
+        {{'NEW' | translate}}
+      </span>
+      <span class="badge badge-success" *ngIf="dataItem.Status === operationStatusEnumerator.InProgress">
+        {{'INPROGRESS' | translate}}
+      </span>
+      <span class="badge badge-danger" *ngIf="dataItem.Status === operationStatusEnumerator.Blocked">
+        {{'BLOCKED' | translate}}
+      </span>
+      <span class="badge badge-dark" *ngIf="dataItem.Status === operationStatusEnumerator.Canceled">
+        {{'CANCELED' | translate}}
+      </span>
+      <span class="badge badge-completed" *ngIf="dataItem.Status === operationStatusEnumerator.Completed">
+        {{'COMPLETED' | translate}}
+      </span>
+      <i aria-hidden="true" *ngIf="dataItem.Description && (dataItem.Status === operationStatusEnumerator.Canceled
+        || dataItem.Status === operationStatusEnumerator.Blocked)" (click)='openDetail(dataItem)'
+        class="pointer fa fa-info-circle fa-lg" style="color: #607d8b;">
+      </i>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup">
+      <div class="row">
+        <div class="col-lg-12 col-md-11 col-sm-11" [formGroup]="formGroup">
+          <app-operation-status-dropdown [group]="formGroup">
+          </app-operation-status-dropdown>
+          <i #anchor></i>
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="Status">
+          </app-control-message-grid-cell>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Command-->
+  <kendo-grid-command-column [width]="120" [title]="'ACTIONS' | translate"
+    *ngIf="!(isUpdateMode && ((!isForRepairOrder && isInterventionCompleted) ||(isForRepairOrder && isRepairOrderValid)))">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'ACTIONS' | translate}}" theme="light">{{'ACTIONS' | translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+      <button *ngIf="!isForRepairOrder" kendoGridEditCommand tooltip="{{'UPDATE' | translate}}"
+        class='noPadding btn-Add' type="button">
+        <i class="las la-pen cursor-pointer edit-pencil la-lg ng-star-inserted" aria-hidden="true"></i>
+      </button>
+      <button kendoGridSaveCommand tooltip="{{'SAVE' | translate}}" class='noPadding btn-Add' type="button">
+        <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+      </button>
+      <button kendoGridCancelCommand tooltip="{{'CANCEL' | translate}}" class="noPadding btn-Add k-button"
+        type="button">
+        <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+      </button>
+      <button kendoGridRemoveCommand tooltip="{{'DELETE' | translate}}" class="noPadding btn-Add k-button" dir="ltr"
+        style="border: none; color: #E91E63 !important;" type="button">
+        <i class="fa fa-times fa-lg"></i>
+      </button>
+    </ng-template>
+  </kendo-grid-command-column>
+</kendo-grid>

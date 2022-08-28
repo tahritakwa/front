@@ -1,0 +1,168 @@
+<div class="card h-100">
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EXCHANGE_RATE' : 'ADD_CURRENCY') |translate}}</h3>
+      </div>
+    </div>
+  </div>
+  <hr color="#d9d9d9" class="mt-0">
+  <div class="card-body">
+    <!--Begin add form-->
+    <form class="form-horizontal" [formGroup]="currencyFormGroup" (ngSubmit)="onAddCurrencyClick()">
+      <fieldset [ngStyle]="{border:fieldsetBorderStyle }">
+        <legend>{{"DETAILS"|translate}}
+          <i *ngIf="isDetailsContentVisible" class="las la-angle-double-down la-angle-color"
+            (click)="hideDetailsContent()"></i>
+          <i *ngIf="!isDetailsContentVisible" class="las la-angle-double-up la-angle-color"
+            (click)="showDetailsContent()"></i>
+        </legend>
+        <!--Begin Card body-->
+        <div class="card-body">
+          <div class="col-lg-12 col-sm-12 col-md-12 mr-5" *ngIf="isDetailsContentVisible">
+            <div class="form-group row">
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+                <input class="form-control" formControlName="Code" type="text" name="Code" [ngClass]="{ 'has-error': (currencyFormGroup.controls.Code.touched
+                    || currencyFormGroup.controls.Code.dirty) && !currencyFormGroup.controls.Code.valid }">
+                <app-control-messages [control]="currencyFormGroup.controls.Code"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'SYMBOLE'|translate}}<span
+                    class="required">*</span></label>
+                <input class="form-control" formControlName="Symbole" type="text" name="Symbole"
+                  [ngClass]="{ 'has-error': (currencyFormGroup.controls.Symbole.touched || currencyFormGroup.controls.Symbole.dirty) && !currencyFormGroup.controls.Symbole.valid }">
+                <app-control-messages [control]="currencyFormGroup.controls.Symbole"
+                  class="error-msg messages text-left text-danger">
+
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CURRENCY_IN_LETTER'|translate}}<span
+                    class="required">*</span></label>
+                <input class="form-control" formControlName="CurrencyInLetter" type="text" name="CurrencyInLetter"
+                  [ngClass]="{ 'has-error': (currencyFormGroup.controls.CurrencyInLetter.touched || currencyFormGroup.controls.CurrencyInLetter.dirty) && !currencyFormGroup.controls.CurrencyInLetter.valid }">
+                <app-control-messages [control]="currencyFormGroup.controls.CurrencyInLetter"
+                  class="error-msg messages text-left text-danger">
+
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'FLOAT_IN_LETTER'|translate}}<span
+                    class="required">*</span></label>
+                <input class="form-control" formControlName="FloatInLetter" type="text" name="FloatInLetter"
+                  [ngClass]="{ 'has-error': (currencyFormGroup.controls.FloatInLetter.touched || currencyFormGroup.controls.FloatInLetter.dirty) && !currencyFormGroup.controls.FloatInLetter.valid }">
+                <app-control-messages [control]="currencyFormGroup.controls.FloatInLetter"
+                  class="error-msg messages text-left text-danger">
+
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'PRECISION'|translate}}<span
+                    class="required">*</span></label>
+                <input class="form-control" formControlName="Precision" type="number" name="Precision" min="0"
+                  [ngClass]="{ 'has-error': (currencyFormGroup.controls.Precision.touched || currencyFormGroup.controls.Precision.dirty) && !currencyFormGroup.controls.Precision.valid }">
+                <app-control-messages [control]="currencyFormGroup.controls.Precision"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+                <textarea class="col-lg-12 col-md-6 col-sm-4 form-control" rows="1" formControlName="Description"
+                  name="Description"></textarea>
+              </div>
+
+
+            </div>
+          </div>
+          <!--End add form-->
+        </div>
+      </fieldset>
+      <br /><br />
+      <!--End Card body-->
+
+      <div class="col-lg-12 col-sm-12 col-md-12 " *ngIf="isUpdateMode">
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-6 col-lg-3">
+            <div class="row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE'|translate}}</label>
+              <div class="col-lg-12 col-md-10 col-sm-10">
+                <kendo-datepicker class="form-control" (valueChange)="onChangeStartDate($event)" [format]="formatDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                    toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-3">
+            <div class="row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE'|translate}}</label>
+              <div class="col-lg-12 col-md-10 col-sm-10">
+                <kendo-datepicker class="form-control" (valueChange)="onChangeEndDate($event)" [format]="formatDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                    toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navItems my-3">
+        <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link nav-link-new" data-toggle="tab" href="#home1" role="tab" aria-controls="home1"
+              aria-selected="true">{{'EXCHANGERATE'|translate}}</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link nav-link-new" data-toggle="tab" href="#home2" role="tab" aria-controls="home2"
+              aria-selected="false">{{'DOCEXCHANGERATE'|translate}}</a>
+          </li>
+        </ul>
+        <div class="tab-content tab-content-new" id="tabContent">
+          <div class="tab-pane active show" id="home1" role="tabpanel"
+            [ngStyle]="{'min-height': '400px', 'max-height': '400px', 'overflow-y': 'auto'}">
+            <app-exchange-rate-grid [currencyRateList]="currencyRateList" [btnEditVisible]="btnEditVisible"
+              [currencyToEdit]="currencyToEdit" [hasUpdateCurrencyPermission]="hasUpdateCurrencyPermission" [isUpdateMode]="isUpdateMode" [currencyFormGroup]="currencyFormGroup"
+              [currencySaved]="currencySaved" [predicate]="predicate" [IdCurrency]="id" #exchangeRateGrid1>
+            </app-exchange-rate-grid>
+          </div>
+          <div *ngIf="isUpdateMode" class="tab-pane" id="home2" role="tabpanel"
+            [ngStyle]="{'min-height': '400px', 'max-height': '400px', 'overflow-y': 'auto'}">
+
+            <app-exchange-rate-grid [currencyRateList]="listForGrid2" [btnEditVisible]="btnEditVisible"
+              [currencyToEdit]="currencyToEdit" [isUpdateMode]="isUpdateMode" [currencyFormGroup]="currencyFormGroup" [IdCurrency]="id"
+              [currencySaved]="currencySaved" [predicate]="predicate" fromDoc='true' #exchangeRateGrid2>
+            </app-exchange-rate-grid>
+          </div>
+
+        </div>
+      </div>
+
+
+
+      <!--Begin Card footer-->
+      <div class="fixed-card-footer">
+        <div [ngClass]="getFooterClass()">
+          <footer class="app-footer" style="margin-left: -20px;">
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 footer-content">
+                <button class="btn btn-sm btn-save mx-1" type="submit"  *ngIf="hasAddCurrencyPermission && !isUpdateMode">
+                  <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                </button>
+                <a (click)="backToPrevious()">
+                  <span class="btn btn-sm btn-back-to-list btn-primary">
+                    <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                  </span>
+                </a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <!--End Card footer-->
+    </form>
+  </div>

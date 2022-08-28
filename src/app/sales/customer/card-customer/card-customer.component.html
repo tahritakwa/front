@@ -1,0 +1,70 @@
+<div class="row">
+  <div class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" style="min-height: 225px;"
+       *ngFor="let customer of data; let i=index;">
+    <div class="card">
+      <div class="card-body">
+        <div class="row d-flex align-items-center mb-3">
+          <div class="col-auto">
+            <img id="blah" class="rounded-circle card-avatar"
+                 [routerLink]="[customerProfileLink,customer?.Id]"
+                 [src]="imageGrid[i]" alt="avatar" [ngStyle]="!hasShowPermission && !hasUpdatePermission ? {'pointer-events':'none'} : ''"/>
+          </div>
+          <div class="col pl-0">
+            <span class="tiers-title">
+              <a [routerLink]="[customerProfileLink,customer?.Id]" [ngStyle]="!hasShowPermission && !hasUpdatePermission ? {'pointer-events':'none'} : ''">{{customer.Name}}</a>
+             </span>
+            <div> {{customer.CodeTiers}}</div>
+          </div>
+          <div *ngIf="hasShowPermission || hasUpdatePermission" class="col-1">
+            <i (click)="goToAdvancedEdit(customer)" class="las la-pen cursor-pointer edit-pencil la-2x"></i>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-money fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'CURRENCY'|translate}}: </span>
+              <span style="font-size: inherit;"> {{customer.IdCurrencyNavigation?.Code}} </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="las la-tags fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'TAX'|translate}}: </span>
+              <span style="font-size: inherit;"> {{customer.IdTaxeGroupTiersNavigation?.Label}} </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-tag fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'TAX_REGISTRATION_NUMBER'|translate}}: </span>
+              <span style="font-size: inherit;" *ngIf="customer.MatriculeFiscale !=''"> {{customer.MatriculeFiscale}} </span>
+              <span style="font-size: inherit;" *ngIf="customer.MatriculeFiscale ==''"> - </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-map-marker fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'REGION'|translate}}: </span>
+              <span style="font-size: inherit;">
+                {{customer.Address && customer.Address.length ? customer.Address[0].Region:''}} ,
+                {{customer.Address && customer.Address.length && customer.Address[0].IdCountryNavigation ? customer.Address[0].IdCountryNavigation.NameFr:''}}
+              </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-tags fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'EMAIL'|translate}}: </span>
+              <span style="font-size: inherit;"> {{customer.Email}} </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Cards end-->
+<!-- Paginator start-->
+<app-kendo-pager [dataSource]="gridSettings"
+                 (pageChangeEvent)="paginate($event)"
+                 (stateChangeEvent)="dataStateChange($event)">
+</app-kendo-pager>
+<!-- Paginator end-->

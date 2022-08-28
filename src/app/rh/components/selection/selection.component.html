@@ -1,0 +1,151 @@
+<form class="form-horizontal">
+  <kendo-grid (dataStateChange)="dataStateChange($event)"
+              (detailExpand)="loadInterviewDetailsOfSelectedCandidacy($event)"
+              [data]="gridSettings.gridData"
+              [filter]="gridSettings.state.filter"
+              [pageSize]="gridSettings.state.take"
+              [pageable]="pagerSettings"
+              [reorderable]="true"
+              [skip]="gridSettings.state.skip"
+              [sort]="gridSettings.state.sort"
+              [sortable]="true">
+    <!-- Columns data -->
+    <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index"
+                       [field]="col.field"
+                       [filter]="col.filter"
+                       [filterable]="col.filterable"
+                       [format]="col.format"
+                       [hidden]="col.hidden"
+                       [title]="col.title | translate"
+                       [width]="col._width"
+    >
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="col.field === 'IdCandidateNavigation.FirstName'" [ngStyle]="getLineThroughStyle(dataItem.State)">
+          <a [routerLink]="['/main/rh/candidate/edit/', dataItem.IdCandidateNavigation.Id]" class="candidate-link"
+             target="_blank">
+            {{dataItem.IdCandidateNavigation.FullName}}
+          </a>
+        </span>
+        <span *ngIf="col.field === 'IdCandidateNavigation.Email'" [ngStyle]="getLineThroughStyle(dataItem.State)">
+            <a href="mailto:{{dataItem.Email}}">
+            {{dataItem.IdCandidateNavigation.Email}}
+          </a>
+        </span>
+        <span *ngIf="col.field === 'TotalAverageMark' && dataItem.TotalAverageMark && dataItem.TotalAverageMark !== 0">
+          {{dataItem.TotalAverageMark}}/20
+        </span>
+        <span
+          *ngIf="col.field === 'TotalAverageMark' && !(dataItem.TotalAverageMark && dataItem.TotalAverageMark !== 0)">
+          <b>N/A</b>
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [title]="'MAIL_HISTORY' | translate" [width]="120">
+      <ng-template kendoGridHeaderTemplate>
+          <span theme="light"
+                tooltip="{{'MAIL_HISTORY'|translate}}">{{'MAIL_HISTORY'|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <button (click)="getInterviewEmailHistoric(dataItem)" class="noPadding btn-Add k-button"
+        ><i aria-hidden="true" class="fa fa-envelope text-primary"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- End columns data -->
+    <!-- Grid details -->
+    <ng-template kendoGridDetailTemplate let-dataItem="dataItem">
+      <section>
+        <!-- Interviews and marks for each candidacy -->
+        <div class="row">
+          <div *ngFor="let interview of dataItem.Interview;" class="col-lg-8 col-md-8 col-sm-12"
+               style="margin-left:20px!important">
+            <div *ngIf="interview.IdInterviewTypeNavigation" style="font-size:smaller!important">
+              <span>-{{interview.IdInterviewTypeNavigation.Label}}: <b
+                *ngIf="interview.AverageMark">{{interview.AverageMark}}/20</b>
+                                                                    <b *ngIf="!interview.AverageMark">N/A</b></span>
+              <div *ngFor="let interviewMark of interview.InterviewMark">
+                <ul>
+                  <li>
+                    <div class="row">
+                      <div class="col-lg-6 col-md-8 col-sm-12">
+                        {{interviewMark.IdEmployeeNavigation.FirstName}} {{interviewMark.IdEmployeeNavigation.LastName}}
+                        : <b *ngIf="interviewMark.Mark">{{interviewMark.Mark}}/20,</b>
+                        <b *ngIf="!interviewMark.Mark">N/A,</b>
+                      </div>
+                      <div *ngIf="interviewMark.InterviewerDecision" class="col-lg-5 col-md-4 col-sm-12"
+                           style="float:right!important">
+                        {{'DECISION' | translate}}:
+                        <b
+                          *ngIf="interviewMark.InterviewerDecision === evaluationDecisionEnumerator.Favorable">{{'FAVORABLE' | translate}}</b>
+                        <b
+                          *ngIf="interviewMark.InterviewerDecision === evaluationDecisionEnumerator.Waiting">{{'WAITING' | translate}}</b>
+                        <b
+                          *ngIf="interviewMark.InterviewerDecision === evaluationDecisionEnumerator.ToRefuse">{{'TO_REFUSE' | translate}}</b>
+                      </div>
+                    </div>
+
+                  </li>
+                </ul>
+              </div>
+              <div *ngFor="let optionalInterviewMark of interview.OptionalInterviewMark">
+                <ul>
+                  <li>
+                    <div class="row">
+                      <div class="col-lg-6 col-md-8 col-sm-12">
+                        {{optionalInterviewMark.IdEmployeeNavigation.FirstName}} {{optionalInterviewMark.IdEmployeeNavigation.LastName}}
+                        :
+                        <b *ngIf="optionalInterviewMark.Mark">{{optionalInterviewMark.Mark}}/20,</b>
+                        <b *ngIf="!optionalInterviewMark.Mark">N/A,</b>
+                      </div>
+                      <div *ngIf="optionalInterviewMark.InterviewerDecision" class="col-lg-5 col-md-4 col-sm-12"
+                           style="float:right!important">
+                        {{'DECISION' | translate}}:
+                        <b
+                          *ngIf="optionalInterviewMark.InterviewerDecision === evaluationDecisionEnumerator.Favorable">{{'FAVORABLE' | translate}}</b>
+                        <b
+                          *ngIf="optionalInterviewMark.InterviewerDecision === evaluationDecisionEnumerator.Waiting">{{'WAITING' | translate}}</b>
+                        <b
+                          *ngIf="optionalInterviewMark.InterviewerDecision === evaluationDecisionEnumerator.ToRefuse">{{'TO_REFUSE' | translate}}</b>
+                      </div>
+                    </div>
+
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Interviews and marks for each candidacy-->
+      </section>
+    </ng-template>
+    <!-- End grid details -->
+    <!-- Columns Command-->
+    <kendo-grid-command-column [width]="130">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <!-- select command directive-->
+        <button (click)="selectionneCandidacy(dataItem)" *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && dataItem.State <= recruitmentState.Selection" class="noPadding btn-Add k-button" data-placement="top"
+                data-toggle="tooltip"
+                kendoGridEditCommand
+                title="{{'SELECT' | translate}}">
+          <i aria-hidden="true" class="fa fa-check text-primary"></i>
+        </button>
+        <!-- end select command directive-->
+        <!-- unselect command directive-->
+        <button (click)="unSelectionneCandidacy(dataItem)" *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && dataItem.State > recruitmentState.Selection" class="noPadding btn-Add k-button" data-placement="top"
+                data-toggle="tooltip"
+                kendoGridRemoveCommand
+                title="{{'UN_SELECT' | translate}}">
+          <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+        </button>
+        <kendo-dropdownbutton (itemClick)="generateAndSendTheRejectedMail(dataItem, $event)"
+                              *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && dataItem.State <= recruitmentState.Selection"
+                              [data]="langList" [look]="'bare'"
+                              [primary]="true" style="background-color: transparent;">
+          <i aria-hidden="true" class="fa fa-envelope text-primary"></i>
+        </kendo-dropdownbutton>
+        <!-- end unselect command directive-->
+      </ng-template>
+    </kendo-grid-command-column>
+    <!-- End Columns Command-->
+  </kendo-grid>
+</form>

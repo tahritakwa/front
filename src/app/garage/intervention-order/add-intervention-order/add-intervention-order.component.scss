@@ -1,0 +1,22 @@
+.k-splitter {
+    position: relative;
+    border  : none;
+}
+
+.k-splitbar {
+    color           : #212529;
+    background-color: #d5dae0;
+    margin-top      : -1.3em;
+    margin-bottom   : -1.3em;
+}
+
+.badge-completed {
+    color           : #fff;
+    background-color: #563d7c;
+}
+
+kendo-dropdownbutton.k-widget.k-dropdown-button .k-button {
+    background-color: #20a8d8;
+    color           : white;
+    height          : 1.85em;
+}

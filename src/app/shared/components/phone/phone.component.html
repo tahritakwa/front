@@ -1,0 +1,30 @@
+<div class="row" *ngIf="parentFormGroup" [formGroup]="parentFormGroup">
+  <div class="col-lg-4 col-md-4 col-sm-12 mt-2 form-group" formArrayName="Phone" *ngFor="let ph of Phone.controls;
+   let i=index; let isFirst=first; let isLast=last;">
+    <div *ngIf="isPhoneRowVisible(ph)">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'PHONE'|translate}} {{i + 1}}</label>
+      <div class="row" [formGroupName]="i">
+        <div class="col">
+          <input ng2TelInput type="text" class="form-control w-100" formControlName="Number"
+                 oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                 [ng2TelInputOptions]="{initialCountry: isUpdateMode?countryCode[i]:countryCode[countryCode.length-1],
+                 preferredCountries:[defaultPhoneCountryTn,defaultPhoneCountryFr,defaultPhoneCountryGb]}"
+                 (hasError)="onError($event,ph,i)"
+                 (countryChange)="onCountryChange($event,i)"
+                 [ngClass]="{'has-error':hasError[i]}"/>
+          <span class="wrong-pattern mt-3" *ngIf="hasError[i]">{{"WRONG_PATERN"|translate}}</span>
+        </div>
+        <div class="col-auto px-0 d-flex align-items-center">
+          <button *ngIf="isLastAndIsDeletedFalse(ph) && ((idTiers === 0 && !isBankAgency && !isOffice && !isCompanySetup) || (idTiers > 0 && hasUpdateCustomerPermission && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && hasUpdatePhone))" class="btn-Add py-0 k-button pull-rigth" type="button"
+                  style="border:none;" (click)="addPhone()">
+            <i class="fa fa-plus fa-lg AddIcon"></i>
+          </button>
+          <button *ngIf="!isFirst && (idTiers === 0 || (idTiers > 0 && hasUpdateCustomerPermission && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) && hasUpdatePhone))" class="btn-Add k-button pull-rigth py-0" type="button" style="border: none;"
+                  (click)="deletePhone(ph,i)">
+            <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

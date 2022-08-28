@@ -1,0 +1,19 @@
+<div class="form-group" [formGroup]="oemItemForm">
+  <div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{ "OEM_NUMBER" | translate }}<span class="required">*</span></label>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <input class="form-control" formControlName="OemNumber" [attr.disabled]="!isEnabled ? '' : null"
+          [ngClass]="{ 'has-error': (OemNumber.touched || OemNumber.dirty) && !OemNumber.valid }" type="text" maxlength="20"/>
+        <app-control-messages [control]="OemNumber" class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{ "BRAND" | translate }}</label>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <input class="form-control" formControlName="Brand" type="text" [attr.disabled]="!isEnabled ? '' : null"/>
+      </div>
+    </div>
+  </div>
+</div>

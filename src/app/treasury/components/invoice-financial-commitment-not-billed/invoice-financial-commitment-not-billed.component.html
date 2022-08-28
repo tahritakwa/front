@@ -1,0 +1,11 @@
+<app-financial-commitment-not-billed
+    [tiersType]=tiersType
+    [companyWithholdingTax]="companyWithholdingTax"
+    [documentType]="outstandingDocumentTypesEnumerator.InvoiceFinancialCommitment"
+    [listFinancialCommitmentSelected]="listFinancialCommitmentSelected"
+    [idForExportFile]="'idExportFileFinancialCommitment'" [selectedTiers]="selectedTiers" [apiForExport]="apiForExport"
+    [displayAddButton]="displayAddButton" [fileExportname]="'CUSTOMER_OUTSTANDING_FINANCIAL_COMMITMENT_LIST'"
+    [disableCheckBox]="disableCheckBox"
+    (itemSelectedChange)="emitItemSelectedEvent($event)" (tiersSelectedChange)="tiersSelectedChangeEvent($event)"
+    (openFormClicked)="openForm($event)">
+</app-financial-commitment-not-billed>

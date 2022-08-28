@@ -1,0 +1,25 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-header">
+      <div class="row pl-3">
+        <div class="col-auto d-flex align-items-end">
+          <h3 class="card-title mb-0">{{'WAREHOUSES'|translate}}</h3>
+        </div>
+      </div>
+    </div>
+    <div *ngFor="let warehouseCentral of listWarehousesCentral; ">
+      <!---  Begin Central warehouse Card--->
+      <app-warehouse-central [warehouseCentral]="warehouseCentral" [itemWarehouseSearched]="itemWarehouseSearched"
+        (initGridDataSource)="initGridDataSource($event)" #WarehouseCentral></app-warehouse-central>
+      <!---  End Central warehouse Card--->
+      <div style="overflow: auto;">
+        <div class="card full-screen-card w-100 p-2" style="min-width:1700px;">
+          <!---  Begin item warehouse Card--->
+          <app-warehouse-item [listWarehouse]="warehouseCentral.Items" (initGridDataSource)="initGridDataSource()" (closeShelfDeatil)="clickout()">
+          </app-warehouse-item>
+          <!---  End item warehouse Card--->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

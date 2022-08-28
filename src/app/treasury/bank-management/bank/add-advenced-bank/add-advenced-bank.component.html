@@ -1,0 +1,133 @@
+<div class="card h-100">
+  <div class="card-header" style="background-color: #f0f3f5">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">
+        {{ (isUpdateMode ? 'EDIT_BANK' : 'ADD_BANK') |translate }}</h3>
+      </div>
+  </div>
+  <hr color="#d9d9d9" class="mt-0">
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="bankFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-10 col-sm-12 col-md-12">
+            <div class="form-group row">
+
+              <!--NAME-->
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-4 col-md-6 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+                <input class="form-control" formControlName="Name" type="text"
+                       [ngClass]="{ 'has-error': (bankFormGroup.controls.Name.touched || bankFormGroup.controls.Name.dirty) && !bankFormGroup.controls.Name.valid }">
+                <app-control-messages [control]="bankFormGroup.controls.Name"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <!--ADDRESS-->
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-6 col-md-12 col-sm-12"> {{'ADRESS'|translate}}</label>
+                <input class="form-control" formControlName="Address" type="text"
+                       [ngClass]="{ 'has-error': (bankFormGroup.controls.Address.touched || bankFormGroup.controls.Address.dirty) && !bankFormGroup.controls.Address.valid }">
+                <app-control-messages [control]="bankFormGroup.controls.Address"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <!--COUNTRY-->
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'COUNTRY'|translate}}<span
+                  class="required">*</span></label>
+                <app-country-dropdown [group]="bankFormGroup"></app-country-dropdown>
+                <app-control-messages [control]="bankFormGroup.controls.IdCountry"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <!--EMAIL-->
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-6 col-md-12 col-sm-12"> {{'EMAIL'|translate}} <span
+                  class="required">*</span></label>
+                <input class="form-control" formControlName="Email" type="text"
+                       [ngClass]="{ 'has-error': (bankFormGroup.controls.Email.touched
+                       || bankFormGroup.controls.Email.dirty) && !bankFormGroup.controls.Email.valid }">
+                <app-control-messages [control]="bankFormGroup.controls.Email"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <!--PHONE-->
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-6 col-md-12 col-sm-12"> {{'PHONE'|translate}}</label>
+                <input ng2TelInput class="form-control w-100" formControlName="Phone" type="text"
+                       oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                       [ng2TelInputOptions]="{initialCountry:defaultPhoneCountryTn,
+                           preferredCountries:[defaultPhoneCountryTn,defaultPhoneCountryFr,defaultPhoneCountryGb]}"
+                       [ngClass]="{ 'has-error': (bankFormGroup.controls.Phone.touched
+                        || bankFormGroup.controls.Phone.dirty) && !bankFormGroup.controls.Phone.valid }">
+                <app-control-messages [control]="bankFormGroup.controls.Phone"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+
+              </div>
+
+              <!--FAX-->
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-6 col-md-12 col-sm-12"> {{'FAX'|translate}}</label>
+                <input class="form-control" formControlName="Fax" type="text"
+                       [ngClass]="{ 'has-error': (bankFormGroup.controls.Fax.touched || bankFormGroup.controls.Fax.dirty) && !bankFormGroup.controls.Fax.valid }">
+                <app-control-messages [control]="bankFormGroup.controls.Fax"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+
+              <!--WEBSITE-->
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-6 col-md-12 col-sm-12"> {{'WEBSITE'|translate}}</label>
+                <input class="form-control" formControlName="WebSite" type="text"
+                       [ngClass]="{ 'has-error': (bankFormGroup.controls.WebSite.touched || bankFormGroup.controls.WebSite.dirty) && !bankFormGroup.controls.WebSite.valid }">
+                <app-control-messages [control]="bankFormGroup.controls.WebSite"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+            <label class="img-border d-flex justify-content-center" for="file-input">
+              <img class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                   [src]="logoBankSrc || 'assets/image/placeholder-logo.png'"/>
+              <i class="fa fa-camera fa-lg"></i>
+              <i *ngIf="logoBankSrc" class="fa fa-close fa-xs" (click)="removeBankPicture($event)"></i>
+            </label>
+            <input id="file-input" type='file' (change)="onFileChanged($event)" accept="image/*">
+          </div>
+        </div>
+      </div>
+        <app-bank-agency [bankFormGroup]="bankFormGroup"
+          [bankToUpdate]="bankToUpdate"
+          [isUpdateMode]="isUpdateMode" (deleteAgency)="deleteAgency($event)"
+          [hasUpdateAgencePermission]="hasUpdateBankPermission || hasAddBankPermission">
+        </app-bank-agency>
+    </form>
+  </div>
+
+  <!--Begin card Footer -->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="backToList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateBankPermission && isUpdateMode || hasAddBankPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End card Footer -->
+</div>

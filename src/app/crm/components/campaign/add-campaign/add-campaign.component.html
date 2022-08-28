@@ -1,0 +1,188 @@
+<div class="card h-100">
+  <div class="card-header ng-star-inserted">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'UPDATE_CAMPAIGN' : 'ADD_CAMPAIGN') |translate }}</h3>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card-body">
+    <p-accordion [multiple]="true">
+      <form class="form-horizontal" [formGroup]="campaignFormGroup">
+        <!--Begin Card body-->
+        <div class="col-lg-12 col-sm-12 col-md-12">
+          <div class="form-group row">
+            <div class="col-lg-12 col-sm-12 col-md-12 ">
+              <div class="form-group row">
+
+
+                <!-- Name-->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span
+                    class="required">*</span></label>
+                  <input #name class="form-control" formControlName="name" type="text" (mouseout)="onMouseOut()"
+                         [ngClass]="{ 'has-error': (campaignFormGroup.controls.name.touched ||
+                            campaignFormGroup.controls.name.dirty) && !campaignFormGroup.controls.name.valid }">
+                  <app-control-messages [control]="campaignFormGroup.controls.name"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+
+                </div>
+                <!-- Teams-->
+                <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="fromRh">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'TEAMS'|translate}} <span
+                    class="required">*</span></label>
+                  <kendo-multiselect [data]="listTeams" formControlName="teams"
+                                     [valuePrimitive]="true"
+                                     [textField]="'Name'"
+                                     [valueField]="'Id'"
+                                     (valueChange)="onValueChangeTeam($event)"
+                                     style="width: 100%;">
+                  </kendo-multiselect>
+                  <app-control-messages [control]="teams" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+                <!-- RESPONSABLE_USER_TITLE-->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">
+                    {{'RESPONSABLE_USER_TITLE'|translate}}<span
+                    class="required">*</span></label>
+                  <kendo-combobox [data]="listUsers" formControlName="responsablesUsersId" [filterable]="true"
+                                  style="width: 100%"
+                                  (filterChange)="handleResponsablesFilter($event)"
+                                  textField="FullName" valueField="Id" [valuePrimitive]="true">
+                                  <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                  </kendo-combobox>
+                  <app-control-messages
+                    [control]="campaignFormGroup.controls.responsablesUsersId"
+                    class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+
+
+              </div>
+              <div class="form-group row">
+
+                <!-- START TIME -->
+                <div class="col-lg-4 col-md-6 col-sm-12">
+
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'START_DATE'|translate}}<span
+                    class="required">*</span></label>
+
+                  <kendo-datepicker formControlName="startDate"
+                                    [format]="formatDate"
+                                    class="form-control">
+                    <kendo-datepicker-messages today="{{'TODAY' | translate}}"
+                                               toggle="Cambiar calendario"></kendo-datepicker-messages>
+                  </kendo-datepicker>
+
+                  <app-control-messages [control]="campaignFormGroup.controls.startDate"
+
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+                </div>
+
+              </div>
+
+
+              <p-accordionTab
+                header="{{'PIPELINE'| translate}}" style="color: #4c9aae;">
+
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-lg-4">
+                    <label class="col-lg-12 col-md-12 col-sm-12">
+                      {{'PIPELINE'|translate}}
+                      <span class="required">*</span></label>
+                    <kendo-combobox [data]="allPipelines" textField="name" valueField="id"
+                                    style="width: 100%;"
+                                    [valuePrimitive]="true" formControlName="pipelineId"
+                                    (valueChange)="getStatusByPipeline($event)">
+                                    <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-combobox>
+                    <app-control-messages [control]="campaignFormGroup.controls.pipelineId"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                  <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+                    <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'STEP' | translate}}<span
+                      class="required">*</span></label>
+                    <kendo-combobox style="width: 100%; !important;" formControlName="currentPositionPipe"
+                                        valueField="id"
+                                        [data]="listStatus"
+                                        textField="title"
+                                        [valuePrimitive]="true"
+(valueChange)="updateState($event)">
+<!--No data template-->
+<ng-template kendoDropDownListNoDataTemplate>
+  <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+</ng-template>
+<kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                    </kendo-combobox>
+                    <app-control-messages [control]="campaignFormGroup.controls.currentPositionPipe"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+
+              </p-accordionTab>
+              <!-- Collapse description -->
+              <p-accordionTab [selected]="false"
+                              header="{{'DESCRIPTION'| translate}}" style="color: #4c9aae;">
+
+                <div class="row form-group">
+                  <div class="col-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+                    <textarea class="form-control" type="text"
+                              formControlName="description">
+                        </textarea>
+                    <app-control-messages [control]="campaignFormGroup.controls.description"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+
+                  </div>
+                </div>
+
+
+              </p-accordionTab>
+              <!-- Collapse permission -->
+              <p-accordionTab [selected]="false"
+                              header="{{'PERMISSION'| translate}}" style="color: #4c9aae;">
+                <br/>
+                <app-permission [parent]="parentPermission" [uuid]="uuid"></app-permission>
+              </p-accordionTab>
+              <br/>
+            </div>
+          </div>
+        </div>
+      </form>
+    </p-accordion>
+  </div>
+
+  <!--Begin Card footer-->
+  <div class="card-footer">
+    <div class="footerStyle">
+      <footer>
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="onBackToListOrCancel()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

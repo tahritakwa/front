@@ -1,0 +1,30 @@
+.k-grid .k-grid-content td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.my-class * {
+  color: black;
+  background: white;
+  overflow-wrap: break-word;
+  max-width:40ch;
+  text-align:left;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+.content {
+  -webkit-tap-highlight-color: transparent;
+  background: none;
+  border: #4c9aae;
+  border-radius: 0;
+  box-sizing: border-box;
+  color: var(--cr-primary-text-color);
+  font: inherit;
+  min-height: 32px;
+  padding: 0 24px;
+  text-align: start;
+  user-select: none;
+  width: 100%;
+  position: relative;
+}

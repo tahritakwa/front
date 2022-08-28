@@ -1,0 +1,31 @@
+input[type="checkbox"] {
+  font-size: 15px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+label {
+  font-family: FontAwesome;
+  color: #000000;
+}
+
+.input-checkbox {
+  width: 15px;
+  height: 15px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -o-appearance: none;
+  appearance: none;
+  outline: 1px solid #4c9aae;
+
+  &:checked {
+    -webkit-appearance: checkbox;
+    color: #4c9aae;
+    background-color: #4c9aae;
+  }
+}
+
+.row {
+  margin-top: 5px;
+}
+

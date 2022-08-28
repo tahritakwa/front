@@ -1,0 +1,6 @@
+<kendo-popup [anchor]="anchor"
+             *ngIf="(touched || dirty) && !valid && errors"
+             popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg"
+             [ngStyle]="{'position': source === entityNameSource ? 'inherit' : 'center' }">
+  <app-control-messages [control]="Control" class="error-msg messages text-center text-danger"> </app-control-messages>
+</kendo-popup>

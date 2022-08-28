@@ -1,0 +1,126 @@
+<div class="card">
+  <!--Begin Card Header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'STOCK_VALUATION'|translate}}</h3>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+
+    <div class="row form-group">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'WAREHOUSE'|translate}} <span class="required">*</span></label>
+      <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <app-depot-dropdown (Selected)="warehouseSelect($event.WarehouseSeleted, $event.listOfAllWarehouseDataSource)"
+          [Required]="showWarehouseDopDownErrorMessage" [onlyWarehouse]="true">
+        </app-depot-dropdown>
+        <div class="col-12" *ngIf="showWarehouseDopDownErrorMessage">
+          <label class="error-msg messages text-left text-danger">{{'REQUIRED'|translate}}</label>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex flex-row-reverse">
+      <div class="col-auto">
+        <!-- Search Button  -->
+        <button class="btn btn-sm btn-search" type="button" (click)="clickSearch()">
+          <i class="fa fa-search fa"></i>
+          <span>&nbsp; {{'SEARCH'|translate}}</span>
+        </button>
+        &nbsp;
+        <!-- Jasper Report  -->
+        <button *ngIf="havePrintPermission"class="btn btn-sm print" (click)="onJasperPrintClick()">
+          <i class="fa fa-print fa-lg"></i>
+          {{'PRINT' | translate}}
+        </button>
+      </div>
+    </div>
+    <div class="col-12 mt-4">
+
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sort]="gridSettings.state.sort" (dataStateChange)="dataStateChange($event)" [sortable]="true"
+        [pageable]="pagerSettings" [filterable]="false" [reorderable]="false" [filter]="gridSettings.state.filter">
+
+        <!--Shelf&Strorage-->
+        <kendo-grid-column [width]="gridSettings.columnsConfig[0]._width" [filterable]="true"
+          [format]="gridSettings.columnsConfig[0].format" [title]="'SHELF_AND_STORAGE' | translate" >
+          <ng-template kendoGridCellTemplate let-dataItem>
+
+            <div *ngIf="dataItem && (dataItem.Shelf || dataItem.Storage)">
+              {{dataItem.Shelf}} / {{dataItem.Storage}}
+            </div>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div style=" font-weight:bold;color: #4c9aae; font-size: 16px; padding-top: 7px;
+            padding-bottom: 7px;"> {{'TOTAL'| translate}}</div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Code-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [filterable]="true" [format]="gridSettings.columnsConfig[1].format">
+        </kendo-grid-column>
+
+
+        <!--Designation-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+          [filterable]="true" [format]="gridSettings.columnsConfig[2].format">
+
+        </kendo-grid-column>
+
+
+        <!--QTY-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+          [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+          [filterable]="true" [format]="gridSettings.columnsConfig[3].format" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+          "padding-right": "4%"}' filter="numeric">
+        </kendo-grid-column>
+
+        <!--PU-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+          [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+          [filterable]="true" [format]="gridSettings.columnsConfig[4].format" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+          "padding-right": "4%"}' filter="numeric">
+          <ng-template kendoGridCellTemplate let-dataItem>
+
+            <div *ngIf="dataItem">
+
+              {{dataItem.UnitPurchasePriceWithCurrency.toLocaleString(language,{minimumFractionDigits:
+              dataItem.Precision})}} {{dataItem.Currency}}
+
+            </div>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div class="total-with-currency" *ngIf="totalLine">
+              {{totalLine.UnitPurchasePrice.toLocaleString(language,{minimumFractionDigits: totalLine.Precision})}}
+              {{companyCurrency}}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Total-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+          [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+          [filterable]="true" [format]="gridSettings.columnsConfig[5].format" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+         "padding-right": "4%"}' filter="numeric">
+          <ng-template kendoGridCellTemplate let-dataItem>
+
+            <div *ngIf="dataItem">
+
+              {{dataItem.TotalWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.Precision})}}
+              {{dataItem.Currency}}
+
+            </div>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div class="total-with-currency" *ngIf="totalLine">
+              {{totalLine.Total.toLocaleString(language,{minimumFractionDigits: totalLine.Precision})}}
+              {{companyCurrency}}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+    </div>
+  </div>
+</div>

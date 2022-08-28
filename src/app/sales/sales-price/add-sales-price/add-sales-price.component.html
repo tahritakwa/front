@@ -1,0 +1,84 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5;">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'UPDATE_PRICECATEGORY' : 'ADD_PRICECATEGORY') | translate}}</h3>
+      </div>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+    <!--Begin form-->
+    <form class="form-horizontal" [formGroup]="salesPriceFormGroup">
+      <div class="col-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group row">
+              <!-- Code -->
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+                <input class="form-control"  [ngClass]="{ 'has-error': (salesPriceFormGroup.controls.Code.touched ||
+                salesPriceFormGroup.controls.Code.dirty) && !salesPriceFormGroup.controls.Code.valid }"
+                  formControlName="Code" type="text" name="Code">
+                <app-control-messages [control]="salesPriceFormGroup.controls.Code"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <!-- description -->
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span class="required">*</span>
+                  </label>
+                <input class="form-control" formControlName="Label" type="text" name="Label"
+                  [ngClass]="{ 'has-error': (salesPriceFormGroup.controls.Label.touched || salesPriceFormGroup.controls.Label.dirty) && !salesPriceFormGroup.controls.Label.valid }">
+                <app-control-messages [control]="salesPriceFormGroup.controls.Label"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <!-- status -->
+              <div class="col-lg-4 col-md-6 col-sm-12 d-flex mb-2" style="margin-top: 35px;">
+                <label class="ml-2 pr-3 cursor-pointer" for="checkIsActive">{{"INACTIVE_STATE"|translate}}</label>
+                <label class="switch switch-pill switch-primary switch-sm">
+                  <input (change)="changepriceState()" class="switch-input" type="checkbox" id="checkIsActive"
+                    [checked]="isActive == true ? 'checked': null"><span class="switch-slider"></span></label>
+                <label class="ml-2 pl-2 cursor-pointer" for="checkIsActive">{{"ACTIVE_STATE"|translate}}</label>
+              </div>
+            </div>
+            <div class="form-group row">
+            </div>
+              <div class="form-group row">
+                <!-- value -->
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROPORTION'|translate}}<span class="required">*</span></label>
+                  <kendo-numerictextbox class="form-control" [ngClass]="{ 'has-error': (salesPriceFormGroup.controls.Value.touched
+                  || salesPriceFormGroup.controls.Value.dirty) && !salesPriceFormGroup.controls.Value.valid }"  formControlName="Value" name="Value">
+                  </kendo-numerictextbox>
+                  <app-control-messages [control]="salesPriceFormGroup.controls.Value"
+                    class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!--End add form-->
+  </div>
+  <!--End Card body-->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="listUrl">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button class="btn btn-sm btn-save mx-1" type="submit" (click)="onAddSalesPriceClick()">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

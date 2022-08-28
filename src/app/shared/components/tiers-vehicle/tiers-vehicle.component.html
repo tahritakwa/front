@@ -1,0 +1,84 @@
+<div [formGroup]="tiersFormGroup" class="tiersVehicle">
+  <div class="form-group" formArrayName="Vehicle" *ngFor="let vehicle of vehicle.controls; let i=index; let
+  isFirst=first">
+    <div *ngIf="isVehicleRowVisible(vehicle)">
+      <hr *ngIf="!isFirst">
+      <div class="col-lg-12 col-md-12 col-sm-12" [formGroupName]="i">
+        <div class="row py-1 d-flex justify-content-between" style="float: right;">
+          <i *ngIf=" tiersFormGroup.value.Id === 0 || (tiersFormGroup.value.Id > 0 && (hasUpdateCustomerPermission && typeTier === 1) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) )" type="button" (click)="deleteVehicle(vehicle,i)"
+            class="fa fa-close fa-2x AddIcon text-danger"></i>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-10 col-md-12 col-sm-12">
+          <div class="row mt-2">
+            <div class="col-lg-4 col-md-6 col-sm-12" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'BRAND'|translate}}</label>
+              <app-brand-combo-box [itemForm]="vehicle" (Selected)="receiveBrand($event)"  [forSearch]="!addBrandPermission"
+              [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 ) && !isBankAgency  && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice|| isCompanySetup) ) ? '' : null">
+              </app-brand-combo-box>
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="vehicle.controls.IdVehicleBrand">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'MODEL'|translate}}</label>
+              <app-model-of-item-combo-box [itemForm]="vehicle" [vehicle]="true"
+              [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 ) && !isBankAgency  && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice|| isCompanySetup)) ? '' : null">
+              </app-model-of-item-combo-box>
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="vehicle.controls.IdVehicleModel">
+              </app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-sm-12" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'REGISTRATION_NUMBER'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" type="text" formControlName="RegistrationNumber" [value]="vehicle.value.RegistrationNumber"
+              [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1)
+               && !isBankAgency  && !isOffice && !isCompanySetup)
+               || ((isBankAgency || isOffice|| isCompanySetup)) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger" [control]="vehicle.controls.RegistrationNumber">
+                </app-control-messages>
+            </div>
+
+
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'POWER_KW'|translate}}</label>
+              <input class="form-control" type="text" formControlName="Power" [value]="vehicle.value.Power"
+              [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 ) && !isBankAgency  && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice|| isCompanySetup)) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger" [control]="vehicle.controls.Power">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ENERGY'|translate}}</label>
+              <app-energy-combo-box [form]="vehicle"
+              [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 ) && !isBankAgency  && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice|| isCompanySetup) ) ? '' : null">
+            </app-energy-combo-box>
+
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="vehicle.controls.IdVehicleEnergy">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-6 col-sm-12 mt-2" [formGroupName]="i">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'CHASSI_NUMBER'|translate}}</label>
+              <input class="form-control" type="text" formControlName="ChassisNumber" [value]="vehicle.value.ChassisNumber"
+                [attr.disabled]="(tiersFormGroup.value.Id > 0 && (!hasUpdateCustomerPermission && typeTier === 1 ) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup)) ? '' : null">
+              <app-control-messages class="error-msg messages text-left text-danger"
+                [control]="vehicle.controls.ChassisNumber">
+              </app-control-messages>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <div *ngIf="tiersFormGroup.value.Id === 0 || (tiersFormGroup.value.Id > 0 && (hasUpdateCustomerPermission && typeTier === 1) && !isBankAgency && !isOffice && !isCompanySetup) || ((isBankAgency || isOffice || isCompanySetup) )" class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+    <button class="btn-Add k-button btn btn-add" type="button" (click)='addNewVehicle()'>
+      <i class="fa fa-plus fa AddIcon"></i>
+      <span>&nbsp; {{'ADD'|translate}}</span>
+    </button>
+  </div>
+</div>

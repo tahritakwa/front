@@ -1,0 +1,150 @@
+<div class="card">
+  <!--Begin Card eader-->
+  <div class="card-header">
+    <div class="d-flex justify-content-between">
+      <div class="col-sm-5 mt-1">
+        <h3 *ngIf="!isForShow"
+          class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_PURCHASE_REQUEST' : 'ADD_PURCHASE_REQUEST') |translate }}</h3>
+          <h3 *ngIf="isForShow" class="card-title mb-0">{{ (isValidateMode ? 'VALIDATE_PURCHASE_REQUEST': 'SHOW_PURCHASE_REQUEST') |translate }}</h3>
+      </div>
+      <span class="purchaseRequestCode">{{Code}}</span>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <form class="form-horizontal" [formGroup]="purchaseRequestAddFormGroup">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+
+          <!--left-->
+          <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+            <div class="form-group row">
+              <!--Item-->
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ITEM'|translate}}<span class="required">*</span></label>
+                <app-item-dropdown [itemForm]="purchaseRequestAddFormGroup" (Selected)="onSelect($event)"
+                                   [parentViewContainerRef]="viewRef" [activeKeyPress]='true' [isForPurchase]='true'
+                                   [isFroSerach]='true' [hasTiers]="true" [hideSearch]='isForShow ? false : true'>
+                </app-item-dropdown>
+                <app-control-messages [control]="purchaseRequestAddFormGroup.controls.IdItem"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!--Qty-->
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'QUANTITY'|translate}}<span
+                  class="required">*</span></label>
+                <input class="form-control" formControlName="MovementQty" type="number" name="MovementQty"
+                       autocomplete="off"
+                       (change)="updateQty()" min="0" [ngClass]="{ 'has-error': (purchaseRequestAddFormGroup.controls.MovementQty.touched || purchaseRequestAddFormGroup.controls.MovementQty.dirty)
+                   && !purchaseRequestAddFormGroup.controls.MovementQty.valid }">
+                <app-control-messages [control]="purchaseRequestAddFormGroup.controls.MovementQty"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'REQUIREMENT'|translate}}</label>
+                <textarea class="col-lg-12 col-md-12 col-sm-12 form-control" rows="1" formControlName="Requirement"
+                          name="Requirement" maxlength="255"></textarea>
+              </div>
+              <div class="col-lg-6 col-md-12 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'PRIORITY'|translate}}</label>
+                <kendo-dropdownlist class="col-lg-12 col-md-12 col-sm-12 form-control"
+                                    textField="name" [data]="priorityDataSource"
+                                    valueField="value" formControlName="Priority" [readonly]="isValidateMode"
+                                    name="Priority" [valuePrimitive]="true"></kendo-dropdownlist>
+                   </div>
+                 </div>
+                <div class="form-group row" *ngIf="isValidateMode">
+                  <div class="col-lg-6 col-md-12 col-sm-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'SUPPLIERS'|translate}}</label>
+                    <app-supplier-dropdown class="col-lg-12 col-md-12 col-sm-12"></app-supplier-dropdown>
+              </div>
+            </div>
+          </div>
+
+          <!--right-->
+          <div class="col-lg-4 col-md-8 col-sm-12 col-xs-12">
+            <div class="on-bottom">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'UNIT_OF_STOCK'|translate}} :
+                {{purchaseRequestAddFormGroup.controls.LabelMeasureUnit.value}} </label>
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'PRICE_OF_ITEM'|translate}} :
+                {{purchaseRequestAddFormGroup.controls.HtUnitAmountWithCurrency.value}}</label>
+              <b><label class="col-lg-12 col-md-12 col-sm-12">{{'TOTAL_HT'|translate}} :
+                {{purchaseRequestAddFormGroup.controls.DocumentHtpriceWithCurrency.value}}</label></b>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="navItems my-3" *ngIf="isUpdateMode || isValidateMode">
+        <ul class="nav ul-nav nav-tabs" id="tab" role="tablist">
+          <li class="nav-item li-nav">
+            <a class="nav-link active a-nav" id="comments-tab" data-toggle="tab" href="#comments" role="tab"
+               aria-controls="items" style="color: white;" aria-selected="true">{{"COMMENT"|translate}}</a>
+          </li>
+        </ul>
+        <div class="tab-content tab-content-new mt-3" id="tabContent">
+          <div class="tab-pane fade show active px-0 pt-0" id="comments" role="tabpanel" aria-labelledby="comments-tab">
+            <div class="card mt-2">
+              <div class="card-content">
+                <div class="col-12">
+                  <app-comment [comments-data]="commentsData"  (deletedComment)="deleteComment($event)" (editedComment)="editcomment($event)"></app-comment>
+                </div>
+                <div class="col-12 ml-2 mb-3">
+                  <div class="row">
+                    <div class="col-lg-6 col-md-10 col-sm-12 col-xs-12">
+                      <div class="row" style="margin-right: 80px">
+                        <div class="col-11">
+                             <textarea placeholder="{{'TYPE_MESSAGE'|translate}}"
+                                       class="col-lg-12 col-md-12 col-sm-12 form-control" rows="1"
+                                       formControlName="Message"
+                                       name="Requirement" maxlength="255"></textarea>
+                        </div>
+                        <div class="col-1">
+                          <i class="fa fa-send-o la-lg send-button cursor-pointer" (click)="addComment()"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End add form-->
+  </form>
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer ml-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a *ngIf="ListToValidatePermission " routerLink="/main/purchase/purchaserequest">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button *ngIf=" !isForShow && ((isUpdateMode && haveUpdatePermission) || (!isUpdateMode &&  haveAddPermission))" (click)="onAddPurchaseRequestClick()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i>
+              {{ (isUpdateMode ? 'EDIT_PURCHASE_REQUEST' : 'ADD_PURCHASE_REQUEST') |translate }}
+            </button>
+            <button type="button" *ngIf="isProvisional && validatePurchaseRequestPermission" class="btn btn-sm btn-success ml-1" (click)="onValidateOrRefusePurchaseRequestClick(true)">
+              <i class="cui-check"></i> {{'VALIDATE'|translate}}
+																								
+            </button>
+            <button type="button" *ngIf="isProvisional && refusePurchaseRequestPermission" class="btn btn-sm btn-danger ml-1" (click)="onValidateOrRefusePurchaseRequestClick(false)">
+              <i class="cui-circle-x"></i> {{'REFUSE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

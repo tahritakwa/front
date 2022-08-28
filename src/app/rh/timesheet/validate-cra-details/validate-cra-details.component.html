@@ -1,0 +1,92 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_CRA_TO_VALIDATE'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- details expense -->
+    <div>
+      <p-accordion>
+        <span *ngFor="let timesheet of listOfTimesheets">
+        <p-accordionTab [selected]="true" header={{timesheet.IdEmployeeNavigation.FullName}} style="color: #4c9aae;">
+
+        <div class="row my-3">
+            <!-- first part-->
+          <div class="col-2 ml-3">
+            <img *ngIf="timesheet.IdEmployeeNavigation.PictureFileInfo===null" [src]="UserPicture || '../../../../assets/image/placeholder-logo.png'" border="0"
+                 style="width: 100%;"/>
+            <img *ngIf="timesheet.IdEmployeeNavigation.PictureFileInfo!==null" [src]="timesheet.IdEmployeeNavigation.Picture" border="0"
+                 style="width: 100%;"/>
+
+          </div>
+          <!-- end first part-->
+          <!-- second part-->
+          <div class="col mx-3">
+       <span class="text">{{'FULLNAME'|translate}} :</span> {{timesheet.IdEmployeeNavigation.FullName}} <br/>
+       <span class="text">{{'CREATIONDATE'|translate}} :</span> {{timesheet.CreationDate | date: dateFormat}} <br/>
+
+
+
+          </div>
+          <!-- end second part-->
+          <!-- third part-->
+          <div class="col mx-6">
+
+            <ul>
+                <li> <span class="text">{{'MONTH'|translate}}
+                  :</span> {{timesheet.Month| date:'MMMM' | uppercase | translate}} <br/></li>
+                <li> <span class="text">{{'NUMBER_DAYS_WORKED'|translate}} :</span>
+                   <span style="font-size: smaller;">
+                  {{timesheet.NumberOfDaysDayHour.NumberOfDaysWorked.Day}} {{'DAYS_ABBREVIATED' | translate}}
+                     {{timesheet.NumberOfDaysDayHour.NumberOfDaysWorked.Hour}} {{'HOURS_ABBREVIATED' | translate}}
+                </span> <br/></li>
+                <li> <span class="text">{{'NUMBER_DAYS_LEAVE'|translate}} :</span>
+                  <span style="font-size: smaller;">
+                    {{timesheet.NumberOfDaysDayHour.NumberOfLeavesDays.Day}} {{'DAYS_ABBREVIATED' | translate}}
+                    {{timesheet.NumberOfDaysDayHour.NumberOfLeavesDays.Hour}} {{'HOURS_ABBREVIATED' | translate}}
+               </span> <br/></li>
+               <li> <span class="text">{{'NUMBER_DAYS_HOLIDAYS'|translate}} :</span>
+                <span style="font-size: smaller;">
+                  {{timesheet.NumberOfDaysDayHour.NumberOfDaysOff.Day}} {{'DAYS_ABBREVIATED' | translate}}
+                  {{timesheet.NumberOfDaysDayHour.NumberOfDaysOff.Hour}} {{'HOURS_ABBREVIATED' | translate}}
+             </span> <br/></li>
+              <li *ngIf="timesheet.TimeSheetFileInfo.length!==0"> <span class="text">{{'VOUCHERS'|translate}} :</span>
+                 <app-upload-file [canUpdateFile]=true [fileToUpload]="timesheet.TimeSheetFileInfo"
+                                  [service]="TimeSheetService"></app-upload-file>
+              </li>
+            </ul>
+            </div>
+          <!-- end third part-->
+          <!-- button part-->
+          <div class="col">
+            <button (click)="deleteUserFromListUsersId(timesheet.Id)"
+                    class="noPadding btn-Add k-button  pull-right" dir="ltr"
+                    style="border: none!important;" type="button">
+                            <i class="fa fa-close fa-lg AddIcon"></i>
+                          </button>
+            </div>
+          <!--end button part-->
+      </div>
+
+          <!---->
+      </p-accordionTab>
+      </span>
+      </p-accordion>
+    </div>
+
+    <!-- End details users-->
+  </div>
+  <!--Begin Card footer Start-->
+  <div class="card-footer">
+    <div align="left" class="col-lg-4 col-md-12">
+      <button [routerLink]="['/main/rh/timesheet/list']" class="btn btn-sm btn-primary">
+        <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+      </button>
+          <button *ngIf="hasMassiveValidatePermission" class="btn btn-sm btn-danger" type="submit" (click)="validateMassiveTimesheets(listOfTimesheets)">
+            {{'VALIDATE'|translate}} 
+          </button>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

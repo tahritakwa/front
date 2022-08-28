@@ -1,0 +1,73 @@
+<div [formGroup]="itemForm" *ngIf='itemForm'>
+  <div *ngIf='isCardMode && !vehicle'>
+    <kendo-combobox #modelItemComboBox (focus)="openComboBox()" formControlName="IdModel"
+                    [disabled]="isDisabledModel || disabled" [data]="modelOfItemFiltredDataSource"
+                    [textField]="'Label'"
+                    [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control"
+                    [filterable]="true"
+                    (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)" [placeholder]="'MODEL'|translate">
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <!--end No data template-->
+    </kendo-combobox>
+  </div>
+  <div *ngIf="!isCardMode && !vehicle">
+    <kendo-combobox #modelItemComboBox (focus)="openComboBox()" formControlName="IdModel"
+                    [disabled]="(isDisabledModel || disabled) && !isEnabledAnyWay" [data]="modelOfItemFiltredDataSource"
+                    [textField]="'Label'"
+                    [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control"
+                    [filterable]="true"
+                    (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)" [placeholder]="'MODEL'|translate">
+                    <!--footer template-->
+    <ng-template *ngIf="!forSearch && hasAddModelPermission" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <!--end No data template-->
+    </kendo-combobox>
+  </div>
+
+  <div *ngIf="vehicle">
+    <kendo-combobox #modelItemComboBox (focus)="openComboBox()" formControlName="IdVehicleModel"
+                    [disabled]="isDisabledModel || disabled" [data]="modelOfItemFiltredDataSource"
+                    [textField]="'Label'"
+                    [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control"
+                    [filterable]="true"
+                    (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)" [placeholder]="'MODEL'|translate">
+      <!--No data template-->
+      <ng-template *ngIf="!forSearch && hasAddModelPermission" kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+      <!--end No data template-->
+    </kendo-combobox>
+  </div>
+
+</div>
+<div *ngIf='!itemForm'>
+  <kendo-combobox #modelItemComboBox (focus)="openComboBox()"
+                  [disabled]="(isDisabledModel || disabled) && !isEnabledAnyWay" [data]="modelOfItemFiltredDataSource"
+                  [textField]="'Label'"
+                  [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control"
+                  [filterable]="true"
+                  (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)" [(ngModel)]="selectedModel"
+                  [placeholder]="'MODELE'|translate">
+    <!--footer template-->
+    <ng-template *ngIf="!forSearch && hasAddModelPermission" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+

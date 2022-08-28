@@ -1,0 +1,119 @@
+<kendo-grid [data]="gridSettings.gridData" [pageable]="pagerSettings" [pageSize]="gridSettings.state.take"
+  [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [reorderable]="true" [sortable]="true"
+  (dataStateChange)="dataStateChange($event)" [selectable]="{enabled: true, checkboxOnly: true}"
+  (selectedKeysChange)="onSelectedKeysChange($event)" [kendoGridSelectBy]="'Id'" [selectedKeys]="operationsIdsSelected">
+
+  <ng-template *ngIf="!(isUpdateMode && ((!isForRepairOrder && isInterventionCompleted)
+                                         ||(isForRepairOrder && isRepairOrderValid)))" kendoGridToolbarTemplate>
+    <div class="col-auto p-1" align="right">
+      <i class="las la-ellipsis-v la-2x" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false"> </i>
+      <div class="dropdown-menu dpMenu" id="action_grid_toggle" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item dpItem" (click)="addAllSelectedItemsToList()" *ngIf="hasUpdatePermission">
+          {{'ADD'|translate}}</a>
+      </div>
+    </div>
+  </ng-template>
+  <!-- checkbox start -->
+  <kendo-grid-checkbox-column [width]="70" *ngIf="!(isUpdateMode && ((!isForRepairOrder && isInterventionCompleted)
+      ||(isForRepairOrder && isRepairOrderValid)))">
+    <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+      <div class="checkbox-position" *ngIf="checkSelectAllVisibility()">
+        <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+          (selectAllChange)="onSelectAllChange($event)">
+        <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+      </div>
+    </ng-template>
+
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-idx="rowIndex">
+      <span *ngIf="!operationIsAlreadyAdded(dataItem)">
+        <input class="k-checkbox" id="CheckboxId_{{idx}}" [kendoGridSelectionCheckbox]="idx" />
+        <label class="k-checkbox-label" for="CheckboxId_{{idx}}"></label>
+      </span>
+    </ng-template>
+  </kendo-grid-checkbox-column>
+  <!-- checkbox end -->
+
+  <!-- Operation Name start -->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [filter]="gridSettings.columnsConfig[0].filter"
+    [filterable]="true" [width]="150">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+        theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Operation Name End -->
+  <!-- Durée prévue Start -->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [filter]="gridSettings.columnsConfig[1].filter"
+    [filterable]="true" [width]="150">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+        theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <span *ngIf="dataItem && (dataItem.DurationInDays > 0)">
+        {{dataItem.DurationInDays}}&nbsp;{{'DAYS' | translate}}
+      </span>
+      <span *ngIf="dataItem && (dataItem.DurationInHours > 0)">
+        {{dataItem.DurationInHours}}&nbsp;{{'HOURS' | translate}}
+      </span>
+      <span *ngIf="dataItem && (dataItem.DurationInMinutes > 0)">
+        {{dataItem.DurationInMinutes}}&nbsp;{{'MINUTES' | translate}}
+      </span>
+      <span *ngIf="dataItem && (dataItem.DurationInSecondes > 0)">
+        {{dataItem.DurationInSecondes}}&nbsp;{{'SECONDS' | translate}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Durée prévue End -->
+  <!-- Htprice Start -->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [filter]="gridSettings.columnsConfig[2].filter"
+    [filterable]="true" [width]="150" *ngIf="isForRepairOrder">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+        theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <span *ngIf="companyCurrency && dataItem.Htprice">
+        {{dataItem.Htprice.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+        style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})}}
+      </span>
+      <span *ngIf="!companyCurrency">
+        {{dataItem.Htprice}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Htprice end -->
+  <!-- prix TTC Start -->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [filter]="gridSettings.columnsConfig[3].filter"
+    [filterable]="true" [width]="150">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+        theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <span *ngIf="companyCurrency && dataItem.Ttcprice">
+        {{dataItem.Ttcprice.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+        style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})}}
+      </span>
+      <span *ngIf="!companyCurrency">
+        {{dataItem.Ttcprice}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- prix TTC End -->
+  <!-- Command-->
+  <kendo-grid-command-column [width]="120" [title]="'ACTIONS' | translate" *ngIf="!(isUpdateMode && ((!isForRepairOrder && isInterventionCompleted)
+    ||(isForRepairOrder && isRepairOrderValid)))">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'ACTIONS' | translate}}" theme="light">{{'ACTIONS' | translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+      <span tooltip="{{'ADD' | translate}}" theme="light">
+        <i class="lab la-telegram-plane ng-star-inserted" style="font-size: 22px;" [ngStyle]="{'color': operationIsAlreadyAdded(dataItem) ?
+            '#c5c8ce' : '#217bca'}" (click)="addItemToEffectedOperationsGrid(dataItem)" *ngIf="hasUpdatePermission">
+        </i>
+      </span>
+    </ng-template>
+  </kendo-grid-command-column>
+</kendo-grid>

@@ -1,0 +1,132 @@
+<!---->
+<div class="card-body" style="min-height: 300px;">
+  <kendo-grid (detailExpand)="loadActionsInformation($event)" [data]="gridSettings.gridData" [pageable]="false"
+  >
+    <!-- Head Start-->
+    <kendo-grid-column>
+      <ng-template kendoGridHeaderTemplate>
+        {{'THE_ACTIONS_THAT_WILL_BE_CARRIED_OUT' | translate}}
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-column="column" let-dataItem>
+        {{dataItem.IdExitActionNavigation.Label | translate}}
+      </ng-template>
+    </kendo-grid-column>
+    <ng-template kendoGridDetailTemplate let-dataItem>
+      <!-- section start-->
+      <section>
+        <div class="card-title">
+          <h4>
+            {{'DETAILS'|translate}}
+          </h4>
+        </div>
+        <div class="card-body col-10" style="margin-top: -10px">
+          <div class="col-lg-12 col-md-12 col-sm-12"> {{dataItem.IdExitActionNavigation.Description |translate }} </div>
+        </div>
+
+      </section>
+      <section
+        *ngIf="exitEmployeeAccountInformation && dataItem.IdExitActionNavigation.Label === exitEmployeeAccountInformation.Action">
+        <div class="card-title">
+          <h4>
+            {{'ACCOUNT_INFORMATION'|translate}}
+          </h4>
+        </div>
+        <div class="card-body col-10" style="margin-top: -10px">
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'FULL_NAME'|translate}}  </b></span> :
+            {{exitEmployeeAccountInformation.EmployeeName }}
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'EMAIL'|translate}}  </b></span> :
+            {{exitEmployeeAccountInformation.Email }}
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'ROLE'|translate}}  </b></span> :
+            {{exitEmployeeAccountInformation.RoleName }}
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'COMPANIES_ASSOCIATED'|translate}}  </b></span> :
+            {{exitEmployeeAccountInformation.CompanyAssociatedName }}
+          </div>
+        </div>
+      </section>
+
+      <section
+        *ngIf="exitEmployeeContractInformation && dataItem.IdExitActionNavigation.Label === exitEmployeeContractInformation.Action">
+        <div class="card-title">
+          <h4>
+            {{'CONTRACT_INFORMATION'|translate}}
+          </h4>
+        </div>
+        <div class="card-body col-10" style="margin-top: -10px">
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'CONTRACT_TYPE'|translate}}  </b></span> :
+            {{exitEmployeeContractInformation.ContractType }}
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'START_DATE'|translate}}  </b></span> :
+            {{exitEmployeeContractInformation.StartDate| date: formatDate }}
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'END_DATE'|translate}}  </b></span> :
+            {{ exitEmployeeContractInformation.EndDate | date: formatDate }}
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'SALARY_STRUCTURE'|translate}}  </b></span> :
+            {{exitEmployeeContractInformation.SalaryStructureReference }}
+          </div>
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'WORKING_TIME'|translate}}  </b></span> :
+            {{exitEmployeeContractInformation.WorkingHours }}
+          </div>
+        </div>
+      </section>
+      <section
+        *ngIf="exitEmployeeRelationInformation && dataItem.IdExitActionNavigation.Label === exitEmployeeRelationInformation.Action">
+        <div class="card-title">
+          <h4>
+            {{'SUPERVISOR_LOWER_INFORMATION'|translate}}
+          </h4>
+        </div>
+        <div class="card-body col-10" style="margin-top: -10px">
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'UPPER_HIERARCHY'|translate}}  </b></span> :
+            {{exitEmployeeRelationInformation.SuperiorExitEmployeeName }}
+          </div>
+          <div class="col-lg-12 col-md-8 col-sm-12"><span><b>{{'LOWER_EMPLOYEES_HIERARCHY'|translate}}  </b></span> :
+            {{exitEmployeeRelationInformation.LowerExitEmployeeNames }}
+          </div>
+        </div>
+      </section>
+      <section
+        *ngIf="exitEmployeeTeamInformation && dataItem.IdExitActionNavigation.Label === exitEmployeeTeamInformation[0].Action ">
+        <div class="card-title">
+          <h4>
+            {{'TEAM_INFORMATION'|translate}}
+          </h4>
+        </div>
+        <div *ngFor="let exitEmployeeTeam of exitEmployeeTeamInformation" class="card-body col-10"
+             style="margin-top: -10px">
+          <div class="col-lg-6 col-md-8 col-sm-12"><span><b>{{'TEAM_NAME'|translate}}  </b></span> :
+            {{exitEmployeeTeam.TeamName }}
+          </div>
+          <div class="col-lg-12 col-md-8 col-sm-12"><span><b>{{'TEAM_TYPE'|translate}}  </b></span> :
+            {{exitEmployeeTeam.TeamType }}
+          </div>
+          <div class="col-lg-12 col-md-8 col-sm-12"><span><b>{{'TEAM_MANAGER'|translate}}  </b></span> :
+            {{exitEmployeeTeam.ManagerName }}
+          </div>
+          <div class="col-lg-12 col-md-8 col-sm-12"><span><b>{{'ASSIGNMENT_PERCENTAGE'|translate}} </b></span> :
+            {{exitEmployeeTeam.AssignmentPercentage }}%
+          </div>
+        </div>
+      </section>
+      <!-- end section-->
+    </ng-template>
+    <!-- End Head-->
+    <kendo-grid-command-column [width]="190">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+        <button
+          (click)="ChooseMethodAccordingToAction(dataItem.IdExitAction,this.employeeExit)"
+          *ngIf="!dataItem.VerifyAction && !(this.employeeExit && this.employeeExit.Status === statusCode.Refused)" class="noPadding k-button btn-Add right_side"
+          style="float:right!important">
+          <i aria-hidden="true" class="fa fa-check text-primary">
+            {{'APPLY' | translate}}</i>
+        </button>
+        <i *ngIf="dataItem.VerifyAction  " aria-hidden="true"
+           class="fa fa-check text-success"></i>
+      </ng-template>
+    </kendo-grid-command-column>
+  </kendo-grid>
+</div>
+

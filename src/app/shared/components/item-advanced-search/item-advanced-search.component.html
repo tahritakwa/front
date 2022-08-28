@@ -1,0 +1,21 @@
+<div>
+  <fieldset class=rounded-border [ngStyle]="isContentVisible ? {border:fieldsetBorderStyle} : {border:fieldsetBorderStyle, 'overflow-y': 'hidden'}" style="position: relative;">
+    <legend class="m-0">{{"ADVANCED_SEARCH"|translate}}
+      <i *ngIf="!isContentVisible" class="las la-chevron-down la-angle-color" (click)="showContent()"></i>
+      <i *ngIf="isContentVisible" class="las la-chevron-left la-angle-color" (click)="hideContent()"></i>
+    </legend>
+    <div  [hidden]="!isContentVisible" class="item_advanced_search">
+      <div class="row">
+        <div class="w-100">
+
+          <app-item-filtre-list [filtreFieldsInputs]="filtreFieldsInputs" [resetClick]="resetClick"
+            (sendPredicateEvent)="getFiltrePredicate($event)" (isTecdocSearchEvent)="handleTecdocSearchEvent($event)" 
+            (sendFilterSearchItem)="getFilterSearchItem($event)" (sendResetFieldValues)="resetFieldValues($event)" (isSearchItemEvent)="onSearchClick($event)"
+            [isForGarage]="isForGarage" [idWarehouse]="idWarehouse" (selectedWarehouseName)="handleWarehouseNameEvent($event)"
+            (selectedNatureName)="handleNatureNameEvent($event)" [listTiers]="listTiers" [hasDefaultWarehouse]="hasDefaultWarehouse"
+            [selectedWarehouseFromItemDropDown]="selectedWarehouseFromItemDropDown" (searchObjectEmitter)="handleSearchObject($event)"></app-item-filtre-list>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>

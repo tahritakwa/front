@@ -1,0 +1,40 @@
+.img-border {
+  position: relative;
+  display: inline-block;
+  border: 3px dotted #dfe9e2;
+  overflow: hidden;
+}
+
+.show-all {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  height: 100%;
+  background: #3f3f3f80;
+  color: var(--info);
+}
+@media only screen and (min-width: 768px) {
+  .show-all {
+    color: transparent;
+    background: none;
+  }
+  .show-all:hover {
+    background: #3f3f3f80;
+    color: var(--info);
+  }
+}
+.overlay-number-detail {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  background-color: #10426d3d;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.overlay-number-detail .number-detail {
+  color: white;
+  height: 100%;
+  font-size: xxx-large;
+}

@@ -1,0 +1,141 @@
+<div class="card border-0">
+  <div class="card-header" *ngIf="!isModalOption">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(isUpdateMode ? 'EDIT_ACCOUNT' : 'ADD_NEW_ACCOUNT')|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="accountAddFormGroup">
+      <!--Begin Card body-->
+      <div class="card-body">
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'PLAN_PARENT'|translate}}<span
+              class="required">*</span></label>
+            <kendo-combobox #planParentInput formControlName="planId" [data]="chartOfAccountFiltredList"
+                            [textField]="'label'" [valueField]="'id'" [valuePrimitive]="true" class="form-control"
+                            [filterable]="true"
+                            (valueChange)="onSelectPlan($event)" (filterChange)="handleFilterChartOfAccount($event)"
+                            [disabled]="isFilled">
+              <ng-template kendoComboBoxItemTemplate let-dataItem>
+                <div class="container">
+                  <div class="row">
+                    <b>{{dataItem.code}}</b>
+                  </div>
+                  <div class="row">
+                    <span class="small">{{dataItem.label}}</span>
+                  </div>
+                </div>
+              </ng-template>
+
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              <!--end No data template-->
+            </kendo-combobox>
+            <app-control-messages [control]="accountAddFormGroup.controls.planId"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'PARENT_CODE'|translate}}<span
+              class="required">*</span></label>
+            <kendo-numerictextbox [format]="formatCodeAccountOptions" class="form-control" formControlName="planCode"
+                                  (valueChange)="loadOriginPlanCode($event)"></kendo-numerictextbox>
+            <app-control-messages [control]="accountAddFormGroup.controls.planCode"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+            <kendo-numerictextbox class="form-control" formControlName="code" [format]="formatCodeAccountOptions"
+                                  [autoCorrect]=false [min]="minCode" [max]="maxCode"
+                                  (valueChange)="isValidCodeAccount($event)">
+            </kendo-numerictextbox>
+            <span style="color: red" *ngIf="invalidCodeAccounting" class="text-danger">
+              {{'INVALID_PREFIX_CODE_ACCOUNTING'|translate}} {{prefixPlanCode}}
+            </span>
+            <span style="color: red" *ngIf="isInvalidMinCode" class="text-danger">
+              {{'MIN_ACCOUNT_CODE_VALUE'|translate}} {{minCode}}
+            </span> <span style="color: red" *ngIf="isInvalidMaxCode" class="text-danger">
+              {{'MAX_ACCOUNT_CODE_VALUE'|translate}} {{maxCode}}
+            </span>
+            <app-control-messages [control]="accountAddFormGroup.controls.code"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span class="required">*</span></label>
+            <input #labelInput class="form-control" formControlName="label" name="label">
+            <app-control-messages [control]="accountAddFormGroup.controls.label"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DEBIT_OPENING'|translate}}</label>
+            <kendo-numerictextbox class="form-control" formControlName="debitOpening" [autoCorrect]=true
+                                  [format]="formatNumberOptions" [decimals]=purchasePrecision [min]="minAmountNumber">
+            </kendo-numerictextbox>
+            <app-control-messages [control]="accountAddFormGroup.controls.debitOpening"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CREDIT_OPENING'|translate}}</label>
+            <kendo-numerictextbox class="form-control" formControlName="creditOpening" [autoCorrect]=true
+                                  [format]="formatNumberOptions" [decimals]=purchasePrecision [min]="minAmountNumber">
+            </kendo-numerictextbox>
+            <app-control-messages [control]="accountAddFormGroup.controls.creditOpening"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-12 col-sm-12 d-flex mt-3">
+            <div class="col-lg-6 p-0">
+              <input type="checkbox" class="input-checkbox100 " formcontrolname="literable"
+                     id="checkLiterable" name="literable"
+                     (click)='checkLiterable()'
+                     [checked]="isLiterableChecked == true ? 'checked': null">
+              <label class="label-checkbox100"
+                     for="checkLiterable">{{'IS_LITERABLE'|translate}}</label>
+            </div>
+            <div class="col-lg-6 p-0">
+              <input type="checkbox" class="input-checkbox100 " formcontrolname="reconcilable"
+                     id="checkReconciliation" name="reconcilable"
+                     (click)='checkReconciliation()'
+                     [checked]="isReconcilableChecked == true ? 'checked': null">
+              <label class="label-checkbox100"
+                     for="checkReconciliation">{{'IS_RECONCILABLE'|translate}}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer mx-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a *ngIf="!isOpenDialogMode()" routerLink="/main/settings/accounting/account">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="onAddAccount()" class="btn btn-sm btn-save mx-1" type="button"
+              *ngIf="(this.authService.hasAuthority(AccountingPermissions.UPDATE_ACCOUNTING_ACCOUNTS) && isUpdateMode) || (this.authService.hasAuthority(AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS) && !isUpdateMode)">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate }}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

@@ -1,0 +1,175 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <form class="form-horizontal" [formGroup]="transfertMovementForm">
+        <div class="card">
+          <div class="card-header">
+            <div class="col-sm-12 mt-2">
+              <h2 class="card-title mb-0,00">{{ (isUpdateMode ? 'CONSULT_RESERVATION': 'ADD_RESERVATION')
+                |translate }}</h2>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-content-around" >
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-4 col-md-12 col-sm-12" *ngIf = "isUpdateMode">{{'TYPE_TRANSACTION'|translate}} : <b>{{UpdateValue}}</b> </label> 
+                  <label class="col-lg-4 col-md-12 col-sm-12" *ngIf = "!isUpdateMode">{{'TYPE_TRANSACTION'|translate}} </label>
+                  
+                  <div class="col-lg-4 col-md-12 col-sm-12" *ngIf = "!isUpdateMode">
+                      <input type="radio" name="decision" id="yes-radio" (click)="showSearch(0)" [checked]="true" [disabled] = "idReservation"/>
+                      <label  for="yes-radio">{{'RESERVATION'|translate}}</label>
+                  </div>
+                  <div class="col-lg-4 col-md-12 col-sm-12" *ngIf = "!isUpdateMode">
+                      <input  type="radio" name="decision" id="no-radio" (click)="showSearch(1)" [disabled] = "idLiberation"/>
+                      <label  for="no-radio">{{'LIBERATION'|translate}}</label>
+                  </div>
+                </div>
+              </div>
+              
+            </div><br>
+
+            
+            <div class="row" [hidden]="true">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'WAREHOUSE_SOURCE'|translate}} <span class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-depot-dropdown [parent]="transfertMovementForm" [FromComponent]='true' [warehouseForInventoryDocument]='false' [warehouseForEcommerceDocument]='true'
+                                        [WarehouseName]="'IdWarehouseSource'" [disabled]='isDisabled'
+                                        (Focused)="warehouseSourceFocused($event)" (Selected)="warehouseDestinationSelected($event)"></app-depot-dropdown>
+                    <app-control-messages [control]="transfertMovementForm.controls.IdWarehouseSource" class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-10 col-sm-10">{{'WAREHOUSE_DESTINATION'|translate}}<span class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-depot-dropdown [parent]="transfertMovementForm" [FromComponent]='true' [warehouseForInventoryDocument]='false' [warehouseForEcommerceDocument]='true'
+                                        [WarehouseName]="'IdWarehouseDestination'" [disabled]='(isDisabled && isUpdateMode) || isShowForm'
+                                        (Focused)="warehouseDestinationFocused($event)"></app-depot-dropdown>
+                    <app-control-messages [control]="transfertMovementForm.controls.IdWarehouseDestination" class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+                <kendo-grid (cellClick)="lineClickHandler($event)" (remove)="removeLine($event)"
+                            (add)="addLine()" [data]="view" id="productsGrid" [style.maxHeight.px]="400"
+                            [pageSize]="pageSize" [skip]="skip" [pageable]="pagerSettings" (pageChange)="pageChange($event)" #grid>
+                  <kendo-grid-column field="LabelItem" title="{{'ITEM'|translate}}" [width]='100' [editable]='!isShowForm'>
+                    <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf='isInEditingMode'>
+                      <app-item-dropdown [itemForm]="formGroup" [warehouseAssociated]="warehouseAssociatedToItems" (Selected)="itemSelect($event)"
+                                         [showFilter]='true' [hideSearch]='true' [parentViewContainerRef]="viewRef" [activeKeyPress]='true'
+                                         (keydown.enter)='movementItemFoucusOut()' [fromEcommerce]="false">
+                      </app-item-dropdown>
+                      <i #anchor></i>
+                      <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="IdItem">
+                      </app-control-message-grid-cell>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      {{dataItem.LabelItem}} - {{dataItem.Designation}}
+                    </ng-template>
+                  </kendo-grid-column>
+
+
+
+
+
+
+
+
+
+                  <kendo-grid-column field="AvailableQuantity" title="{{'DISPONIBILITY'|translate}}" [width]='130' *ngIf = "!isUpdateMode" >
+
+                    <ng-template kendoGridEditTemplate>
+
+                      <span class="badge badge-success">
+                        {{'AVAILABLE_IN_STOCK'|translate}} &nbsp;
+                        <span>{{formGroup.controls['AvailableQuantity'].value}}</span>
+                      </span>
+                    </ng-template>
+
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      <span class="badge badge-success">{{'AVAILABLE_IN_STOCK'|translate}}&nbsp;{{dataItem.AvailableQuantity}}</span>
+                    </ng-template>
+
+
+                  </kendo-grid-column>
+
+
+                  <!--<kendo-grid-column field="ActualQuantity" title="{{'QUANTITY'|translate}}" [width]='100' [editable]='!isShowForm'>
+                    <ng-template kendoGridEditTemplate>
+                      <app-grid-cell-input-template [group]="formGroup" controlName="ActualQuantity" inputType="number">
+                      </app-grid-cell-input-template>
+                    </ng-template>
+                  </kendo-grid-column>-->
+
+                  <kendo-grid-column field="ActualQuantity" title="{{'QUANTITY'|translate}}" [width]='90'>
+                    <ng-template kendoGridEditTemplate>
+                      <app-grid-cell-input-template [group]="formGroup" controlName="ActualQuantity" inputType="number"
+                                                    [stopInputCounter]='true' (keydown.enter)='movementQtyFoucusOut()' (setFocused)='setSelectQty()'>
+                      </app-grid-cell-input-template>
+                    </ng-template>
+                  </kendo-grid-column>
+
+                  <kendo-grid-command-column title="" [width]='20'>
+                    <ng-template kendoGridCellTemplate let-isNew="isNew">
+                      <div style="display: flex; margin-top: 5%;">
+                        <button kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr" style="border: none; color: #E91E63 !important;"
+                                type="button" *ngIf='!isShowForm'>
+                          <i class="fa fa-times fa-lg"></i>
+                        </button>
+                        <button class='noPadding btn-Add' *ngIf="isInEditingMode && !isShowForm" kendoGridSaveCommand id='btnSave'
+                                type="button"  (click)="saveCurrent()">
+                          <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+                        </button>
+
+                        <button kendoGridCancelCommand *ngIf="isInEditingMode && !isShowForm" class="noPadding btn-Add k-button"
+                                (click)="cancelHandler($event)" type="button">
+                          <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </ng-template>
+                  </kendo-grid-command-column>
+                  <div>
+                    <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+                      <button kendoGridAddCommand class="noPadding btn-Add k-button" dir="ltr" style="border: none"
+                              *ngIf='!isShowForm && showButtonAddLine' type="button">
+                        <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                        <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+                      </button><br style="line-height: 2.5em;">
+                    </ng-template>
+                    <kendo-grid-messages noRecords="">
+                    </kendo-grid-messages>
+                  </div>
+                </kendo-grid>
+              </div>
+            </div>
+          </div>
+          <!--Begin Card footer-->
+          <div class="card-footer">
+            <a routerLink="/main/ecommerce/movement">
+              <span class="btn btn-sm btn-success">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <span>
+              
+              <button class="btn btn-sm btn-primary" type="button" *ngIf='!isShowForm' (click)="validateTransfertMovement()" [disabled]='isInEditingMode || !isDisabled'>
+                <i class="fa fa-floppy-o"></i> {{'SYNCHRONISE'|translate}}
+              </button>
+              
+              
+            </span>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

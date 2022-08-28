@@ -1,0 +1,82 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!-- card header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(!isUpdateMode ? 'ADD_UNIT': 'UPDATE_UNIT') | translate}}</h3>
+    </div>
+  </div>
+  <!-- card body -->
+  <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12 ">
+      <form class="form-horizontal" [formGroup]="addUnitFormGroup">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group row">
+            <!-- Name -->
+            <div class="col-lg-6">
+              <div class="form-group row">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'NAME' | translate}} <span
+                    class="required">*</span></label>
+                <div class="col-lg-8">
+                  <input class="form-control" formControlName="Name" type="text"
+                    [ngClass]="{ 'has-error': (addUnitFormGroup.controls.Name.touched || addUnitFormGroup.controls.Name.dirty) && !addUnitFormGroup.controls.Name.valid }">
+                  <app-control-messages [control]="addUnitFormGroup.controls.Name"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- Quantity -->
+            <div class="col-lg-6">
+              <div class="form-group row">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'QUANTITY' | translate}}<span class="required">*</span>
+                </label>
+                <div class="col-lg-8">
+                  <input class="form-control" formControlName="Quantity" type="number"
+                    [ngClass]="{ 'has-error': (addUnitFormGroup.controls.Quantity.touched || addUnitFormGroup.controls.Quantity.dirty) && !addUnitFormGroup.controls.Quantity.valid }">
+                  <app-control-messages [control]="addUnitFormGroup.controls.Quantity"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="form-group row">
+            <!-- Type -->
+            <div class="col-lg-6">
+              <div class="form-group row">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE' | translate}} <span
+                    class="required">*</span></label>
+                <div class="col-lg-8">
+                  <app-unit-type-dropdown [disabled]="!(hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode)" [group]="addUnitFormGroup"></app-unit-type-dropdown>
+                  <app-control-messages [control]="addUnitFormGroup.controls.Type"
+                    class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="LIST_UNIT_URL">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

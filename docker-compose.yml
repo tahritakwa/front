@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  app:
+    container_name: front_cont
+    image: front_image 
+    ports:
+      - 80:80
+    networks:
+      - stark_network
+    volumes:
+      - ./default.conf:/etc/nginx/default.conf
+networks:
+  stark_network:
+    external:  
+      name: stark_network
+#volumes:
+ # frontdata:

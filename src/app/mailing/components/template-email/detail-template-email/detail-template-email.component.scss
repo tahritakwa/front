@@ -1,0 +1,171 @@
+#nav-tabContent {
+  height: 100% !important;
+  overflow: auto;
+}
+
+.card {
+  margin-bottom: 0 !important;
+  height: 100% !important;
+  position: absolute !important;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.imgSize {
+  margin-left: 5%;
+  border-radius: 50%;
+}
+
+.Error-Form-tab {
+  border-top: 1px solid red !important;
+  border-left: 1px solid red !important;
+  border-right: 1px solid red !important;
+  border-bottom: none;
+  border-top-left-radius: 0.25rem !important;
+  border-top-right-radius: 0.25rem !important;
+}
+
+.Error-Form-tab-text {
+  color: red !important;
+}
+
+
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-left: 4%;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #4c9aae;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #4c9aae;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.greenBtn {
+  background: #009688;
+  border: none;
+  color: white;
+}
+
+body .ui-accordion .ui-accordion-header:not(.ui-state-disabled).ui-state-active a {
+  background-color: #4c9aae;
+  border: 1px solid #4c9aae;
+  color: black;
+}
+
+body .ui-accordion .ui-accordion-content {
+  padding: 0.571em 1em;
+  border: 1px solid #c8c8c8;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 0.571em 1em;
+}
+
+body .ui-accordion .ui-accordion-header a {
+  padding: 0.571em 1em;
+  background-color: #f4f4f4;
+  color: #4c9aae;
+  font-weight: 700;
+  -moz-transition: background-color 0.2s;
+  -o-transition: background-color 0.2s;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+  font-size: medium;
+}
+
+body .ui-accordion .ui-accordion-content {
+  padding: 0.571em 1em;
+  border: 1px solid #c8c8c8;
+  background-color: #ffffff;
+  color: #333333;
+  padding: 0.571em 1em;
+}
+
+#blah {
+  border-radius: 75%;
+  height: 100%;
+  position: absolute;
+}
+.fixheaderdetail{
+  background-color: white;
+  border: none;
+  height: 11%;
+}
+
+#nbHeurs {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0px;
+  width: 100px;
+}
+
+#nbMinutes {
+  border-radius: 0;
+  width: 100px;
+}
+
+::ng-deep .ui-accordion .ui-accordion-header a {
+  padding: 0.571em 1em;
+  background-color: #f4f4f4;
+  color: #4c9aae;
+  font-weight: 700;
+  -webkit-transition: background-color 0.2s;
+  transition: background-color 0.2s;
+  font-size: medium;
+}

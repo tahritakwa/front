@@ -1,0 +1,20 @@
+
+.ng5-slider .ng5-slider-pointer {
+  cursor: pointer !important;
+  width: 15px !important;
+  height: 15px !important;
+  top: -5px !important;
+  z-index: 3 !important;
+  border-radius: 16px !important;
+}
+
+.ng5-slider .ng5-slider-pointer:after {
+  content: '';
+  width: 3px !important;
+  height: 3px !important;
+  position: absolute !important;
+  top: 15px !important;
+  left: 15px !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+}

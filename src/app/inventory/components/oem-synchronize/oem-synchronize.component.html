@@ -1,0 +1,79 @@
+<div class="card">
+  <div class="card-header" style="background-color: white; border: none; display: block;">
+    <h3 class="card-title mb-0">OEM</h3>
+  </div>
+  <div class="card-body">
+    <div class="row mb-2">
+      <div class="col-auto">
+        <input (click)="changeFilter()" aria-controls="collapseBasic" class="input-checkbox100" id="ckb2"
+          name="remember-me" type="checkbox" checked="{{isTecdocFiltered ? 'checked': null}}">
+        <label class="label-checkbox100 " for="ckb2">
+          {{'ONLY_IN_TECDOC'|translate}}&nbsp;
+        </label>
+      </div>
+      <div class="col-auto">
+        <input (click)="changeBlocked()" aria-controls="collapseBasic" class="input-checkbox100" id="ckb3"
+          name="remember-me" type="checkbox" checked="{{showBlocked ? 'checked': null}}">
+        <label class="label-checkbox100 " for="ckb3">
+          {{'SHOW_BLOCKED'|translate}}&nbsp;
+        </label>
+      </div>
+      <div class="col-auto">
+        <div class="row">
+          <label class="col-auto">{{'BRAND'|translate}} :</label>
+          <kendo-combobox style="margin-top: -9px;" [value]="selectedSupplier" [data]="listSupplier"
+            (selectionChange)="selectsupplier($event)">
+
+            <!--No data template-->
+            <ng-template kendoDropDownListNoDataTemplate>
+              <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+            </ng-template>
+            <!--end No data template-->
+          </kendo-combobox>
+        </div>
+      </div>
+    </div>
+    <kendo-splitter orientation=" horizontal">
+      <kendo-splitter-pane style="padding: 15px;" [resizable]="false" size='300px'>
+        <!-- kendo grid oem list start-->
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+          [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)" [filterable]="true"
+          [selectable]="selectableSettings" (selectionChange)="selectRow($event)" [pageable]="pagerSettings">
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+            [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+            [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+            [format]="gridSettings.columnsConfig[0].format">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+
+              <div class="col-12">
+                <div class="row d-flex justify-content-between">
+                  <div class="col-auto">{{dataItem.OemNumber}}</div>
+                  <div class="col-auto">
+                    <div class="row d-flex justify-content-end">
+                      <div class="col-auto px-1" *ngIf="dataItem.isNotifOn &&!dataItem.isViewed"><i
+                          class="fa fa-circle text-primary" style='font-size: xx-small;' aria-hidden="true"></i></div>
+                      <div class="col-auto px-1" *ngIf="dataItem.isNotifOn && dataItem.isViewed"><i
+                          class="fa fa-circle text-secondary" style='font-size: xx-small;' aria-hidden="true"></i></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+      </kendo-splitter-pane>
+      <!-- kendo grid oem list end -->
+
+      <kendo-splitter-pane style="padding: 15px;" [collapsible]="false">
+        <div class="pane-content">
+          <app-list-tec-doc (reloadList)="getItemsByOEM()" [SelectedOemNumber]="OemNumber" [isModal]="false"
+            [isforSync]="true" [btnEditVisible]="true">
+          </app-list-tec-doc>
+        </div>
+      </kendo-splitter-pane>
+
+
+    </kendo-splitter>
+  </div>
+</div>

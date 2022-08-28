@@ -1,0 +1,259 @@
+<div class="row">
+  <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12" *ngIf="showSearch">
+    <div class="row">
+      <div class="col-10">
+        <input type="text" class="form-control" placeholder="{{'SEARCH'|translate}}" name='reference'
+               aria-label="label" aria-describedby="addon-wrapping" (input)="showaction($event)" [(ngModel)]='articleReference'
+               (afterValueChanged)="onItemSearch()">
+      </div>
+      <div class="col-2 p-1">
+        <i class="fa fa-search fa-lg cursor-pointer" aria-hidden="true" (click)="onItemSearch()" ></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+    <kendo-grid (cellClick)="documentLineClickHandler($event)" [data]="filteredview" id='gridPucrhaseSales'
+                (remove)="removeDocumentLine($event)" [style.maxHeight.px]="1360" #grid (add)="addDocumentLine($event)"
+                [pageSize]="pageSize" [skip]="skip" [pageable]="true" (pageChange)="pageChange($event)" kendoGridSelectBy="Id"
+                [selectedKeys]="selectionId" [selectable]="true">
+
+      <kendo-grid-checkbox-column [width]='70' *ngIf='showDiscountForAll() && deleteMultipleLinePermission' showSelectAll="true">
+      </kendo-grid-checkbox-column>
+
+      <kendo-grid-column field="IdLine" title="{{'ITEM'|translate}}" [width]='200' hidden="hidden">
+      </kendo-grid-column>
+      <kendo-grid-column field="Id" title="{{'SHELF_AND_STORAGE'|translate}}" [hidden]='true'> </kendo-grid-column>
+
+      <!--item-->
+      <kendo-grid-column field="IdItem" title="{{'ITEM'|translate}}" [width]='250'>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div *ngIf='isNew'>
+            <app-item-dropdown [itemForm]="gridFormGroup" (Selected)="itemSelect($event)" [activeKeyPress]='true' [isForStockMvt]='true'
+                               [hideSearch]="hideSearch" [parentViewContainerRef]="viewRef" [isForPurchase]='true'
+                               (keydown.enter)='movementItemFoucusOut()' [removeFilter]='true' [showFilter]='true'
+                               (reload)="filteritem()" #item [selectedTiers]='itemForm.controls["IdTiers"].value' [isOnlyStockManaged]="true"
+                               [tierType]="tierType">
+            </app-item-dropdown>
+            <i #anchor></i>
+            <app-control-message-grid-cell [group]='gridFormGroup' [anchor]="anchor" controlName="IdItem">
+            </app-control-message-grid-cell>
+          </div>
+          <div *ngIf='!isNew && dataItem.IdItemNavigation'>
+            {{dataItem.IdItemNavigation.Code}}-{{dataItem.IdItemNavigation.Description}}
+          </div>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="row d-flex align-items-center mb-1 mt-1" *ngIf='dataItem.IdItemNavigation'>
+            <div class="col-3 pl-3">
+              <img id="itemImage" class="rounded-circle card-avatar"
+                   [src]="'assets/image/placeholder-logo.png'" alt="avatar" />
+            </div>
+            <div class="col-9 pl-3">
+              <div class="row">
+                <b>{{dataItem.IdItemNavigation.Description}}</b>
+              </div>
+              <div class="row mt-1">
+                <span class="small"> {{dataItem.IdItemNavigation.Code}}</span>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <!--MovementQty-->
+      <kendo-grid-column field="MovementQty" title="{{'QUANTITY'|translate}}" [width]='90'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template [group]="gridFormGroup" controlName="MovementQty" inputType="number"
+                                        [stopInputCounter]='true' (keydown.enter)='movementQtyFoucusOut()'>
+          </app-grid-cell-input-template>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="text-right">
+            {{dataItem.MovementQty}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!--HtUnitAmountWithCurrency-->
+      <kendo-grid-column field="HtUnitAmountWithCurrency" [width]='160' [format]="formatOption" [style]='{"font-family": "Roboto, serif", "color": "#505253", "text-align":"right",
+                      "padding-right": "4%"}'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{'LAST_ORDER_PRICE' | translate}}" theme="light">
+            {{'P.U'}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template [group]="gridFormGroup" controlName="HtUnitAmountWithCurrency"
+                                        inputType="number" [stopInputCounter]='true' (keydown.enter)='htUnitAmountWithCurrencyFoucusOut()'
+                                        [disabled]="!updatePricePermission">
+          </app-grid-cell-input-template>
+
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column hidden field="IdMeasureUnit" title="{{'UNIT'|translate}}" [width]='70'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.IdMeasureUnitNavigation ? dataItem.IdMeasureUnitNavigation.Label : undefined}}
+        </ng-template>
+
+
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          {{dataItem.IdMeasureUnitNavigation ? dataItem.IdMeasureUnitNavigation.Label : undefined}}
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <kendo-grid-column field="Taxe" title="{{'TAX'|translate}}" [width]='120'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf='dataItem.Taxe'>
+            <div *ngFor='let documentTax of dataItem.Taxe' class="taxClass"
+                 style="border: 2px solid #61a8ad !important; padding: 2px">
+              {{documentTax.Label}}
+            </div>
+          </div>
+
+        </ng-template>
+
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div *ngIf="isNew && dataItem.Taxe">
+            <div *ngFor='let documentTax of gridFormGroup.controls["Taxe"].value' class="taxClass"
+                 style="border: 2px solid #61a8ad !important; padding: 2px">
+              {{documentTax.Label}}
+            </div>
+          </div>
+          <div *ngIf="!isNew && dataItem.Taxe">
+            <div *ngFor='let documentTax of dataItem.Taxe' class="taxClass"
+                 style="border: 2px solid #61a8ad !important; padding: 2px">
+              {{documentTax.Label}}
+            </div>
+          </div>
+
+        </ng-template>
+      </kendo-grid-column>
+
+
+
+      <kendo-grid-column field="DiscountPercentage" title="{{'DISCOUNT'|translate}}" [width]='140' [style]='{"font-family": "Roboto, serif", "color": "#505253", "text-align":"right"}'>
+
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template [group]="gridFormGroup" controlName="DiscountPercentage" inputType="number"
+                                        [stopInputCounter]='false' (keydown.enter)='discountPercentageFoucusOut()' [disabled] =!updateDiscountPermission>
+          </app-grid-cell-input-template>
+        </ng-template>
+        <!-- <ng-template kendoGridCellTemplate>
+          <span *ngIf="DiscountPercentage">{{DiscountPercentage}}</span>
+          <span *ngIf="!DiscountPercentage">-</span>
+        </ng-template> -->
+        <ng-template kendoGridHeaderTemplate *ngIf="showDiscountForAll()">
+          <div class="row">
+            <div class="px-2 flex-grow-1 bd-highlight">
+              <div class="input-group">
+                <input type="number" class="form-control form-control-sm" placeholder="{{'DISCOUNT'|translate}}"
+                       style="border-bottom: 1px solid #e4e7ea !important;"
+                       (keydown.enter)='applyDiscountForAllDocumentLines()' [(ngModel)]='genericDiscount' [disabled] =!updateDiscountPermission>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!--HtTotalLineWithCurrency-->
+      <kendo-grid-column field="HtTotalLineWithCurrency" title="{{'AMOUNTHT'|translate}}" [width]='150'
+                         [format]="formatOption" [style]='{"font-family": "Roboto, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "4%"}'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="StockMovement" title="{{'AMOUNTHT'|translate}}" [width]='150' hidden="hidden">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <!--TaxeAmount-->
+      <kendo-grid-column field="TaxeAmount" title="{{'TAXEAMOUNT'|translate}}" [width]='100' [filterable]="true"
+                         filter="numeric" [format]="formatOption">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{'TAXEAMOUNT' | translate}}" theme="light">
+            {{column.title|translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <app-grid-cell-input-template [group]="gridFormGroup" controlName="TaxeAmount" inputType="number"
+                                        [stopInputCounter]='true'>
+          </app-grid-cell-input-template>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-command-column title="" [width]='100' *ngIf='!isEditedGrid || updateValidDocumentRole'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <div style="display: flex;
+                      margin-top: 5%;">
+            <button kendoGridRemoveCommand
+                    *ngIf="(dataItem.IdDocumentLineStatus==1 ||(updateValidDocumentRole && dataItem.IdDocumentLineStatus==2)) && deleteLinePermission"
+                    class="noPadding btn-Add k-button" dir="ltr" style="border: none; color: #E91E63 !important;"
+                    type="button">
+              <i class="fa fa-times fa-lg"></i>
+            </button>
+
+            <button class='noPadding btn-Add  k-button' *ngIf="isInEditingMode" kendoGridSaveCommand type="button"
+                    (click)="saveCurrent()" [disabled]="isAfterSave && !itemForm.controls['Id'].value" id='btnSave'>
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <button kendoGridCancelCommand *ngIf="isInEditingMode" class="noPadding btn-Add k-button"
+                    (click)="cancelHandler()" type="button">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </div>
+        </ng-template>
+
+      </kendo-grid-command-column>
+      <ng-template kendoGridToolbarTemplate [position]="'top'">
+        <button  class="btn btn-sm float-right border-0" dir="ltr" *ngIf='showDeletBtn() && deleteMultipleLinePermission' type="button"
+                (click)='deleteAll()' style="color: white; background: #f86c6b; float: right; border-radius: 3px;">
+                <i class="fa fa-times fa-lg AddIcon" style="color: #e91e63"></i>
+          <span>&nbsp; {{'DELETE'|translate}}</span>
+        </button>
+        <div class="row float-right">
+          <div class="col-lg-4" *ngIf='hasAddLignePermission && itemForm.controls["IdDocumentStatus"].value==1 ||
+          (itemForm.controls["IdDocumentStatus"].value==2 && updateValidDocumentRole)'>
+            <button kendoGridAddCommand class="btn btn-sm" dir="ltr"
+                    *ngIf='!isInEditingMode' style="background-color: #20a8d8 !important;" type="button">
+              <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+              <span style="color: white">&nbsp; {{'ADD_LINE'|translate}}</span>
+            </button>
+          </div>
+          <div class="col-lg-4"></div>
+        </div>
+
+      </ng-template>
+      <kendo-grid-messages noRecords="">
+      </kendo-grid-messages>
+    </kendo-grid>
+  </div>
+</div>

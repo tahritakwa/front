@@ -1,0 +1,57 @@
+<div class="historyContainer">
+
+  <!-- start header -->
+  <header style="height: 50px;">
+    <h4 style="text-align: center; padding-top: 10px">{{ 'HISTORY' | translate }}</h4>
+  </header>
+  <!-- End header -->
+
+
+  <!-- start opportunity history list -->
+  <ul class="list-group">
+
+    <li class="list-group-item" *ngFor="let history of allHistory">
+      <a class="pull-left">
+        <img class="media-object img-circle"
+          [src]="history.entityValue.employee.pictureEmployesSrc || '../../../../assets/image/user-new-icon.png'"
+          style="width: 40px;margin-right: 8px" alt="profile">
+      </a>
+
+      <div *ngIf="history?.action === 'UPDATED'; else INSERTED">
+        <ul>
+
+          <div>
+            <li class="list-unstyled" *ngFor="let change of getChangedProperties(history?.id)">
+
+              <div *ngIf="change !== 'reasonForChange'; else reasonForChange">
+                <strong>{{ change | translate }}</strong> {{ 'HAS_BEEN_UPDATED' | translate }}
+                <div style="text-align: center">
+                  {{getChangedValuesByIdAndPropertyAndEntityHistory(history.id, change, history)?.old}} ->
+                  {{getChangedValuesByIdAndPropertyAndEntityHistory(history.id, change, history).new}}
+                </div>
+              </div>
+
+              <ng-template #reasonForChange>
+                <strong>{{ change | translate }}: </strong>
+                {{getChangedValuesByIdAndPropertyAndEntityHistory(history.id, change, history).new}}
+              </ng-template>
+
+
+            </li>
+            <span style="float: right;">{{ history.modifiedDate | date: formatDate}}</span>
+          </div>
+
+        </ul>
+      </div>
+
+      <ng-template #INSERTED>
+        <div><strong>{{history.entityType}} {{history.entityValue.title}}</strong> {{ 'HAS_BEEN_CREATED' | translate }}
+          <span style="float: right;">{{ history.modifiedDate | date: formatDate}}</span></div>
+
+      </ng-template>
+
+    </li>
+
+  </ul>
+  <!-- End opportunity history -->
+</div>

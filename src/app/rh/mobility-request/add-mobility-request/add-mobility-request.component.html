@@ -1,0 +1,132 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 *ngIf="!isUpdateMode" class="card-title mb-0">{{'ADD_MOBILITY_REQUEST'|translate}}</h3>
+      <h3 *ngIf="isUpdateMode" class="card-title mb-0">{{'UPDATE_MOBILITY_REQUEST'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="mobilityRequestFormGroup" class="form-horizontal">
+
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+
+
+          <div class="form-group row">
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMPLOYEE'|translate}}<span
+                class="required">*</span></label>
+              <app-employee-dropdown [IdEmployee]="idEmployee " [form]="mobilityRequestFormGroup"
+                                     [hierarchy]="isUserInSuperHierarchicalEmployeeList"
+                                     [isDisabled]="!isUserInSuperHierarchicalEmployeeList"
+                                     [withTheSuperior]="isUserInSuperHierarchicalEmployeeList"></app-employee-dropdown>
+              <app-control-messages [control]="mobilityRequestFormGroup.controls.IdEmployee"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:15px">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESIRED_MOBILITY_DATE'|translate}}<span class="required">*</span></label>
+              <kendo-datepicker [format]="formatDate" formControlName="DesiredMobilityDate" class="form-control">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                    </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="mobilityRequestFormGroup.controls.DesiredMobilityDate"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+
+          <div class="form-group row">
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CURRENT_OFFICE'|translate}}<span
+                class="required">*</span></label>
+              <app-office-dropdownlist
+                #currentOfficeDropdownListViewChild
+                (selected)="currentOfficeSelected($event)"
+                [group]="mobilityRequestFormGroup"
+                [idOfficeColName]="'IdCurrentOffice'">
+              </app-office-dropdownlist>
+              <app-control-messages [control]="mobilityRequestFormGroup.controls.IdCurrentOffice"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESTINATION_OFFICE'|translate}}<span
+                class="required">*</span></label>
+              <app-office-dropdownlist
+                #destinationOfficeDropdownListViewChild
+                (selected)="destinationOfficeSelected($event)"
+                [group]="mobilityRequestFormGroup"
+                [idOfficeColName]="'IdDestinationOffice'">
+              </app-office-dropdownlist>
+              <app-control-messages [control]="mobilityRequestFormGroup.controls.IdDestinationOffice"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+
+          <div class="form-group row">
+
+
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+              <p-editor [readonly]="mobilityRequestFormGroup.disabled" [style]="{'height':'270px', 'overflow-y': 'auto', 'overflow-x': 'auto'}"
+                        class="col-lg-12 col-sm-12 col-md-12"
+                        formControlName="Description">
+
+              </p-editor>
+              <app-control-messages [control]="mobilityRequestFormGroup.controls.Description"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+      <!-- End principal menu  part -->
+      <a routerLink="/main/rh/mobility-request">
+        <span class="btn btn-sm btn-primary">
+          <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+        </span>
+      </a>
+      <button (click)="save()" *ngIf="(!mobilityRequestToUpdate ||
+              (mobilityRequestToUpdate && mobilityRequestToUpdate.Status === statusCode.Draft && isUserInSuperHierarchicalEmployeeList))" class="btn btn-sm btn-danger" type="submit">
+        <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+      </button>
+
+
+      <span *ngIf="isToValidateByDepartureOfficeManager()">
+        <a (click)="setRequestState(statusCode.AcceptedByDepartureOfficeManager)">
+          <span class="btn btn-sm btn-success">
+            <i class="fa fa-check-square-o"></i> {{'VALIDATE'|translate }}
+          </span>
+        </a>
+        <a (click)="setRequestState(statusCode.RefusedByDepartureOfficeManager)">
+          <span class="btn btn-sm" style="color: #fff; background-color: #73818f;">
+            <i class="fa fa-times"></i> {{'REFUSE'|translate}}
+          </span>
+        </a>
+      </span>
+
+      <span *ngIf="isToValidateByDestinationOfficeManager()">
+        <a (click)="setRequestState(statusCode.AcceptedByDestinationOfficeManager)">
+          <span class="btn btn-sm btn-success">
+            <i class="fa fa-check-square-o"></i> {{'VALIDATE'|translate }}
+          </span>
+        </a>
+        <a (click)="setRequestState(statusCode.RefusedByDestinationOfficeManager)">
+          <span class="btn btn-sm" style="color: #fff; background-color: #73818f;">
+            <i class="fa fa-times"></i> {{'REFUSE'|translate}}
+          </span>
+        </a>
+      </span>
+
+    </form>
+  </div>
+</div>

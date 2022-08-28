@@ -1,0 +1,83 @@
+<div class="row">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+    <form class="form-horizontal" [formGroup]="rhAgeRangeFormGroup">
+      <!-- New line -->
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!-- job -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'JOB'|translate}}</label>
+              <app-job-dropdown [group]="rhAgeRangeFormGroup"
+                      class="col-lg-6 col-md-12 col-sm-12">
+              </app-job-dropdown>
+            </div>
+          </div>
+          <!-- End job -->
+          <!-- Salary Structure -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'SALARY_STRUCTURE'|translate}}</label>
+              <app-salary-structure-dropdown [group]="rhAgeRangeFormGroup"  [notWithRoot]="true" class="col-lg-6 col-md-12 col-sm-12">
+              </app-salary-structure-dropdown>
+            </div>
+          </div>
+            <!-- End Salary Structure -->
+        </div>
+      </div>
+      <!-- End New line -->
+      <!-- New line -->
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <!-- Grade -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'GRADE'|translate}}</label>
+              <app-grade-dropdown [group]="rhAgeRangeFormGroup"
+                  class="col-lg-6 col-md-12 col-sm-12">
+              </app-grade-dropdown>
+            </div>
+          </div>
+          <!-- End grade -->
+          <!-- Team -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'TEAM'|translate}}</label>
+              <app-team-dropdown [formGroup]="rhAgeRangeFormGroup"
+                class="col-lg-6 col-md-12 col-sm-12">
+              </app-team-dropdown>
+            </div>
+          </div>
+          <!-- End Team -->
+        </div>
+      </div>
+      <!-- End New line -->
+      <!-- New line -->
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <!-- Gender -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'GENDRE'|translate}}</label>
+              <app-sex-dropdown [group]="rhAgeRangeFormGroup"
+                  class="col-lg-6 col-md-12 col-sm-12">
+              </app-sex-dropdown>
+            </div>
+          </div>
+          <!-- End Gender -->
+        </div>
+      </div>
+      <!-- End grade -->
+      <!-- End new line -->
+      <!-- New line -->
+      <button data-toggle="tooltip" data-placement="top" title="{{'GENERATE_AGE_RANGE_REPORT' | translate}}" class="k-button btn-secondary ml-3 mr-2"
+        type="button" tabindex="0" (click)="generateAgeRangeReport()">
+        <i class="fa fa-cogs fa-lg AddIcon"></i>
+        <span>&nbsp;{{'GENERATE' | translate}}</span>
+      </button>
+      <!-- End new line -->
+    </form>
+  </div>
+</div>
+
+    

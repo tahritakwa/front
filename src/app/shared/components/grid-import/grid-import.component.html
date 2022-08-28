@@ -1,0 +1,272 @@
+<div class="card margin-card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0 card-title">
+        {{'IMPORTED_EXCEL'|translate}}
+      </h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+      [sortable]="true" [pageable]="pagerSettings" filterable="menu" [reorderable]="true" [columnMenu]="false" [navigable]="true"
+      [selectable]="true" (save)="saveHandler($event)" (cancel)="cancelHandler($event)" (edit)="editHandler($event)" (cellClick)="editHandler($event)"
+      (pageChange)="pageChange($event)" (remove)="removeHandler($event)" (cellClose)="cellCloseHandler($event)"
+      >
+
+      <!-- Command Start-->
+      <kendo-grid-command-column [width]="120">
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <div style="margin-bottom:5px; margin-top:5px;">
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button kendoGridRemoveCommand class="noPadding btn-Add k-button">
+              <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+            </button>
+            <button kendoGridEditCommand>
+                <i class="fa fa-pencil-square-o"></i>
+              </button>
+          </div>
+          <!-- save command directive, will be visible when in edit mode -->
+          <button kendoGridSaveCommand [disabled]="formGroup?.invalid" class="btnKendoGrid">
+            <span class="fa fa-save"></span>
+          </button>
+          <!-- cancel command directive, will be visible when in edit mode -->
+          <button kendoGridCancelCommand class="btnKendoGrid"><span class="fa fa-close"></span></button>
+        </ng-template>
+      </kendo-grid-command-column>
+      <kendo-grid-column [width]="50" [filterable]="false">
+
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <span *ngIf="dataItem['Id'] === 0" class="text-success">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+          </span>
+          <span *ngIf="dataItem['Id'] !== 0" class="text-info">
+            <i class="fa fa-pencil"></i>
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Command End-->
+
+      <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+        [title]="col.title | translate" [width]="col._width" [filter]="col.filter" [filterable]="col.filterable">
+        <ng-template kendoGridCellTemplate *ngIf="col.field == 'IdBank'" let-dataItem="dataItem">
+          <div *ngIf="dataItem.Bank">
+              <span>{{dataItem.Bank.Name}}</span>
+          </div>
+        </ng-template>
+        <ng-template kendoGridCellTemplate *ngIf="col.field == 'IdCitizenship'" let-dataItem="dataItem">
+            <div *ngIf="dataItem.Country">
+                <span>{{dataItem.Country.NameFr}}</span>
+            </div>
+          </ng-template>
+          <ng-template kendoGridCellTemplate *ngIf="col.field == 'IdCurrency'" let-dataItem="dataItem">
+            <div *ngIf="dataItem.Currency">
+                <span>{{dataItem.Currency.Code}}</span>
+            </div>
+            <div *ngIf="dataItem.Currency == null">
+              <span>{{dataItem.IdCurrency}}</span>
+          </div>
+          </ng-template>
+          <ng-template kendoGridCellTemplate *ngIf="col.field == 'IdTaxeGroupTiers'" let-dataItem="dataItem">
+              <div *ngIf="dataItem.TaxeGroup">
+                  <span>{{dataItem.TaxeGroup.Label}}</span>
+              </div>
+              <div *ngIf="dataItem.TaxeGroup == null">
+                <span>{{dataItem.IdTaxeGroupTiers}}</span>
+            </div>
+            </ng-template>
+            <ng-template kendoGridCellTemplate *ngIf="col.field == 'IdVehicleModel'" let-dataItem="dataItem">
+                <span>{{dataItem.IdVehicleModel}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate *ngIf="col.field == 'IdVehicleBrand'" let-dataItem="dataItem">
+              <span>{{dataItem.IdVehicleBrand}}</span>
+          </ng-template>
+          <ng-template kendoGridEditTemplate *ngIf="col.field == 'IdCurrency'">
+            <app-currency-dropdown class="error-msg messages text-left text-danger" [group]="formGroup"
+            (Selected)="changedSelectedCurrency($event)">
+            </app-currency-dropdown>
+          </ng-template>
+          <ng-template kendoGridEditTemplate *ngIf="col.field == 'IdTaxeGroupTiers'">
+              <app-taxe-group-tiers class="error-msg messages text-left text-danger" [group]="formGroup"
+              (Selected)="changedSelectedGroupTiers($event)">
+              </app-taxe-group-tiers>
+            </ng-template>
+            <ng-template kendoGridEditTemplate *ngIf="col.field == 'IdVehicleModel'">
+              <app-model-dropdown #vehicleModelViewChild class="error-msg messages text-left text-danger" [form]="formGroup">
+              </app-model-dropdown>
+            </ng-template>
+            <ng-template kendoGridEditTemplate *ngIf="col.field == 'IdVehicleBrand'">
+              <app-brand-dropdown class="error-msg messages text-left text-danger" [form]="formGroup"
+              (Selected)="changedSelectedBrand($event)">
+              </app-brand-dropdown>
+            </ng-template>
+          <ng-template kendoGridEditTemplate *ngIf="col.field == 'IdBank'">
+              <app-bank-dropdown [group]="formGroup" (Selected)="changedSelectedBank($event)">
+              </app-bank-dropdown>
+            </ng-template>
+        <ng-template kendoGridEditTemplate *ngIf="col.field == 'BirthDate'">
+            <form [formGroup]="formGroup" class="col-lg-12 col-md-12 col-sm-12">
+            <kendo-datepicker [format]="dateFormat" formControlName="BirthDate" class="form-control">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              </form>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+        *ngIf="col.field == 'BirthDate'">
+        {{dataItem.BirthDate|date: col.format}}
+      </ng-template>
+        <ng-template kendoGridEditTemplate *ngIf="col.field == 'IdCitizenship'">
+            <app-country-dropdown [group]="formGroup" (itemSelected)="changedSelectedCountry($event)" [idCountryColName]="col.field">
+              </app-country-dropdown>
+          </ng-template>
+        <ng-template kendoGridCellTemplate *ngIf="col.field == 'UserRole'" let-dataItem="dataItem">
+          <div *ngIf="dataItem.RolesNames">
+            <span *ngFor="let roleName of dataItem.RolesNames" class="RoleNameClass"
+              style="border: 2px solid hsl(184, 32%, 53%) !important; padding: 3px;">
+              <span>{{roleName}}</span>
+            </span>
+          </div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate *ngIf="col.field == 'UserRole'" let-dataItem="dataItem">
+          <app-role-multiselect [form]='formGroup' (selectedNames)="changedSelectedRolesNames($event)" [userRoleIdsDataSource]='dataItem.UserRole'></app-role-multiselect>
+        </ng-template>
+        <ng-template kendoGridEditTemplate *ngIf="col.field == 'Sex'">
+            <app-sex-dropdown [group]="formGroup"></app-sex-dropdown>
+        </ng-template>
+        <ng-template kendoGridEditTemplate *ngIf="col.field == 'FamilyLeader'">
+            <form [formGroup]="formGroup">
+                <label class="k-label" [for]="yes">{{'YES'|translate}}</label>
+                <input type="radio"   value="true" #yes formControlName="FamilyLeader" kendoRadioButton />
+                <label class="k-label" [for]="no">{{'NO'|translate}}</label>
+                <input type="radio"  value="false" #no formControlName="FamilyLeader" kendoRadioButton />
+            </form>
+        </ng-template>
+        <ng-template kendoGridCellTemplate *ngIf="col.field == 'FamilyLeader'" let-dataItem="dataItem">
+          {{dataItem.FamilyLeader}}
+        </ng-template>
+        <ng-template kendoGridEditTemplate *ngIf="col.field == 'IsForeign'">
+            <form [formGroup]="formGroup">
+                <label class="k-label" [for]="yes">{{'YES'|translate}}</label>
+                <input type="radio"   value="true" #yes formControlName="IsForeign" kendoRadioButton />
+                <label class="k-label" [for]="no">{{'NO'|translate}}</label>
+                <input type="radio"  value="false" #no formControlName="IsForeign" kendoRadioButton />
+            </form>
+        </ng-template>
+        <ng-template kendoGridCellTemplate *ngIf="col.field == 'IsForeign'" let-dataItem="dataItem">
+          {{dataItem.IsForeign}}
+        </ng-template>
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template [group]="formGroup" [controlName]="col.field" inputType="text">
+          </app-grid-cell-input-template>
+        </ng-template>
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{col.title|translate}}" theme="light" [ngStyle]="col.field == 'Matricule' || col.field == 'FirstName' || col.field == 'LastName' || col.field == 'Sex' || col.field == 'Email' || col.field == 'IdCitizenship' || col.field == 'IdCurrency' || col.field == 'IdTaxeGroupTiers' || col.field == 'CodeTiers' || col.field == 'Name' ||  col.field == 'HiringDate' ? {'color': '#e87474'}:''">{{col.title|translate}}</span>
+        </ng-template>
+        <app-control-messages [control]="col.field" class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </kendo-grid-column>
+      <div *kendoGridDetailTemplate="let dataItem" style="margin-top: 25px;width: 20%">
+         <kendo-grid *ngIf="dataItem && dataItem.Contract" [data]="dataItem.Contract" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+         [sortable]="true" [pageable]="pagerSettings" filterable="menu" [reorderable]="true" [columnMenu]="false" [navigable]="true"
+         [selectable]="true" (save)="saveHandler($event)" (cancel)="cancelHandler($event)" (cellClick)="editContractHandler($event)"
+         (edit)="editContractHandler($event)" (pageChange)="pageChange($event)" (cellClose)="cellContractCloseHandler($event)" (remove)="removeHandler($event)">
+          <!-- Command Start-->
+          <kendo-grid-command-column [width]="10">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                  <div style="margin-bottom:5px; margin-top:5px;">
+                      <button kendoGridEditCommand>
+                        <i class="fa fa-pencil-square-o"></i>
+                      </button>
+                    </div>
+                  <!-- save command directive, will be visible when in edit mode -->
+                  <button kendoGridSaveCommand [disabled]="formGroupContract?.invalid" class="btnKendoGrid">
+                    <span class="fa fa-save"></span>
+                  </button>
+                </ng-template>
+          </kendo-grid-command-column>
+          <kendo-grid-column [width]="5" [filterable]="false">
+
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+              <span *ngIf="dataItem['Id'] === 0" class="text-success">
+                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+              </span>
+              <span *ngIf="dataItem['Id'] !== 0" class="text-info">
+                <i class="fa fa-pencil"></i>
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Command End-->
+         <kendo-grid-column *ngFor="let item of importColumnsContractConfig; let i = index" [field]="item.field"
+         [title]="item.title | translate" [width]="item.width" [filter]="item.filter" [filterable]="item.filterable">
+        <ng-template kendoGridEditTemplate *ngIf="item.field == 'StartDate'">
+            <form [formGroup]="formGroupContract" class="col-lg-12 col-md-12 col-sm-12">
+            <kendo-datepicker [format]="dateFormat" formControlName="StartDate" class="form-control">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              </form>
+        </ng-template>
+        <ng-template kendoGridEditTemplate *ngIf="item.field == 'EndDate'">
+            <form [formGroup]="formGroupContract" class="col-lg-12 col-md-12 col-sm-12">
+            <kendo-datepicker [format]="dateFormat" formControlName="EndDate" class="form-control">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              </form>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+        *ngIf="item.field == 'StartDate'">
+        {{dataItem.StartDate|date: item.format}}
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem"
+        *ngIf="item.field == 'EndDate'">
+        {{dataItem.EndDate|date: item.format}}
+      </ng-template>
+        <ng-template kendoGridCellTemplate *ngIf="item.field == 'IdContractType'" let-dataItem="dataItem">
+            <div *ngIf="dataItem.ContractType">
+                
+                <span>{{dataItem.ContractType.Label}}</span>
+            </div>
+          </ng-template>
+          <ng-template kendoGridCellTemplate *ngIf="item.field == 'IdSalaryStructure'" let-dataItem="dataItem">
+              <div *ngIf="dataItem.SalaryStructure">
+                  
+                  <span>{{dataItem.SalaryStructure.SalaryStructureReference}}</span>
+              </div>
+            </ng-template>
+            <ng-template kendoGridCellTemplate *ngIf="item.field == 'IdCnss'" let-dataItem="dataItem">
+                <div *ngIf="dataItem.Cnss">
+                    
+                    <span>{{dataItem.Cnss.Label}}</span>
+                </div>
+              </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf="item.field == 'IdContractType'">
+            <app-contract-type-dropdown  [group]="formGroupContract" (Selected)='changeRequired($event, dataItem)' (selected)="changedSelectedContractType($event)">
+              </app-contract-type-dropdown>
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf="item.field == 'IdSalaryStructure'">
+              <app-salary-structure-dropdown [group]="formGroupContract" (Selected)="changedSelectedSalaryStructure($event)" [notWithRoot]="true">
+                </app-salary-structure-dropdown>
+            </ng-template>
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf="item.field == 'IdCnss'">
+                <app-cnss-dropdown [group]="formGroupContract" (Selected)="changedSelectedCnss($event)"></app-cnss-dropdown>
+              </ng-template>
+          <ng-template kendoGridEditTemplate>
+              <app-grid-cell-input-template [group]="formGroupContract" [controlName]="item.field" inputType="text">
+              </app-grid-cell-input-template>
+            </ng-template>
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{item.title|translate}}" theme="light" *ngIf="item.field != 'EndDate'" [ngStyle]="item.field == 'IdCnss' ||item.field == 'IdContractType' || item.field == 'StartDate' || item.field == 'IdSalaryStructure' || item.field == 'IdCnssNavigation' || item.field == 'BaseSalaryValue' ? {'color': '#e87474'}:''">{{item.title|translate}}</span>
+            <span theme="light" *ngIf="item.field == 'EndDate'" [ngStyle]="isHasEndDate(dataItem)  ? {'color': '#e87474'}:''">{{item.title|translate}}</span>
+          </ng-template>
+          <app-control-messages [control]="item.field" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+         </kendo-grid-column>
+      </kendo-grid>   
+      </div>
+    </kendo-grid>
+    <button class="btn btn-sm btn-danger pull-right" type="submit" (click)="onSaveClick()" [disabled]="isInEditingMode">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+  </div>
+</div>

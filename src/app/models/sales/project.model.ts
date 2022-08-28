@@ -1,0 +1,31 @@
+import { Resource } from '../shared/ressource.model';
+import { EmployeeProject } from '../rh/employee-project.model';
+import { Currency } from '../administration/currency.model';
+import { FileInfo } from '../shared/objectToSend';
+import { HistoryOfProjectAssignments } from './history-of-project-assignments.model';
+import { BankAccount } from '../shared/bank-account.model';
+export class Project extends Resource {
+  Name: string;
+  StartDate: Date;
+  ExpectedEndDate: Date;
+  ProjectType: number;
+  IdTaxe: number;
+  AverageDailyRate: number;
+  IdTiers: number;
+  IdSettlementMode: number;
+  Default: boolean;
+  IdContact: number;
+  IdCurrency: number;
+  IdCurrencyNavigation: Currency;
+  IsBillable: boolean;
+  AttachmentUrl: string;
+  ReferenceProject: string;
+  ReferenceBc: string;
+  LabelInInvoice: string;
+  FilesInfos: Array<FileInfo>;
+  EmployeeProject: Array<EmployeeProject>;
+  History: HistoryOfProjectAssignments[];
+  IdBankAccount: number;
+  IdBankAccountNavigation: BankAccount;
+  ProjectLabel: string;
+}

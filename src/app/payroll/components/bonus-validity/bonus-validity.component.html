@@ -1,0 +1,20 @@
+<div [formGroup]="ValidityFormGroup" class="form-group row">
+  <div class="col-lg-6 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12">{{'VALUE'|translate}}<span class="required">*</span></label>
+    <input [ngClass]="{ 'has-error': (ValidityFormGroup.controls.Value.touched || ValidityFormGroup.controls.Value.dirty) && !ValidityFormGroup.controls.Value.valid }" class="form-control" formControlName="Value" min="0" name=""
+           type="number">
+    <app-control-messages [control]="ValidityFormGroup.controls.Value" class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+  <div class="col-lg-6 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12"> {{'START_DATE'|translate}} <span class="required">*</span></label>
+    <kendo-datepicker (valueChange)="startDateChanged($event)" [bottomView]="'year'" [format]="'MMMM yyyy'"
+                      [topView]="'decade'" class="form-control" formControlName="StartDate">
+      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+      </kendo-datepicker-messages>
+    </kendo-datepicker>
+    <app-control-messages [control]="ValidityFormGroup.controls.StartDate"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+  </div>
+</div>
+<hr>

@@ -1,0 +1,71 @@
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'WAREHOUSE_LIST'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [filter]="gridSettings.state.filter" [sortable]="true" [pageable]="true" filterable="menu" [groupable]='true'
+        [reorderable]="true" [columnMenu]="true">
+
+
+
+
+
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+          title="{{gridSettings.columnsConfig[0].title | translate}}" [width]="gridSettings.columnsConfig[0]._width"
+          [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+          [hidden]="gridSettings.columnsConfig[0].hidden" [format]="gridSettings.columnsConfig[0].format">
+          <ng-template kendoGridEditTemplate>
+            <!--Code edit template-->
+            <app-grid-cell-input-template [group]="formGroup" controlName="Code">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          title="{{gridSettings.columnsConfig[1].title | translate}}" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [hidden]="gridSettings.columnsConfig[1].hidden" [format]="gridSettings.columnsConfig[1].format">
+          <ng-template kendoGridEditTemplate>
+            <!--Code edit template-->
+            <app-grid-cell-input-template [group]="formGroup" controlName="Description">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="nature.field" title="{{nature.title | translate}}" [filterable]="nature.filterable">
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+            <app-nature-dropdown [itemForm]="formGroup"></app-nature-dropdown>
+            <i #anchor></i>
+            <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="IdNature">
+            </app-control-message-grid-cell>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-command-column title="{{'COMMANDE' | translate}}">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button kendoGridEditCommand [primary]="true" class="btnKendoGrid" type="button">
+              <i class="fa fa-pencil-square-o"></i>
+            </button>
+
+
+            <!--Open advanced edit form -->
+            <button *ngIf="btnEditVisible" class="k-button btnKendoGrid editBtn" (click)="goToAdvancedEdit(dataItem)"
+              type="button">
+              <i class="fa fa-chevron-circle-right"></i>
+            </button>
+            <!-- save command directive, will be visible when in edit mode -->
+            <button kendoGridSaveCommand class="btnKendoGrid" type="button"><span class="fa fa-save"></span></button>
+            <!-- cancel command directive, will be visible when in edit mode -->
+            <button kendoGridCancelCommand class="btnKendoGrid" type="button"><span class="fa fa-close"></span></button>
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button kendoGridRemoveCommand class="btnKendoGrid" type="button">
+              <i class="fa fa-trash-o"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+      </kendo-grid>
+    </div>
+  </div>
+</div>

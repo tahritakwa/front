@@ -1,0 +1,9 @@
+<div *ngIf="form" [formGroup]="form">
+  <kendo-combobox [data]="modelFiltredDataSource" class="form-control" formControlName="IdVehicleModel" textField="Designation"
+    valueField="Id" [valuePrimitive]="true" [disabled]="isDisabled" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="onSelectModel($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.Designation | translate }}
+    </ng-template>
+  </kendo-combobox>
+</div>

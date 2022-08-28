@@ -1,0 +1,147 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <form class="form-horizontal" [formGroup]="inventoryMovementForm">
+      <div class="card">
+        <div class="card-content">
+          <div class="card-header">
+            <div class="col-sm-5 mt-1">
+              <h3 class="card-title mb-0">{{'LIST_INVENTORY'|translate}}</h3>
+            </div>
+          </div>
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'WAREHOUSE'|translate}} <span
+                      class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-depot-dropdown [parent]="inventoryMovementForm" [FromComponent]='true'
+                      [WarehouseName]="'IdWarehouseSource'" [warehouseForInventoryDocument]="true"></app-depot-dropdown>
+                    <app-control-messages [control]="inventoryMovementForm.controls.IdWarehouseSource"
+                      class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'DOCUMENT_DATE'|translate}}<span
+                      class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <kendo-datepicker class="form-control" formControlName="StartDocumentDate">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                        toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                    <app-control-messages [control]="inventoryMovementForm.controls.StartDocumentDate"
+                      class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'DOCUMENT_DATE'|translate}}<span
+                      class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <kendo-datepicker class="form-control" formControlName="EndDocumentDate">
+                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                        toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                    <app-control-messages [control]="inventoryMovementForm.controls.EndDocumentDate"
+                      class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div><br>
+
+            <br />
+            <div class="row">
+              <button data-toggle="tooltip" data-placement="top" title="{{'ORDERPROJECTGENERATE' | translate}}"
+                class="k-button btn-secondary ml-3 mr-2" type="button" tabindex="0" (click)="generateDailyInventory()">
+                <i class="fa fa-cogs fa-lg AddIcon"></i>
+                <span>&nbsp;{{'GENERATE_DAILY_INVENTORY' | translate}}</span>
+              </button>
+
+
+            </div>
+
+            <div class="row" *ngIf="isGeneratedDailyInventory ">
+              <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+                <kendo-grid id="productsGrid" [data]="gridSettings.gridData" [style.maxHeight.px]="400"
+                  [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+                  [filter]="gridSettings.state.filter" [pageable]="pagerSettings" [selectable]="true" [sortable]="true"
+                  (dataStateChange)="dataStateChange($event)">
+
+
+
+                  <kendo-grid-column *ngFor="let column of gridSettings.columnsConfig; let i = index"
+                    [field]="column.field" title="{{column.title | translate}}" [width]="column._width"
+                    [filter]="column.filter" [filterable]="column.filterable" [format]="column.format"
+                    [editable]='column.editable' [hidden]="column.hidden">
+
+                    <ng-template *ngIf="gridSettings.columnsConfig[i].field === 'AvailableQty' " kendoGridCellTemplate
+                      let-dataItem="dataItem">
+                      <kendo-numerictextbox [spinners]="false" [format]="FormatNumber" [step]="1"
+                        style="border: none !important;" class="form-control inputEnabled as-label"
+                        [value]="dataItem.ActualQuantity?dataItem.ActualQuantity:'-'" [disabled]="true">
+                      </kendo-numerictextbox>
+                    </ng-template>
+
+                    <ng-template *ngIf="gridSettings.columnsConfig[i].field === 'SoldQuantity' " kendoGridCellTemplate
+                      let-dataItem="dataItem">
+                      <kendo-numerictextbox [spinners]="false" [format]="FormatNumber" [step]="1"
+                        style="border: none !important;" class="form-control inputEnabled as-label"
+                        [value]="dataItem.SoldQuantity?dataItem.SoldQuantity:'-'" [disabled]="true">
+                      </kendo-numerictextbox>
+                    </ng-template>
+
+
+                  </kendo-grid-column>
+
+                  <kendo-grid-command-column [width]="130">
+                    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                      <!--Open advanced edit form -->
+                      <button class="k-button btnKendoGrid editBtn" (click)="goToAdvancedEdit(dataItem.Id)"
+                        *ngIf="dataItem.IdDocumentStatusNavigation.Id == 1" type="button">
+                        <i class="fa fa-chevron-circle-right"></i>
+                      </button>
+
+                      <button class="btnKendoGrid k-button editBtn" *ngIf="dataItem.IdDocumentStatusNavigation.Id !== 1"
+                        [routerLink]="['show', dataItem.Id]" type="button">
+                        <i class="fa fa-wpforms"></i>
+                      </button>
+                    </ng-template>
+                  </kendo-grid-command-column>
+
+
+
+                  <!--grid pdf & excel-->
+                  <app-grid-export [gridSettings]="gridSettings" fileName="{{'LIST_INVENTORY'|translate}}" pdf="true"
+                    excel="true" [service]="stockDocumentsService" [predicate]="predicate">
+                  </app-grid-export>
+                  <!--end grid pdf & excel-->
+
+                  <div>
+                    <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+
+                    </ng-template>
+                    <kendo-grid-messages noRecords="">
+                    </kendo-grid-messages>
+                  </div>
+                </kendo-grid>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

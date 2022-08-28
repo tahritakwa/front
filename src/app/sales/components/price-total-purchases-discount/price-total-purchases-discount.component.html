@@ -1,0 +1,87 @@
+<div [formGroup]="formGroupInput">
+  <div class="row mt-2">
+
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE'|translate}}<span class="required">*</span></label>
+
+      <div class="input-group">
+         <input [owlDateTime]="startDateTime" placeholder="{{'CHOOSE_A_DATE_AND_TIME'|translate}}"
+          formControlName="StartDateTime" class="form-control" [ngClass]="{ 'has-error': (formGroupInput.controls.StartDateTime.touched || 
+        formGroupInput.controls.StartDateTime.dirty) && !formGroupInput.controls.StartDateTime.valid }">
+
+        <div class="input-group-append">
+          <span [owlDateTimeTrigger]="startDateTime" class="input-group-text calendar-icon-container">
+            <i class="fa fa-calendar calendar-icon mr-1"></i>
+          </span>
+        </div>
+        <owl-date-time [pickerMode]="'dialog'" #startDateTime></owl-date-time> 
+
+      </div>
+
+      <app-control-messages class="error-msg messages text-left text-danger"
+        [control]="formGroupInput.controls.StartDateTime"></app-control-messages>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE'|translate}}<span class="required">*</span></label>
+
+      <div class="input-group">
+        <input [owlDateTime]="endDateTime" placeholder="{{'CHOOSE_A_DATE_AND_TIME'|translate}}"
+          formControlName="EndDateTime" class="form-control" [ngClass]="{ 'has-error': (formGroupInput.controls.EndDateTime.touched || 
+        formGroupInput.controls.EndDateTime.dirty) && !formGroupInput.controls.EndDateTime.valid }">
+
+        <div class="input-group-append">
+          <span [owlDateTimeTrigger]="endDateTime" class="input-group-text calendar-icon-container">
+            <i class="fa fa-calendar calendar-icon mr-1"></i>
+          </span>
+        </div>
+        <owl-date-time [pickerMode]="'dialog'" #endDateTime></owl-date-time>
+      </div>
+
+      <app-control-messages class="error-msg messages text-left text-danger"
+        [control]="formGroupInput.controls.EndDateTime"></app-control-messages>
+    </div>
+
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'PERCENTAGE'|translate}}
+        <span *ngIf="reducedValueEmpty()" class="required">*</span>
+      </label>
+      <div class="input-group">
+        <input class="form-control" type="number" formControlName="Percentage" 
+          [ngClass]="{ 'has-error': (formGroupInput.controls.Percentage.touched || 
+        formGroupInput.controls.Percentage.dirty) && !formGroupInput.controls.Percentage.valid }">
+        <div class="input-group-append">
+          <span class="input-group-text" style="background-color: white;">
+            <i class="fa fa-percent"></i>
+          </span>
+        </div>
+      </div>
+      <app-control-messages [control]="formGroupInput.controls.Percentage"
+        class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+
+  </div>
+  <div class="row mt-2">
+
+
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'VALUE_REDUCTION'|translate}}
+        <span *ngIf="percentageEmpty()" class="required">*</span>
+      </label>
+      <input class="form-control" type="number" formControlName="ReducedValue"
+        [ngClass]="{ 'has-error': (formGroupInput.controls.ReducedValue.touched || 
+        formGroupInput.controls.ReducedValue.dirty) && !formGroupInput.controls.ReducedValue.valid }">
+      <app-control-messages class="error-msg messages text-left text-danger"
+        [control]="formGroupInput.controls.ReducedValue"></app-control-messages>
+    </div>
+    <div class="col-lg-4 col-md-6 col-sm-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'TOTAL_AMOUNTS'|translate}}<span class="required">*</span></label>
+      <input class="form-control" type="number" formControlName="TotalPrices" 
+        [ngClass]="{ 'has-error': (formGroupInput.controls.TotalPrices.touched || 
+        formGroupInput.controls.TotalPrices.dirty) && !formGroupInput.controls.TotalPrices.valid }">
+      <app-control-messages class="error-msg messages text-left text-danger"
+        [control]="formGroupInput.controls.TotalPrices"></app-control-messages>
+    </div>
+
+  </div>
+
+</div>

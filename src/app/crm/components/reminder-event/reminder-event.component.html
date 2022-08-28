@@ -1,0 +1,120 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <form class="form-horizontal" [formGroup]="addFormGroup">
+
+        <div class="card">
+          <div class="card-body">
+            <!-- reminder subject -->
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'REMINDER_NAME'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="text" formControlName="name">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="addFormGroup.controls.name"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <!-- reminder date -->
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'REMINDER_DATE'|translate}}</label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <kendo-datepicker [format]="formatDate" class="form-control"
+                                      [ngModelOptions]="{standalone: true}"
+                                      [(ngModel)]="reminderDate"
+                                      [readonly]="!isModal">
+                                      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                                      </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <kendo-timepicker [format]="'HH:mm'"
+                                  [ngModelOptions]="{standalone: true}" [(ngModel)]="reminderDate">
+                </kendo-timepicker>
+              </div>
+            </div>
+            <!-- Frequency -->
+          <!--  <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'FREQUENCY'|translate}}</label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <kendo-dropdownlist [data]="frequencyTypeList" formControlName="type"
+                                        [(ngModel)]="selectedType"
+                                        style="width: 100%;">
+                      <ng-template kendoDropDownListValueTemplate let-dataItem>
+                        <span> {{dataItem| translate}}</span>
+                      </ng-template>
+                      <ng-template kendoDropDownListItemTemplate let-dataItem>
+                        <span> {{dataItem | translate}}</span>
+                      </ng-template>
+                    </kendo-dropdownlist>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            -->
+            <!-- Description -->
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                        <textarea class="form-control" type="text"
+                                  formControlName="description">
+                        </textarea>
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="addFormGroup.controls.description"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!--Begin Card footer-->
+          <div class="card-footer" *ngIf="isModal" style="float: right;margin-right: 1%">
+            <div class="row">
+              <div class="col-lg-12 col-md-12">
+                <button class="btn btn-sm btn-primary" (click)="onCancel()">
+                  <i class="fa fa-chevron-circle-left"></i> {{'CANCEL'|translate}}
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="update()">
+                  <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="delete()">
+                  <i class="fa fa-trash-o"></i> {{'DELETE'|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+

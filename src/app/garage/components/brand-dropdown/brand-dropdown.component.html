@@ -1,0 +1,16 @@
+<div *ngIf="form" [formGroup]="form">
+  <kendo-combobox [data]="brandFiltredDataSource"
+      class="form-control"
+      formControlName="IdVehicleBrand"
+      textField="Designation"
+      valueField="Id"
+      [valuePrimitive]="true" 
+      [allowCustom]="false" 
+      [filterable]="true"
+      (filterChange)="handleFilter($event)" 
+      (valueChange)="onSelectBrand($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.Designation | translate }} 
+    </ng-template>
+  </kendo-combobox >
+</div>

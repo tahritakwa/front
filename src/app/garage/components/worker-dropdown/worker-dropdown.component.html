@@ -1,0 +1,30 @@
+<div *ngIf="group"  [formGroup]="group">
+  <kendo-combobox 
+      [data]="workersFilterDataSource"
+      class="form-control"
+      [formControlName]="fieldName"
+      name="fieldName"
+      [textField]="'FullName'"
+      valueField="Id"
+      [valuePrimitive]="true"
+      [filterable]="true"
+      (filterChange)="handleFilter($event)" 
+      (valueChange)="onSelectWorker($event)"
+      [placeholder]="placeholder|translate">
+      <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+        {{ dataItem?.FirstName }} {{ dataItem?.LastName }} 
+      </ng-template>
+</kendo-combobox >
+</div>
+
+
+<div *ngIf="!group" >
+  <kendo-combobox 
+    [data]="workersFilterDataSource" 
+    class="form-control" name="IdWorker"
+    (valueChange)="onSelectWorker($event)" 
+    [textField]="'Name'" [valueField]="'Id'" 
+    [valuePrimitive]="true"
+    [(ngModel)]="selectedValue">
+  </kendo-combobox>
+</div>

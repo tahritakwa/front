@@ -1,0 +1,21 @@
+<div [formGroup]="formGroup">
+  <kendo-combobox (filterChange)="handleFilter($event)" (valueChange)="teamSelected(this)"
+                  [allowCustom]="allowCustom" [data]="teamFiltredDataSource"
+                  [filterable]="true" [ngClass]="{ 'has-error': (IdTeam.touched || IdTeam.dirty) && !IdTeam.valid }" [textField]="'Name'" [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control" formControlName="IdTeam">
+    <!--footer template-->
+    <ng-container *ngIf="hasAddTeamPermission">
+      <ng-template kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+    </ng-container>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

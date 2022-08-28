@@ -1,0 +1,104 @@
+<div class="card full-screen-card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="card-header">
+        <div class="col-sm-5 mt-1">
+          <h3 class="card-title mb-0">
+            {{'SEARCH_ITEM_MENU'|translate}}
+          </h3>
+        </div>
+      </div>
+
+    </div>
+    <div class="card-body">
+      <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+      (filtrePredicateToSend)="getFiltrePredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+      (searchClickEvent)="searchClicked()" (resetClickEvent)="resetClickEvent()">
+      </app-advanced-search>
+      <div class="col-lg-12 col-md-12 col-sm-12 px-0">
+        <div class="mb-3" style="float: left;width: 100%">
+          <div class="tab-pane active show" id="home1" role="tabpanel">
+            <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+            [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)" [sortable]="true"
+            [pageable]="pagerSettings" [filterable]="false" [reorderable]="true" [columnMenu]="true">
+              <kendo-grid-column [title]="gridSettings.columnsConfig[0].title | translate"
+                [width]="gridSettings.columnsConfig[0]._width" [filter]="gridSettings.columnsConfig[0].filter"
+                [filterable]="gridSettings.columnsConfig[0].filterable"
+                [format]="gridSettings.columnsConfig[0].format" [field]="gridSettings.columnsConfig[0].field"
+                [columnMenu]="false">
+                <ng-template kendoGridHeaderTemplate>
+                  <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+                    theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  <div>
+                    {{dataItem.Date|date: gridSettings.columnsConfig[0].format}}
+                  </div>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column [title]="gridSettings.columnsConfig[1].title | translate"
+                [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.columnsConfig[1].filter"
+                [filterable]="gridSettings.columnsConfig[1].filterable"
+                [format]="gridSettings.columnsConfig[1].format" [field]="gridSettings.columnsConfig[1].field"
+                [columnMenu]="false">
+                <ng-template kendoGridHeaderTemplate>
+                  <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+                    theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column [title]="gridSettings.columnsConfig[2].title | translate"
+                [width]="gridSettings.columnsConfig[2]._width" [filter]="gridSettings.columnsConfig[2].filter"
+                [filterable]="gridSettings.columnsConfig[2].filterable"
+                [field]="gridSettings.columnsConfig[2].field"
+                [columnMenu]="false">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.IdCashierNavigation.FullName}}: &nbsp;{{dataItem.IdCashierNavigation.Email}}
+                </ng-template>
+                <ng-template kendoGridHeaderTemplate>
+                  <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+                    theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+                </ng-template>
+              </kendo-grid-column>
+              <kendo-grid-column [title]="gridSettings.columnsConfig[3].title | translate"
+                [width]="gridSettings.columnsConfig[3]._width" [filter]="gridSettings.columnsConfig[3].filter"
+                [filterable]="gridSettings.columnsConfig[3].filterable" [field]="gridSettings.columnsConfig[3].field"
+                [columnMenu]="false" [headerStyle]="{'line-height': '1em'}" [class]="{'overflow-class': true}">
+                <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                  <div *ngIf="dataItem.SearchItemSupplierList" class="row ml-1" style="overflow: initial;">
+                    <span *ngIf="dataItem.SearchItemSupplierList[0]"
+                      tooltip="{{dataItem.SearchItemSupplierList[0].property|translate}} : {{dataItem.SearchItemSupplierList[0].value|translate }}"
+                      class="rounded-element-cell">
+                      <b>{{dataItem.SearchItemSupplierList[0].property|translate}} :</b>&nbsp;{{dataItem.SearchItemSupplierList[0].value|translate }}
+                    </span>
+                    <span *ngIf=" dataItem.SearchItemSupplierList.length > 1"
+                      tooltip="{{dataItem.SearchItemSupplierList[1].property|translate}} : {{dataItem.SearchItemSupplierList[1].value|translate}}"
+                      class="rounded-element-cell">
+                      <b>{{dataItem.SearchItemSupplierList[1].property|translate}} :</b>&nbsp;{{dataItem.SearchItemSupplierList[1].value|translate }}
+                    </span>
+                    <div *ngIf=" dataItem.SearchItemSupplierList.length > 2" class="dropdown">
+                      <div class="show-more" type="button" id="testOfSupplier" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        style="width: 50px;">
+                        +{{ dataItem.SearchItemSupplierList.length - 2}}
+                      </div>
+                      <div class="dropdown-menu border" aria-labelledby="testOfSupplier">
+                        <button class="dropdown-item disabled" type="button">
+                          <div *ngFor="let searchItem of dataItem.SearchItemSupplierList.slice(2)">
+                            <div style="margin-bottom: 5px;"><b>{{searchItem.property|translate}} :</b>&nbsp;{{searchItem.value|translate }}
+                            <span *ngIf="searchItem.property === 'MinPrice' || searchItem.property === 'MaxPrice'">{{ companyCurrencyCode }}</span>
+                            </div>
+                          </div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="container grid-cell" *ngIf="!dataItem.SearchItemSupplierList"> - </div>
+                </ng-template>
+              </kendo-grid-column>
+            </kendo-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

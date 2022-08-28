@@ -1,0 +1,47 @@
+<div *ngIf="isUpdateMode" [ngStyle]="{'width':'95%'}">
+  <h3 class="card-title mb-0">
+    {{'SUMMARY_TRAINING_SESSION' | translate}}
+  </h3>
+  <br/>
+  <div>
+    <div class="row">
+      <div class="col-lg-5 col-md-12 col-sm-12">
+        <ul>
+          <li>
+            <!--Trainor name-->
+            <span class="session-trainor">{{'TRAINER' | translate}} :</span><b></b>
+          </li>
+          <li>
+            <span class="session-trainor">{{'TRAINING_SESSION_NAME' | translate}}
+              :</span><b>{{trainingSession.Name}}</b>
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12" style="float:right">
+        <ul style="list-style: none;">
+          <li>&nbsp;</li>
+          <li>
+            {{'DURATION' | translate}} : <b *ngIf="trainingSession.Duration">{{trainingSession.Duration}} h</b>
+          </li>
+          <li>
+            {{'STARTDATE' | translate}} : <b style="margin-right: 20px;">{{trainingSession.StartDate | date : formatDate}}</b>
+            {{'ENDDATE' | translate}} : <b>{{trainingSession.EndDate | date : formatDate}}</b>
+          </li>
+        </ul>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <ul>
+          <li>
+            <span class="number-seances-participant">{{'NUMBER_OF_SEANCE_TITLE' | translate}}
+              :</span><b>{{trainingSession.NumberOfSeance}}</b>
+          </li>
+          <li>
+            <span class="number-seances-participant">{{'NUMBER_OF_PARTICIPANT_TITLE' | translate}}
+              :</span><b>{{trainingSession.NumberOfParticipant}}</b>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<br/>

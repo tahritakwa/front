@@ -1,0 +1,20 @@
+<!-- Inputs : group; isFixeBonusInput (default 1); idBonusColName (default IdBonus); -->
+<div [formGroup]="group">
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  (valueChange)="handleChange($event)"
+                  [allowCustom]="allowCustom"
+                  [data]="bonusesFiltredData"
+                  [filterable]="true"
+                  [formControlName]="idBonusColName"
+                  [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin"
+                  name="idBonusColName"
+                  textField="Name"
+                  valueField="Id">
+    <!--footer template-->
+    <ng-template *ngIf="addNewInput" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>

@@ -1,0 +1,215 @@
+<div class="card">
+  <div class="card border-0 full-screen-card">
+    <!--Begin Card eader-->
+    <div class="card-header">
+      <div class="row">
+        <div class="col-sm-5 mt-1">
+          <h3 class="card-title mb-0">{{'PAYSLIP_SESSION'|translate}}</h3>
+        </div>
+        <div class="col-lg-2 mt-1 ml-auto">
+          <div class="row d-flex justify-content-end">
+            <div class="col-auto d-flex align-items-end" style="width: 220px">
+              <input class="form-control InvoiceNumber pb-0" [value]="sessionFormGroup.controls['Code']?.value">
+            </div>
+          </div>
+        </div>
+        <div *ngIf="isUpdateMode" class="col-lg-1 mt-3 mr-2">
+          <div class="row d-flex justify-content-end">
+            <h4 class="statusAlignment" *ngIf="!isClosed">
+              <span class="badge badge-success">{{"OPEN" | translate }}</span>
+            </h4>
+            <h4 class="statusAlignment" *ngIf="isClosed">
+              <span class="badge badge-danger">{{ "CLOSED" | translate }}</span>
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--End Card header-->
+    <!--Begin add form-->
+
+    <!--Begin Card body-->
+    <div class="card-body">
+      <form class="form-horizontal" [formGroup]="sessionFormGroup">
+        <div class="col-lg-12 col-sm-12 col-md-12 ">
+          <div class="form-group row">
+            <div class="col-sm-12 col-md-5 col-lg-4">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'MONTH'|translate}} <span
+                  class="required">*</span></label>
+              <kendo-datepicker (valueChange)="onClickInitialiseDate()" onkeydown="return false;" [bottomView]="'year'"
+                [topView]="'decade'" [format]="'MMMM yyyy'" formControlName="Month" class="form-control"
+                [disabled]="disableMonth">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="sessionFormGroup.controls.Month"
+                class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-sm-12 col-md-5 col-lg-5">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}<span class="required">*</span></label>
+              <input class="form-control" formControlName="Title" type="text" name=""
+                [ngClass]="{ 'has-error': (sessionFormGroup.controls.Title.touched || sessionFormGroup.controls.Title.dirty) && !sessionFormGroup.controls.Title.valid }">
+              <app-control-messages [control]="sessionFormGroup.controls.Title"
+                class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+          <div align="right" class="col-sm-12 col-md-12 col-lg-12" *ngIf="hasOpenPayrollSessionPermission && !showGrid">
+            <button class="k-button btn-secondary ml-2 mr-2 open-session" type="submit" (click)="startSession()"
+              type="submit">
+              <i class="fa fa-cogs fa-lg AddIcon"></i>
+              {{'OPEN_SESSION' |translate}}
+            </button>
+          </div>
+        </div>
+        <!--End add form-->
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+          [sortable]="true" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+          [reorderable]="true" [pageable]="pagerSettings"
+          [selectable]="{enabled: true && !canNotUpdatePays, checkboxOnly: true && !canNotUpdatePays }"
+          (selectionChange)="onSelectionChange($event)" (dataStateChange)="dataStateChange($event)"
+          [kendoGridSelectBy]="'IdContract'" [selectedKeys]="employeesIdsSelected" style="margin-top:60px"
+          *ngIf="(hasShowPayrollSessionPermission || hasOpenPayrollSessionPermission) && showGrid">
+          <kendo-grid-checkbox-column *ngIf="(hasUpdatePayrollSessionPermission || hasOpenPayrollSessionPermission) && !isClosed" [width]="70">
+            <ng-template kendoGridHeaderTemplate>
+              <div class="checkbox-position">
+                <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+                  (selectAllChange)="onSelectAllChange($event)">
+                <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+              </div>
+            </ng-template>
+          </kendo-grid-checkbox-column>
+          <!-- Matricule -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+            [width]="gridSettings.columnsConfig[0]._width" [filter]="gridSettings.columnsConfig[0].filter"
+            [filterable]="gridSettings.columnsConfig[0].filterable" [format]="gridSettings.columnsConfig[0].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a class="employee-link" [routerLink]="['/main/payroll/employee/edit', dataItem.IdEmployee]"
+                target="_blank">
+                {{dataItem.Matricule}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- FullName -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+            [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.columnsConfig[1].filter"
+            [filterable]="gridSettings.columnsConfig[1].filterable" [format]="gridSettings.columnsConfig[1].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a class="employee-link" [routerLink]="['/main/payroll/employee/edit', dataItem.IdEmployee]"
+                target="_blank">
+                {{dataItem.FullName}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Contract type -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+            [filter]="gridSettings.columnsConfig[2].filter" [width]="gridSettings.columnsConfig[2]._width">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+                theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.Code}}
+            </ng-template>
+          </kendo-grid-column>
+          <!-- End contract type -->
+          <!-- TimesheetState -->
+          <kendo-grid-column *ngIf="payDependOnTimesheet" width="400" [field]="gridSettings.columnsConfig[3].field"
+            [width]="gridSettings.columnsConfig[3]._width" [sortable]="false" class="border-style">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[3].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+              <app-status-dropdown [timeSheetEnum]="true" [form]="statusSearchDropdownFormGroup"
+                (selectedValue)="statusFilter($event)">
+              </app-status-dropdown>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span class="label-right" *ngIf="dataItem.TimesheetStatus === statusCode.ToDo">
+                <a style="color: #7f6ebd;cursor: pointer;" (click)="SendMail(dataItem.IdEmployee)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_FILL_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheet !== 0 && dataItem.TimesheetStatus === statusCode.Draft">
+                <a style="color: #dc3545;cursor: pointer;" (click)="SendMail(dataItem.IdEmployee)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_SUBMIT_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheet !== 0 && dataItem.TimesheetStatus=== statusCode.ToReWork">
+                <a style="color: #dc3545;cursor: pointer;" (click)="SendMail(dataItem.IdEmployee)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_CORRECT_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheet !== 0 && dataItem.TimesheetStatus === statusCode.Sended">
+                <a *ngIf="!(hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployee))"
+                  style="color: #4c9aae;cursor: pointer;" (click)="SendMail(dataItem.IdEmployee)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+                <a *ngIf="hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployee)"
+                  style="color: #de8926;cursor: pointer;"
+                  (click)="validateCRA(dataItem.IdContract, dataItem.IdTimeSheet)">
+                  <i class="fa fa-check-square-o" aria-hidden="true"> {{'VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheet !== 0 && dataItem.TimesheetStatus === statusCode.PartiallyValidated">
+                <a *ngIf="!(hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployee))"
+                  style="color: #4c9aae;cursor: pointer;" (click)="SendMail(dataItem.IdEmployee)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+                <a *ngIf="hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployee)"
+                  style="color: #de8926;cursor: pointer;"
+                  (click)="validateCRA(dataItem.IdContract, dataItem.IdTimeSheet)">
+                  <i class="fa fa-check-square-o" aria-hidden="true"> {{'VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheet !== 0 && dataItem.TimesheetStatus === statusCode.Validated">
+                <span style="color: green;">
+                  <i aria-hidden="true" class="fa fa-check"> CRA {{'VALID'|translate}} </i>
+                </span>
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+        <div *ngIf="showErrorMessage" class="error-message" style="color:red">
+          {{'EMPLOYEE_MUST_BE_SELECTED'|translate}}
+        </div>
+      </form>
+
+    </div>
+    <!--End Card body-->
+    <!--Begin Card footer Start-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="{{'/main/payroll/session'}}">
+                <span class="btn btn-sm btn-back-to-list btn-primary ">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button class="btn btn-sm btn-primary next mx-1" type="submit" *ngIf="showGrid" (click)="onNextClick()">
+                {{'NEXT'|translate}} <i class="fa fa-angle-right"></i>
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!--Begin Card footer End-->
+  </div>
+</div>

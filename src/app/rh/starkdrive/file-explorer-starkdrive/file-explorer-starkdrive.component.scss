@@ -1,0 +1,64 @@
+:host {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.mat-icon.mat-primary {
+  color: #3e98b3 !important;
+}
+
+.file-or-folder {
+  padding: 8px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.file-or-folder-icon {
+  width: 50px;
+  height: 50px;
+  font-size: 50px;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+html {
+  height: 100% !important;
+}
+
+body {
+  height: 100% !important;
+}
+
+.favourite {
+  border-radius: 100px;
+  width: 20px;
+  overflow: hidden;
+  height: 20px;
+  cursor: pointer;
+  padding: 18px;
+  -webkit-box-shadow: 0px 0px 0px 2px #4b9aad;
+  box-shadow: 0px 0px 0px 2px #4b9aad;
+  color: #4b9aad;
+}
+
+.favourite_heart {
+  margin-top: -10px;
+  margin-left: -5px;
+}
+
+
+
+

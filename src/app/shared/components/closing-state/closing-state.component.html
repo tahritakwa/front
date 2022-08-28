@@ -1,0 +1,7 @@
+<div [formGroup]="group">
+  <kendo-combobox class="form-control"  [data]="closingStateFilteredList"
+                  [(ngModel)]="selectedClosingStateInFilter" (filterChange)="handleFilterClosingState($event)"
+                  [textField]="'text'" [valueField]="'value'" [filterable]="true"
+                  (valueChange)="closingStateValueChange($event)" [ngModelOptions]="{standalone: true}">
+  </kendo-combobox>
+</div>

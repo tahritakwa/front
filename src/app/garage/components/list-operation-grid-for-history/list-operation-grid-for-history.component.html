@@ -1,0 +1,81 @@
+<kendo-grid 
+  [data]="gridData"
+  [pageSize]="gridState.take"
+  [skip]="gridState.skip"
+  [filter]="gridState.filter"
+  (dataStateChange)="dataStateChange($event)"
+  [sortable]="true"
+  [pageable]="pagerSettings"
+  [filterable]="true"
+  [reorderable]="true"
+  [columnMenu]="false">
+
+  <!-- Operation name Start -->
+  <kendo-grid-column 
+    [field]="columnsConfig[0].field"
+    [title]="columnsConfig[0].title | translate"
+    [filterable]="true"
+    [width]="250">
+  </kendo-grid-column>
+  <!-- Operation name End -->
+  
+  <!-- Piece Start -->
+  <kendo-grid-column 
+    [field]="columnsConfig[1].field"
+    [title]="columnsConfig[1].title | translate"
+    [filterable]="true"
+    [width]="180">
+  </kendo-grid-column>
+  <!-- Piece End -->
+  
+  <!-- Reference Start-->
+  <kendo-grid-column 
+    [field]="columnsConfig[2].field"
+    [title]="columnsConfig[2].title | translate"
+    [filterable]="true"
+    [width]="170">
+  </kendo-grid-column>
+  <!-- Reference End -->
+
+  <!--Garage Name Start -->
+  <kendo-grid-column 
+    [field]="columnsConfig[3].field"
+    [title]="columnsConfig[3].title | translate"
+    [filterable]="true"
+    [width]="170">
+  </kendo-grid-column>
+  <!--Garage Name End -->
+
+  <!-- Poste Start -->
+  <kendo-grid-column 
+    [field]="columnsConfig[4].field"
+    [title]="columnsConfig[4].title | translate"
+    [filterable]="true"
+    [width]="170">
+  </kendo-grid-column>
+  <!-- Poste End -->
+
+  <!-- Responsable Start-->
+  <kendo-grid-column 
+    [field]="columnsConfig[5].field"
+    [title]="columnsConfig[5].title | translate"
+    [filterable]="true"
+    [width]="170">
+  </kendo-grid-column>
+  <!-- Responsable End-->
+
+  <!-- TTC Price Start-->
+  <kendo-grid-column 
+    [field]="columnsConfig[7].field"
+    [title]="columnsConfig[7].title | translate"
+    filter="numeric"
+    [filterable]="true"
+    [width]="170"
+    [style]='{"text-align":"right","padding-right":"3%"}'>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.TTCPrice.toLocaleString(language,{minimumFractionDigits: currency.SalesPrecision,
+        style: 'currency', currency: currency.Code, currencyDisplay:'code'})}}
+    </ng-template>
+  </kendo-grid-column>
+  <!-- TTC Price End-->
+</kendo-grid>

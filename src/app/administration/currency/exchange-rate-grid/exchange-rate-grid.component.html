@@ -1,0 +1,121 @@
+<div>
+  <kendo-grid (keydown)="keyHandler($event)" [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+        [skip]="gridSettings.state.skip" [filter]="gridSettings.state.filter" (edit)="editHandler($event)"
+        (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (remove)="removeHandler($event)"
+        (add)="addHandler($event)" (dataStateChange)="dataStateChange($event)" [pageable]="pagerSettings"
+        [groupable]='false' [reorderable]="true">
+        <ng-template kendoGridToolbarTemplate *ngIf='!fromDoc'>
+          <div class="row" style="float :right;">
+            <app-btn-grid [advencedAdd]='false' [add]='hasUpdateCurrencyPermission' [export]='true' [addLink]='"AdvancedAdd"'
+              style="margin-top: -5%;  margin-right: 20px;  display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!--StartDate-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+          [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+          [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+          [format]="gridSettings.columnsConfig[0].format" [style]='{ "padding-right": "3%"}'>
+  
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{dataItem.StartDate|date: gridSettings.columnsConfig[0].format}}
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+            <div [formGroup]="currencyRateFormGroup">
+              <kendo-datepicker [formControlName]="'StartDate'" [format]="gridSettings.columnsConfig[0].format"
+                class="form-control" (valueChange)="changeStartDate()" [max]="maxStartDate">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                  toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+            </div>
+  
+            <i #anchor></i>
+            <app-control-message-grid-cell [group]="currencyRateFormGroup" [anchor]="anchor" controlName="StartDate">
+  
+            </app-control-message-grid-cell>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{dataItem.StartDate | date: 'dd/MM/yyyy'}}
+        </ng-template>
+        </kendo-grid-column>
+        <!--EndDate-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [format]="gridSettings.columnsConfig[1].format" [style]='{ "padding-right": "3%"}'>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{dataItem.EndDate|date: gridSettings.columnsConfig[1].format}}
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+            <div [formGroup]="currencyRateFormGroup">
+              <kendo-datepicker [formControlName]="'EndDate'" [format]="gridSettings.columnsConfig[1].format"
+                class="form-control" (valueChange)="changeEndDate()" [min]="minEndDate">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                  toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+            </div>
+  
+            <i #anchor></i>
+            <app-control-message-grid-cell [group]="currencyRateFormGroup" [anchor]="anchor" controlName="EndDate">
+  
+            </app-control-message-grid-cell>
+          </ng-template>
+        </kendo-grid-column>
+        <!--DocumentCode-->
+        <kendo-grid-column *ngIf="fromDoc" [field]="gridSettings.columnsConfig[2].field"
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+          [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+          [format]="gridSettings.columnsConfig[2].format" [style]='{ "padding-right": "3%"}'>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div class="d-flex">
+              <span class="pointer doc-code" [ngStyle]="{'color': 'blue'}"
+                (click)="showDocument(dataItem)" theme="light">{{dataItem.CodeDocument}}</span>
+                </div>
+                </ng-template>
+        </kendo-grid-column>
+        <!--Coefficient-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+          [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+          [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+          [format]="gridSettings.columnsConfig[3].format" [style]='{ "padding-right": "3%"}'>
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="currencyRateFormGroup" controlName="Coefficient" inputType="number">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Rate-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+          [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+          [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+          [format]="gridSettings.columnsConfig[4].format" [style]='{"padding-right": "3%"}'>
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="currencyRateFormGroup" controlName="Rate" inputType="number">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-command-column [width]="150">
+          <ng-template kendoGridCellTemplate  *ngIf="!fromDoc" let-isNew="isNew" let-dataItem="dataItem">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button kendoGridEditCommand [primary]="true" class="btnKendoGrid" type="button">
+              <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3"></i>
+            </button>
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button kendoGridRemoveCommand class="btnKendoGrid" type="button">
+              <i class="fa fa-trash-o"></i>
+            </button>
+  
+            <!-- save command directive, will be visible when in edit mode -->
+            <button kendoGridSaveCommand type="button" class="btnKendoGrid"><span class="fa fa-save"></span></button>
+            <!-- cancel command directive, will be visible when in edit mode -->
+            <button kendoGridCancelCommand class="btnKendoGrid" type="button"><span class="fa fa-close"></span></button>
+  
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export  [Config] = "config" [gridSettings]="gridSettings" fileName="{{'CURRENCY_ECHANGE_RATE_LIST'|translate}}" pdf="true" excel="true"
+          [service]="currencyRateService" [predicate]="predicate">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+  </div>

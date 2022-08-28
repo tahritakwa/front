@@ -1,0 +1,107 @@
+<form class="form-horizontal">
+  <kendo-grid (dataStateChange)="dataStateChange($event)"
+              [data]="gridSettings.gridData"
+              [filter]="gridSettings.state.filter"
+              [pageSize]="gridSettings.state.take"
+              [pageable]="pagerSettings"
+              [reorderable]="true"
+              [skip]="gridSettings.state.skip"
+              [sort]="gridSettings.state.sort"
+              [sortable]="true">
+    <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index"
+      [field]="col.field" [filter]="col.filter" [filterable]="col.filterable" [format]="col.format">
+      <ng-template kendoGridHeaderTemplate *ngIf="col.field == 'IdCandidacyNavigation.IdCandidateNavigation.FirstName'">
+      <span tooltip="{{'CANDIDATE'|translate}}"
+        theme="light">{{'CANDIDATE'|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridHeaderTemplate *ngIf="col.field == 'InterviewDate'">
+      <span tooltip="{{'INTERVIEW_DATE'|translate}}"
+        theme="light">{{'INTERVIEW_DATE'|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridHeaderTemplate *ngIf="col.field == 'StartTime'">
+      <span tooltip="{{'START_TIME'|translate}}"
+        theme="light">{{'START_TIME'|translate}}</span>
+    </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="col.field == 'IdCandidacyNavigation.IdCandidateNavigation.FirstName'">
+              <a class="candidate-link" [routerLink]="['/main/rh/candidate/edit/', dataItem.IdCandidacyNavigation.IdCandidateNavigation.Id]" target="_blank">
+                {{dataItem.IdCandidacyNavigation.IdCandidateNavigation.FullName}}
+              </a>
+          </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="col.field == 'InterviewDate'">
+        {{dataItem.InterviewDate | date:formatDate}}
+      </ng-template>
+    </kendo-grid-column>
+    <ng-template kendoGridDetailTemplate let-dataItem>
+      <section *ngIf="dataItem.InterviewMark">
+        <div *ngIf="haveRequired(dataItem.InterviewMark)">
+          <span>
+            <b>
+              {{'REQUIRED_INTERVIEWERS' | translate}}
+            </b>
+          </span>
+          <div class="row">
+            <div *ngFor="let interviewMark of dataItem.InterviewMark;" class="col-lg-6 col-md-8 col-sm-12"
+                 style="margin-left:20px!important">
+              <div *ngIf="interviewMark.IsRequired" class="col-lg-9 col-md-10 col-sm-12"
+                   style="margin-top:5px!important">
+                <span class="col-lg-6 col-md-8 col-sm-12"
+                      style="font-size:smaller!important">{{interviewMark.IdEmployeeNavigation.FullName}}</span>
+
+                <i *ngIf="isUpdateMode(interviewMark)" aria-hidden="true"
+                   class="fa fa-check text-success"></i>
+                <div *ngIf="!isCurrentRecruitmentCompleted()" class="col-lg-6 col-md-8 col-sm-12"
+                     style="float:right!important">
+                  <button (click)="addNewEvaluation(interviewMark)" *ngIf="hasAddOrUpdateRecruitmentPermission && isUpdateMode(interviewMark)"
+                          class="noPadding k-button btn-Add"
+                          style="float:left!important">
+                    <i aria-hidden="true" class="fa fa-pencil text-primary"> {{ 'EDIT_YOUR_RATING' | translate}}</i>
+                  </button>
+                  <button (click)="addNewEvaluation(interviewMark)" *ngIf="(hasFullRecuitmentPermission || hasAddOrUpdateRecruitmentPermission) && !isUpdateMode(interviewMark)"
+                          class="noPadding k-button btn-Add"
+                          style="float:left!important">
+                    <i aria-hidden="true" class="fa fa-check text-primary"> {{ 'EVALUATE' | translate}}</i>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="haveOptional(dataItem.InterviewMark)" style="margin-top:10px!important">
+          <span>
+            <b>
+              {{'OPTIONAL_INTERVIEWERS' | translate}}
+            </b>
+          </span>
+          <div class="row">
+            <div *ngFor="let interviewMark of dataItem.InterviewMark;" class="col-lg-6 col-md-8 col-sm-12"
+                 style="margin-left:20px!important">
+              <div *ngIf="!interviewMark.IsRequired" class="col-lg-9 col-md-10 col-sm-12"
+                   style="margin-top:5px!important">
+                <span class="col-lg-6 col-md-8 col-sm-12"
+                      style="font-size:smaller!important">{{interviewMark.IdEmployeeNavigation.FullName}}</span>
+                <i *ngIf="isUpdateMode(interviewMark)" aria-hidden="true"
+                   class="fa fa-check text-success"></i>
+
+                <div *ngIf="!isCurrentRecruitmentCompleted()" class="col-lg-6 col-md-8 col-sm-12"
+                     style="float:right!important">
+                  <button (click)="addNewEvaluation(interviewMark)" *ngIf="(hasFullRecuitmentPermission || hasAddOrUpdateRecruitmentPermission) && isUpdateMode(interviewMark)"
+                          class="noPadding k-button btn-Add"
+                          style="float:left!important">
+                    <i aria-hidden="true" class="fa fa-pencil text-primary"> {{ 'EDIT_YOUR_RATING' | translate}}</i>
+                  </button>
+                  <button (click)="addNewEvaluation(interviewMark)" *ngIf="hasAddOrUpdateRecruitmentPermission && !isUpdateMode(interviewMark)"
+                          class="noPadding k-button btn-Add"
+                          style="float:left!important">
+                    <i aria-hidden="true" class="fa fa-check text-primary"> {{ 'EVALUATE' | translate}}</i>
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </ng-template>
+  </kendo-grid>
+</form>

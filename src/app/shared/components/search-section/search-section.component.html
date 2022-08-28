@@ -1,0 +1,110 @@
+<form [formGroup]="searchFormGroup">
+
+  <div class="row" style="margin-top:1em;margin-bottom: 2em;">
+    <div class="col-lg-1 col-md-1 col-sm-1" style="margin-left: 12em;"></div>
+    <!-- Month filter -->
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'BY_MONTH'|translate}}</label>
+        </div>
+        <div class="col">
+          <kendo-datepicker style="width: inherit;"
+                              [bottomView]="'year'"
+                              [topView]="'decade'"
+                              [format]="'MMMM yyyy'"
+                              [(value)]="date"
+                              [max]="maxDate"
+                              (keydown)="onKeydown($event)"
+                              (valueChange)="selectedDate()">
+                              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario"></kendo-datepicker-messages>
+            </kendo-datepicker>
+        </div>
+      </div>
+    </div>
+
+    <!-- End month filter -->
+
+    <!-- Team filter -->
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'BY_TEAM'|translate}}</label>
+        </div>
+        <div class="col">
+          <app-team-multiselect
+            [allTeam]="showAllEmployee"
+            (Selected)="teamSelected($event)">
+          </app-team-multiselect>
+        </div>
+      </div>
+    </div>
+
+    <!-- End team filter -->
+
+
+     <!-- Employees filter -->
+     <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'BY_EMPLOYEE'|translate}}</label>
+        </div>
+        <div class="col">
+            <div *ngIf="withTeamManager; then withTeamManagerBlock else notTeamManagerBlock"></div>
+            <ng-template #withTeamManagerBlock >
+              <app-employee-multiselect
+              [teams]="selectedTeams"
+              [hierarchy]="!showAllEmployee"
+              [withTheSuperior]="!showAllEmployee"
+              [withTeamCollaborater]="!showAllEmployee"
+              (selected)="employeeSelected($event)"
+              [withTeamManager] = "withTeamManager">
+              </app-employee-multiselect>
+            </ng-template>
+            <ng-template #notTeamManagerBlock>
+              <app-employee-multiselect
+              [teams]="selectedTeams"
+              [hierarchy]="!showAllEmployee"
+              [withTheSuperior]="!showAllEmployee"
+              [withTeamCollaborater]="!showAllEmployee"
+              (selected)="employeeSelected($event)">
+              </app-employee-multiselect>
+            </ng-template>
+
+
+        </div>
+      </div>
+    </div>
+
+
+    <!-- End employees filter -->
+    <!-- Status filter -->
+    <div class="col-lg-2 col-md-2 col-sm-12" [hidden]="true">
+      <div class="row align-items-start">
+        <div class="col-lg-12">
+          <label>{{'BY_STATUS'|translate}}</label>
+        </div>
+        <div class="col">
+          <app-status-dropdown [statusList]="statusList" [form]="searchFormGroup" [timeSheetEnum]= "isTimeSheetStatus"></app-status-dropdown>
+        </div>
+      </div>
+    </div>
+
+    <!-- End status filter -->
+
+    <div class="col-lg-2 col-md-2 col-sm-12">
+      <div class="row align-items-end">
+          <div class="col-lg-12">
+              <label><br></label>
+          </div>
+          <div class="col">
+              <button class="btn btn-secondary" style="width:50px" type="button"
+                  (click)="onSearch()">
+                  <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+              </button>
+          </div>
+      </div>
+  </div>
+    </div>
+
+</form>

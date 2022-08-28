@@ -1,0 +1,143 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_SECTION' : 'NEW_SECTION') |translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="formGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REFERENCE'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" name="reference" formControlName="reference">
+            <app-control-messages [control]="formGroup.controls['reference']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DESIGNATION'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" name="designation" formControlName="designation">
+            <app-control-messages [control]="formGroup.controls['designation']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'WORKSHOP'|translate}}<span class="required">*</span></label>
+
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="tab-pane active show" id="home1" role="tabpanel"
+             [ngStyle]="{'min-height': '400px', 'max-height': '400px', 'overflow-y': 'auto'}">
+          <kendo-grid [data]="gridData" [pageSize]="gridSettingsSections.state.take"
+                      [skip]="gridSettingsSections.state.skip" [sort]="gridSettingsSections.state.sort"
+                      [filter]="gridSettingsSections.state.filter" (cancel)="cancelHandler($event)"
+                      (save)="saveHandler($event)" (remove)="removeMachineHandler($event)" (add)="addHandler($event)"
+                      [sortable]="false" [filterable]="false" [reorderable]="true" [columnMenu]="false"
+                      [rowClass]="rowCallback"
+                      (dataStateChange)="dataStateChange($event)">
+
+            <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+              <button kendoGridAddCommand class="noPadding btn-Add k-button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+              </button>
+            </ng-template>
+
+            <kendo-grid-column [field]="columnsConfigMachines[0].field"
+                               [title]="columnsConfigMachines[0].title | translate">
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf='isEditingMode'>
+                <app-machine-dropdown [assignedToSection]="true" (selectedMachineId)="onselectedMachineId($event)"
+                                      controlName="description" [form]="machineFormGroup">
+                </app-machine-dropdown>
+                <i #anchor></i>
+                <app-control-message-grid-cell [group]="machineFormGroup" [anchor]="anchor" controlName="machineId">
+                </app-control-message-grid-cell>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]="columnsConfigMachines[1].field"
+                               [title]="columnsConfigMachines[1].title | translate">
+              <ng-template kendoGridEditTemplate let-formGroup="machineFormGroup">
+                <app-grid-cell-input-template [group]="machineFormGroup" controlName="costPerHour">
+                </app-grid-cell-input-template>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.costPerHour}}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]="columnsConfigMachines[2].field"
+                               [title]="columnsConfigMachines[2].title | translate">
+              <ng-template kendoGridEditTemplate let-formGroup="machineFormGroup">
+                <app-grid-cell-input-template [group]="machineFormGroup" controlName="responsibleFullName">
+                </app-grid-cell-input-template>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.responsibleName}}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]="columnsConfigMachines[3].field"
+                               [title]="columnsConfigMachines[3].title | translate">
+              <ng-template kendoGridEditTemplate let-formGroup="machineFormGroup">
+                <app-grid-cell-input-template [group]="machineFormGroup" controlName="stateMachine">
+                </app-grid-cell-input-template>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.stateMachine}}
+              </ng-template>
+            </kendo-grid-column>
+
+
+            <kendo-grid-command-column title="{{'ACTION' | translate}}">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+                <button kendoGridSaveCommand class="btnKendoGrid"><span class="fa fa-save"></span></button>
+
+                <button kendoGridCancelCommand class="btnKendoGrid"><span class="fa fa-close"></span></button>
+
+                <button kendoGridRemoveCommand class="btnKendoGrid"><i class="fa fa-trash-o"></i></button>
+
+              </ng-template>
+            </kendo-grid-command-column>
+          </kendo-grid>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer ml-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 flex-align footer-content">
+            <a [routerLink]="'/main/settings/manufacturing/section'">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i>
+                {{ "BACK_TO_LIST" | translate }}
+              </span>
+            </a>
+            <button
+              class="btn btn-sm btn-save mx-1" (click)="save()" type="button">
+              <i class="fa fa-floppy-o"></i> {{ "SAVE" | translate }}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+

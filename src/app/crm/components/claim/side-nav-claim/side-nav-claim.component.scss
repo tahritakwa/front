@@ -1,0 +1,95 @@
+hidden {
+  display: none;
+}
+
+.navbar-side {
+  height: 85%;
+  width: 50%;
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 0;
+  list-style: none;
+  background-color: rgba(66, 67, 68, 1);
+  z-index: 1000;
+}
+
+.navbar-side-item {
+  padding: 1.5rem 0;
+  margin: 0;
+  height: 5rem;
+}
+
+.side-link {
+  padding-left: 2rem;
+}
+
+ul.navbar-side{
+  width: 45%;
+  margin-top: 55px;
+  background-color: white;
+  height: 91% !important;
+  border-color: #4c9aae !important;
+  border-left-style: solid;
+  overflow-y: scroll;
+}
+ul.navbar-side.bigger{
+  width: auto;
+  left: 0px;
+  margin-top: 55px;
+  background-color: white;
+  height: 91% !important;
+  border-color: #4c9aae !important;
+  border-left-style: solid;
+  overflow-y: scroll;
+}
+@media (max-width: 1366px) {
+  ul.navbar-side {
+    width: 45%;
+    margin-top: 55px;
+    background-color: white;
+    height: 91% !important;
+    border-color: #4c9aae !important;
+    border-left-style: solid;
+    overflow-y: scroll;
+  }
+}
+@media (max-width: 991.98px) {
+  ul.navbar-side.bigger {
+    width: auto;
+    left: 0px;
+    margin-left: 0px;
+    margin-top: 55px;
+    background-color: white;
+    height: 91% !important;
+    border-color: #4c9aae !important;
+    border-left-style: solid;
+    overflow-y: scroll;
+  }
+}
+
+#dismiss {
+  height: 7%;
+  width: 47%;
+  position: fixed;
+  top: 0;
+  margin-top: 5%;
+  right: 0;
+  padding: 0;
+  list-style: none;
+  z-index: 1000;
+  border-radius: 8px;
+}
+
+.chevron {
+  background-color: white;
+  width: 6% !important;
+  border-style: solid;
+  border-color: #4c9aae;
+  border-radius: 8px;
+  border-width: 2px;
+  margin-top: 4%;
+}
+::ng-deep .card{
+  border: 0 !important;
+}

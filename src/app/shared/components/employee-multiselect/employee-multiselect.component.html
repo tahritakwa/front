@@ -1,0 +1,6 @@
+<ng-multiselect-dropdown 
+    [data]="employeesFiltredDataSource" [placeholder]="'SELECT'|translate" [settings]="dropdownSettings"
+    [(ngModel)]="selectedValueMultiSelect" (onDeSelectAll)="onDeSelectAll()" (onSelect)="onSelect(this)"
+    (onSelectAll)="onSelectAll()" (onDeSelect)="onSelect(this)" [disabled]="disabled" 
+    [ngStyle]="disabled ? {'pointer-events':'none'} : {'cursor': 'pointer'}">
+</ng-multiselect-dropdown>

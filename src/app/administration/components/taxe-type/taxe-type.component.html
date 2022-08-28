@@ -1,0 +1,12 @@
+<div [formGroup]="form">
+  <kendo-combobox #type (focus)="openComboBox()" class="form-control" [data]="taxe" [textField]="'name'" [allowCustom]="allowCustom"
+    [valueField]="'id'" formControlName="TaxeType" name="TaxeType" (valueChange)="onSelectTaxeType($event)"  [valuePrimitive]="true">
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

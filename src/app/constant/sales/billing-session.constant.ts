@@ -1,0 +1,31 @@
+export class BillingSessionConstant {
+    public static BILLING_SESSION = 'billingSession';
+    public static BILLING_SESSION_PROJECTS = 'billingSessionProjects';
+    public static VALIDATE_CRA = 'main/sales/billingSession/ValidateCRA/';
+    public static BILLING_SESSION_add = 'main/sales/billingSession/add';
+    public static BILLING_SESSION_Update = 'main/sales/billingSession/add/';
+    public static BILLING_SESSION_List = 'main/sales/billingSession/';
+    public static DOCUMENT_GENERATED = 'main/sales/billingSession/DocumentsGenerated/';
+    public static PROJECTS_EXPENSE_REPORTS = 'main/sales/billingSession/ProjectsExpenseReports';
+    public static EMPLOYEE_FULLNAME = 'IdEmployeeNavigation.FullName';
+    public static PROJECTS = 'EmployeeProjectsDetails';
+    public static PROJECTS_UPPERCASE = 'PROJECTS';
+    public static LEAVE_NUMBER_DAYS = 'LeavesNumberDays';
+    public static LEAVES_UPPERCASE = 'LEAVES';
+    public static ADR = 'ADR';
+    public static WORKED_DAYS_UPPERCASE = 'WORKED_DAYS';
+    public static COLLABORATER = 'COLLABORATOR';
+    public static GET_TIMESHEET_DETAILS_BY_EMPLOYEE = 'getTimeSheetDetailsByEmployee/';
+    public static readonly BILLING_SESSION_DETAILS = 'getBillingSessionDetails/';
+    public static readonly ID_EMPLOYEE = 'IdEmployee';
+    public static readonly ID_BILLING_SESSION = 'idBillingSession';
+    public static readonly CLOSE_BILLING_SESSION_DETAIL_MESSAGE = 'CLOSE_BILLING_SESSION_DETAIL_MESSAGE';
+    public static readonly PROJECT_NAVIGATION = 'IdProjectNavigation';
+    public static readonly TIMESHEET_NAVIGATION = 'IdTimeSheetNavigation';
+    public static readonly TIERS_NAVIGATION = 'IdTiersNavigation';
+    public static readonly GET_DOCUMENT_GENERATED = 'getDocumentsGenerated';
+    public static readonly CURRENCY_NAVIGATION = 'IdUsedCurrencyNavigation';
+    public static readonly VALIDATED_INVOICE_ASSOCIATED_TO_PROJECT = 'VALIDATED_INVOICE_ASSOCIATED_TO_PROJECT';
+    public static MONTH_UPPERCASE = 'MONTH';
+    public static readonly GENERATE_INVOICE_FROM_BILLING_SESSION = 'generateInvoiceFromBillingSession/';
+}

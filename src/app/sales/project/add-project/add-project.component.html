@@ -1,0 +1,335 @@
+<div class="card animated fadeIn">
+  <form class="form-horizontal" [formGroup]="projectFormGroup">
+    <div class="card-body">
+      <h3 class="card-title mb-0" style="margin-bottom: 30px !important;">
+        {{ (isUpdateMode ? 'EDIT_SERVICE_CONTRACT': 'ADD_SERVICE_CONTRACT') |translate }}
+      </h3>
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'NAME'|translate}}<span class="required">*</span></label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <input class="form-control" formControlName="Name" type="text"
+                [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && !Name.valid }">
+              <app-control-messages [control]="Name" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'CONTRACT_TYPE'|translate}}<span
+                class="required">*</span></label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <app-project-type-dropdown [group]="projectFormGroup" class="error-msg messages text-left text-danger">
+              </app-project-type-dropdown>
+              <app-control-messages [control]="ProjectType" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'PROJECT_LABEL'|translate}}</label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <input class="form-control" formControlName="ProjectLabel" type="text">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'LABEL_IN_INVOICE'|translate}}</label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <input class="form-control" formControlName="LabelInInvoice" type="text">
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <!-- Type + supplier -->
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'AVERAGE_DAILY_RATE'|translate}}<span
+                class="required">*</span></label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <input class="form-control" formControlName="AverageDailyRate" type="number"
+                [ngClass]="{ 'has-error': (AverageDailyRate.touched || AverageDailyRate.dirty) && !AverageDailyRate.valid }">
+              <app-control-messages [control]="AverageDailyRate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'TAX'|translate}}<span class="required">*</span></label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <app-taxe-dropdown [form]="projectFormGroup"></app-taxe-dropdown>
+              <app-control-messages [control]="IdTaxe" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <!-- Type + supplier -->
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'STARTDATE'|translate}}<span class="required">*</span></label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <kendo-datepicker [format]="formatDate" formatPlaceholder="narrow" class="form-control"
+                formControlName="StartDate" (valueChange)=" updateEndDateValidity($event)">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="StartDate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'END_DATE'|translate}}<span class="required">*</span></label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <kendo-datepicker [format]="formatDate" formatPlaceholder="narrow" class="form-control"
+                formControlName="ExpectedEndDate" (valueChange)="updateStartDateValidity($event)">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="ExpectedEndDate" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'REF_PROJECT'|translate}}</label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <input class="form-control" formControlName="ReferenceProject" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <div class="row">
+            <label class="col-lg-3 col-md-12 col-sm-12">{{'REF_BC'|translate}}</label>
+            <div class="col-lg-6 col-md-10 col-sm-10">
+              <input class="form-control" formControlName="ReferenceBC" type="text">
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+      <div class="row">
+        <div class="col-lg-1 col-md-4 col-sm-12">
+          <input class="input-checkbox100" id="ckb1" formControlName="IsBillable" name="IsBillable" type="checkbox"
+          >
+          <label class="label-checkbox100" for="ckb1" style="margin-top: 2%;">
+            {{'IS_BILLABLE' | translate}}&nbsp;
+          </label>
+        </div>
+        <div class="col-lg-5 col-md-4 col-sm-12"></div>
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <app-upload-file [fileToUpload]="contractsToUpload" [service]="projectService" [canUpdateFile]="((!isUpdateMode && !haveAddPermission)|| (isUpdateMode && !haveUpdatePermission))">
+          </app-upload-file>
+        </div>
+      </div>
+      <br />
+      <div style="margin-top: 10px;">
+        <p-accordion>
+          <p-accordionTab header="{{'CLIENT_INFORMATION'|translate}}" style="color: #4c9aae;" [selected]="true">
+            <div class="row" style="margin-top:25px">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'CUSTOMER'|translate}}<span
+                      class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-supplier-dropdown [type]=1 [itemForm]="projectFormGroup" (Selected)="receiveSupplier($event)" [placeholder]="'CHOOSE_CUSTOMER_PLACEHOLDER' | translate"
+                      class="error-msg messages text-left text-danger" [getRelationCurrency]='true'>
+                    </app-supplier-dropdown>
+                    <app-control-messages [control]="IdTiers" class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'CURRENCY'|translate}}<span
+                      class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-currency-dropdown [group]="projectFormGroup"></app-currency-dropdown>
+                    <app-control-messages [control]="IdCurrency" class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="margin-top:25px">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'CONTACT'|translate}}<span
+                      class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-contact-dropdown [itemForm]="projectFormGroup" (selectedContact)="receiveContact($event)">
+                    </app-contact-dropdown>
+                    <app-control-messages [control]="IdContact" class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'PAYMENT'|translate}}<span
+                      class="required">*</span></label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-settlement-mode-drop-down class="error-msg messages text-left text-danger"
+                      [group]="projectFormGroup"></app-settlement-mode-drop-down>
+                    <app-control-messages [control]="IdSettlementMode" class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row" style="margin-top:25px">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'BILLING_ADDRESS'|translate}}</label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <input class="form-control" formControlName="BillingAddress">
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'BILLING_MAIL_ADDRESS'|translate}}</label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <input class="form-control" formControlName="BillingMailAddress">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="row" style="margin-top:25px">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <label class="col-lg-3 col-md-12 col-sm-12">{{'BANK_ACCOUNT'|translate}}</label>
+                  <div class="col-lg-6 col-md-10 col-sm-10">
+                    <app-bank-account-dropdown [bankAccountForm]="projectFormGroup">
+                    </app-bank-account-dropdown>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+      <div style="margin-top: 10px;">
+        <p-accordion>
+          <p-accordionTab header="{{'EMPLOYEE_ASSIGNMENT'|translate}}" style="color: #4c9aae;" [selected]="true">
+            <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top: 2%" *ngIf="disablePickList">
+              <p-pickList [source]="freeResources" [target]="assignResources" [responsive]="true"
+                filterBy="IdEmployeeNavigation.FullName" dragdrop="true" disabled ="true" [showSourceControls]="false"
+                [showTargetControls]="false" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}"
+                sourceHeader="{{'FREE_RESOURCES'|translate}}" targetHeader="{{'ASSIGNED_RESOURCES'|translate}}"
+                sourceFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}"
+                targetFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}"
+                (onMoveToTarget)="onMoveToAssignResources($event)" (onMoveToSource)="onMoveToFreeResources($event)">
+                <ng-template let-employeeProject pTemplate="item">
+                  <div class="ui-helper-clearfix">
+                    <img
+                      [src]="employeeProject.IdEmployeeNavigation.pictureEmployesSrc || '../../../../assets/image/user-new-icon.png'"
+                      style="display:inline-block;margin:2px 0 2px 2px" width="48">
+                    <span
+                      style="font-size:16px;padding-left:18px;">{{employeeProject.IdEmployeeNavigation.FullName}}</span>
+                    <span class="info-icon" (click)="setAssignementInformations(employeeProject)">
+                      <i class="fa fa-info-circle fa-1x" style="color: rgb(29, 204, 29);"></i>
+                    </span>
+                  </div>
+                </ng-template>
+              </p-pickList>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12" style="padding-top: 2%" *ngIf="!disablePickList">
+              <p-pickList [source]="freeResources" [target]="assignResources" [responsive]="true"
+                filterBy="IdEmployeeNavigation.FullName" dragdrop="true"  [showSourceControls]="false"
+                [showTargetControls]="false" [sourceStyle]="{'height':'300px'}" [targetStyle]="{'height':'300px'}"
+                sourceHeader="{{'FREE_RESOURCES'|translate}}" targetHeader="{{'ASSIGNED_RESOURCES'|translate}}"
+                sourceFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}"
+                targetFilterPlaceholder="{{'SEARCH_BY_FIRSTNAME_OR_LASTNAME'|translate}}"
+                (onMoveToTarget)="onMoveToAssignResources($event)" (onMoveToSource)="onMoveToFreeResources($event)">
+                <ng-template let-employeeProject pTemplate="item">
+                  <div class="ui-helper-clearfix">
+                    <img
+                      [src]="employeeProject.IdEmployeeNavigation.pictureEmployesSrc || '../../../../assets/image/user-new-icon.png'"
+                      style="display:inline-block;margin:2px 0 2px 2px" width="48">
+                    <span
+                      style="font-size:16px;padding-left:18px;">{{employeeProject.IdEmployeeNavigation.FullName}}</span>
+                    <span class="info-icon" (click)="setAssignementInformations(employeeProject)">
+                      <i class="fa fa-info-circle fa-1x" style="color: rgb(29, 204, 29);"></i>
+                    </span>
+                  </div>
+                </ng-template>
+              </p-pickList>
+            </div>
+          </p-accordionTab>
+          <br>
+          <p-accordionTab header="{{'ASSIGNMENT_HISTORY'|translate}}" style="color: #4c9aae;" [selected]="true"
+            *ngIf="isUpdateMode && this.projectToUpdate && (this.projectToUpdate.EmployeeProject != null)">
+            <div style="max-height: 195px; overflow-x: hidden ">
+              <div *ngFor="let employeeProject of this.projectToUpdate.EmployeeProject">
+                <p>
+                  <span
+                    style="font-size:16px;padding-left:18px;">{{employeeProject.IdEmployeeNavigation.FullName}}</span>
+                  <span style="color: #008000;" *ngIf="employeeProject.AssignmentDate"><b>{{ 'ASSIGNED_ON' | translate}}
+                      {{employeeProject.AssignmentDate|date: dateFormat}}</b></span>
+                  <span style="font-size:16px;padding-left:18px;"
+                    *ngIf="employeeProject.AverageDailyRate">{{'WITH_AN_AVERAGE_DAILY_RATE_OF' | translate}}</span>
+                  <span style="color: #008000;" *ngIf="employeeProject.AverageDailyRate"><b>
+                      {{employeeProject.AverageDailyRate}}</b></span>
+                </p>
+                <p *ngIf="employeeProject.UnassignmentDate && (showUnassignmentDate(employeeProject.UnassignmentDate))">
+                  <span
+                    style="font-size:16px;padding-left:18px;">{{employeeProject.IdEmployeeNavigation.FullName}}</span>
+                  <span style="color: #FF0000;">
+                    <b>{{ 'UNASSIGNED_ON' | translate}}
+                      {{employeeProject.UnassignmentDate|date: dateFormat}}</b></span>
+                </p>
+              </div>
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+    </div>
+  </form>
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="/main/sales/project">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <span>
+              <button class="btn btn-sm btn-save mx-1" (click)="save()" type="submit" *ngIf="(!isUpdateMode && haveAddPermission) || (isUpdateMode && haveUpdatePermission)">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

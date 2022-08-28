@@ -1,0 +1,38 @@
+<div class="row form-group">
+  <div class="col-lg-8 col-sm-12 col-md-12 col-xs-12">
+    <div class="col-12">
+      <input type="file" id="fileDocument" (change)="uploadPictureFile($event)" #fileDocument
+             hidden multiple>
+      <button style="font-size: 25px;}" class="btn btn-sm" (click)="fileDocument.click()">
+        <i class="fa fa-upload" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="col-12">
+      <div *ngIf="!showFileFile()">
+        <label>{{'NO_FILE_CHOSEN'|translate}}</label>
+      </div>
+      <div *ngIf="showFileFile()" style=" display:block; float:left;">
+        <div *ngFor="let attachment of listFile ; let i=index">
+        <a style=" cursor:pointer" (click)="downloadFile(i)"><u>{{attachment.fileName}}</u></a>
+        <button class="noPadding btn-Add k-button" type="button" dir="ltr" style="border: none!important;"
+                (click)="deleteFile(attachment, i)">
+          <i class="fa fa-close fa-lg AddIcon"></i>
+        </button>
+          <span *ngIf="!attachment.sizeValid && attachment.extensionValid" class="error-message" style="color:red">
+                          {{'FILE_SIZE'|translate}}
+                    </span>
+          <span *ngIf="!attachment.extensionValid && attachment.sizeValid" class="error-message" style="color:red">
+          {{'FILE_EXTENSION'|translate}}</span>
+
+          <span *ngIf="!attachment.extensionValid && !attachment.sizeValid" class="error-message" style="color:red">
+            {{'FILE_SIZE_FILE_EXTENSION'|translate}} </span>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <app-control-messages [control]="fileFormGroup.controls.pathAttachment"
+                              class="error-msg messages text-danger">
+        </app-control-messages>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="projectTypeDataSource" class="form-control HistoryCommandMargin" name="ProjectType"
+    formControlName="ProjectType" textField="name" valueField="value" [valuePrimitive]="true"  (valueChange)="onSelect($event)"
+    [allowCustom]="allowCustom">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.name | translate }}
+    </ng-template>
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

@@ -1,0 +1,67 @@
+<div class="card" style="margin-right: 10%">
+  <div class="card-header px-3 py-2" style="background: #78b4c314;">
+    <span class="text-muted" style="font-size: 120%; font-weight: 400;"> {{'RESPONSABLE_MACHINE'|translate}}: {{detailOperation.responsableFullName}} </span>
+    <span  style="float: right;">
+      <span class="badge badge-primary"  *ngIf="detailOperation.statusOperation===NOT_LANCED">
+        {{getStatusDescription(detailOperation.statusOperation)|translate}}
+      </span>
+      <span class="badge badge-success"  *ngIf="detailOperation.statusOperation===RESUMED">
+            {{getStatusDescription(detailOperation.statusOperation)|translate}}
+          </span>
+      <span class="badge badge-success"  *ngIf="detailOperation.statusOperation===IN_PROGRESS">
+            {{getStatusDescription(detailOperation.statusOperation)|translate}}
+          </span>
+      <span class="badge badge-danger"  *ngIf="detailOperation.statusOperation===PAUSED">
+            {{getStatusDescription(detailOperation.statusOperation)|translate}}
+      </span>
+      <span class="badge badge-dark"  *ngIf="detailOperation.statusOperation===FINISHED">
+            {{getStatusDescription(detailOperation.statusOperation)|translate}}
+      </span>
+    </span>
+  </div>
+  <div class="card-body p-3 d-flex align-items-center">
+    <span class="square">
+       <i class="fa fa-task font-2xl mr-3 status-icon-style"></i>
+    </span>
+    <span style=" margin-left: 20px; min-height: 80px; max-height: 80px; overflow-x: hidden ">
+      <div class="text-muted" style="font-size: 120%; font-weight: 400;">
+        <i class="fa fa-user-plus color-blue"> {{'OPERATION'|translate}} : </i>
+        <span style="font-size: smaller;">
+          {{detailOperation.operation.description}}
+        </span>
+      </div>
+      <div *ngIf="detailOperation.reelDuration" class="text-muted" style="font-size: 120%; font-weight: 400;">
+         <i class="fa fa-user-times color-blue"> {{'REEL_DATE_OPERATION'|translate}}: </i>
+        <span style="font-size: smaller;">
+         {{detailOperation.reelDuration}}
+        </span>
+      </div>
+      <div class="text-muted" style="font-size: 120%; font-weight: 400;">
+         <i class="fa fa-slideshare color-blue"> {{'PLANNED_DATE_OPERATION'|translate}} :</i>
+         <span style="font-size: smaller;">
+         {{detailOperation.operation.duration}}
+         </span>
+     </div>
+    </span>
+  </div>
+  <div class="card-footer px-3 py-2" >
+    <span  style="float: right;">
+      <button *ngIf="detailOperation.statusOperation===NOT_LANCED" class="k-button btnKendoGrid editBtn" style="background-color: #fafcff !important; border-color: #b7c6da; cursor: pointer;"
+              (click)="changeStatusDetailOperationAndRefreshPage(detailOperation.operation.id, 'IN_PROGRESS')">
+        <span  tooltip="{{'START'|translate}}"><i class="fa fa-chevron-circle-right fa-lg AddIcon"></i></span>
+      </button>
+      <button *ngIf="detailOperation.statusOperation===PAUSED" class="k-button btnKendoGrid editBtn" style="background-color: #fafcff !important; border-color: #b7c6da; cursor: pointer;"
+              (click)="changeStatusDetailOperationAndRefreshPage(detailOperation.operation.id, 'RESUMED')">
+        <span tooltip="{{'CONTINUER_OPERATION'|translate}}"><i class="fa fa-play-circle fa-lg" style="color: #69af81;"></i></span>
+      </button>
+      <button *ngIf="detailOperation.statusOperation===IN_PROGRESS||detailOperation.statusOperation===RESUMED" class="k-button btnKendoGrid editBtn" style="background-color: #fafcff !important; border-color: #b7c6da; cursor: pointer;"
+              (click)="changeStatusDetailOperationAndRefreshPage(detailOperation.operation.id, 'PAUSED')">
+        <span tooltip="{{'PAUSE'|translate}}"><i class="fa fa-pause-circle fa-lg" style="color: #ffc107;"></i></span>
+      </button>
+      <button *ngIf="detailOperation.statusOperation===IN_PROGRESS||detailOperation.statusOperation===RESUMED" class="k-button btnKendoGrid editBtn" style="background-color: #fafcff !important; border-color: #b7c6da; cursor: pointer;"
+              (click)="changeStatusDetailOperationAndRefreshPage(detailOperation.operation.id, 'FINISHED')">
+        <span tooltip="{{'END_OPERATION'|translate}}"><i class="fa fa-check-circle fa-lg" style="color: black;"></i></span>
+      </button>
+    </span>
+  </div>
+</div>

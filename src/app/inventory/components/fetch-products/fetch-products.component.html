@@ -1,0 +1,248 @@
+<div class="card full-screen-card w-100">
+  <div class="card-content">
+    <!--Begin card header-->
+    <div class="card-header">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mb-2">
+        <h3 class="card-title mb-0">{{'PRODUCT_LIST'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div *ngIf="isVisibleAdvancedSearchComponent" [ngClass]="advancedSearchClass">
+          <app-item-advanced-search (isVisibleAdvancedSearch)="isVisibleAdvancedSearch($event)"
+            (searchButtonClickEvent)="handleClickSearchButton($event)"
+            (isTecdocSearchEvent)="handleTecdocSearch($event)" (resetButtonClickEvent)="handleResetSearchButton($event)"
+            (sendInitialPredicate)="initPredicate($event)" [hasDefaultWarehouse]="hasDefaultWarehouse" [idWarehouse]="idWarehouse"
+            (selectedWarehouseName)="handleWarehouseName($event)" [isModal]="isModal"
+            (selectedNatureName)="handleNatureName($event)" [listTiers]="listTiers" [filterFromTecDoc]="filterFromTecDoc"
+            [selectedWarehouseFromItemDropDown]="selectedWarehouseFromItemDropDown" (searchObjectEmit)="searchObjectHandler($event)" (clickTabItemsTecDoc)="clickTabItemsTecDoc($event)"></app-item-advanced-search>
+        </div>
+        <div class="navItems " [ngClass]="gridClass">
+          <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link nav-link-new" [ngClass]="{'active':itemId===0}" id="items-tab" data-toggle="tab"
+                href="#items" role="tab" (click)="closeEquivProductKits()" aria-controls="items" aria-selected="true"
+                #itemList>{{"ITEMS"|translate}}</a>
+            </li>
+            <li class="nav-item"
+              *ngIf="(!listProductsComponent.TecDocGrid || (listProductsComponent.TecDocGrid && tecdocItem?.ItemInDB === undefined)) && (hasShowPermission || hasUpdatePermission)">
+              <a class="nav-link nav-link-new" [ngClass]="{'active':itemId!==0}" id="fiche-tab" data-toggle="tab"
+                href="#fiches" role="tab" (click)="showFiche()" aria-controls="fiches"
+                aria-selected="false">{{'ITEM_SHEET'|translate}}</a>
+            </li>
+            <li class="nav-item"
+              *ngIf="(!listProductsComponent.TecDocGrid || (listProductsComponent.TecDocGrid && tecdocItem?.ItemInDB === undefined)) && (hasShowPermission || hasUpdatePermission)">
+              <a class="nav-link nav-link-new" id="tab-associated-depot" data-toggle="tab" href="#associated-depot"
+                role="tab" aria-controls="associated-depot" (click)="showAssociatedDepot()"
+                aria-selected="false">{{'ASSOCIATED_DEPOT'|translate}}</a>
+            </li>
+            <li class="nav-item" *ngIf = "hasShowPermission || hasUpdatePermission">
+              <a class="nav-link nav-link-new" id="tab-equiv-products" data-toggle="tab" href="#equiv-products"
+                role="tab" aria-controls="equiv-products" (click)="showEquivProductKits()"
+                aria-selected="false">{{'EQUIVALENT_PRODUCTS_KITT'|translate}}
+                <span class="badge badge-success sum-element-badge ml-2"
+                  *ngIf="listProductsComponent.counts && !listProductsComponent.TecDocGrid"
+                  tooltip="{{listProductsComponent.counts}}">{{listProductsComponent.totalcounts}}</span>
+                <span class="badge badge-danger sum-element-badge ml-2"
+                  *ngIf="listProductsComponent.tecDocCounts && listProductsComponent.TecDocGrid">
+                  {{listProductsComponent.tecDocCounts}}</span></a>
+            </li>
+
+            <li class="nav-item" *ngIf="(isSales && !isQuickSales && !isForGarage) || (isQuickSales && idSelectedCustomer && !isForGarage) ">
+            <a class="nav-link nav-link-new" id="tab-sales-history" data-toggle="tab" href="#sales-history"
+              role="tab" aria-controls="sales-history" (click)="showSoldItems()"
+              aria-selected="false">{{'SOLD_ITEM'|translate}}</a>
+          </li>
+
+          </ul>
+          <div class="tab-content border-0" id="tabContent">
+            <div class="tab-pane fade  px-0 pt-0" [ngClass]="{'show active':itemId===0}" id="items" role="tabpanel"
+              aria-labelledby="items-tab">
+              <div class="card  mt-2">
+                <div class="card-content">
+                  <div class="card-body p-3" style="min-height: fit-content;">
+                    <div class="row mt-2 justify-content-between" *ngIf="!listProductsComponent.isForWarehouseDetail">
+                      <div class="col-lg-auto col-md-auto col-sm" *ngIf="!listProductsComponent.TecDocGrid">
+                        <app-quick-search-item (sendPredicate)="receiveData($event)" [valueToFind]="valueToFind" #quickSearch>
+                        </app-quick-search-item>
+                      </div>
+                      <div class="col-lg-auto col-md-auto col-sm"
+                        *ngIf="!isModal && !searchItemService.isFromSearchItem_supplierInetrface">
+                        <div *ngIf='!listProductsComponent.TecDocGrid'>
+                          <app-btn-grid [relativeStyle]='true' [advencedAdd]='hasAddPermission' [isExportExcel]="true"
+                            [addLink]='"AdvancedAdd"' [filtersItemDropdown]='listProductsComponent?.filtersItemDropdown'
+                            [cardView]="!isCardViewMode" [listView]='isCardViewMode'
+                            (cardViewEvent)="switchToCardMode()" (listViewEvent)="isCardViewMode = false"
+                            [service]="itemService" [fileName]="'PRODUCT_LIST'|translate" [model]="true"
+                            [gridSettings]="listProductsComponent?.gridSettings" [Config]=listProductsComponent?.config
+                             [isFromItem]="true" [filterItemSearch]="filterItemSearch">
+                          </app-btn-grid>
+                        </div>
+                      </div>
+
+
+                    </div>
+                    <app-list-products [isCardViewMode]="isCardViewMode" (TecDocItemEvent)="itemTecDocSend($event)"
+                      (messageEvent)="receiveCollapseStatus($event)"
+                      (cleanEquivalenceListe)='clearEquivalentList($event)' [isPurchase]="isPurchase" [isForStockMvt]="isForStockMvt"
+                      (clearTecDocEquivalentListe)="clearTecDocEquivalentList($event)" (generateBL)="generateBL()"
+                      (itemEvent)="itemSend($event)" [isModal]="isModal" (itemDetailsEvent)="itemDetailsSend($event)"
+                      (itemSelectedForGarage)="itemSelectedForGarageEvent($event)" [sendToDocument]="sendToDocument"
+                      [BrandModelSubModel]="BrandModelSubModel" [isFromAddDocumentLine]='isFromAddDocumentLine'
+                      [isFromStockDocument]="isFromStockDocument" [advancedSearchPredicateFormat]="predicate"
+                      [selectedItemInParentComp]="getItemSelectedInDropDown()" [itemId]="itemId" [idTierType]="idTierType"
+                      [isForGarage]="isForGarage" [hasDefaultWarehouse]="hasDefaultWarehouse"  [gridSettings]="gridSettings" [valueToFind]="valueToFind"
+                      [isSales]="isSales" [isForWarehouseDetail]="isForWarehouseDetail" [allowRelationSupplierItems]="allowRelationSupplierItems" #listproduct
+                      [NotPaidSubModal]="NotPaidSubModal" (onCloseNotPaidModal)="onCloseNotPaidModal()" [isFromFetchProduct]="isFromFetchProduct" [filterFromTecDoc]="filterFromTecDoc"
+                      (affectEquivalentItemEvent)='affectEquivalentItem($event)'>
+                    </app-list-products>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf = "hasShowPermission || hasUpdatePermission" class="tab-pane fade px-0" [ngClass]="{'show active':itemId!==0}" id="fiches" role="tabpanel"
+              aria-labelledby="fiches">
+              <div class="card" style="overflow-y: auto;" *ngIf="isVisibleFiche">
+                <div class="card-content" style="height: 818px;">
+                  <div class="card-body p-3">
+                    <app-item-fiche [item]="item" [isCollapsed]="isCollapsed" [isModal]="isModal" [options]='options'
+                      [sendToDocument]="sendToDocument" [openedFromGarageAddCar]="openedFromGarageAddCar"
+                      [numberDaysOutOfStock]="listProductsComponent.numberDaysOutOfStock"
+                      [associatedWarehouseData]="associatedWarehouseGridData"
+                      [replacementGridData]="getReplacementGridData()"></app-item-fiche>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf = "hasShowPermission || hasUpdatePermission" class="tab-pane fade  px-0" id="associated-depot" role="tabpanel"
+              aria-labelledby="tab-associated-depot">
+              <div *ngIf="isVisibleAssociatedDepot" class="card">
+                <div class="card-content">
+                  <div class="h-100">
+                    <div class="d-flex justify-content-center mt-2">
+                      <app-item-dropdown [isMultiselect]="false" [isMultiselectWithPaginiation]="false"
+                        [isFromProducts]="true" [customizedGridState]="listProductsComponent.gridSettings?.state"
+                        [fromListPredicate]="listProductsComponent?.advancedSearchPredicate"
+                        [selectedItemInList]="selectedItemFromList" (onItemSelect)="itemDetailsSend($event)"
+                        [orderByDescription]="false" [gridSettings]="gridSettings" [disabled]="true"
+                        *ngIf="!listProductsComponent.TecDocGrid">
+                      </app-item-dropdown>
+                    </div>
+                    <div class="d-flex justify-content-center mt-20"
+                      *ngIf="tecdocItem && listProductsComponent.TecDocGrid">
+                      <div class="border text-disabled rounded-pill p-3">
+                        <b>{{tecdocItem.Description}}</b>
+                        <div class="small">{{tecdocItem.Reference}}</div>
+                        <div class="small">{{tecdocItem.Code}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body p-3" style="min-height: fit-content;">
+                    <app-associated-warehouse-grid [assoicatedWarehouseGridHeight]="assoicatedWarehouseGridHeight"
+                      [item]="item" [gridData]="associatedWarehouseGridData"></app-associated-warehouse-grid>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf = "hasShowPermission || hasUpdatePermission" class="tab-pane fade  px-0" id="equiv-products" role="tabpanel" aria-labelledby="equiv-products">
+              <div *ngIf="isVisibleEquivProductKits" class="card" style="overflow-y: scroll;">
+                <div class="card-content" style="height: 824px;">
+                  <div class="item-left">
+                    <div class="d-flex justify-content-center mt-2">
+                      <app-item-dropdown [isMultiselect]="false" [isMultiselectWithPaginiation]="false"
+                        [isFromProducts]="true" [customizedGridState]="listProductsComponent.gridSettings?.state"
+                        [fromListPredicate]="listProductsComponent?.advancedSearchPredicate"
+                        [selectedItemInList]="selectedItemFromList" (onItemSelect)="itemSend($event)"
+                        [orderByDescription]="false" [gridSettings]="gridSettings" [disabled]="true"
+                        *ngIf="!listProductsComponent.TecDocGrid">
+                      </app-item-dropdown>
+                    </div>
+                    <div class="d-flex justify-content-center mt-20"
+                      *ngIf="tecdocItem && listProductsComponent.TecDocGrid">
+                      <div class="border text-disabled rounded-pill p-3">
+                        <b>{{tecdocItem.Description}}</b>
+                        <div class="small">{{tecdocItem.Reference}}</div>
+                        <div class="small">{{tecdocItem.Code}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body p-3" style="min-height: fit-content;">
+                    <!-- equivalence List -->
+                    <app-advanced-list-products [isCollapsed]="isCollapsed" [item]="item" [isModal]="isModal"
+                      [isReduced]="true" [modalOptions]='options' [isToShow]="false" [sendToDocument]="sendToDocument"
+                      [showTecDocSwitch]="true" [openedFromGarageAddCar]="openedFromGarageAddCar"
+                      *ngIf="!listProductsComponent.TecDocGrid" [itemsTabHref]="itemsTabHref"
+                      (itemSelectedForGarage)="itemSelectedForGarageEvent($event)" [fichesTabHref]="fichesTabHref"
+                      [depotTabHref]="depotTabHref" [itemsTabId]="itemsTabId" [fichesTabId]="fichesTabId"
+                      [depotTabId]="depotTabId" [isForGarage]="isForGarage">
+                    </app-advanced-list-products>
+
+                    <!-- Tec Doc -->
+                    <app-tec-doc-advanced-list-product *ngIf="listProductsComponent.TecDocGrid"
+                      [isCollapsed]="isCollapsed" [tecdocItem]="tecdocItem" [sendToDocument]="sendToDocument"
+                      [isModal]='isModal'>
+                    </app-tec-doc-advanced-list-product>
+
+                    <!-- Kits List -->
+                    <app-replacement-list-product [isCollapsed]="isCollapsed" [item]="item" [isModal]="isModal"
+                      [modalOptions]='options' [isToShow]="false" [sendToDocument]="sendToDocument" [isForKit]='true'
+                      [openedFromGarageAddCar]="openedFromGarageAddCar" [forKitItemsTabId]="'items-kit-tab'"
+                      [forKitItemsTabHref]="'items-kit'" [forKitDepotTabHref]="'associated-depot-kit'"
+                      [forKitDepotTabId]="'associated-depot-kit-tab'" [forKitFichesTabHref]="'fiches-kit'"
+                      [forKitFichesTabId]="'fiches-kit-tab'" #kitListProductComponent>
+                    </app-replacement-list-product>
+
+                    <!-- Replacement List -->
+                    <app-replacement-list-product [isCollapsed]="isCollapsed" [item]="item" [isModal]="isModal"
+                      [modalOptions]='options' [isToShow]="false" [sendToDocument]="sendToDocument"
+                      [openedFromGarageAddCar]="openedFromGarageAddCar" #replacementListProductComponent
+                      [isReplacementInterface]='true' [itemsTabId]="'item-replacement-tab'"
+                      [itemsTabHref]="'item-replacement'" [fichesTabId]="'fiche-replacement-tab'"
+                      [fichesTabHref]="'fiche-replacement'" [depotTabId]="'associated-depot-replacement-tab'"
+                      [depotTabHref]="'associated-depot-replacement'">
+                    </app-replacement-list-product>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div  class="tab-pane fade px-0" [ngClass]="{'show active':itemId!==0}" id="sales-history" role="tabpanel"
+            aria-labelledby="sales-history">
+            <div class="card  mt-2">
+              <div class="card-content">
+                <div class="card-body p-3" style="min-height: fit-content;">
+                  <div class="row mt-2 justify-content-between" *ngIf="!listProductsComponent.isForWarehouseDetail">
+                    <div class="col-lg-auto col-md-auto col-sm" *ngIf="!listProductsComponent.TecDocGrid">
+                      <app-quick-search-item (sendPredicate)="receiveDataSalesHistory($event)" [valueToFind]="valueToFind" #searchItemHistory>
+                      </app-quick-search-item>
+                    </div>
+                  </div>
+                  <app-list-products [isCardViewMode]="isCardViewMode"
+                  (messageEvent)="receiveCollapseStatus($event)"
+                  (cleanEquivalenceListe)='clearEquivalentList($event)' [isPurchase]="isPurchase"
+                  (clearTecDocEquivalentListe)="clearTecDocEquivalentList($event)" (generateBL)="generateBL()"
+                  (itemEvent)="itemSend($event)" [isModal]="isModal" (itemDetailsEvent)="itemDetailsSend($event)"
+                   [sendToDocument]="sendToDocument"
+                  [BrandModelSubModel]="BrandModelSubModel" [isFromAddDocumentLine]='isFromAddDocumentLine'
+                  [isFromStockDocument]="isFromStockDocument" [advancedSearchPredicateFormat]="predicate"
+                  [selectedItemInParentComp]="getItemSelectedInDropDown()" [itemId]="itemId"
+                  [isForGarage]="isForGarage" [hasDefaultWarehouse]="hasDefaultWarehouse"  [gridSettings]="gridSettingsHistory" [valueToFind]="valueToFind"
+                  [isSales]="isSales" [isForWarehouseDetail]="isForWarehouseDetail" [idSelectedCustomer]="idSelectedCustomer" [idSelectedVehicle]="idSelectedVehicle"
+                  [isFromSalesHistory]="true"  #saleshistory [isFromFetchProduct]="isFromFetchProduct"
+                  (affectEquivalentItemEvent)='affectEquivalentItem($event)'>
+                </app-list-products>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>

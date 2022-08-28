@@ -1,0 +1,14 @@
+<div *ngIf="group"  [formGroup]="group">
+  <kendo-combobox 
+      [data]="mileagesFilterDataSource"
+      class="form-control"
+      [formControlName]="fieldName"
+      name="fieldName"
+      textField="Name"
+      valueField="Id"
+      [valuePrimitive]="true"
+      [filterable]="true"
+      (filterChange)="handleFilter($event)" 
+      (valueChange)="onSelectValue($event)">
+</kendo-combobox >
+</div>

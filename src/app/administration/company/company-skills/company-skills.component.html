@@ -1,0 +1,94 @@
+<div class="card">
+  <div class="card-content">
+    <div class="card-header" *ngIf="!isModal">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'LIST_SKILLS'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter" filterable="menu" [sortable]="true"
+        [pageable]="pagerSettings" [groupable]='false' [reorderable]="true" [columnMenu]="true" [selectable]="true"
+        (edit)="editHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
+        (remove)="removeHandler($event)" (add)="addHandler($event)" (dataStateChange)="dataStateChange($event)">
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row" style="float :right; margin-right: 40px;">
+            <app-btn-grid [advencedAdd]='false' [add]='hasAddPermission' [export]='true'
+              style="margin-top: -5%; display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!-- Label Start -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+          [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+          [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+          [format]="gridSettings.columnsConfig[0].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="skillsFormGroup" controlName="Label" inputType="text">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Label End -->
+        <!-- Description start -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [format]="gridSettings.columnsConfig[1].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="skillsFormGroup" controlName="Description" inputType="text">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Description End -->
+
+        <!-- Family start -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+          [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+          [format]="gridSettings.columnsConfig[2].format" [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridEditTemplate>
+            <app-skills-family-dropdown [isInGrid]="true" (addClicked)="addFamilyEvent()" [form]="skillsFormGroup">
+            </app-skills-family-dropdown>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Family End -->
+
+        <kendo-grid-command-column [width]="130">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button kendoGridEditCommand  style="background-color: transparent;" *ngIf="hasUpdatePermission" tooltip="{{'UPDATE'|translate}}">
+              <i class="las la-pen edit-pencil cursor-pointer la-lg"></i>
+            </button>
+      
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button kendoGridRemoveCommand style="background-color: transparent;" *ngIf="hasDeletePermission" tooltip="{{'DELETE'|translate}}">
+              <i class="fa fa-trash-o la-lg mx-2 text-danger"></i>
+            </button>
+            
+            <!-- save command directive, will be visible when in edit mode -->
+            <button kendoGridSaveCommand class="btnKendoGrid" style="background-color: transparent;"><span class="fa fa-save"></span></button>
+            <!-- cancel command directive, will be visible when in edit mode -->
+            <button kendoGridCancelCommand class="btnKendoGrid" style="background-color: transparent;"><span class="fa fa-close"></span></button>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" fileName="{{'LIST_SKILLS'|translate}}" pdf="true" excel="true"
+          [service]="skillsService" [predicate]="predicate">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+    </div>
+    <!--End card body-->
+  </div>
+</div>

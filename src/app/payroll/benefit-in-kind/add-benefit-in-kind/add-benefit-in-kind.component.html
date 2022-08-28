@@ -1,0 +1,72 @@
+<div class="card" style="border-radius: 10px;border-bottom: 1px solid #c8ced3 !important;">
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="benefitInKindFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Code" type="text" name="Code"
+              [ngClass]="{ 'has-error': (Code.touched || Code.dirty) && (!Code.valid && !Code.pending) }">
+            <app-control-messages [control]="Code"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Name" type="text" name="Name"
+              [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && !Name.valid }">
+            <app-control-messages [control]="Name"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+            <textarea class="form-control" formControlName="Description" name="Description" type="text"
+              [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }"></textarea>
+            <app-control-messages [control]="Description"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CNSS_TYPE'|translate}}<span
+                class="required">*</span></label>
+            <app-cnss-dropdown [group]="benefitInKindFormGroup"></app-cnss-dropdown>
+            <app-control-messages [control]="IdCnss"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-6 col-sm-12 contact100-form-checkbox">
+            <input class="input-checkbox100" formControlName="IsTaxable" id="IsTaxable" name="IsTaxable"
+              type="checkbox">
+            <label class="label-checkbox100 " for="IsTaxable" style="margin-top: 13%;margin-left: 15px;">
+              {{'TAXABLE'|translate}}&nbsp;
+            </label>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-12 contact100-form-checkbox">
+            <input class="input-checkbox100" formControlName="DependNumberDaysWorked" id="DependNumberDaysWorked" name="DependNumberDaysWorked"
+              type="checkbox">
+            <label class="label-checkbox100 " for="DependNumberDaysWorked" style="margin-top: 13%;margin-left: 15px;">
+              {{'DEPEND_NUMBER_DAYS_WORKED'|translate}}&nbsp;
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button class="btn btn-sm btn-save mx-1" (click)="save()" type="submit" *ngIf="(hasAddPermission && !isUpdateMode) || (hasUpdatePermission && isUpdateMode)">
+                <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'ADD') |translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

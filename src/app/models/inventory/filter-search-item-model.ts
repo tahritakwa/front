@@ -1,0 +1,35 @@
+import { OrderBy } from '../../shared/utils/predicate';
+import { Resource } from '../shared/ressource.model';
+export class FilterSearchItem extends Resource {
+  GlobalSearchItem: string;
+  IdNature: number;
+  Oem: string;
+  IdTiers: number[];
+  IdProductItem: number;
+  IdFamily: number;
+  IdSubFamily: number;
+  IdVehicleBrand: number;
+  IdModel: number;
+  IdSubModel: number;
+  IdWarehouse: number;
+  BarCodeD: string;
+  MinUnitHtsalePrice: number;
+  MaxUnitHtsalePrice: number;
+  isForSale: boolean;
+  isForPurchase: boolean;
+  isExpense: boolean;
+  isRestaurn: boolean;
+  IsStockManaged: boolean;
+  IdItemToIgnore: number;
+  IdStorage: number;
+  AllAvailableQuantity: boolean;
+  page: number;
+  pageSize: number;
+  OrderBy: OrderBy[];
+  IdItem: number;
+  IdSalesPrice: number;
+  IsProduct: boolean;
+  IdCustomer: number;
+  IdVehicle: number;
+  isFromSalesHistory: boolean;
+}

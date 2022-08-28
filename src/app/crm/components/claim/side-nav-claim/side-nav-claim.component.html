@@ -1,0 +1,17 @@
+<div [class]="classDisplay" id="sideNavClaim">
+  <ul class="{{largeSidNav ? 'navbar-side bigger' : 'navbar-side'}}"  [ngStyle]="sidenavWidthStyle()">
+    <div style="{background-color: #fff}"><i class="fa fa-times-circle-o"
+                                             style="padding-top: 2%; padding-right: 1%;padding-left: 2%;font-size: 22px;color: #20a8d8;" (click)="hideDisplay()"></i>
+      <i *ngIf="!largeSidNav" class="fa fa-expand"
+         style="   padding-top: 2%;padding-right: 2%;font-size: 22px;color: #20a8d8;" (click)="resizeSidNav(true)"></i>
+
+      <i *ngIf="largeSidNav" class="fa fa-compress"
+         style="padding-top: 2%;padding-right: 2%;font-size: 22px;color: #20a8d8;" (click)="resizeSidNav(false)"></i>
+    </div>
+    <app-detail-claim [claimDataFromClaimsList]="claimDetail"
+                      (passeToUpdateMode)="passeToUpdateMode($event)"
+                      [isArchivingMode] = "isArchivingMode"
+                      [fromRelatedArchiving] = "fromRelatedArchiving"
+                      (backToList) = hideDisplay() [source]="source"></app-detail-claim>
+  </ul>
+</div>

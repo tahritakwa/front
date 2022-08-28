@@ -1,0 +1,375 @@
+<div class="card full-screen-card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3
+          class="card-title mb-0">{{ (prospectType ? 'PROSPECTS.TITLE_ADD_FORM' : 'CLIENTS.TITLE_ADD_FORM') |translate }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form [formGroup]="addContactForm" (ngSubmit)="save()">
+
+      <div class="row form-group">
+        <div class="col-lg-10 col-sm-12 col-md-12">
+          <div class="row form-group">
+            <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">&nbsp;</label>
+              <kendo-dropdownlist class="form-control"
+                                  [(ngModel)]="salutationValue"
+                                  [data]="salutations" formControlName="prefix">
+
+              </kendo-dropdownlist>
+            </div>
+
+
+            <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'FIRST_NAME'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" type="text"
+                     formControlName="name"
+                     [ngClass]="{ 'has-error': (addContactForm.controls.name.touched || addContactForm.controls.name.dirty) && !addContactForm.controls.name.valid }">
+              <app-control-messages [control]="addContactForm.controls.name"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+
+            </div>
+            <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'LAST_NAME'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" type="text" formControlName="lastName"
+                     [ngClass]="{ 'has-error': (addContactForm.controls.lastName.touched || addContactForm.controls.lastName.dirty) && !addContactForm.controls.lastName.valid }">
+              <app-control-messages [control]="addContactForm.controls.lastName"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+
+          <div class="row form-group">
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12" *ngIf="!source">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ORGANISM_LABEL'|translate}}<span
+                class="required" *ngIf="!prospectType">*</span></label>
+              <div class="input-group">
+                <kendo-combobox style="width: 100%;" [data]="organizationsList"
+                                formControlName="organisation" [filterable]="true"
+                                (filterChange)="handleFiltreOrganisation($event)"
+                                textField="name" class="form-control"
+                                [ngClass]="{ 'has-error': (addContactForm.controls.organisation.touched ||
+                                            addContactForm.controls.organisation.dirty) && !addContactForm.controls.organisation.valid }"
+                                [(ngModel)]="selectedOrganisation">
+                  <ng-template kendoComboBoxFooterTemplate let-dataItem>
+
+                    <app-drop-down-footer *ngIf="authService.hasAuthorities([CRMPermissions.ADD_ORGANISATION])"
+                      [addNew]="showAddOrganisationPopUp.bind(this)">
+                    </app-drop-down-footer>
+
+                  </ng-template>
+                </kendo-combobox>
+              </div>
+              <app-control-messages [control]="addContactForm.controls.organisation"
+                                    class="error-msg messages text-danger">
+              </app-control-messages>
+            </div>
+
+
+            <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12" *ngIf="this.prospectType">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'LEAD_SOURCE'|translate}}</label>
+              <div class="input-group">
+                <kendo-dropdownlist style="width: 100%;" [data]="leadSources" [valuePrimitive]="true"
+                                    formControlName="leadSource"
+                                    class="form-control">
+                  <ng-template kendoComboBoxFooterTemplate let-dataItem>
+
+                  </ng-template>
+                </kendo-dropdownlist>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.POST_LABEL'|translate}}</label>
+              <input class="form-control" type="text" formControlName="poste"
+                     [value]="addContactForm.value.poste"
+                     [ngClass]="{ 'has-error': (addContactForm.controls.poste.touched ||
+                                addContactForm.controls.poste.dirty) && !addContactForm.controls.poste.valid }">
+              <app-control-messages [control]="addContactForm.controls.poste"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="col-lg-2 col-sm-4 col-md-5 d-flex justify-content-center">
+          <label class="img-border  d-flex justify-content-center" for="companyLogo" #fileInput>
+            <img id="companyLogo" style="height: 100%;width: 100%;" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                 [src]="pictureContactySrc || '../../../../assets/image/profile.png'"
+                 (click)="fileInput.click()"/>
+            <i class="fa fa-camera fa-lg"></i>
+          </label>
+          <input type='file' (change)="uploadPictureFile($event);" #fileInput
+                 accept="image/x-png,image/gif,image/jpeg"/>
+        </div>
+
+      </div>
+
+
+      <p-accordion [multiple]="true">
+        <!-- Cordonnées cordination -->
+        <p-accordionTab (selectedChange)="secondeCollapseIsOpened = !secondeCollapseIsOpened"
+                        [selected]="secondeCollapseIsOpened"
+                        header="{{'PROSPECTS.COLLAPSE_CORDINATION_TITLE'| translate}}" style="color: #4c9aae;">
+          <div class="row form-group">
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-6 col-sm-12"> {{'PROSPECTS.EMAIL'|translate}}<span
+                class="required">*</span></label>
+              <div class="input-group">
+                <input class="form-control" type="email" formControlName="mail"
+                       [value]="addContactForm.value.mail" (keyup)="reWriteEmail()"
+                       (blur)="validateDuplicatedMail($event)"
+                       [(ngModel)]="mail"
+                       [ngClass]="{ 'has-error': (addContactForm.controls.mail.touched ||
+                               addContactForm.controls.mail.dirty) && !addContactForm.controls.mail.valid }">
+                <div class="input-group-append">
+                            <span class="input-group-text" style="background-color: white;">
+                              <i class="fa fa-envelope"></i>
+                            </span>
+                </div>
+              </div>
+              <app-control-messages [control]="addContactForm.controls.mail"
+                                    class="error-msg messages text-danger">
+              </app-control-messages>
+              <span *ngIf="emailAlreadyTaken===true" class="error-message" style="color:red">
+                          {{'CONTACT_Mail_ALREADY_EXISTS'|translate}}
+                        </span>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.NAME_ASSISTANT'|translate}}</label>
+              <div class="input-group">
+                <input class="form-control" type="text" formControlName="assistantName"
+                       [value]="addContactForm.value.assistantName">
+                <div class="input-group-append">
+                        <span class="input-group-text" style="background-color: white;">
+                          <i class="fa fa-user"></i>
+                        </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.FAX'|translate}}</label>
+              <div class="input-group">
+                <kendo-maskedtextbox [maskValidation]="false" [includeLiterals]="true" [mask]="'(+990)000000000000'"
+                                     class="form-control" formControlName="fax"
+                                     name="fax"></kendo-maskedtextbox>
+                <div class="input-group-append">
+                          <span class="input-group-text" style="background-color: white;">
+                            <i class="fa fa-fax"></i>
+                          </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div *ngIf="prospectType">
+            <div class="col mt-2" >
+              <app-phone  [parentFormGroup]="addContactForm" [hasUpdatePhone]="true" [isBankAgency]="false" [isOffice]="false" [phoneToUpdate]="phoneToUpdate" [isCompanySetup]="false" [idTiers]="0"
+              ></app-phone>
+            </div>
+          </div>
+
+
+          <div class="row form-group">
+
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.PHONE_HOME'|translate}}</label>
+              <kendo-maskedtextbox [maskValidation]="false" [includeLiterals]="true" [mask]="'(+990)000000000000'"
+                                   class="form-control" formControlName="homePhone"
+                                   name="homePhone"></kendo-maskedtextbox>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.PHONE_OTHER'|translate}}</label>
+              <kendo-maskedtextbox [maskValidation]="false" [includeLiterals]="true" [mask]="'(+990)000000000000'"
+                                   class="form-control" formControlName="otherPhone"
+                                   name="homePhone"></kendo-maskedtextbox>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.PHONE_ASS'|translate}}</label>
+              <kendo-maskedtextbox [maskValidation]="false" [includeLiterals]="true" [mask]="'(+990)000000000000'"
+                                   class="form-control" formControlName="assistantPhone"
+                                   name="homePhone"></kendo-maskedtextbox>
+            </div>
+
+          </div>
+
+
+          <div class="row form-group">
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.LINKEDIN'|translate}}</label>
+              <div class="input-group">
+                <input class="form-control" type="text" formControlName="linkedIn"
+                       [value]="addContactForm.value.linkedIn"
+                       [ngClass]="{ 'has-error': (addContactForm.controls.linkedIn.touched || addContactForm.controls.linkedIn.dirty) && !addContactForm.controls.linkedIn.valid }">
+                <div class="input-group-append">
+                        <span class="input-group-text" style="background-color: white;">
+                          <i class="fa fa-linkedin"></i>
+                        </span>
+                </div>
+              </div>
+              <app-control-messages [control]="addContactForm.controls.linkedIn"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.FACEBOOK'|translate}}</label>
+              <div class="input-group">
+                <input class="form-control" type="text" formControlName="facebook"
+                       [value]="addContactForm.value.facebook"
+                       [ngClass]="{ 'has-error': (addContactForm.controls.facebook.touched || addContactForm.controls.facebook.dirty) && !addContactForm.controls.facebook.valid }">
+                <div class="input-group-append">
+                          <span class="input-group-text" style="background-color: white;">
+                            <i class="fa fa-facebook"></i>
+                          </span>
+                </div>
+              </div>
+              <app-control-messages [control]="addContactForm.controls.facebook"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.TWITTER'|translate}}</label>
+              <div class="input-group">
+                <input class="form-control" type="text" formControlName="twitter" name="twitter"
+                       [value]="addContactForm.value.twitter"
+                       [ngClass]="{ 'has-error': (addContactForm.controls.twitter.touched || addContactForm.controls.twitter.dirty) && !addContactForm.controls.twitter.valid }">
+                <div class="input-group-append">
+                          <span class="input-group-text" style="background-color: white;">
+                            <i class="fa fa-twitter"></i>
+                          </span>
+
+                </div>
+              </div>
+              <app-control-messages [control]="addContactForm.controls.twitter"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col mt-2" *ngIf="!prospectType">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.PHONE_PERSO'|translate}}</label>
+              <app-phone  [parentFormGroup]="phoneForm" [hasUpdatePhone]="true" [isBankAgency]="false" [isOffice]="false" [phoneToUpdate]="phoneToUpdate" [isCompanySetup]="false" [idTiers]="0"
+              ></app-phone>
+            </div>
+          </div>
+        </p-accordionTab>
+        <!--collapse des adresses !-->
+
+        <p-accordionTab header="{{'COLLAPSE_ADRESS_TITLE'| translate}}"
+                        (selectedChange)="openAddressDetailsCollapse = !openAddressDetailsCollapse"
+                        [selected]="openAddressDetailsCollapse" (click)="openAddressDetailCollapse()">
+          <app-tiers-address [tiersFormGroup]="addContactForm" [tiersAddressToUpdate]="tiersAddress" [isMultiple]="false" [hasUpdateCrmPermission]="true"
+                             [collapseOnOpenAction]="collapseAddressOpened" [typeTier]="typeTier"></app-tiers-address>
+        </p-accordionTab>
+
+        <!--Dates à rappeler -->
+        <p-accordionTab header="{{'MARKING_EVENTS'| translate}}" style="color: #4c9aae;"
+                        (selectedChange)="datesToRememberCollapseIsOpened = !datesToRememberCollapseIsOpened"
+                        [selected]="datesToRememberCollapseIsOpened">
+          <div formArrayName="datesToRemember" class="row form-group" style="padding-top: 2%;"
+               *ngFor="let dates of datesToRemember.controls; let i=index">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <div class="row py-1 d-flex justify-content-between">
+                <div class="col px-0">
+                  <h6 class="card-title mb-0"
+                      style="color: #4c9aae;">{{'PROSPECTS.DATE_REMEMBER.LABEL'|translate}} {{i + 1}}</h6>
+                </div>
+                <i type="button" (click)="deleteDateToRemember(i)"
+                   class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"></i>
+              </div>
+            </div>
+
+            <form [formGroup]="dates" class="col-12" style="width: 100%;">
+              <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.DATE_REMEMBER.LABEL'|translate}} {{i + 1}}
+                  <span class="required">*</span></label>
+                <app-marking-events-drop-down [group]="dates"
+                                              (Selected)="changeDateSelection($event)">
+                </app-marking-events-drop-down>
+                <app-control-messages [control]="dates.get('eventName')"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12 resp">
+                  {{'DATE'|translate}}<span
+                  class="required">*</span></label>
+                <kendo-datepicker formControlName="date" type="date"
+                                  class="form-control">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="dates.get('date')"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </form>
+          </div>
+          <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+            <button class="btn-Add k-button btn btn-add" type="button" (click)='addDatesToRemeber()'>
+              <i class="fa fa-plus fa AddIcon"></i>
+              <span>&nbsp; {{'ADD'|translate}}</span>
+            </button>
+          </div>
+        </p-accordionTab>
+
+        <!--Description accordion-->
+        <p-accordionTab header="{{'PROSPECTS.COLLAPSE_DESCRIPTION_TITLE'| translate}}" style="color: #4c9aae;">
+          <div class="row form-group">
+            <div class="col-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'PROSPECTS.DESCRIPTION'|translate}}</label>
+              <textarea class="form-control desc" style="width: 100%;padding-bottom: 20%;"
+                        formControlName="description" rows="1"
+                        maxlength="150"></textarea>
+            </div>
+          </div>
+        </p-accordionTab>
+        <!-- Collapse permission -->
+        <p-accordionTab [selected]="false" *ngIf="prospectType"
+                        header="{{'PERMISSION'| translate}}" style="color: #4c9aae;">
+          <br/>
+          <app-permission [parent]="parentPermission" [uuid]="uuid"></app-permission>
+        </p-accordionTab>
+      </p-accordion>
+      <!--Begin Card footer-->
+
+    </form>
+  </div>
+
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="onBackToListOrCancel(prospectType)">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST' |translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

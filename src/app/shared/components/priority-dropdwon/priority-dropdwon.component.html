@@ -1,0 +1,16 @@
+<div [formGroup]="group">
+  <kendo-combobox (valueChange)="onValueChanged($event)"
+                  [data]="priorityDataSource"
+                  [disabled]="disabled"
+                  [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin"
+                  formControlName="Priority"
+                  name="Priority"
+                  textField="name"
+                  valueField="value"
+  >
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      {{ dataItem?.name | translate }}
+    </ng-template>
+  </kendo-combobox>
+</div>

@@ -1,0 +1,341 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card header-->
+  <div class="card-header">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{companyToUpdate.Name}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!--Begin Card body-->
+  <div class="card-body">
+    <!--Begin add form-->
+    <form class="form-horizontal">
+      <div class="col-12">
+        <!-- Begin principal menu  part-->
+        <div class="form-group row" [formGroup]="companyFormGroup">
+          <div class="col-lg-10 col-sm-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+                <input class="form-control" formControlName="Name" type="text"
+                       [ngClass]="{ 'has-error': (Name.touched || Name.dirty) && !Name.valid }">
+                <app-control-messages [control]="Name" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-12"> {{'SIRET'|translate}}</label>
+                <input class="form-control" formControlName="Siret" type="text"
+                       [ngClass]="{ 'has-error': (Siret.touched || Siret.dirty) && !Siret.valid }">
+                <app-control-messages [control]="Siret" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-12"> {{'PHONE'|translate}}</label>
+                <input class="form-control" formControlName="Tel1" type="number"
+                       [ngClass]="{ 'has-error': (Tel1.touched || Tel1.dirty) && !Tel1.valid }">
+                <app-control-messages [control]="Tel1" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-12"> {{'EMAIL'|translate}}</label>
+                <input class="form-control" formControlName="Email" type="text"
+                       [ngClass]="{ 'has-error': (Email.touched || Email.dirty) && !Email.valid }">
+                <app-control-messages [control]="Email" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-12"> {{'ACTIVITY_SECTOR'|translate}}</label>
+                <kendo-combobox formControlName="ActivityArea" [data]="activityAreas" [filterable]="true"
+                                style="width: 100%;" [valuePrimitive]="true" [valueField]="'enumValue'" [textField]="'enumText'"
+                                (filterChange)="handleFiltreActivityAreas($event)">
+  <!--No data template-->
+  <ng-template kendoDropDownListNoDataTemplate>
+    <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+  </ng-template>
+  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'VATNUMBER'|translate}}</label>
+                <input class="form-control" formControlName="VatNumber" type="text"
+                       [ngClass]="{ 'has-error': (VatNumber.touched || VatNumber.dirty) && !VatNumber.valid }">
+                <app-control-messages [control]="VatNumber" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'MATRICULEFISC'|translate}}</label>
+                <input class="form-control" formControlName="MatriculeFisc" type="text"
+                       [ngClass]="{ 'has-error': (MatriculeFisc.touched || MatriculeFisc.dirty) && !MatriculeFisc.valid }">
+                <app-control-messages [control]="MatriculeFisc" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'COMMERCIALREGISTER'|translate}}</label>
+                <input class="form-control" formControlName="CommercialRegister" type="text" name="CommercialRegister"
+                       [ngClass]="{ 'has-error': (CommercialRegister.touched || CommercialRegister.dirty) && !CommercialRegister.valid }">
+                <app-control-messages [control]="CommercialRegister" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'CNSSAFFILIATION'|translate}}</label>
+
+                <kendo-maskedtextbox [mask]="cnssAffiliationMask" [maskOnFocus]="true" class="form-control"
+                                     formControlName="CnssAffiliation" name="CnssAffiliation"
+                                     [ngClass]="{ 'has-error': (CnssAffiliation.touched || CnssAffiliation.dirty) && !CnssAffiliation.valid }">
+                </kendo-maskedtextbox>
+
+
+                <app-control-messages [control]="CnssAffiliation" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'CURRENCY'|translate}}<span
+                  class="required">*</span></label>
+                <app-currency-dropdown class="error-msg messages text-left text-danger" [group]="companyFormGroup">
+                </app-currency-dropdown>
+                <app-control-messages [control]="IdCurrency" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TIMEZONE'|translate}}</label>
+                <kendo-combobox class="w-100" formControlName="Timezone" [data]="timeZones" [filterable]="true"
+                                [valueField]="'value'" [textField]="'text'" [valuePrimitive]="true"
+                                (filterChange)="handleTimeZoneFiltreChange($event)">
+                           <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>           
+                </kendo-combobox>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'WEBSITE'|translate}}</label>
+                <input class="form-control" formControlName="WebSite" type="text" name="WebSite"
+                       [ngClass]="{ 'has-error': (WebSite.touched || WebSite.dirty) && !WebSite.valid }">
+                <app-control-messages [control]="WebSite" class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 2rem;">
+                <input type="checkbox" class="input-checkbox100" id="WithholingTaxId"
+                       formControlName="WithholdingTax" />
+                <label class="label-checkbox100" for="WithholingTaxId">{{
+                  "WITHHOLDING" | translate}}
+                </label>
+              </div>
+            </div>
+          </div>
+          <!--logo-->
+          <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+            <label class="img-border  d-flex justify-content-center" for="companyLogo" #fileInput>
+              <img id="companyLogo" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                   [src]="pictureCompanySrc || 'assets/image/placeholder-logo.png'" (click)="fileInput.click()" />
+              <i class="fa fa-camera fa-lg"></i>
+              <i *ngIf="pictureCompanySrc" class="fa fa-close fa-xs" (click)="removeCompanyPicture($event,i)"></i>
+            </label>
+
+            <input type='file' (change)="uploadPictureFile($event);" #fileInput
+                   accept="image/x-png,image/gif,image/jpeg" />
+
+          </div>
+
+
+          <!-- End principal menu  part -->
+          <!-- Begin tab part -->
+
+          <!-- Begin accordion -->
+          <p-accordion [multiple]="true" class="w-100">
+
+            <!-- Address information -->
+            <p-accordionTab header="{{'COLLAPSE_ADRESS_TITLE'| translate}}"
+                            (selectedChange)="openAddressDetailsCollapse = !openAddressDetailsCollapse"
+                            [selected]="openAddressDetailsCollapse" (click)="openAddressDetailCollapse()">
+              <app-tiers-address [tiersFormGroup]="companyFormGroup" [tiersAddressToUpdate]="companyAdresses"
+              [hasUpdateAdressPermission]="hasUpdateCompanyPermission" [isCompanySetup]="true" 
+                                 [collapseOnOpenAction]="collapseAddressOpened"></app-tiers-address>
+            </p-accordionTab>
+            <!-- Contact -->
+            <p-accordionTab header="{{'CONTACTS'| translate}}"
+                            (selectedChange)="openTiersContactsCollapse = !openTiersContactsCollapse"
+                            [selected]="openTiersContactsCollapse" (click)="openContactDetailCollapse()">
+              <app-tiers-contact [tiersFormGroup]="companyFormGroup" [tiersContactToUpdate]="companyContacts"
+                                 [hasUpdateContactPermission]="hasUpdateCompanyPermission" [isCompanySetup]="true"
+                                 [collapseOnOpenAction]="collapseContactOpened" (phoneHasErrorEvent)="isContactPhoneHasError($event)">
+              </app-tiers-contact>
+            </p-accordionTab>
+            <!-- financial information -->
+            <p-accordionTab header="{{'FINANCIAL_INFORMATION'| translate}}"
+            (selectedChange)="openFinancialInformationsCollapse = !openFinancialInformationsCollapse"
+            [selected]="openFinancialInformationsCollapse">
+<!--achat et vente-->
+<div [formGroup]="companyFormGroup">
+<div class="form-group row" *ngIf="purchaseSettingsFormGroup" [formGroup]="companyFormGroup">
+  <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+    <label class="col-lg-12 col-md-12 col-sm-12"> {{'TIMBRE'|translate}}</label>
+    <input class="form-control" formControlName="FiscalStamp" type="number" name="FiscalStamp"
+           [ngClass]="{ 'has-error': (FiscalStamp.touched || FiscalStamp.dirty) && !FiscalStamp.valid }">
+    <app-control-messages [control]="FiscalStamp" class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+  <div class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+    <label class="col-lg-12 col-md-12 col-sm-12"> {{'MANAGER'|translate}}</label>
+    <app-user-dropdown [form]="purchaseSettingsFormGroup" [isForCompany] = "true" [idUserColName]="'IdPurchasingManager'">
+    </app-user-dropdown>
+    <app-control-messages [control]="IdPurchasingManager"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+  </div>
+  <div [formGroup]="companyFormGroup" class="col-lg-4 col-md-6 col-sm-12 buttomSpace">
+    <label class="col-lg-12 col-md-12 col-sm-12"> {{'DEFAULT_TAXE'|translate}}</label>
+    <app-taxe-dropdown [form]="companyFormGroup" [selectedValue]="companyToUpdate.IdDefaultTax"
+                       (selected)="OnselectDefaultTax($event)">
+    </app-taxe-dropdown>
+  </div>
+</div>
+</div>
+<div>
+<div [formGroup]="companyFormGroup" class="form-group row">
+  <div class="col-6 contact100-form-checkbox">
+    <input type="checkbox" class="input-checkbox100 " formcontrolname="AllowEditionItemDesignation"
+           id="checkDesignationEdition" name="AllowEditionItemDesignation"
+           (click)='activateDesignationEdition()'
+           [checked]="activeDesignationEdition == true ? 'checked': null">
+    <label class="label-checkbox100"
+           for="checkDesignationEdition">{{'ALLOW_EDITION_ITEM_DESIGNATION'|translate}}</label>
+    <app-control-messages [control]="AllowEditionItemDesignation"
+                          class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+  <div class="col-6 contact100-form-checkbox">
+    <input type="checkbox" class="input-checkbox100 " formcontrolname="AllowRelationSupplierItems"
+           id="checkRelationSupplierItems" name="AllowRelationSupplierItems"
+           (click)='activateRelationSupplierItems()'
+           [checked]="activeRelationSupplierItems == true ? 'checked': null">
+    <label class="label-checkbox100"
+           for="checkRelationSupplierItems">{{'ALLOW_RELATION_SUPPLIER_ITEMS'|translate}}</label>
+    <app-control-messages [control]="AllowRelationSupplierItems"
+                          class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+</div>
+<div [formGroup]="companyFormGroup" class="form-group row">
+  <div class="col-6 contact100-form-checkbox">
+    <input type="checkbox" class="input-checkbox100 " formcontrolname="NoteIsRequired"
+           id="checkNoteIsRequired" name="NoteIsRequired"
+           (click)='activateNote()'
+           [checked]="activeNoteRequired == true ? 'checked': null">
+    <label class="label-checkbox100"
+           for="checkNoteIsRequired">{{'NOTE_REQUIRED_BL'|translate}}</label>
+  </div>
+</div>
+</div>
+</p-accordionTab>
+
+
+            <!-- cra -->
+            <p-accordionTab *ngIf="hasShowRhTabPermission" header="{{'TIMESHEET'| translate}}">
+              <!-- cra -->
+              <div [formGroup]="timesheetFormGroup">
+                <div class="form-group row">
+                  <div class="col-lg-4 col-md-6 col-sm-6 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="TimeSheetPerHalfDay"
+                           id="chkTimeSheet" name="TimeSheetPerHalfDay" (click)='clickTimeSheetPerHalfDay()'
+                           [checked]="timeSheetPerDay? 'checked': null">
+                    <label class="label-checkbox100" for="chkTimeSheet">
+                      {{'TIMESHEET_PER_HALF_DAY'|translate}}</label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div class="col-lg-4 col-md-6 col-sm-6 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formControlName="AutomaticCandidateMailSending"
+                           id="automaticEmail" name="AutomaticCandidateMailSending">
+                    <label class="label-checkbox100" for="automaticEmail">
+                      {{'AUTOMATIC_SENDING_OF_EMAIL_TO_CANDIDATE'|translate}}</label>
+                  </div>
+                </div>
+              </div>
+            </p-accordionTab>
+
+            <!-- Start Payroll -->
+            <p-accordionTab *ngIf="hasShowPayTabPermission" header="{{'PAY'| translate}}">
+              <div [formGroup]="payFormGroup">
+                <div class="form-group row">
+                  <div class="col-lg-4 col-md-4 col-sm-12 buttomSpace">
+                    <div class="mt-4">
+                      <input type="checkbox" class="input-checkbox100" formcontrolname="PayDependOnTimesheet"
+                             id="chkPayDependOnTimesheet" name="PayDependOnTimesheet" (click)='clickPayDependOnTimesheet()'
+                             [checked]="payDependOnTimesheetVariable? 'checked': null">
+                      <label class="label-checkbox100"
+                             for="chkPayDependOnTimesheet">{{'DEPEND_ON_TIMESHEET'|translate}}</label>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-12">
+                    <label class="col-12"> {{'NUMBER_OF_PAYED_WORKED_DAYS'|translate}}</label>
+                    <input class="form-control" formControlName="DaysOfWork" type="number"
+                           [ngClass]="{ 'has-error': (DaysOfWork.touched || DaysOfWork.dirty) && !DaysOfWork.valid }">
+                    <app-control-messages [control]="DaysOfWork" class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-12 buttomSpace">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'CATEGORY'|translate}}</label>
+                    <input class="form-control" formControlName="Category" type="text">
+                  </div>
+                </div>
+
+                <div class="form-group row" *ngIf="!payDependOnTimesheetVariable" [formGroup]="dayOfWeekFormGroup">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'NUMBER_DAYS_WORKED'|translate}}</label>
+                  <div class="col-lg-12 col-md-12 col-sm-12 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="Monday" id="Monday" name="Monday"
+                           (click)='clickMonday()' [checked]="mondayVariable? 'checked': null">
+                    <label class="label-checkbox100" for="Monday">{{'MONDAY'|translate}}</label>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="Tuesday" id="Tuesday"
+                           name="Tuesday" (click)='clickTuesday()' [checked]="tuesDayVariable? 'checked': null">
+                    <label class="label-checkbox100" for="Tuesday">{{'TUESDAY'|translate}}</label>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="Wednesday" id="Wednesday"
+                           name="Wednesday" (click)='clickWednesday()' [checked]="wednesdayVariable? 'checked': null">
+                    <label class="label-checkbox100" for="Wednesday">{{'WEDNESDAY'|translate}}</label>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="Thursday" id="Thursday"
+                           name="Thursday" (click)='clickThursday()' [checked]="thursdayVariable? 'checked': null">
+                    <label class="label-checkbox100" for="Thursday">{{'THURSDAY'|translate}}</label>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="Friday" id="Friday" name="Friday"
+                           (click)='clickFriday()' [checked]="fridayVariable? 'checked': null">
+                    <label class="label-checkbox100" for="Friday">{{'FRIDAY'|translate}}</label>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="Saturday" id="Saturday"
+                           name="Saturday" (click)='clickSaturday()' [checked]="saturdayVariable? 'checked': null">
+                    <label class="label-checkbox100" for="Saturday">{{'SATURDAY'|translate}}</label>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 contact100-form-checkbox">
+                    <input type="checkbox" class="input-checkbox100" formcontrolname="Sunday" id="Sunday" name="Sunday"
+                           (click)='clickSunday()' [checked]="sundayVariable? 'checked': null">
+                    <label class="label-checkbox100" for="Sunday">{{'SUNDAY'|translate}}</label>
+                  </div>
+                </div>
+              </div>
+            </p-accordionTab>
+            <!-- End Payroll -->
+
+          </p-accordion>
+        </div>
+        <!-- End tab part-->
+      </div>
+    </form>
+  </div>
+  <!--Begin Card footer-->
+  <div class="card-footer">
+    <button class="btn btn-sm btn-save mx-1 pull-right" (click)="save()" type="button" *ngIf="hasUpdateCompanyPermission">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+  </div>
+  <!--End Card footer-->
+</div>

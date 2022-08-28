@@ -1,0 +1,53 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-8">
+      <h4 class="card-title mb-0">{{'TOP_DAYS_OF_VACATION_USED'|translate}}</h4>
+      <div *ngIf="hasTopEmployeeDayOff" class="small text-muted">
+        {{'DU'|translate}} {{startDate|date: dateFormat}}
+        {{'AU'|translate}} {{endDate|date: dateFormat}}
+      </div>
+      <div *ngIf="!hasTopEmployeeDayOff" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="changePeriod($event)"></app-period-filter>
+      <button *ngIf="hasTopEmployeeDayOff || (dayOffTypeFilter)" mat-icon-button [matMenuTriggerFor]="mainMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu xPosition="before" [overlapTrigger]="false" #mainMenu="matMenu">
+        <app-number-picker-filter [numberOfRows]="numberOfRows" [isUpButtonVisible]="isUpButtonVisible"
+                                  [isDownButtonVisible]="isDownButtonVisible"
+                                  (newItemEvent)="ChangeNumberOfRows($event)"></app-number-picker-filter>
+        <div class="filter-label">
+          {{'TYPE_DAY_OFF' | translate}} :
+        </div>
+        <app-multiselect-filter [dataList]="typeDayOffList" (click)="$event.stopPropagation()"
+                                [clearSelectedFilters]="clearDayOffTypeFilter" [listSelected]="dayOffTypeFilter"
+                                (newItemSelectedEvent)="onSelectTypeDayOff($event)"></app-multiselect-filter>
+      </mat-menu>
+    </div>
+  </div>
+</div>
+
+<div class="content overflow-auto" [ngStyle]="hasTopEmployeeDayOff ?{'max-height':'200px'} : ''" style="margin:0px 15px;">
+  <table *ngIf="hasTopEmployeeDayOff" class="table">
+    <thead style="background-color: #dee2e6;">
+    <tr>
+      <th scope="col"> {{'NOM_CLEINT'|translate}}</th>
+      <th scope="col"> {{'PRENOM_CLIENT'|translate}}</th>
+      <th scope="col">{{'TOTAL_DAY_OFF'|translate}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let absence of listAbsence">
+      <td>{{absence.FirstName}}</td>
+      <td>{{absence.LastName}}</td>
+      <td>{{absence.TotalDayOff}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!hasTopEmployeeDayOff">
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_DATA_FOUND' | translate}} </h5>
+  </div>
+</div>

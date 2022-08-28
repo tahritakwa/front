@@ -1,0 +1,15 @@
+<div [formGroup]="form">
+  <kendo-combobox class="form-control" [data]="machineFiltredList" [textField]="'description'" [valueField]="'id'"
+    formControlName="machineId" [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilterParentCode($event)"
+    (valueChange)="onSelect($event)">
+
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <span class="small">{{dataItem.description}}</span>
+        </div>
+      </div>
+    </ng-template>
+
+  </kendo-combobox>
+</div>

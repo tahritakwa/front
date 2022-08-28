@@ -1,0 +1,24 @@
+.historyContainer {
+  min-width: 200px;
+  max-height: 765px;
+  overflow-y: scroll;
+  //scrollbar-color: #FFF;
+  // border-radius: 10px;
+}
+.media .media-object {
+  max-width: 120px;
+}
+.media-body {
+  position: relative;
+}
+.list-group {
+  flex-direction: column-reverse;
+}
+
+.list-group-item {
+  line-height: 2;
+}
+
+.list-unstyled {
+  margin: 5px 0 5px 0
+}

@@ -1,0 +1,5 @@
+export enum ActionStateEnum {
+  ACTION_NOT_STARTED,
+  ACTION_IN_PROGRESS,
+  ACTION_COMPLETED
+}

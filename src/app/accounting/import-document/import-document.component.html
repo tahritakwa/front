@@ -1,0 +1,301 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="card full-screen-card mb-5">
+  <app-current-fiscal-year-header [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-header>
+  <div class="d-flex justify-content-between m-2 border-0 bg-white">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'GENERATE_DOCUMENTS'|translate}}</h3>
+    </div>
+    <div class="col-sm-5 mt-1">
+      <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- for accounting document-->
+    <app-advanced-search *ngIf="!isRegulation" [filtreFieldsColumns]="filterFieldsColumns" [filtreFieldsInputs]="filterFieldsInputs"
+                         (filtrePredicateToSend)="getFilterPredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+                         (searchClickEvent)="onClickSearch()" (resetClickEvent)="resetClickEvent()">
+    </app-advanced-search>
+    <!-- for accounting settlement-->
+    <app-advanced-search *ngIf="isRegulation" [filtreFieldsColumns]="settlementFilterFieldsColumns" [filtreFieldsInputs]="settlementFilterFieldsInputs"
+                         (filtrePredicateToSend)="getSettlementFilterPredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+                         (searchClickEvent)="initDataSource()" (resetClickEvent)="resetClickEvent()">
+    </app-advanced-search>
+    <form class="form-horizontal" [formGroup]="inputForm" #form>
+      <div class="row col-sm-12 mt-4 mb-3">
+        <div class="col-lg-3 col-md-12 col-sm-12 pl-0 pr-0">
+          <label class="col-lg-12 col-md-12 col-sm-12">
+            {{'START_DATE'|translate}}
+          </label>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <kendo-datepicker formControlName="StartDate" class="form-control" [min]="currentExerciceStartDate"
+                              [max]="currentExerciceEndDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="inputForm.controls.StartDate"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 pr-0 pl-0" >
+          <label class="col-lg-12 col-md-12 col-sm-12">
+            {{'END_DATE'|translate}}
+          </label>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <kendo-datepicker formControlName="EndDate" class="form-control" [min]="currentExerciceStartDate"
+                              [max]="currentExerciceEndDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="inputForm.controls.EndDate"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <label>
+            {{'OPERATION'|translate}}
+          </label>
+          <kendo-dropdownlist [data]="dropDownData" formControlName="DocumentType" [valueField]="'DocumentType'"
+                              [textField]="'text'" [(ngModel)]="selectedValue" [valuePrimitive]="true"
+                              style="width: 100%;"
+                              (valueChange)="onChangeOperation()">
+          </kendo-dropdownlist>
+          <app-control-messages [control]="inputForm.controls.DocumentType"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-1">
+          <div class="mt-4 pt-3">
+              <i class="fa fa-search fa-lg cursor-pointer" aria-hidden="true" (click)="onSearch()" [ngClass]="{'disabled-search':!inputForm.valid}"></i>
+          </div>
+        </div>
+      </div>
+
+    </form>
+      <div class="col-12" *ngIf="!isRegulation">
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+                    (pageChange)="onPageChange($event)" [pageable]="pagerSettings" [navigable]="true"
+                    [filterable]="false"
+                    [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)"
+                    [selectable]="{enabled: this.authService.hasAuthority(AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT), checkboxOnly: this.authService.hasAuthority(AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT)}"
+                    [kendoGridSelectBy]="'idDocument'"
+                    [selectedKeys]="documentSelected" (selectedKeysChange)="onSelectedKeysChange()">
+
+          <kendo-grid-checkbox-column showSelectAll="true" [width]="50"
+                                      *ngIf="!isAccountedState && !accountedList && this.authService.hasAuthority(AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT)">
+          </kendo-grid-checkbox-column>
+
+          <kendo-grid-column width="150" *ngFor="let column of columnsConfig" field="{{column.field}}"
+                             title="{{column.title | translate }}" filterable="{{column.filterable}}">
+
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-rowIndex="rowIndex"
+                         *ngIf="column.field==='codeDocument'">
+              <div class="cursor-pointer doc-code"
+                   (click)="displayInvoice(dataItem)">{{dataItem.codeDocument}}</div>
+            </ng-template>
+
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-rowIndex="rowIndex"
+                         *ngIf="column.field==='tierName'">
+              <div class="cursor-pointer doc-code"
+                   (click)="displayTiers(dataItem.tierId)">{{dataItem.tierName}}</div>
+            </ng-template>
+
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='amountTTC'"
+                         style="background: transparent !important">
+              <kendo-numerictextbox [readonly]="readOnly" [format]="formatNumberOptions" value="{{dataItem.amountTTC}}">
+              </kendo-numerictextbox>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='documentDate'"
+                         style="background: transparent !important">
+              {{dataItem.documentDate | date: 'dd/MM/yyyy'}}
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='status'">
+              <div *ngIf="!dataItem.isAccounted"><span class="badge badge-warning">{{'NOT_ACCOUNTED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.isAccounted">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'ACCOUNTED'|translate}}</span>
+              </div>
+            </ng-template>
+
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='status'">
+              <kendo-dropdownlist [data]="dropDownFilterData" [(ngModel)]="status" [valuePrimitive]="true"
+                                  textField="text" valueField="value" (valueChange)="onChangeStatus($event)">
+              </kendo-dropdownlist>
+            </ng-template>
+
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='documentDate'">
+              <kendo-datepicker [(ngModel)]="documentDateFilter" class="form-control" [min]="currentExerciceStartDate"
+                                [max]="currentExerciceEndDate">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                           toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+            </ng-template>
+
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='amountTTC'">
+              <input class="form-control" name="label" type="number" [(ngModel)]="amountTTC">
+            </ng-template>
+
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='codeDocument'">
+              <input class="form-control" name="label" type="text" [(ngModel)]="codeDocument">
+            </ng-template>
+
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='tierName'">
+              <input class="form-control" name="label" type="text" [(ngModel)]="tierName">
+            </ng-template>
+
+          </kendo-grid-column>
+
+          <kendo-grid-command-column [width]="100" [title]="'CODE_DOCUMENT_ACCOUNT'|translate"
+                                     *ngIf="status !== statusCode.NotAccounted">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem" let-rowIndex="rowIndex">
+              <div class="cursor-pointer doc-code" (click)="redirectTo(rowIndex)">
+                {{getDocumentCode(rowIndex)}}</div>
+            </ng-template>
+          </kendo-grid-command-column>
+
+          <kendo-grid-command-column [width]="50" *ngIf="status !== statusCode.NotAccounted && this.authService.hasAuthority(AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT)">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem" let-rowIndex="rowIndex">
+              <button class="btn btn-sm btn-primary" [tooltip]="HtmlContent" [show-delay]=showDelay
+                      content-type="template" (click)="disaccountedDocument(rowIndex)" *ngIf="dataItem.isAccounted">
+                <span class="fa fa-reply"></span>
+              </button>
+            </ng-template>
+
+            <ng-template #HtmlContent>
+              <strong>{{ 'UNACCOUNTED' |translate }}</strong>
+            </ng-template>
+          </kendo-grid-command-column>
+
+        </kendo-grid>
+
+      </div>
+
+
+      <div class="col-12" *ngIf="isRegulation">
+
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+                    (pageChange)="onPageChange($event)" [filterable]="false" [filter]="gridSettings.state.filter"
+                    [pageable]="pagerSettings" [navigable]="true"
+                    (dataStateChange)="dataStateChange($event)"
+                    [selectable]="{enabled: this.authService.hasAuthority(AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT), checkboxOnly: this.authService.hasAuthority(AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT)}"
+                    [kendoGridSelectBy]="'idSettlement'" [selectedKeys]="documentSelected"
+                    (selectedKeysChange)="onSelectedKeysChange()">
+
+          <kendo-grid-checkbox-column showSelectAll="true" [width]="50"
+                                      *ngIf="!isAccountedState && !accountedList && this.authService.hasAuthority(AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT)">
+          </kendo-grid-checkbox-column>
+
+          <kendo-grid-column [width]="150" *ngFor="let column of regulationsDetails" field="{{column.field}}"
+                             title="{{column.title | translate }}" filterable="{{column.filterable}}">
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='settlementDate'"
+                         style="background: transparent !important">
+              {{dataItem.settlementDate | date: 'dd/MM/yyyy'}}
+            </ng-template>
+
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-rowIndex="rowIndex"
+                         *ngIf="column.field==='tiersName'">
+              <div class="cursor-pointer doc-code"
+                   (click)="displayTiers(dataItem.tierId)">{{dataItem.tiersName}}</div>
+            </ng-template>
+
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='paymentAmount'"
+                         style="background: transparent !important">
+              <kendo-numerictextbox [readonly]="readOnly" [format]="formatNumberOptions"
+                                    value="{{dataItem.paymentAmount}}"
+                                    style="width : 150px"
+                                    >
+              </kendo-numerictextbox>
+            </ng-template>
+
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field==='isAccounted'">
+              <div *ngIf="!dataItem.isAccounted"><span class="badge badge-warning">{{'NOT_ACCOUNTED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.isAccounted">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'ACCOUNTED'|translate}}</span>
+              </div>
+            </ng-template>
+
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='isAccounted'">
+              <kendo-dropdownlist [data]="dropDownFilterData" [(ngModel)]="status" [valuePrimitive]="true"
+                                  textField="text" valueField="value" (valueChange)="onChangeStatus($event)">
+              </kendo-dropdownlist>
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='settlementDate'">
+              <kendo-datepicker [(ngModel)]="documentDateFilter" class="form-control" [min]="currentExerciceStartDate"
+                                [max]="currentExerciceEndDate">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                           toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='paymentAmount'">
+              <input class="form-control" [(ngModel)]="amount" name="label" type="number">
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='codeSettlement'">
+              <input class="form-control" [(ngModel)]="setllementCode" name="label" type="text">
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='tiersName'">
+              <input class="form-control" [(ngModel)]="settlementTierName" name="label" type="text">
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='paymentMethodeName'">
+              <input class="form-control" [(ngModel)]="paymentMethod" name="label" type="text">
+            </ng-template>
+            <ng-template kendoGridFilterCellTemplate let-filter *ngIf="column.field==='bankName'">
+              <input class="form-control" [(ngModel)]="bankName" name="label" type="text">
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-command-column [width]="90" [title]="'CODE_DOCUMENT_ACCOUNT'|translate"
+                                     *ngIf="status !== statusCode.NotAccounted">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem" let-rowIndex="rowIndex">
+              <div class="cursor-pointer doc-code" (click)="redirectTo(rowIndex)">
+                {{getDocumentCode(rowIndex)}}</div>
+            </ng-template>
+          </kendo-grid-command-column>
+
+          <kendo-grid-command-column [width]="50" *ngIf="this.authService.hasAuthority(this.AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT) && status !== statusCode.NotAccounted">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem" let-rowIndex="rowIndex">
+              <button class="btn btn-sm btn-primary" [tooltip]="HtmlContent" [show-delay]=showDelay
+                      content-type="template" (click)="disaccountedSettlement(rowIndex)" *ngIf="dataItem.isAccounted">
+                <span class="fa fa-reply"></span>
+              </button>
+            </ng-template>
+
+            <ng-template #HtmlContent>
+              <strong>{{ 'UNACCOUNTED' |translate }}</strong>
+            </ng-template>
+          </kendo-grid-command-column>
+
+        </kendo-grid>
+
+      </div>
+  </div>
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer" *ngIf="this.authService.hasAuthority(this.AccountingPermissions.GENERATE_DOCUMENT_ACCOUNT_FROM_DOCUMENT) && !accountedList">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button class="btn btn-sm btn-primary mr-2" style="color: white" (click)='validateMultipleDocument()'
+                    *ngIf="!isRegulation && !isAccountedState" [disabled]="importButton">
+              <i class="fa fa-cogs fa-lg"></i> {{'GENERATE'|translate}}
+            </button>
+            <button class="btn btn-sm btn-primary mr-2" style="color: white" (click)='validateMultipleSettlement()'
+                    *ngIf="isRegulation && !isAccountedState" [disabled]="importButton">
+              <i class="fa fa-cogs fa-lg"></i> {{'GENERATE'|translate}}
+            </button>
+            <button class="btn btn-sm btn-primary" *ngIf="hasReadWritePermission" style="color: white" (click)='validateAll()'
+                    [disabled]="gridSettings.gridData && gridSettings.gridData.data.length === 0">
+              <i class="fa fa-cogs fa-lg"></i> {{'GENERATE_ALL'|translate}}
+            </button>
+
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+
+</div>

@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>{{'FOLDER_NAME'|translate}}</h1>
+<mat-dialog-content>
+  <mat-form-field class="example-full-width">
+    <input [(ngModel)]="folderName" matInput placeholder="{{ 'FOLDER_NAME' | translate }}"/>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-dialog-close mat-raised-button>{{'CANCEL'|translate}}</button>
+  <button [mat-dialog-close]="folderName" color="primary" mat-raised-button>{{'OKAY'|translate}}</button>
+</mat-dialog-actions>

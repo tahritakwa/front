@@ -1,0 +1,63 @@
+
+  .login100-form-logo {
+    font-size: 60px;
+    color: #333333;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #fff;
+    margin: 0 auto;
+  }
+
+  .selected-Company-style {
+    text-align: center;
+    margin: auto;
+    font-size: xx-large;
+    color: white;
+  }
+
+  h1.head{
+    font-size: 100px;
+    font-weight: 600;
+    letter-spacing: 25px;
+    margin: 10px 0 0 0;
+  }
+  h1.head span {
+    position: relative;
+    display: inline-block;
+  }
+  h1.head span:before, h1.head span:after{
+    position: absolute;
+    top:50%;
+    width: 50%;
+    height: 1px;
+    background: #333333;
+    content: '';
+  }
+  h1.head span:before{
+    left: -55%;
+  }
+  h1.head span:after{
+    right: -55%;
+  }
+
+  .btn-outline{
+    border: 2px solid #fff;
+    color: #508ed8;
+    padding: 12px 40px;
+    border-radius: 25px;
+    margin-top: 25px;
+    display: inline-block;
+    font-weight: 600;
+  }
+  .btn-outline:hover{
+    color: #508ed8;
+    background: #fff;
+  }

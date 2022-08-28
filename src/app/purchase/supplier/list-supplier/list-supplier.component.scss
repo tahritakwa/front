@@ -1,0 +1,217 @@
+a:hover {
+  color: blue;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+  border: 2px solid #4c9ab8 !important;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 100%;
+  margin-right: 9px;
+}
+
+.file-import {
+  color: #4b9aac;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.9);
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.overlay-content {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.overlay a:hover,
+.overlay a:focus {
+  cursor: pointer;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  right: 45px;
+  font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {
+    font-size: 20px;
+  }
+
+  .overlay .closebtn {
+    font-size: 40px;
+    right: 35px;
+  }
+}
+
+.grid-importer-show {
+  width: 100%;
+}
+
+.grid-importer-hide {
+  width: 0%;
+}
+
+.k-button.k-primary:hover,
+.k-button.k-primary.k-state-hover {
+  background: transparent !important;
+}
+
+.dropdown-item-active {
+  display: block !important;
+  width: 100% !important;
+  padding: 0.25rem 1.5rem !important;
+  clear: both !important;
+  font-weight: 400 !important;
+  text-align: inherit !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: relative !important;
+  padding: 10px 20px !important;
+  border-bottom: 1px solid #c8ced3 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  background-color: #4c9aae !important;
+}
+
+.btnColor {
+  background-color: #4c9aae !important;
+}
+
+body {
+  background: #efefef;
+  font-family: "Raleway", sans-serif;
+  color: #666;
+}
+
+main {
+  width: 60vw;
+  margin: 10vh 10px;
+  margin-top: 5px;
+  margin-bottom: 1px;
+  margin-left: 400px;
+}
+
+fieldset {
+  padding: 3%;
+  padding-top: 0;
+  padding-bottom: 7px;
+}
+
+legend {
+  padding: 0 20px;
+  font-size: 1.25em;
+  width: auto !important;
+  color: #4b9aad !important;
+}
+
+label {
+  position: relative;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+}
+
+input[type="checkbox"] + label::before,
+input[type="radio"] + label::before {
+  content: "\a0";
+  display: inline-block;
+  margin: 0.2em 0.5em;
+  width: 0.8em;
+  height: 0.8em;
+  line-height: 0.75em;
+  transition: all 0.5s;
+  border: 1px solid silver;
+}
+
+input[type="radio"] + label::before {
+  border-radius: 50%;
+}
+
+input[type="checkbox"]:checked + label::before,
+input[type="radio"]:checked + label::before {
+  content: "\a0";
+  background: #5bb3bb;
+  border: 1px solid white;
+  box-shadow: inset 0 0 0 1px white, 0 0 0 1px #5bb3bb;
+}
+
+input[type="radio"] {
+  -webkit-appearance: checkbox; /* Chrome, Safari, Opera */
+  -moz-appearance: checkbox; /* Firefox */
+  -ms-appearance: checkbox; /* not currently supported */
+}
+.card {
+  width: 100%;
+}
+
+/* modal style */
+
+.modaltitle {
+  text-align: center;
+  margin: auto;
+  padding-left: 40px;
+}
+
+.modalbody {
+  text-align: center;
+  margin: auto;
+}
+
+.modalfooter {
+  margin: auto;
+}
+
+.customer-photo {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-size: 32px 35px;
+  background-position: center center;
+  vertical-align: middle;
+  line-height: 32px;
+  box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+.light-reference {
+  font-size: smaller;
+  color: gray;
+}
+img#ThumbnailSupplier {
+  height: 100%;
+}

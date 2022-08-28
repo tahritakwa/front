@@ -1,0 +1,51 @@
+<form [formGroup]="trainingSessionAddFormGroup" class="form-horizontal">
+  <div class="row col-lg-12 col-md-12 col-sm-12">
+    <div class="row col-lg-12 col-md-12 col-sm-12">
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'NAME'|translate}}</label>
+        <input class="form-control" formControlName="Name" type="text"/>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'DURATION'|translate}} / h</label>
+        <input class="form-control" formControlName="Duration" min="0" type="number">
+      </div>
+    </div>
+    <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top:20px;">
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE'|translate}}</label>
+        <kendo-datepicker (valueChange)="startDateValueChange($event)" class="form-control" formControlName="StartDate">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE'|translate}}</label>
+        <kendo-datepicker (valueChange)="endDateValueChange($event)" class="form-control" formControlName="EndDate">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+      </div>
+    </div>
+    <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top:20px;">
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+        <textarea class="form-control" formControlName="Description" rows="5"></textarea>
+      </div>
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'PLAN'|translate}}</label>
+        <p-editor [style]="{'height':'150px'}" formControlName="SessionPlan">
+        </p-editor>
+        <app-upload-file [fileToUpload]="fileToUpload"
+                         [service]="trainingteService" class="col-lg-12 col-md-12 col-sm-12"></app-upload-file>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="col-lg-2 col-md-12">
+  <!-- Save  -->
+  <button (click)="saveTrainingSession()" *ngIf="hasAddPermission && !isUpdateMode || hasUpdatePermission && isUpdateMode" class="btn btn-sm btn-danger"
+          type="submit">
+    <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+  </button>
+  <!-- End Save  -->
+</div>

@@ -1,0 +1,301 @@
+
+
+<div class="card" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3
+          class="card-title mb-0">{{ 'ADD_OPPORTUNITY' |translate }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <form [formGroup]="opportunityFormGroup" (ngSubmit)="save()">
+
+      <div class="row form-group">
+        <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+          <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'TITLE_OPPORTUNITY'|translate}}<span
+            class="required">*</span></label>
+          <input class="form-control" formControlName="title" type="text" name="title"
+                 (keyup)="rewriteTitle()">
+          <app-control-messages [control]="opportunityFormGroup.controls?.title"
+                                class="error-msg messages text-left text-danger">
+          </app-control-messages>
+          <span *ngIf="titleIsAlreadyTaken === true" class="error-message" style="color:red">
+                          {{'OPPORTUNITY_TITLE_ALREADY_EXISTS'|translate}}
+                </span>
+        </div>
+
+        <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+          <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'TYPE'|translate}}:</label>
+          <kendo-dropdownlist style="width: 100%; !important;" [data]="opportunityTypes"
+                              [(ngModel)]="selectedOppType"
+                              (valueChange)="changeOpportunityType($event)"
+                              [ngModelOptions]="{standalone: true}"
+                              valueField="enumValue" textField="enumText"
+                              [valuePrimitive]="true">
+          </kendo-dropdownlist>
+        </div>
+
+        <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+          <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12"> {{'ORGANISM_LABEL'|translate}} <span
+            class="required">*</span></label>
+          <kendo-combobox style="width: 100%;" [data]="searchedOrganizationsList"
+                          formControlName="organisationId"
+                          [filterable]="true" (filterChange)="handleOrganizationFilter($event)"
+                          textField="name" (valueChange)="filterByOrganization($event)">
+          </kendo-combobox>
+          <app-control-messages [control]="opportunityFormGroup.controls?.organisationId"
+                                class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+
+
+        <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+          <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'VIS_A_VIS'|translate}}:</label>
+          <kendo-combobox style="width: 100%; !important;" [data]="searchedOrganisationContacts"
+                          [filterable]="true" (filterChange)="handleContactsFilter($event)"
+                          formControlName="customerId" textField="name"
+                          [readonly]="!opportunityFormGroup.controls?.organisationId.value"
+                          valueField="id" [valuePrimitive]="true">
+
+          </kendo-combobox>
+          <app-control-messages [control]="opportunityFormGroup.controls?.customerId"
+                                class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+      </div>
+
+      <p-accordion [multiple]="true">
+
+
+        <p-accordionTab header="{{'PIPLINE_AND_STEP' | translate}}" style="color: #4c9aae;"
+                        (selectedChange)="secondeCollapseIsOpened = !secondeCollapseIsOpened"
+                        [selected]="secondeCollapseIsOpened">
+          <div class="row form-group">
+            <div class="col-12">
+              <div class="row form-group">
+                <div class="col-sm-12 col-md-6 col-xs-12" [ngClass]="selectedCategoryType ? 'col-lg-4' : 'col-md-6'">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'OBJECTIVE_TYPE'|translate}} <span
+                    class="required">*</span></label>
+
+                  <kendo-dropdownlist [data]="categoryTypesList" (valueChange)="filterByCategoryList($event)"
+                                      [(ngModel)]="selectedCategoryType" [ngModelOptions]="{standalone: true}"
+                                      style="width: 100%;" required="required">
+                    <ng-template kendoDropDownListValueTemplate let-dataItem>
+                      <span> {{dataItem| translate}}</span>
+                    </ng-template>
+                    <ng-template kendoDropDownListItemTemplate let-dataItem>
+                      <span> {{dataItem | translate}}</span>
+                    </ng-template>
+                  </kendo-dropdownlist>
+                </div>
+
+
+                <div class="col-sm-12 col-md-6 col-xs-12" [ngClass]="selectedCategoryType ? 'col-lg-4' : 'col-md-6'">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'OBJECTIVE_LIST'|translate}} <span
+                    class="required">*</span></label>
+                  <kendo-dropdownlist [disabled]=disabledCategorie [data]="categoryFiltredType"
+                                      (valueChange)="filterByCategory($event)"
+                                      #model2="ngModel" [(ngModel)]="categorie" [ngModelOptions]="{standalone: true}"
+                                      style="width: 100%;" required="required">
+
+                    <ng-template kendoDropDownListValueTemplate let-dataItem *ngIf="restartCateg">
+                      <span class="template">{{restartCateg == true ? '' : dataItem }}</span>
+                    </ng-template>
+                  </kendo-dropdownlist>
+                  <div *ngIf="model2.invalid && initRequiredValidation" style="color: #f86c6b; font-size: 12px">
+                    {{'REQUIRED' | translate}}
+                  </div>
+                </div>
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12" *ngIf="selectedCategoryType === STAFFING_TYPE">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'EMPLOYEE'|translate}} <span
+                    class="required">*</span></label>
+                  <kendo-dropdownlist [disabled]=disabledEmployee [data]="employeesByCategory"
+                                      formControlName="employeeId" textField="FullName"
+                                      style="width: 100%;"
+                                      (valueChange)="restartEmployeeTest()"
+                                      valueField="Id" [valuePrimitive]="true">
+                    <ng-template kendoDropDownListValueTemplate let-dataItem *ngIf="restartEmployee">
+                      <span class="template">{{''}}</span>
+                    </ng-template>
+                  </kendo-dropdownlist>
+                  <app-control-messages [control]="opportunityFormGroup.controls?.employeeId"
+                                        class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12" *ngIf=" selectedCategoryType === PRODUCT_SALE_TYPE">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'PRODUCT'|translate}}<span
+                    class="required">*</span></label>
+                  <kendo-multiselect *ngIf="listP"
+                                     formControlName="productIdList"
+                                     [data]="listP"
+                                     [(ngModel)]="productIdList"
+                                     [textField]="'Description'"
+                                     [valueField]="'Id'" [autoClose]="false">
+                  </kendo-multiselect>
+                  <app-control-messages [control]="opportunityFormGroup.controls?.productIdList"
+                                        class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-3" *ngIf="isUpdateMode">
+                  <input class="form-control" formControlName="productIdList" type="text" name="productIdList"
+                         readonly="true">
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="showChangeReason">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'reasonForChange' |translate}}<span
+                    class="required">*</span></label>
+                  <input class="form-control" formControlName="reasonForChange" type="text" name="reasonforChange">
+                  <app-control-messages [control]="opportunityFormGroup.controls.reasonForChange"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-accordionTab>
+
+        <!-- Informations suplémentaires-->
+        <p-accordionTab header="Informations suplémentaires" style="color: #4c9aae;"
+                        (selectedChange)="thirdCollapseIsOpened = !thirdCollapseIsOpened"
+                        [selected]="thirdCollapseIsOpened">
+          <div class="row form-group">
+            <div class="col-12">
+
+              <div class="row form-group">
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label
+                    class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'PROBABILITY_OF_OCCURENCE'|translate}}</label>
+                  <bar-rating style="float: left;margin-top: -2%;margin-bottom: 1%;" formControlName="rating"
+                              [(rate)]="rating" [max]="5"></bar-rating>
+                </div>
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'CREATION_DATE'|translate}}<span
+                    class="required">*</span></label>
+                  <kendo-datepicker [format]="formatDateT" formatPlaceholder="formatDateT" class="form-control"
+                                    formControlName="opportunityCreatedDate" [readonly]="true"
+                                    [min]="minOpportunityEndDate"
+                                    [ngClass]="{ 'has-error': (opportunityCreatedDate.touched
+                                      || opportunityCreatedDate.dirty) && !opportunityCreatedDate.valid }">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="opportunityFormGroup.controls?.opportunityCreatedDate"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'opportunityEndDate'|translate}}</label>
+                  <kendo-datepicker [format]="formatDateT" class="form-control"
+                                    (valueChange)="changeEndDate($event)"
+                                    formControlName="opportunityEndDate" [min]="minOpportunityEndDate"
+                                    [ngClass]="{ 'has-error': (opportunityEndDate?.touched ||
+                                       opportunityEndDate?.dirty) && !opportunityEndDate?.valid }">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="opportunityFormGroup.controls?.opportunityEndDate"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                  <span *ngIf="opportunityEndDateIsInvalid===true" class="error-message" style="color:red">
+                          {{'OPPORTUNITY_END_DATE_ERROR_MESSAGE'|translate}}
+                    </span>
+                </div>
+              </div>
+
+              <div class="row form-group">
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'RESPONSABLE_OF'|translate}}<span
+                    class="required">*</span></label>
+                  <kendo-dropdownlist [data]="responsableByCategory" formControlName="responsableUserId"
+                                      style="width: 100%"
+                                      textField="FullName"
+                                      valueField="Id" [valuePrimitive]="true" (valueChange)="restartResponsableTest()"
+                                      [(ngModel)]="responsableSelected" [readonly]="!editResponsable">
+                    <ng-template kendoDropDownListValueTemplate let-dataItem *ngIf="restartResponsable">
+                      <span class="template">{{' '}}</span>
+                    </ng-template>
+                  </kendo-dropdownlist>
+                  <app-control-messages [control]="opportunityFormGroup.controls?.responsableUserId"
+                                        class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'ESTIMATED_INCOME' | translate}}</label>
+                  <input class="form-control" formControlName="estimatedIncome" type="number" name="estimatedIncome"
+                         (change)="changeEstimatedIncome($event)"
+                         min="0">
+                  <app-control-messages [control]="opportunityFormGroup.controls?.estimatedIncome"
+                                        class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+
+                <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12"
+                         style="padding-left: 0px">{{'CURRENCY'|translate}}</label>
+                  <app-currency-dropdown [readonly]="!this.opportunityFormGroup.controls.estimatedIncome.value"
+                                         class="error-msg messages text-left text-danger" [isFromCrm]="true"
+                                         [group]="opportunityFormGroup">
+                  </app-currency-dropdown>
+                  <app-control-messages [control]="opportunityFormGroup.controls.IdCurrency"
+                                        class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-accordionTab>
+
+        <!--Description-->
+        <p-accordionTab header="{{'DESCRIPTION' | translate }}"
+                        [selected]="false">
+          <div class="row form-group">
+            <div class="col-12">
+              <label class="col-lg-12 col-sm-12 col-md-12 col-xs-12">{{'DESCRIPTION' | translate }}</label>
+              <textarea class="form-control" formControlName="description" type="text" name="title"></textarea>
+            </div>
+          </div>
+        </p-accordionTab>
+        <!-- Collapse permission -->
+        <p-accordionTab [selected]="false"
+                        header="{{'PERMISSION'| translate}}">
+          <app-permission [parent]="parentPermission"></app-permission>
+        </p-accordionTab>
+
+      </p-accordion>
+
+    </form>
+  </div>
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer" >
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a  (click)="cancel()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button
+
+              (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{(isUpdateMode ? 'UPDATE' : 'SAVE' | translate)}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

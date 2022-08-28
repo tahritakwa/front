@@ -1,0 +1,176 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+
+<div class="header-current-fiscal-year">
+  <app-accounting-reporting-menu-financial-states [currentFiscalYearId]="currentFiscalYear.id" [fiscalYears]="fiscalYears"></app-accounting-reporting-menu-financial-states>
+</div>
+<div class="card">
+  <div class="d-flex flex-row-reverse bd-highlight m-3">
+    <app-current-fiscal-year-dropdown  [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="balanceSheetForm">
+      <div class="row">
+        <div class="col-lg-12 col-sm-10 col-md-12 mr-5">
+          <div class="form-group row">
+            <div class="col-lg-3 col-md-4 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'FISCAL_YEAR'|translate}}<span
+                class="required">*</span></label>
+              <app-fiscal-year-dropdown [form]="'fiscalYearId'" [group]="balanceSheetForm" [fiscalYearsDataSource]="fiscalYears" [selectedValue]="currentFiscalYear.id"
+                                        (Selected)="receiveCurrentFiscalYear($event)">
+              </app-fiscal-year-dropdown>
+              <app-control-messages [control]="balanceSheetForm.controls.fiscalYearId"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE_BALANCE_SHEET'|translate}}<span
+                class="required">*</span></label>
+              <kendo-combobox class="form-control" [data]="balanceSheetTypeData" formControlName="balanceSheetType"
+                              [valueField]="'balanceSheetType'" [textField]="'text'" [valuePrimitive]="true" [filterable]="true" required (filterChange)="handleFilterBalance($event)">
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                            </kendo-combobox>
+              <app-control-messages [control]="balanceSheetForm.controls.balanceSheetType"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+            <div class="col-lg-2 col-md-6 col-sm-6 mt-3">
+              <br>
+              <label class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0">
+                <input type="checkbox" (click)='changeProvisionalEdition()' style="margin-left: 4px; display: inline-block; vertical-align: middle;" />
+                {{'PROVISIONAL_EDITION'|translate}}
+              </label>
+            </div>
+            <div class="col-sm-12 col-md-2 col-lg-2 mt-3">
+              <button class="btn btn-primary dropdown-toggle mt-3" type="button" style="color: white; min-width: 100%;" 
+              *ngIf="this.authService.hasAuthority(AccountingPermissions.PRINT_FINANCIAL_STATES_REPORTS)" [disabled]="balanceSheetForm.disabled || balanceSheetForm.invalid"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  >
+                <i class="fa fa-print"></i> {{'PRINT'|translate}}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                <a class="dropdown-item" (click)="Print()">PDF</a>
+                <a class="dropdown-item" (click)="onClickPrintExcel()">Excel</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="card" [hidden]="!displayReportDetails" 
+*ngIf="this.authService.hasAuthority(AccountingPermissions.VIEW_FINANCIAL_STATES_REPORTS) || this.authService.hasAuthority(AccountingPermissions.UPDATE_FINANCIAL_STATES_REPORTS_FORMULA)">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h5 class="card-title mb-0"style="text-align: left; float: left;font-weight: normal;">{{'REPORT_PREVIEW'|translate}}</h5>
+      <h5 class="card-title mb-0"  style="text-align: right; float: right; display: inline; font-weight: normal;">{{'CURRENCY'|translate}} : {{currencyCode}}</h5>
+      <button class="k-button btnKendoGrid"  style="text-align: right; float: right; display: inline;"(click)="goToHistoric()">
+        <i class="fa fa-history"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body">
+    <kendo-grid #grid [data]="gridSettings.gridData" (cancel)="cancelHandler($event)"
+                (dataStateChange)="dataStateChange($event)" (cellClick)="lineClickHandler($event)"
+                [rowClass]="rowClassCallback"
+                (keypress)="keyEnterAction(grid,this.reportConfigFormGroup,$event)" class="bulk-table">
+
+      <kendo-grid-column-group [locked]="false" [columnMenu]="false">
+        <kendo-grid-column [width]="50" [footerStyle]="{'background-color':'#fff'}" [columnMenu]="false">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <button kendoGridSaveCommand title="{{'SAVE_REPORT_LINE' | translate}}" (click)="saveHandler()" *ngIf="editedRowIndex!==undefined" class='noPadding btn-Add'>
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <br>
+            <button kendoGridSaveCommand title="{{'RESET_REPORT_LINE' | translate}}" (click)="resetFormula(dataItem)" *ngIf="editedRowIndex!==undefined"
+                    class='noPadding btn-Add'>
+              <i class="fa fa-undo fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <br>
+            <button kendoGridCancelCommand title="{{'CANCEL' | translate}}" *ngIf="editedRowIndex!==undefined" class="noPadding btn-Add k-button">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}"
+                           [field]="gridSettings.columnsConfig[0].field" [editable]="false"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0].width"
+                           [columnMenu]="false">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}" theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [editable]="false"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1].width"
+                           [columnMenu]="false">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}" theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+            </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                           [title]="gridSettings.columnsConfig[2].title | translate"
+                           [width]="gridSettings.columnsConfig[2].width"
+                           [columnMenu]="false">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}" theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+            </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{dataItem.formula !== '0' ? dataItem.formula : ''}}
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                           [title]="gridSettings.columnsConfig[3].title | translate"
+                           [width]="gridSettings.columnsConfig[3].width"
+                           [columnMenu]="false">
+          <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}" theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+            <div [formGroup]="reportConfigFormGroup">
+              <kendo-combobox class="form-control" [data]="signValues" [textField]="'status'"
+                              [valueField]="'negative'" formControlName="negative" [valuePrimitive]="true"
+                              [filterable]="true">
+                              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              </kendo-combobox>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}"
+                           [field]="gridSettings.columnsConfig[4].field"
+                           [title]="gridSettings.columnsConfig[4].title | translate"
+                           [width]="gridSettings.columnsConfig[4].width"
+                           [columnMenu]="false">
+             <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}" theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+             </ng-template>
+        </kendo-grid-column>
+      </kendo-grid-column-group>
+
+      <kendo-grid-column-group [headerStyle]="{'text-align': 'center'}" [width]="240"
+                               [title]="'FISCAL_YEAR' | translate" [locked]="false">
+              <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{'FISCAL_YEAR' | translate}}" theme="light">{{'FISCAL_YEAR' | translate}}</span>
+             </ng-template>
+        <kendo-grid-column [headerStyle]="{'text-align': 'right'}" class="k-text-right"
+                           [field]="gridSettings.columnsConfig[5].field" [editable]="false" [title]="currentFiscalYearLabel"
+                           [width]="gridSettings.columnsConfig[5].width" [locked]="false" [columnMenu]="false"
+                           [format]="formatNumberOptions">
+        </kendo-grid-column>
+        <kendo-grid-column [headerStyle]="{'text-align': 'right'}" class="k-text-right"
+                           [field]="gridSettings.columnsConfig[6].field" [editable]="false" [title]="previousFiscalYearLabel"
+                           [width]="gridSettings.columnsConfig[6].width" [locked]="false" [columnMenu]="false"
+                           [format]="formatNumberOptions">
+        </kendo-grid-column>
+      </kendo-grid-column-group>
+
+    </kendo-grid>
+  </div>
+</div>

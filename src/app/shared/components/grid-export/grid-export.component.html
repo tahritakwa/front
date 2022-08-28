@@ -1,0 +1,44 @@
+<!--grid pdf-->
+<kendo-grid-pdf [fileName]="fileName +'-'+ (dateTime | date:'full') + '.pdf'"
+                [allPages]="true"
+                paperSize="A4"
+                [repeatHeaders]="true"
+                [landscape]="true"
+                [scale]="0.5"
+                [margin]="{ top: '2cm', left: '1cm', right: '1cm', bottom: '2cm' }"
+                *ngIf="pdf">
+  <!--columns to export-->
+  <kendo-grid-column *ngFor="let column of gridSettings.columnsConfig"
+                     [field]="column.field"
+                     title="{{column.title | translate}}">
+                     <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      {{dataItem[col.field]|date: dateFormat}}
+                    </ng-template>
+  </kendo-grid-column>
+  <!--end columns to export-->
+  <ng-template kendoGridPDFTemplate let-pageNum="pageNum" let-totalPages="totalPages">
+    <div class="page-template">
+      <div class="header">
+        {{fileName}}
+      </div>
+      <div class="footer">
+        {{'EXPORT_PDF_PAGE' | translate}} {{ pageNum }} / {{ totalPages }}
+      </div>
+    </div>
+  </ng-template>
+</kendo-grid-pdf>
+<!--end grid pdf-->
+
+<!--grid excel-->
+<kendo-grid-excel [fileName]="fileName +'-'+ (dateTime | date:'full') + '.xlsx'"[fetchData]="allData" *ngIf="excel">
+  <div *ngIf="Config">
+  <div *ngFor="let column of Config">         
+  <kendo-excelexport-column 
+                  [field]="column.field"
+                  title="{{column.title | translate}}"
+                  *ngIf="column.condition">
+                </kendo-excelexport-column>
+              </div>
+            </div>
+</kendo-grid-excel>
+<!--end grid excel-->

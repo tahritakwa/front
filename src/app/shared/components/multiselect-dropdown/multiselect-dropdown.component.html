@@ -1,0 +1,12 @@
+<form [formGroup]="myForm">
+  <ng-multiselect-dropdown
+      formControlName="MasterRoleUser"
+      [placeholder]="placeholder"
+      [data]="listOfInputs"
+      [disabled]="isDisabled"
+      [settings]="dropdownSettings"
+      [(ngModel)]="selectedItems"
+      (onSelect)="onItemSelect($event)"
+      [ngClass]="{'has-error': (MasterRoleUser.touched || MasterRoleUser.dirty) && !MasterRoleUser.valid}">
+  </ng-multiselect-dropdown>
+</form>

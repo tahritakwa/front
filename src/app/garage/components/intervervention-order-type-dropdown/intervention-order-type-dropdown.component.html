@@ -1,0 +1,6 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="interventionTypeFilterDataSource" class="form-control" [formControlName]="controlName"
+    textField="name" valueField="value" [valuePrimitive]="true" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="onValueChanged($event)">
+  </kendo-combobox>
+</div>

@@ -1,0 +1,16 @@
+<div *ngIf="group" [formGroup]="group">
+  <kendo-combobox [data]="garageFilterDataSource" class="form-control" formControlName="IdGarage" textField="Name"
+    valueField="Id" [valuePrimitive]="true" [filterable]="true" [placeholder]="placeholder|translate"
+    (filterChange)="handleFilter($event)" (valueChange)="onSelectGarage($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.Name | translate }}
+    </ng-template>
+  </kendo-combobox>
+</div>
+
+<div *ngIf="!group">
+  <kendo-combobox [data]="garageFilterDataSource" class="form-control" name="Name"
+    (valueChange)="onValueChanged($event)" textField="Name" valueField="Id" [valuePrimitive]="true"
+    [(ngModel)]="selectedValue" (filterChange)="handleFilter($event)">
+  </kendo-combobox>
+</div>

@@ -1,0 +1,15 @@
+<div [formGroup]="group">
+  <kendo-multiselect (filterChange)="handleFilter($event)"
+                     [(ngModel)]="selectedValues"
+                     [allowCustom]="allowCustom"
+                     [data]="jobFiltredDataSource"
+                     [filterable]="true"
+                     [valuePrimitive]="true"
+                     formControlName="JobEmployee"
+                     textField="Designation"
+                     valueField="Id">
+    <ng-template kendoMultiSelectFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+  </kendo-multiselect>
+</div>

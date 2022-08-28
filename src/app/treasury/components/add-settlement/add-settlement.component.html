@@ -1,0 +1,328 @@
+<div class="row">
+  <div class="col-lg-12 col-sm-12 col-md-12">
+    <p-accordion [multiple]="true">
+      <p-accordionTab header="{{'ADD_SETTLEMENT'|translate}}" [selected]="true">
+        <div class="resize">
+          <form class="form-horizontal" [formGroup]="settlementFormGroup" style="margin-top: 1em;">
+            <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+              <div class="form-group row">
+                <fieldset class="col-lg-12 col-md-12" *ngIf="companyWithholdingTax && !isForPos && !isModal">
+                  <legend>{{'HOLDING_TAX'|translate}}</legend>
+                  <div class="form-group row" style="margin-top: 1em;">
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label
+                        class="col-lg-12 col-md-12 col-sm-12">{{'FINANCIAL_COMMITMENTS_TTC_AMOUNT'|translate}}</label>
+                      <input class="form-control" formControlName="AmountWithCurrency" type="text"
+                             name="AmountWithCurrency" (input)="amountWithCurrencyChanged($event)">
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'HOLDING_TAX'|translate}}
+                        <span class="required">*</span>
+                      </label>
+                      <div class="input-group mb-4">
+                        <div class="input-group-prepend" (click)="initializesWithholdingTax()">
+                                                    <span class="input-group-text" tooltip="{{'RECALCULATE'|translate}}"
+                                                          theme="light">
+                                                        <i class="fa fa-refresh"></i>
+                                                    </span>
+                        </div>
+                        <input class="form-control" formControlName="WithholdingTax"
+                               type="number" name="WithholdingTax" [ngClass]="{ 'has-error':
+                                                       (settlementFormGroup.controls.WithholdingTax.touched || settlementFormGroup.controls.WithholdingTax.dirty)
+                                                        && settlementFormGroup.controls.WithholdingTax.invalid }">
+                      </div>
+                      <app-control-messages
+                        [control]="settlementFormGroup.controls.WithholdingTax"
+                        class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label
+                        class="col-lg-12 col-md-12 col-sm-12">{{'ASSETS_AMOUNT'|translate}}</label>
+                      <input class="form-control" formControlName="TotalAmountAssets" type="text"
+                             name="TotalAmountAssets">
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label
+                        class="col-lg-12 col-md-12 col-sm-12">{{'REMAINING_AMOUNT_TO_PAID'|translate}}</label>
+                      <input class="form-control" formControlName="AmountToBePaidWithCurrency" 
+                             type="text" name="AmountToBePaidWithCurrency"
+                             (input)="amountToBePaidWithCurrencyChanged($event)">
+                    </div>
+                    <div class="col-lg-12 col-md-12 margin" *ngIf="totalAmountWithholdingTax > 0 && WithholdingTax && WithholdingTax.value > 0
+                                                && (withHoldingTaxFileInfos && withHoldingTaxFileInfos.length === 0)">
+                      <input formControlName="CertificateAutomaticallyGenerated"
+                             [(ngModel)]="isCertificateAutomaticallyGenerated"
+                             class="input-checkbox100" id="automaticGenerateCertificate"
+                             name="remember-me" type="checkbox"
+                             style="border: 1px solid #e4e7ea !important; border-radius: 5px;">
+                      <label class="label-checkbox100 col-lg-3 col-md-3 col-sm-3"
+                             for="automaticGenerateCertificate">
+                        {{'GENERATE_WITH_HOLDING_TAX_CERTIFICATE'|translate}}&nbsp;
+                      </label>
+                    </div>
+                    <div class="col-lg-3 col-md-3 margin" *ngIf="totalAmountWithholdingTax > 0 && !isCertificateAutomaticallyGenerated
+                                            && WithholdingTax && WithholdingTax.value > 0">
+                      <label class="col-lg-12 col-md-12 col-sm-12">
+                        {{'WITH_HOLDING_ATTESTATION_FILE' | translate }}
+                      </label>
+                      <div class="col-lg-12 col-md-12">
+                        <div class="row">
+                          <div class="col-lg-4">
+                            <app-upload-file [showLabel]="false"
+                                             [fileNameCharactersToShow]="3" [maxFileSize]="2"
+                                             [maxNumberOfFiles]="3"
+                                             [currentNumberOfFiles]="withHoldingTaxFileInfos.length"
+                                             [authorisedTypes]="'application/pdf, image/jpeg, image/png, text/plain, application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                             [fileToUpload]="withHoldingTaxFileInfos">
+                            </app-upload-file>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+
+                <fieldset class="col-lg-12 col-md-12" style="margin-top: 2em;">
+                  <legend>{{'SETTLEMENT'|translate}}</legend>
+                  <div class="form-group row" style="margin-top: 1em;">
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">
+                        {{ 'LABEL' |translate}}
+                      </label>
+                      <input class="form-control" formControlName="Label" type="text"
+                             name="Label">
+                      <app-control-messages [control]="settlementFormGroup.controls.Label"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">
+                        {{(tiersType == tiersTypeEnum.Customer ? 'CLIENT' : 'SUPPLIER')|translate}}
+                      </label>
+                      <app-supplier-dropdown [type]="tiersType"
+                                             [itemForm]="settlementFormGroup"
+                                             (Selected)="emitSupplier($event)"
+                                             class="error-msg messages text-left text-danger">
+                      </app-supplier-dropdown>
+                      <app-control-messages [control]="settlementFormGroup.controls.IdTiers"
+                                            class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">
+                        {{ 'CURRENCY' | translate}}
+                      </label>
+                      <app-currency-dropdown class="error-msg messages text-left text-danger"
+                                             [group]="settlementFormGroup">
+                      </app-currency-dropdown>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">
+                        {{'SETTLEMENT_DATE'|translate}}
+                      </label>
+                      <kendo-datepicker formatPlaceholder="formatDate" [format]="formatDate"
+                                        class="form-control" formControlName="SettlementDate">
+                        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                   toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                        </kendo-datepicker-messages>
+                      </kendo-datepicker>
+                      <app-control-messages
+                        [control]="settlementFormGroup.controls.SettlementDate"
+                        class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin" *ngIf="!companyWithholdingTax">
+                      <label
+                        class="col-lg-12 col-md-12 col-sm-12">{{'TTC_AMOUNT'|translate}}</label>
+                      <input class="form-control" formControlName="AmountWithCurrency" type="text"
+                             name="AmountWithCurrency" (input)="amountWithCurrencyChanged($event)">
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'PAYMENT_METHOD'|translate}}
+                        <span class="required">*</span>
+                      </label>
+                      <app-payment-dropdown [hideAddBtn]="true" [group]="settlementFormGroup"
+                                            (selectedValue)="paymentMethodChange($event)"></app-payment-dropdown>
+                      <app-control-messages
+                        [control]="settlementFormGroup.controls.IdPaymentMethod"
+                        class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin" *ngIf="!isForPos && tiersType == tiersTypeEnum.Customer">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'CASHREGISTER'|translate}} </label>
+                        <input class="form-control" formControlName="CashRegisterName" type="text"
+                             name="CashRegisterName">
+        
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin"
+                         *ngIf="paymentMethod && !paymentMethod.Immediate">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'HOLDER'|translate}} <span
+                        class="required">*</span></label>
+                      <input class="form-control" formControlName="Holder" type="text"
+                             name="Holder" [ngClass]="{ 'has-error':
+                                                (settlementFormGroup.controls.Holder.touched || settlementFormGroup.controls.Holder.dirty) &&
+                                                settlementFormGroup.controls.Holder.invalid }">
+                      <app-control-messages [control]="settlementFormGroup.controls.Holder"
+                                            class="error-msg messages text-left text-danger"></app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin"
+                         *ngIf="paymentMethod && !(paymentMethod.Code === paymentMethodEnum.CashPayment)">
+                                            <span *ngIf="tiersType == tiersTypeEnum.Customer">
+                                                <label
+                                                  class="col-lg-12 col-md-12 col-sm-12">{{'ISSUING_BANK'|translate}}
+                                                  <span class="required">*</span>
+                                                </label>
+                                                <input class="form-control" formControlName="IssuingBank" type="text"
+                                                       name="IssuingBank" [ngClass]="{ 'has-error':
+                                                    (settlementFormGroup.controls.IssuingBank.touched || settlementFormGroup.controls.IssuingBank.dirty) &&
+                                                    settlementFormGroup.controls.IssuingBank.invalid }">
+                                                <app-control-messages
+                                                  [control]="settlementFormGroup.controls.IssuingBank"
+                                                  class="error-msg messages text-left text-danger">
+                                                </app-control-messages>
+                                            </span>
+                      <span *ngIf="tiersType == tiersTypeEnum.Supplier">
+                                                <label
+                                                  class="col-lg-12 col-md-12 col-sm-12">{{'BANK_ACCOUNT'|translate}}
+                                                  <span class="required">*</span>
+                                                </label>
+                                                <app-bank-account-dropdown [bankAccountForm]="settlementFormGroup"
+                                                                           (Selected)="changeBankAccount($event)"
+                                                                           [canAddNew]="false">
+                                                </app-bank-account-dropdown>
+                                                <app-control-messages
+                                                  [control]="settlementFormGroup.controls.IdBankAccount"
+                                                  class="error-msg messages text-left text-danger">
+                                                </app-control-messages>
+                                            </span>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin"
+                         *ngIf="paymentMethod && !paymentMethod.Immediate">
+                      <label
+                        class="col-lg-12 col-md-12 col-sm-12">{{'EXTERNAL_REFERENCE'|translate}}
+                        <span class="required">*</span>
+                      </label>
+                      <input class="form-control" formControlName="SettlementReference"
+                             type="text" name="Reference" [ngClass]="{ 'has-error':
+                                                (settlementFormGroup.controls.SettlementReference.touched || settlementFormGroup.controls.SettlementReference.dirty) &&
+                                                settlementFormGroup.controls.SettlementReference.invalid }">
+                      <app-control-messages
+                        [control]="settlementFormGroup.controls.SettlementReference"
+                        class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12" *ngIf="paymentMethod && (paymentMethod.Code === paymentMethodEnum.BankCheck ||
+                                            paymentMethod.Code === paymentMethodEnum.DraftBank)">
+                      <label
+                        class="col-lg-12 col-md-12">{{'SUPPORTING_DOCUMENTS' | translate }}</label>
+                      <div class="col-lg-12 col-md-12">
+                        <app-upload-file [showLabel]="false" [fileNameCharactersToShow]="20"
+                                         [maxFileSize]="2" [maxNumberOfFiles]="3"
+                                         [currentNumberOfFiles]="filesInfos.length"
+                                         [authorisedTypes]="'application/pdf, image/jpeg, image/png, text/plain, application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                         [fileToUpload]="filesInfos">
+                        </app-upload-file>
+                      </div>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin"
+                         *ngIf="paymentMethod && !paymentMethod.Immediate">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'COMMITMENT_DATE'|translate}}
+                        <span class="required">*</span>
+                      </label>
+                      <kendo-datepicker formatPlaceholder="formatDate" [format]="formatDate"
+                                        class="form-control" formControlName="CommitmentDate">
+                        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                                   toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                        </kendo-datepicker-messages>
+                      </kendo-datepicker>
+                      <app-control-messages
+                        [control]="settlementFormGroup.controls.CommitmentDate"
+                        class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                    <div class="col-lg-3 col-md-12 margin" *ngIf="paymentMethod">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'PAYED_AMOUNT'|translate}}
+                        <span class="required">*</span></label>
+                      <input class="form-control" formControlName="PaidAmountWithCurrency"
+                             type="number" name="PaidAmountWithCurrency" [ngClass]="{ 'has-error':
+                                                    (settlementFormGroup.controls.PaidAmountWithCurrency.touched || settlementFormGroup.controls.PaidAmountWithCurrency.dirty) &&
+                                                settlementFormGroup.controls.PaidAmountWithCurrency.invalid}"
+                             (keyup)='checkVarianceAndApplyValidity()'>
+                      <app-control-messages
+                        [control]="settlementFormGroup.controls.PaidAmountWithCurrency"
+                        class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </form>
+          <div class="float-right">
+            <button class="btn btn-sm btn-danger"
+                    (click)="closeForm()" *ngIf="!isModal">
+              <i class="fa fa-ban"></i> {{ 'CANCEL' |translate }}
+            </button>
+            <button tooltip="{{'GENERETE_NEW_SETTLEMENT' | translate}}"
+                    class="btn btn-sm btn-save mx-1" (click)="OpenDialogForm()" *ngIf="!isModal">
+              <i class="fa fa-floppy-o"></i> {{ 'GENERATE_SETTLEMENT' |translate }}
+            </button>
+            <button tooltip="{{'GENERETE_NEW_SETTLEMENT' | translate}}"
+                    class="btn btn-sm btn-save mx-1" (click)="ValidateDocAndGenerateSettlement()" *ngIf='isModal'>
+              <i class="fa fa-floppy-o"></i> {{ 'GENERATE_SETTLEMENT' |translate }}
+            </button>
+          </div>
+        </div>
+      </p-accordionTab>
+    </p-accordion>
+    <div
+      *ngIf="listFinancialCommitmentSelected && listFinancialCommitmentSelected.length > 0 && (settlementFormGroup && getVariance() != 0)"
+      style="margin-left: 20px; margin-right: 10px; margin-top: 2em;">
+      <div class="error-message" style="color:red; margin-bottom: 10px;">
+        {{'PAYMENT_GAP'|translate}}:
+        <span style="font-weight: bold;font-size: medium;">
+                        {{getVariance()}} {{tiersCurrency.Code}}
+                    </span>
+      </div>
+      <div style="margin-bottom: 20px;" [formGroup]="varianceMethodFormGroup">
+        {{'CHOSEN_GAP_MANAGEMENT_METHOD'|translate}}:
+        <span *ngIf="getVariance() < 0">
+                        <span>
+                            <button type="button" class="action-btn bill-default-btn" data-color="primary"
+                                    (click)="lossGapCheck()">
+                                <i class="fa fa-check-square bill-icon-style" *ngIf="PayPartially.value"></i>
+                                <i class="fa fa-square-o bill-icon-style" *ngIf="!PayPartially.value"></i>
+                            </button>
+                          {{financialCommitmentNotBilledConstant.PAY_PARTIALLY|translate}}
+                        </span>
+                        <span>
+                            <button type="button" class="action-btn bill-default-btn" (click)="lossGapCheck()"
+                                    data-color="primary">
+                                <i class="fa fa-check-square bill-icon-style" *ngIf="LossGap.value"></i>
+                                <i class="fa fa-square-o bill-icon-style" *ngIf="!LossGap.value"></i>
+                            </button>
+                          {{financialCommitmentNotBilledConstant.LOSS_GAP|translate}}
+                        </span>
+                    </span>
+        <span *ngIf="getVariance() > 0">
+                        <span style="display: none;">
+                            <button type="button" class="action-btn bill-default-btn" (click)="gainGapCheck()"
+                                    data-color="primary">
+                                <i class="fa fa-check-square bill-icon-style" *ngIf="Advanced.value"></i>
+                                <i class="fa fa-square-o bill-icon-style" *ngIf="!Advanced.value"></i>
+                            </button>
+                          {{financialCommitmentNotBilledConstant.ADVANCED|translate}}
+                        </span>
+
+                        <span>
+                            <button type="button" class="action-btn bill-default-btn" (click)="gainGapCheck()"
+                                    data-color="primary">
+                                <i class="fa fa-check-square bill-icon-style" *ngIf="GainGap.value"></i>
+                                <i class="fa fa-square-o bill-icon-style" *ngIf="!GainGap.value"></i>
+                            </button>
+                          {{financialCommitmentNotBilledConstant.GAIN_GAP|translate}}
+                        </span>
+                    </span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+{
+  "env": {
+    "name": "rc",
+    "production": true
+  },
+  "logging": {
+    "console": true
+  },
+  "root_api": "/api",
+  "garage_root_api": "/garage/api",
+  "rh_paie_root_api": "/rh-paie/api",
+  "settings_api": "/settings/api"
+}

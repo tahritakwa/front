@@ -1,0 +1,89 @@
+input[type="file"] {
+  display: none;
+}
+
+.imgSize {
+  border: 3px groove #b4d78a4d;
+  padding: 3px;
+  height: 130px;
+}
+
+@media only screen and (min-width: 1450px) {
+  .imgSize {
+    width: 130px;
+  }
+}
+
+@media screen and (max-width: 1450px) and (min-width: 1200px) {
+  .imgSize {
+    width: 130px;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+  .imgSize {
+    width: 130px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .imgSize {
+    width: 130px;
+  }
+}
+
+.carousel-indicators-numbers {
+  li {
+    text-indent: 0;
+    margin: 0 2px;
+    width: 25px;
+    height: 25px;
+    border: none;
+    background-color: white;
+    font-weight: bold;
+    color: #fff;
+    background-color: #999;
+    transition: all 0.25s ease;
+    text-align: center;
+    color: #4c9aae;
+    background-color: white;
+    font-weight: bold;
+
+    &.active, &:hover {
+      margin: 0 2px;
+      width: 25px;
+      height: 25px;
+      border-radius: 100%;
+      color: white;
+      background-color: #4c9aae;
+    }
+  }
+}
+
+.container {
+  position: relative;
+  max-width: 130px;
+  padding-left: 0px;
+  padding-right: 0px
+}
+
+.container img {
+  width: 100%;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.container .btn {
+  position: absolute;
+  top: 90%;
+  left: 90%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  color: white;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+

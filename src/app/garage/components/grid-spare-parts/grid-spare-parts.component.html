@@ -1,0 +1,135 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <kendo-grid #grid [data]="gridSettings.gridData" [pageable]="pagerSettings" [pageSize]="gridSettings.state.take"
+  [skip]="gridSettings.state.skip" [reorderable]="true" [sortable]="false" (dataStateChange)="dataStateChange($event)"
+    (add)="addHandler($event)" (edit)="editHandler($event)" (save)="saveHandler($event)"
+    (cancel)="cancelHandler($event)" (remove)="removeHandler($event)">
+    <!-- Add spare part button start -->
+    <ng-template kendoGridToolbarTemplate *ngIf="!isModal">
+      <app-btn-grid class="col" [add]='hasUpdatePermission' [relativeStyle]="false">
+      </app-btn-grid>
+    </ng-template>
+    <!-- Add spare part button End -->
+    <!-- Piece -->
+    <kendo-grid-column [field]="columnsConfig[0].field" [width]="180" [columnMenu]="false">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{columnsConfig[0].tooltip|translate}}" theme="light">{{columnsConfig[0].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-isNew="isNew">
+        <div *ngIf="isNew">
+          <app-item-dropdown  [itemForm]="formGroup" [showFilter]='true' (Selected)="itemSelected($event)"
+           [isForGarage]="isForGarage"
+            [parentViewContainerRef]="viewRef" [activeKeyPress]='true' [isForSales]='true' [hideSearch]="hideSearch"
+            [isOnlyStockManaged] = "true">
+          </app-item-dropdown>
+          <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="IdItem">
+          </app-control-message-grid-cell>
+        </div>
+        <div class="col"  *ngIf="!isNew">
+          <div class="row">
+            <span class="font-weight-bold">
+              {{dataItem.IdItemNavigation ? dataItem.IdItemNavigation.Description : ''}}
+            </span>
+          </div>
+          <div class="row">
+            <span class="light-reference">{{dataItem.IdItemNavigation ? dataItem.IdItemNavigation.Code : ''}}</span>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <div class="row cursor-pointer">
+          <div class="col-auto">
+            <div class="sparePart-photo d-flex justify-content-center">
+              <img id="ThumbnailSparePart" class="imgSize" alt="Illustration des problèmes de suddation" border="0"
+                [src]=" 'assets/image/placeholder-logo.png'" />
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <span class="font-weight-bold">
+                {{dataItem ? dataItem.IdItemNavigation.Description : ''}}
+              </span>
+            </div>
+            <div class="row">
+              <span class="light-reference">{{dataItem ? dataItem.IdItemNavigation.Code : ''}}</span>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!-- Quantity -->
+    <kendo-grid-column [field]="columnsConfig[1].field" [width]="150">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{columnsConfig[1].tooltip|translate}}" theme="light">{{columnsConfig[1].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridEditTemplate>
+        <app-grid-cell-input-template [group]="formGroup" controlName="Quantity" inputType="number" [min]="1">
+        </app-grid-cell-input-template>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- UnitHtsalePrice -->
+    <kendo-grid-column [field]="columnsConfig[2].field" [width]="150">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{columnsConfig[2].tooltip|translate}}" theme="light">{{columnsConfig[2].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridEditTemplate>
+        <app-grid-cell-input-template [group]="formGroup" controlName="UnitHtsalePrice" inputType="number"
+          [stopInputCounter]='true'>
+        </app-grid-cell-input-template>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span *ngIf="userCurrency && dataItem.UnitHtsalePrice > 0">
+          {{dataItem.UnitHtsalePrice.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+          style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+        </span>
+        <span *ngIf="userCurrency && !dataItem.UnitHtsalePrice">
+          0&nbsp;{{userCurrency.Code}} 
+        </span>
+        <span *ngIf="!userCurrency">{{dataItem.UnitHtsalePrice}}</span> 
+      </ng-template>
+    </kendo-grid-column>
+    <!-- HtPrice -->
+    <kendo-grid-column [field]="columnsConfig[3].field" [width]="150"
+      [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right", "padding-right": "9%"}'>
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{columnsConfig[3].tooltip|translate}}" theme="light">{{columnsConfig[3].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridEditTemplate>
+        <app-grid-cell-input-template [group]="formGroup" controlName="HtPrice" inputType="number">
+        </app-grid-cell-input-template>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem>
+        <span *ngIf="userCurrency && dataItem.HtPrice > 0">
+          {{dataItem.HtPrice.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+          style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+        </span>
+        <span *ngIf="userCurrency && !dataItem.HtPrice">
+          0&nbsp;{{userCurrency.Code}} 
+        </span>
+        <span *ngIf="!userCurrency">{{dataItem.HtPrice}}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Command-->
+    <kendo-grid-command-column [width]="120" [title]="'ACTIONS' | translate" *ngIf="!isModal">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{'ACTIONS' | translate}}" theme="light">{{'ACTIONS' | translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+        <button kendoGridEditCommand tooltip="{{'UPDATE' | translate}}" class='noPadding btn-Add' type="button">
+          <i class="las la-pen cursor-pointer edit-pencil la-lg ng-star-inserted" aria-hidden="true" *ngIf="hasUpdatePermission"></i>
+        </button>
+        <button kendoGridSaveCommand tooltip="{{'SAVE' | translate}}" class='noPadding btn-Add' type="button" *ngIf="hasUpdatePermission">
+          <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+        </button>
+        <button kendoGridCancelCommand tooltip="{{'CANCEL' | translate}}" class="noPadding btn-Add k-button" *ngIf="hasUpdatePermission"
+          type="button">
+          <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true" ></i>
+        </button>
+        <button kendoGridRemoveCommand tooltip="{{'DELETE' | translate}}" class="noPadding btn-Add k-button" dir="ltr" *ngIf="hasUpdatePermission"
+          style="border: none; color: #E91E63 !important;" type="button">
+          <i class="fa fa-times fa-lg"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-command-column>
+  </kendo-grid>
+</div>

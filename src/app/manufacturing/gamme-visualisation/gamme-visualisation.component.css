@@ -1,0 +1,13 @@
+.radio-group {
+  padding-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.radio-group label::after {
+  content:'\00a0\00a0\00a0\00a0'; /* eq &nbsp; x 4 */
+}
+
+/* optionnal */
+.radio-group label:last-of-type::after {
+  content:'';
+}

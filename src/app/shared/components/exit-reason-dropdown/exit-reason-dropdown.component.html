@@ -1,0 +1,21 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="exitReasonFiltredDataSource"
+                      class="form-control HistoryCommandMargin"
+                      name="IdExitReason"
+                      formControlName="IdExitReason"
+                      textField="Label"
+                      valueField="Id"
+                      (valueChange)="onSelect(this)"
+                      [allowCustom]="allowCustom"
+                      [valuePrimitive]="true"
+                      [filterable]="true"
+                      (filterChange)="handleFilter($event)">
+   <!--footer template-->
+   
+    <ng-template kendoDropDownListFooterTemplate *ngIf="!noAddButton">
+      <app-drop-down-footer [addNew]="addNew.bind(this)" ></app-drop-down-footer>
+    </ng-template>
+ 
+  <!--end footer template-->
+  </kendo-combobox>
+</div>

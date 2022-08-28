@@ -1,0 +1,136 @@
+<div [formGroup]="itemForm" *ngIf='itemForm && !isMultiSelect && !notWithNgModel && !isCheckboxMode'>
+  <kendo-combobox class="form-control HistoryCommandMargin" [data]="supplierFiltredDataSource" [textField]="'Name'"
+    (valueChange)="onSelect(this)" [valueField]="'Id'" name="IdTiers" formControlName="IdTiers" [valuePrimitive]="true"
+    [disabled]="disabled" [placeholder]="placeholder|translate" [filterable]="true" (focus)="onFocus(this)"
+    (filterChange)="handleFilter($event)" [allowCustom]="allowCustom" #IdTiersEl>
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Name}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.CodeTiers}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate
+      *ngIf='!hideAddBtn && !forSearch && !isFromDocControlStatus && hasAddPermission'>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+  <a *ngIf='showDetails && IdTiers.value>0 && isCustomerOrSupplier() && !disabled && (hasEditPermission || hasShowPermission)' target="_blank"
+    [routerLink]="[goToProfile(),IdTiers.value]" style="position:absolute;margin: 5px;">
+    <i class="pointer fa fa-info-circle fa-lg" aria-hidden="true" style="color: #607d8b;"></i> </a>
+</div>
+
+<div *ngIf='!itemForm && !isMultiSelect && !isCheckboxMode'>
+  <kendo-combobox class="form-control HistoryCommandMargin" [data]="supplierFiltredDataSource" [textField]="'Name'"
+    (valueChange)="onSelect(this)" [valueField]="'Id'" name="IdTiers" [valuePrimitive]="true"
+    [(ngModel)]="selectedValue" [filterable]="true" (blur)="blur()" (filterChange)="handleFilter($event)"
+    [allowCustom]="allowCustom" [disabled]="disabled" [popupSettings]="{ appendTo: containerRef }" *ngIf='containerRef'>
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Name}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.CodeTiers}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+
+
+  <kendo-combobox class="form-control HistoryCommandMargin" [data]="supplierFiltredDataSource" [textField]="'Name'"
+    (valueChange)="onSelect(this)" [valueField]="'Id'" name="IdTiers" [valuePrimitive]="true"
+    [(ngModel)]="selectedValue" [filterable]="true" (blur)="blur()" (filterChange)="handleFilter($event)"
+    [allowCustom]="allowCustom" [disabled]="disabled" *ngIf='!containerRef' #IdTiersElRef
+    [ngClass]="{ 'has-error': Required}">
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem >
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Name}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.CodeTiers}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--end content template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+        <!--end No data template-->
+  </kendo-combobox>
+</div>
+
+<div *ngIf='isMultiSelect && !isCheckboxMode'>
+  <kendo-multiselect [data]="supplierFiltredDataSource" (valueChange)="onSelect(this)" [textField]="'Name'"
+    [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilter($event)" [valueField]="'Id'"
+    [(ngModel)]="selectedValueMultiSelect" [disabled]='isDisabledDropDown == true || disabled'>
+                          <!--No data template-->
+                          <ng-template kendoDropDownListNoDataTemplate>
+                            <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                          </ng-template>
+                          <kendo-multiselect-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-multiselect-messages>
+  </kendo-multiselect>
+</div>
+
+
+<div [formGroup]="itemForm" *ngIf='itemForm && !isMultiSelect && notWithNgModel==true && !isCheckboxMode'>
+  <kendo-combobox class="form-control HistoryCommandMargin" [data]="supplierFiltredDataSource" [textField]="'Name'"
+    (valueChange)="onSelect(this)" [valueField]="'Id'" name="IdTiers" formControlName="IdTiers" [valuePrimitive]="true"
+    [filterable]="true" (filterChange)="handleFilter($event)" [allowCustom]="allowCustom" [disabled]="disabled">
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Name}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.CodeTiers}}</span>
+        </div>
+      </div>
+      
+    </ng-template>
+
+        <!--end content template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}" > </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<div [formGroup]="itemForm" *ngIf='isMultiSelect && isCheckboxMode'>
+  <ng-multiselect-dropdown formControlName="ListTiers" [placeholder]="placeholder|translate"
+                           [data]="supplierFiltredDataSource" [disabled]="disabled" [settings]="dropdownSettings"
+                           [(ngModel)]="selectedValueMultiSelect" (click)="isMultiSelectTouched = true"
+                           (onDeSelect)="onItemSelect($event)" (onSelect)="onItemSelect($event)"
+                           (onSelectAll)="onSelectAll($event)" (onDeSelectAll)="onDeSelectAll($event)"
+                           [ngStyle]="disabled && {'pointer-events': 'none'}"
+                           [ngClass]="!disabled && {'has-error': (isMultiSelectTouched && !ListTiers.valid )}">
+  </ng-multiselect-dropdown>
+</div>

@@ -1,0 +1,7 @@
+<app-list-payment-slip
+  [paymentMethod]="paymentEnum.DraftBank"
+  (totalSettlementNumberToAddEmitter)="getSettlementNumber($event)"
+  [predicateAdvancedSearch]="predicateAdvancedSearch"
+  [isClickedSearch]="isClickedSearch"
+  [isActiveTab] = "isActiveTab"
+></app-list-payment-slip>

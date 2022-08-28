@@ -1,0 +1,49 @@
+<div *ngIf="ValidityFormGroup" class="form-group row" [formGroup]="ValidityFormGroup">
+  <div class="col-lg-3 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12"> {{'BONUS'|translate}}<span class="required">*</span></label>
+    <app-bonus-dropdown (Selected)="receiveData($event)" [group]="ValidityFormGroup" [addNewInput] ="false" [isFixeBonusInput]="isFixeBonus" [idBonusColName]="'IdBonus'">
+    </app-bonus-dropdown>
+    <app-control-messages [control]="IdBonus" class="error-msg messages text-left text-danger"></app-control-messages>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12" tooltip="{{'START_DATE'|translate}}"> {{'BEGINNING'|translate}}<span
+        class="required">*</span></label>
+    <kendo-datepicker [format]="formatDate" formControlName="ValidityStartDate" (valueChange)="buildContractBonusValidators()" class="form-control">
+      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+      </kendo-datepicker-messages>
+    </kendo-datepicker>
+    <app-control-messages [control]="ValidityStartDate" class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+  <div class="col-lg-3 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12" tooltip="{{'END_DATE'|translate}}"> {{'END'|translate}}</label>
+    <kendo-datepicker [format]="formatDate" formControlName="ValidityEndDate" (valueChange)="buildContractBonusValidators()" class="form-control">
+      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+      </kendo-datepicker-messages>
+    </kendo-datepicker>
+    <app-control-messages [control]="ValidityEndDate" class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+  <div class="col-lg-2 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12">{{'VALUE'|translate}}</label>
+    <input class="form-control" formControlName="Value" type="number" name="" min="0"
+      [ngClass]="{ 'has-error': ((Value.touched || Value.dirty) && (!Value.valid && (!Value.disabled && !Value.pending))) }">
+    <app-control-messages [control]="Value" class="error-msg messages text-left text-danger">
+    </app-control-messages>
+  </div>
+  <div class="col-lg-1 col-md-6 col-sm-12">
+      <span style="margin-left: 5% !important;margin-top: 38px;"
+      *ngIf="ValidityFormGroup.value.State == contractBonusStateEnumerator.New"
+      class="badge badge-primary">{{'NEW'|translate}}</span>
+      <span style="margin-left: 5% !important;margin-top: 38px;"
+      *ngIf="ValidityFormGroup.value.State == contractBonusStateEnumerator.InProgress"
+      class="badge badge-success">{{'IN_PROGESS'|translate}}</span>
+      <span style="margin-left: 5% !important;margin-top: 38px;"
+      *ngIf="ValidityFormGroup.value.State == contractBonusStateEnumerator.Expired"
+      class="badge badge-danger">{{'EXPIREED'|translate}}</span>
+      <span style="margin-left: 5% !important;margin-top: 38px;"
+      *ngIf="ValidityFormGroup.value.State == contractBonusStateEnumerator.UpComing"
+      class="badge badge-warning">{{'UPCOMING'|translate}}</span>
+  </div>
+</div>
+<hr>

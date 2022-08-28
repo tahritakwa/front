@@ -1,0 +1,14 @@
+{
+  "env": {
+    "name": "dev",
+    "production": false
+  },
+  "logging": {
+    "console": true
+  },
+  "root_api": "/dev",
+  "garage_root_api": "/garage/dev",
+  "rh_paie_root_api": "/rh-paie/dev",
+  "settings_api": "/settings/dev"
+  
+}

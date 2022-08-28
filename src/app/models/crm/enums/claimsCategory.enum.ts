@@ -1,0 +1,6 @@
+export enum ClaimsCategoryEnum {
+  SERVICE = 'SERVICE',
+  DELIVERY = 'DELIVERY',
+  PACKAGING = 'PACKAGING',
+  PRODUCT_FAILURE = 'PRODUCT_FAILURE'
+}

@@ -1,0 +1,243 @@
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="col-sm-5 mt-1" *ngIf='!isModal && !isForWarehouseDetail'>
+        <h3 class="card-title mb-0">{{'ONLINE_EXHIBITION'|translate}}</h3>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-center">
+      <div class="col-8">
+        <app-search-item-ecommerce (ShownTecDoc)="ToshowTecDocGrid($event)"
+          [isForWarehouseDetail]="isForWarehouseDetail" [isEsnVersion]="isEsnVersion">
+        </app-search-item-ecommerce>
+      </div>
+    </div>
+
+
+
+    <div class="card-body" *ngIf="!TecDocGrid">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+        (dataStateChange)="dataStateChange($event)" [sortable]="true" filterable="menu"
+        [groupable]='!isForWarehouseDetail' (groupChange)="groupChange($event)" [group]="groups" [reorderable]="true"
+        [columnMenu]="true" [pageable]="pagerSettings" [selectable]="true" (selectionChange)="selectRow($event)"
+        (detailExpand)="loadWarehousDetails($event)" (dblclick)="dbCellClick()">
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row" style="float :right; margin-right: 40px;">
+
+            <div hidden>
+              <label for="file-upload" class="custom-file-upload k-button k-primary"
+                style="margin-top: 5px;    display: inline-flex;">
+                <i class="fa fa-paperclip file-import"></i>
+              </label>
+              <input id="file-upload" type="file" onclick="this.value=null;" (change)="incomingFile($event)"
+                accept=".xlsx, .xls, .csv" />
+            </div>
+
+            <div style="margin-top: 4px;" hidden>
+              <input type="checkbox" id="toggle" />
+              <label class="button" for="toggle">
+                <i class="fa fa-check-square-o" aria-hidden="true" style="     color: #4b9aad;
+                font-size: 25px;
+                margin-left: 9px;
+                margin-top: 6px;"></i>
+              </label>
+              <nav class="nav">
+                <a (click)="selectAllProductsByFilters()" href="#" onclick="return false">{{'SELECT_ALL'|translate}}</a>
+                <a (click)="deselectAllProductsByFilters()" href="#"
+                  onclick="return false">{{'DESELECT_ALL'|translate}}</a>
+                <a (click)="selectAllProductsByFiltersAndPages()" href="#"
+                  onclick="return false">{{'SELECT_PAGE'|translate}}</a>
+                <a (click)="deselectAllProductsByFiltersAndPages()" href="#"
+                  onclick="return false">{{'DESELECT_PAGE'|translate}}</a>
+                <a (click)="ResetAllProducts()" href="#" onclick="return false">{{'RESET'|translate}}</a>
+              </nav>
+            </div>
+          </div>
+          <div class="row" style="margin-bottom: 10px;">
+            <div>
+              <button style="width:240px; margin-left:30px" class="btn btn-primary dropdown-toggle btnColor"
+                type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                {{choosenFilter}}
+              </button>
+              <div class="dropdown-menu" style="border: 1px solid rgb(200, 206, 211) !important;">
+                <button [ngClass]="{
+                      'dropdown-item':choosenFilterNumber != filterEcommerceStatus.AllItems,
+                      'dropdown-item-active':choosenFilterNumber == filterEcommerceStatus.AllItems
+                      }" (click)="onFilterClick()">
+                  {{'ALL_ITEMS'|translate}}
+                </button>
+                <button [ngClass]="{
+                      'dropdown-item':choosenFilterNumber != filterEcommerceStatus.IsEcommerceOnly,
+                      'dropdown-item-active':choosenFilterNumber == filterEcommerceStatus.IsEcommerceOnly
+                      }" (click)="onFilterClick(filterEcommerceStatus.IsEcommerceOnly)">
+                  {{'IS_EXPOSED_ONLINE_ONLY'|translate}}
+                </button>
+
+                <button [ngClass]="{
+                      'dropdown-item':choosenFilterNumber != filterEcommerceStatus.IsNotEcommerceOnly,
+                      'dropdown-item-active':choosenFilterNumber == filterEcommerceStatus.IsNotEcommerceOnly
+                      }" (click)="onFilterClick(filterEcommerceStatus.IsNotEcommerceOnly)">
+                  {{'IS_EXPOSED_OFFLINE_ONLY'|translate}}
+                </button>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+
+              <div class="row pl-2" style="display: block;margin-left: 2px;">
+
+                <button class="btn btn-sm btn-success" (click)="sychronizeWithEcommerce()"
+                  [disabled]="isExposeOnlineBtnDisabled()"
+                  style="margin-top: 3px;margin-left: -9px;margin-bottom: 6px;margin-right: 15px;">
+                  <i class="fa fa-refresh"></i> {{'EXPOSE_ONLINE'|translate}}
+                </button>
+
+                <button class="btn btn-sm btn-danger" (click)="exposeAllSelectedProductsOnOrOffLine(false)"
+                  [disabled]="isExposeOfflineBtnDisabled()"
+                  style="margin-top: 3px;margin-left: -9px;margin-bottom: 6px;">
+                  <i class="fa fa-refresh"></i> {{'EXPOSE_OFFLINE'|translate}}
+                </button>
+
+              </div>
+
+
+            </div>
+
+          </div>
+        </ng-template>
+
+        <kendo-grid-command-column [width]="100">
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <button class="noPadding btn-Add k-button" style="background-color: rgba(255, 255, 255, 0);margin: 0 0;"
+              (click)="selectAllProductsByFiltersAndPages()" *ngIf="!isSelectAllPage">
+              <i class="fa fa-square-o"></i>
+            </button>
+            <button class="noPadding btn-Add k-button" style="background-color: rgba(255, 255, 255, 0);"
+              (click)="deselectAllProductsByFiltersAndPages()" *ngIf="isSelectAllPage">
+              <i class="fa fa-check-square "></i>
+            </button>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+
+            <div *ngIf="dataItem.OnlineSynchonizationStatus !== onlineSynchronizationWithEcommerceStatus.Pended "
+              style="display:inline;">
+              <button class="noPadding btn-Add k-button" style="background-color: rgba(255, 255, 255, 0);margin: 0 0em;"
+                (click)="selectItemToChangeIsEcommerceValue(dataItem.Id,true, dataItem.IsEcommerce)"
+                *ngIf="!isChecked(dataItem.Id)">
+                <i class="fa fa-square-o"></i>
+              </button>
+              <button class="noPadding btn-Add k-button" style="background-color: rgba(255, 255, 255, 0);margin: 0 0em;"
+                (click)="selectItemToChangeIsEcommerceValue(dataItem.Id,false, dataItem.IsEcommerce)"
+                *ngIf="isChecked(dataItem.Id)">
+                <i class="fa fa-check-square "></i>
+              </button>
+            </div>
+          </ng-template>
+        </kendo-grid-command-column>
+
+
+
+        <kendo-grid-column *ngFor="let column of gridSettings.columnsConfig; let i = index" [field]="column.field"
+          title="{{column.title | translate}}" [width]="column._width" [filter]="column.filter"
+          [filterable]="column.filterable" [hidden]="column.hidden" [format]="column.format">
+
+
+          <ng-template kendoGridCellTemplate *ngIf="column.field === 'TecDocRef'" let-dataItem='dataItem'>
+            <div *ngIf="isNotEmpty(dataItem.TecDocRef) && dataItem.TecDocId">
+              {{dataItem.TecDocRef}}
+            </div>
+            <!-- <div *ngIf="!(isNotEmpty(dataItem.TecDocRef) && dataItem.TecDocId) && isNotEmpty(dataItem.Oem)">
+              {{dataItem.Oem}} (OEM)
+            </div> -->
+          </ng-template>
+
+
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field === 'SynchonizationStatus'">
+            <div *ngIf="dataItem.OnlineSynchonizationStatus !== onlineSynchronizationWithEcommerceStatus.Pended"
+              style="display:inline;">
+
+              <div *ngIf="!dataItem.SynchonizationStatus ||
+                   dataItem.SynchonizationStatus === synchronizationWithEcommerceStatus.UnsynchronizedWithOutError"
+                style="display:inline;">
+                <span class="badge badge-warning">{{'NOT_SYNCHRONOUS'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.SynchonizationStatus === synchronizationWithEcommerceStatus.UnsynchronizedWithError"
+                style="display:inline;">
+                <span class="badge badge-danger">{{'NOT_SYNCHRONOUS'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.SynchonizationStatus === synchronizationWithEcommerceStatus.Succeed"
+                style="display:inline;">
+                <span class="badge badge-success">{{'SYNCHRONOUS'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.SynchonizationStatus !== synchronizationWithEcommerceStatus.Succeed"
+                style="display:inline;">
+                <button (click)="sychronizeWithEcommerce()" title="{{'SYNCHRONIZE'|translate}}"
+                  style="background-color: rgba(255, 255, 255, 0);">
+                  <i class="fa fa-refresh" style="font-size:15px;color:#007bff;cursor: pointer;"></i>
+                </button>
+              </div>
+
+            </div>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem' *ngIf="column.field === 'IsEcommerce'">
+
+            <div *ngIf="dataItem.OnlineSynchonizationStatus === onlineSynchronizationWithEcommerceStatus.Pended"
+              style="display:inline;">
+              <span class="badge badge-warning">{{'PENDING'|translate}}</span>
+            </div>
+            <div
+              *ngIf="dataItem.OnlineSynchonizationStatus === onlineSynchronizationWithEcommerceStatus.ErrorToPutOnline"
+              style="display:inline;">
+              <span class="badge badge-danger" title="{{'ERROR_TO_PUT_ONLINE'|translate}}">{{'ERROR'|translate}}</span>
+            </div>
+            <div
+              *ngIf="dataItem.OnlineSynchonizationStatus === onlineSynchronizationWithEcommerceStatus.ErrorToPutOffline"
+              style="display:inline;">
+              <span class="badge badge-danger" title="{{'ERROR_TO_PUT_OFFLINE'|translate}}">{{'ERROR'|translate}}</span>
+            </div>
+            <div
+              *ngIf="dataItem.IsEcommerce && dataItem.OnlineSynchonizationStatus === onlineSynchronizationWithEcommerceStatus.Succeed">
+              <span class="badge badge-success" title="{{'SUCCESS'|translate}}">{{'SUCCESS'|translate}}</span>
+            </div>
+
+
+          </ng-template>
+
+
+
+        </kendo-grid-column>
+
+        <kendo-grid-messages groupPanelEmpty="">
+        </kendo-grid-messages>
+
+        <!-- End Columns Command-->
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" fileName="{{'PRODUCT_LIST'|translate}}" pdf="true" excel="true"
+          [service]="itemService" [predicate]="predicate">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+
+
+
+      </kendo-grid>
+
+      <button class="btn btn-sm btn-danger" (click)="exposeAllSelectedProductsOnOrOffLine(false)"
+        [disabled]="isExposeOfflineBtnDisabled()"
+        style="float: right;margin-top: 6px;margin-left: -9px;margin-bottom: 6px;">
+        <i class="fa fa-refresh"></i> {{'EXPOSE_OFFLINE'|translate}}
+      </button>
+
+      <button class="btn btn-sm btn-success" (click)="sychronizeWithEcommerce()"
+        [disabled]="isExposeOnlineBtnDisabled()"
+        style="float: right;margin-top: 6px;margin-left: -9px;margin-bottom: 6px;margin-right: 15px;">
+        <i class="fa fa-refresh"></i> {{'EXPOSE_ONLINE'|translate}}
+      </button>
+
+
+
+    </div>
+
+  </div>
+</div>

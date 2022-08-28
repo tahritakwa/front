@@ -1,0 +1,10 @@
+<div [formGroup]="group">
+  <kendo-combobox formControlName="CompanyCode"
+    [data]="comapniesDataSource"
+    [textField]="'Name'"
+    [valuePrimitive]="true"
+    [valueField]="'Code'"
+    [filterable]="true"
+    (filterChange)="handleFilter($event)">
+  </kendo-combobox>
+</div>

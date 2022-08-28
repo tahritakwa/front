@@ -1,0 +1,430 @@
+/**** start leave balance card ****/
+.tilesWrap {
+	padding: 0;
+	margin: 10px auto;
+	list-style: none;
+	text-align: center;
+}
+.tilesWrap li {
+  display: inline-block;
+  width: 26%;
+  min-width: 300px;
+  max-width: 320px;
+  padding: 148px 8px 23px;
+  position: relative;
+  vertical-align: top;
+  margin: 10px;
+  font-family: 'helvetica', san-serif;
+  min-height: 28vh;
+  border: 2px solid #4c9aae;
+  text-align: left;
+  border-radius: 25px;
+}
+.tilesWrap li h2 {
+	font-size: 96px;
+	margin: 0;
+	position: absolute;
+	opacity: 0.2;
+	top: 50px;
+	right: 10px;
+	transition: all 0.3s ease-in-out;
+}
+.tilesWrap li h3 {
+	font-size: 20px;
+	color: #b7b7b7;
+	margin-bottom: 5px;
+}
+.tilesWrap li p {
+	font-size: 16px;
+	line-height: 18px;
+	color: #b7b7b7;
+	margin-top: 5px;
+}
+.tilesWrap li:hover h2 {
+	top: 0px;
+	opacity: 0.6;
+}
+
+.tilesWrap li:before {
+	content: '';
+	position: absolute;
+	top: -2px;
+	left: -2px;
+	right: -2px;
+	bottom: -2px;
+	z-index: -1;
+	background: #fff;
+	transform: skew(2deg, 2deg);
+}
+.tilesWrap li:after {
+	content: '';
+	position: absolute;
+	width: 40%;
+	height: 100%;
+	left: 0;
+	top: 0;
+	background: rgba(255, 255, 255, 0.02);
+}
+/**** end leave balance card ****/
+.img-border {
+    height: 150px !important;
+  }
+  .list-title {
+    font-weight: bolder;
+  }
+  .list-info {
+    font-size: 18px;
+  }
+  .list-info li {
+    margin-bottom: 6px;
+  }
+  .sector {
+    font-size: 18px;
+    color: #9aa4ae;
+  }
+  .code {
+    color: #8babcb;
+  }
+.profile-head {
+    transform: translateY(5rem)
+}
+.bg-light {
+    background-color:white !important; }
+.text-white {
+    color: #292b2c !important;
+}
+.cover {
+    background-image: url(assets/image/pngtree-simple-cra.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.img-thumbnail {
+  width: 130px;
+  height: 130px;
+}
+/* Buttons */
+/* Inputs */
+/* Timeline custom component */
+.timeline {
+    border-left: 2px solid #E6E9ED;
+    padding: 1rem 0; }
+  
+  .timeline-card {
+    position: relative;
+    margin-left: 50px;
+    border-left: 2px solid;
+    margin-bottom: 2rem;
+}
+  
+  .timeline-card:last-child {
+    margin-bottom: 1rem; }
+  
+  .timeline-card:before {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    background-color: #fff;
+    border-radius: 10px;
+    width: 12px;
+    height: 12px;
+    top: 20px;
+    left: -41px;
+    border: 2px solid;
+    z-index: 2; }
+  .timeline-card-body {
+      min-height: 30%;
+      padding-bottom: 70px;
+  }
+  .timeline-card:after {
+    content: '';
+    display: inline-block;
+    position: absolute;
+    background-color: currentColor;
+    width: 29px;
+    height: 2px;
+    top: 25px;
+    left: -29px;
+    z-index: 1; }
+  .img-thumbnail {
+    width: 130px;
+    height: 130px;
+  }
+  .timeline-card-primary {
+    border-left-color: #4A89DC; }
+  
+  .timeline-card-primary:before {
+    border-color: #4A89DC; }
+  
+  .timeline-card-primary:after {
+    background-color: #4A89DC; }
+  
+  .timeline-card-success {
+    border-left-color: #37BC9B; }
+  
+  .timeline-card-success:before {
+    border-color: #37BC9B; }
+  
+  .timeline-card-success:after {
+    background-color: #37BC9B; }
+  
+  html {
+    scroll-behavior: smooth; }
+  
+  .site-title {
+    font-size: 1.25rem;
+    line-height: 2.5rem; }
+  
+  .nav-link {
+    padding: 0;
+    font-size: 1.25rem;
+    line-height: 2.5rem;
+    color: rgba(0, 0, 0, 0.5); }
+  
+  .nav-link:hover,
+  .nav-link:focus,
+  .active .nav-link {
+    color: rgba(0, 0, 0, 0.8); }
+  
+  .nav-item + .nav-item {
+    margin-left: 1rem; }
+  .avatar {
+    max-width: 216px;
+    max-height: 216px;
+    margin-top: 20px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto; }
+  
+  .avatar img {
+    /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%); }
+  
+  footer a:not(.nav-link) {
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer; }
+  
+  @media (min-width: 48em) {
+    .site-title {
+      float: left; }
+    .site-nav {
+      float: right; }
+    .avatar {
+      margin-bottom: -80px;
+      margin-left: 0; } }
+  
+  @media print {
+    .cover, .cover-bg {
+      border-radius: 0; }
+    .cover.shadow-lg {
+      box-shadow: none !important; }
+    .cover-bg {
+      padding: 5rem !important;
+      padding-bottom: 10px !important; }
+    .avatar {
+      margin-top: -10px; }
+    .about-section {
+      padding: 6.5rem 5rem 2rem !important; }
+    .skills-section,
+    .work-experience-section,
+    .education-section,
+    .contant-section {
+      padding: 1.5rem 5rem 2rem !important; }
+    .page-break {
+      padding-top: 5rem;
+      page-break-before: always; } 
+    }
+      .centered {
+        text-align: center;
+      }
+      .element-centred {
+        white-space: pre-line;
+        place-content: center;  
+      }
+      $borderWidth: 5px;
+      $animationTime: .5s;
+      $border-color-default: #efefef;
+      $border-color-fill: #ffc169;
+      $size: 160px;
+      $howManySteps: 100; //this needs to be even.
+      
+    .progress{
+        width: 150px;
+        height: 150px;
+        line-height: 150px;
+        background: none;
+        margin: 0 auto;
+        box-shadow: none;
+        position: relative;
+    }
+    .progress:after{
+        content: "";
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .progress > span{
+        width: 50%;
+        height: 100%;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        z-index: 1;
+    }
+    .progress .progress-left{
+        left: 0;
+    }
+    .progress .progress-bar{
+        width: 100%;
+        height: 100%;
+        background: none;
+        border-width: 2px;
+        border-style: solid;
+        position: absolute;
+        top: 0;
+    }
+    .progress .progress-left .progress-bar{
+        left: 100%;
+        border-top-right-radius: 80px;
+        border-bottom-right-radius: 80px;
+        border-left: 0;
+        -webkit-transform-origin: center left;
+        transform-origin: center left;
+    }
+    .progress .progress-right{
+        right: 0;
+    }
+    .progress .progress-right .progress-bar{
+        left: -100%;
+        border-top-left-radius: 80px;
+        border-bottom-left-radius: 80px;
+        border-right: 0;
+        -webkit-transform-origin: center right;
+        transform-origin: center right;
+        animation: loading-1 1.8s linear forwards;
+    }
+    .progress .progress-value{
+        width: 85%;
+        height: 85%;
+        border-radius: 50%;
+        border: 2px solid #ebebeb;
+        font-size: 32px;
+        line-height: 125px;
+        text-align: center;
+        position: absolute;
+        top: 7.5%;
+        left: 7.5%;
+    }
+    .progress.blue .progress-bar{
+        border-color: #049dff;
+    }
+    .progress.blue .progress-value{
+        color: #049dff;
+    }
+    .progress.blue .progress-left .progress-bar{
+        animation: loading-2 1.5s linear forwards 1.8s;
+    }
+    .progress.yellow .progress-bar{
+        border-color: #fdba04;
+    }
+    .progress.yellow .progress-value{
+        color: #fdba04;
+    }
+    .progress.yellow .progress-left .progress-bar{
+        animation: loading-3 1s linear forwards 1.8s;
+    }
+    .progress.pink .progress-bar{
+        border-color: #ed687c;
+    }
+    .progress.pink .progress-value{
+        color: #ed687c;
+    }
+    .progress.pink .progress-left .progress-bar{
+        animation: loading-4 0.4s linear forwards 1.8s;
+    }
+    .progress.green .progress-bar{
+        border-color: #1abc9c;
+    }
+    .progress.green .progress-value{
+        color: #1abc9c;
+    }
+    .progress.black .progress-bar{
+        border-color: black;
+    }
+    .progress.black .progress-value{
+        color: black;
+    }
+    .progress.Navy .progress-bar{
+        border-color: #3689b9;
+    }
+    .progress.Navy .progress-value{
+        color: #3689b9;
+    }
+    .progress.Orange .progress-bar{
+        border-color: #dd5f16;
+    }
+    .progress.Orange .progress-value{
+        color: #dd5f16;
+    }
+    .progress.green .progress-left .progress-bar{
+        animation: loading-5 1.2s linear forwards 1.8s;
+    }
+      
+      /* This for loop creates the necessary css animation names
+      Due to the split circle of progress-left and progress right, we must use the animations on each side.
+      */
+      @for $i from 1 through $howManySteps {
+          $stepName: ($i*(100 / $howManySteps));
+      
+          //animation only the left side if below 50%
+          @if $i <= ($howManySteps/2) {
+              .progress[data-percentage="#{$stepName}"] {
+                  .progress-right .progress-bar {
+                       animation: loading-#{$i} $animationTime linear forwards;
+                  }
+                  .progress-left .progress-bar {animation: 0;}
+              }
+          }
+          //animation only the right side if above 50%
+          @if $i > ($howManySteps/2)  {
+              .progress[data-percentage="#{$stepName}"] {
+                  .progress-right .progress-bar {
+                      animation: loading-#{($howManySteps/2)} $animationTime linear forwards; //set the animation to longest animation
+                  }
+                  .progress-left .progress-bar {
+            animation: loading-#{$i - ($howManySteps/2)} $animationTime linear forwards $animationTime;
+          }
+              }
+          }
+      }
+      
+      //animation
+      @for $i from 1 through ($howManySteps/2) {
+          $degrees: (180/($howManySteps/2));
+          $degrees: ($degrees*$i);
+          @keyframes loading-#{$i}{
+          0%{
+              -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+          }
+          100%{
+              -webkit-transform: rotate($degrees);
+                  transform: rotate(#{$degrees}deg);
+          }
+          }
+      }
+      @media only screen and (max-width: 990px){
+        .progress{ margin-bottom: 20px; }
+    }
+
+    .employee-title{
+      color:white;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 3.5em;
+    }
+    

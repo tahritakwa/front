@@ -1,0 +1,111 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card" style="width:-webkit-fill-available;">
+      <div class="card-content">
+        <!--Begin card body-->
+        <div class="card-body">
+          <!-- Machine State DropDown start -->
+          <div class="col-lg-10 col-sm-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 col-sm-6" [formGroup]="filterFormGroup">
+                <app-machine-state-dropdown [addAllState]="true" [form]="filterFormGroup" (Selected)="doFilter()">
+                </app-machine-state-dropdown>
+              </div>
+            </div>
+          </div>
+          <!-- Machine State DropDown End -->
+          <!-- Search Start -->
+          <div class="row d-flex justify-content-between mt-3">
+            <div class="d-flex justify-content-center" style="margin-left: 30px;">
+              <!-- Search input -->
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-10 pl-1">
+                    <input type="text" class="form-control" autocomplete="off" placeholder="{{'SEARCH'|translate}}"
+                      name='value' aria-label="Search" style="width: 160px;" aria-describedby="addon-wrapping"
+                      [(ngModel)]='filterValue' (keyup)='doFilter()'>
+                  </div>
+                  <div class="col-2 p-1">
+                    <i class="fa fa-search fa-lg" aria-hidden="true" (click)='doFilter()'></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Search End-->
+            <app-btn-grid class="col" [fileName]="'LIST_OF_MACHINES'|translate" [advencedAdd]='true' [addLink]='"add"'
+              [cardView]="false" [relativeStyle]='true' [model]="true" [gridSettings]="gridSettings"
+              [service]="machineService" [predicate]="predicate" [isExportExcel]="true" *ngIf="hasAddPermission">
+            </app-btn-grid>
+          </div>
+          <!-- Search End -->
+          <kendo-grid [data]="gridSettings.gridData" [pageable]="pagerSettings" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [reorderable]="true" [sortable]="true"
+            (dataStateChange)="dataStateChange($event)">
+            <!--Columns-->
+            <!--machine name start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[0].title | translate" [width]="270">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--operation name end-->
+            <!--builder start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="200">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--builder end-->
+
+            <!--model start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+              [title]="gridSettings.columnsConfig[2].title | translate" [width]="150">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--model end-->
+
+            <!-- state start-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+              [title]="gridSettings.columnsConfig[3].title | translate" [width]="150">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div *ngIf="dataItem.State === machineStateEnumerator.Actif">
+                  <span class="badge badge-success">{{'ACTIF'|translate}}</span>
+                </div>
+                <div *ngIf="dataItem.State === machineStateEnumerator.Inactif">
+                  <span class="badge badge-danger">{{'INACTIF'|translate}}</span>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--state end-->
+            <!--Actions-->
+            <kendo-grid-command-column [width]="100">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'ACTIONS' | translate}}" theme="light">{{'ACTIONS' | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <i class="las la-pen cursor-pointer edit-pencil la-lg ng-star-inserted" *ngIf="hasShowPermission || hasUpdatePermission"
+                  (click)="goToAdvancedEdit(dataItem)"></i>
+                <i class="fa fa-trash-o la-lg cursor-pointer text-danger ng-star-inserted" *ngIf="hasDeletePermission"
+                  (click)="removeHandler(dataItem)"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--End Actions-->
+          </kendo-grid>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

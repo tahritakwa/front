@@ -1,0 +1,11 @@
+<div [formGroup]="form">
+  <kendo-dropdownlist [data]="operationTypeFiltredDataSource" class="form-control" name="IdOperationType" formControlName="IdOperationType"
+    textField="Name" valueField="Id" [valuePrimitive]="true" [filterable]="true" (valueChange)="onSelect($event)"
+    (filterChange)="handleFilter($event)">
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <!--end No data template-->
+  </kendo-dropdownlist>
+</div>

@@ -1,0 +1,200 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="card full-screen-card">
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'PURCHASE_REQUEST_LIST'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+        (filtrePredicateToSend)="getFiltrePredicate($event)" (searchClickEvent)="initGridDataSource(false)"
+        (resetClickEvent)="resetClickEvent()">
+      </app-advanced-search>
+      <app-purchase-request-serach class="col-lg-3" (sendData)="receiveData($event)"></app-purchase-request-serach>
+      <app-btn-grid class="col" [advencedAdd]='haveAddPermission' [addLink]='"add"' [model]='true' [relativeStyle]='true'
+        [fileName]="'PURCHASE_LIST'|translate" [gridSettings]="gridSettings" [service]="purchaseRequestService" 
+        [predicate]="predicateList" [isExportExcel]="true" [api]="'getDataWithSpecificFilter'" [isFromDocument]="true">
+      </app-btn-grid>
+      <kendo-grid [data]="dataOfGridPurchaseRequest" [pageSize]="gridSettings.state.take"
+        [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+        (remove)="removeHandler($event)" (dataStateChange)="dataStateChange($event)" 
+        [selectable]="{enabled: true, checkboxOnly: true }" [selectedKeys]="purchaseRequestListSelected"
+        [sortable]="true" filterable="false" [pageable]="pagerSettings" [reorderable]="true" [columnMenu]="false"
+        [kendoGridSelectBy]="'Id'">
+
+        <kendo-grid-checkbox-column width='50' [showSelectAll]="true" *ngIf="getValidPurchaseRequests().length>0">
+          <ng-template kendoGridCellTemplate let-dataItem let-idx="rowIndex">
+            <div *ngIf="dataItem.IdDocumentStatus == 2">
+              <input class="k-checkbox" id={{dataItem.Id}} type="checkbox" [kendoGridSelectionCheckbox]="idx">
+              <label class="k-checkbox-label" for={{dataItem.Id}}></label>
+            </div>
+          </ng-template>
+          <ng-template kendoGridHeaderTemplate let-dataItem let-idx="rowIndex">
+            <div>
+              <input class="k-checkbox" id="header" type="checkbox" (click)="changeSelection()"
+                [checked]="getValidPurchaseRequests().length == purchaseRequestListSelected.length">
+              <label class="k-checkbox-label" for="header"></label>
+            </div>
+          </ng-template>
+        </kendo-grid-checkbox-column>
+
+        <!--Code-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+          [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+          [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+          [format]="gridSettings.columnsConfig[0].format">
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Article -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+          [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+          [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+          [format]="gridSettings.columnsConfig[3].format">
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div class="row">
+              <div class="col-auto">
+                <div class="customer-photo d-flex justify-content-center">
+                  <img id="ThumbnailSupplier" class="imgSize" alt="Illustration des problèmes de suddation" border="0"
+                    [src]="pictureTierSrc(dataItem) ||'assets/image/placeholder-logo.png'" />
+                </div>
+              </div>
+              <div class="col">
+                <div class="row p-2">
+                  <span>{{dataItem.ItemName}}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Collaborater-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+          [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+          [format]="gridSettings.columnsConfig[2].format">
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <span *ngIf='dataItem.CreatorName?.length >0'> {{dataItem.CreatorName}} </span>
+            <span *ngIf='dataItem.CreatorName?.length==0'> - </span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Date-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [format]="gridSettings.columnsConfig[1].format">
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{dataItem.DocumentDate|date: gridSettings.columnsConfig[1].format}}
+          </ng-template>
+        </kendo-grid-column>
+        <!--Total-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+          [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+          [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+          [style]='{"text-align": "right", "padding-right": "4%"}'>
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Status-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+          [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+          [filter]="gridSettings.columnsConfig[5].filter" [filterable]="gridSettings.columnsConfig[5].filterable"
+          [format]="gridSettings.columnsConfig[5].format" [headerStyle]="{'text-align': 'center'}"
+          [style]="{'text-align': 'center'}">
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <div *ngIf="dataItem.IdDocumentStatus == 5">
+              <span class="badge badge-primary">{{'PURCHASE_IN_PROGRESS'|translate}}</span>
+              <span><i class="fa fa-angle-double-right"></i></span>
+            </div>
+            <div *ngIf="dataItem.IdDocumentStatus == 4"><span
+                class="badge badge-danger">{{'REFUSED'|translate}}</span></div>
+            <div *ngIf="dataItem.IdDocumentStatus == 1"><span
+                class="badge badge-warning">{{'NEW_REQUEST'|translate}}</span></div>
+            <div *ngIf="dataItem.IdDocumentStatus == 2"><span
+                class="badge badge-success">{{'VALID'|translate}}</span></div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Validator-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+          [title]="gridSettings.columnsConfig[6].title | translate" [width]="gridSettings.columnsConfig[6]._width"
+          [filter]="gridSettings.columnsConfig[6].filter" [filterable]="gridSettings.columnsConfig[6].filterable"
+          [format]="gridSettings.columnsConfig[6].format">
+          <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+            <span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <span *ngIf='dataItem.ValidatorName?.length > 0'> {{dataItem.ValidatorName}} </span>
+            <span *ngIf='dataItem.ValidatorName?.length==0'> - </span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Actions-->
+        <kendo-grid-command-column [width]="200" [title]="'ACTIONS'| translate " [columnMenu]="false"
+          [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!--Open advanced edit form -->
+            <i *ngIf="dataItem.IdDocumentStatus === 1 && (dataItem.IdCreator && idUser === dataItem.IdCreator || isPurchasingManager) && (haveShowPermission || haveUpdatePermission)"
+              class="las la-pen cursor-pointer edit-pencil la-lg" aria-hidden="true"
+              (click)="goToAdvancedEdit(dataItem)"></i>
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <i *ngIf="(dataItem.IdDocumentStatus === 1 || (dataItem.IdCreator && idUser === dataItem.IdCreator)) && haveDeletePermission"
+              class="cursor pointer fa fa-trash-o la-lg text-danger" aria-hidden="true"
+              (click)="removeHandler(dataItem)"></i>
+            <!--Validate document  -->
+            <i *ngIf="((dataItem.IdDocumentStatus !== 1) || (dataItem.IdCreator && idUser !== dataItem.IdCreator && dataItem.IdDocumentStatus === 1 && !isPurchasingManager )) && haveShowPermission"
+              class="fa fa-eye fa-lg AddIcon cursor-pointer" (click)="goToShowForm(dataItem)"></i>
+            <!--Show only document  -->
+            <i *ngIf="dataItem.IdDocumentStatus === 1 && isPurchasingManager"
+              class="save-icon fa fa-check fa-lg cursor-pointer" (click)="goToShowForm(dataItem)"></i>
+          </ng-template>
+        </kendo-grid-command-column>
+      </kendo-grid>
+    </div>
+    <div *ngIf="purchaseRequestListSelected.length> 0" class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer mx-0">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <div class="col-lg-1 col-md-4 col-sm-4" style="max-width: 1000px;">
+                <button type="button" class="btn btn-sm btn-primary" (click)="generatePriceRequest()" *ngIf="generatePriceRequestPermission">
+                  <i class="cui-task"></i> {{'VALIDATE_GENERATE_PRICE_REQUEST'|translate}}
+                </button>
+              </div>
+              <div class=" col-lg-1 col-md-4 col-sm-4" style="max-width: 200px;">
+                <button type="button" class="btn btn-sm btn-warning" (click)="generatePurchaseOrder()" *ngIf="generateOrderPermission">
+                  <i class="cui-task"></i> {{'VALIDATE_GENERATE_BC'|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,182 @@
+<div class="card" [formGroup]="settlementFormGroup">
+  <div class="card-body" style="padding: 20px 40px;">
+    <!-- Total amount Start-->
+    <div class="row">
+      <div align="right" class="col-lg-12 col-md-12 col-sm-12" style="font-size:20px; font-weight:bold;">
+          <label class="col-lg-12 col-md-12 col-sm-6"> {{'MONTANT_TOTAL_TO_BE_PAID' |translate}}:
+              {{settlement.AmountToBePaidWithCurrency.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+              style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+          </label>
+      </div>
+    </div>
+    <!-- Total amount End-->
+    <!-- form start -->
+    <div class="row">
+      <!-- WithholdingTax section start-->
+      <fieldset class="col-lg-12 col-md-12" *ngIf="companyWithholdingTax && !this.isForPos">
+        <legend>{{'HOLDING_TAX'|translate}}</legend>
+        <div class="form-group row" style="margin-top: 1em;">
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'FINANCIAL_COMMITMENTS_AMOUNT'|translate}}:</span>
+              {{settlement.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+                        style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'ASSETS_AMOUNT'|translate}}:</span>
+              {{settlement.TotalAmountAssets.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+                        style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'HOLDING_TAX'|translate}}:</span>
+              {{settlement.WithholdingTax.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+                        style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'MONTANT_TOTAL_TO_BE_PAID'|translate}}:</span>
+            {{settlement.AmountToBePaidWithCurrency.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+              style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-6 col-md-12 margin" *ngIf="withHoldingTaxFileInfos.length > 0" style="margin-left: 15px;">
+             <span style="font-weight: bold;"> {{'WITH_HOLDING_ATTESTATION_FILE'| translate}}: </span>
+             <app-upload-file [fileToUpload]="withHoldingTaxFileInfos" [service]="settlementService" [canUpdateFile]="true"></app-upload-file>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- WithholdingTax section End-->
+      <!-- Settlement section start-->
+      <fieldset class="col-lg-12 col-md-12" style="margin-top: 2em;">
+        <legend>{{'SETTLEMENT'|translate}}</legend>
+        <div class="form-group row" style="margin-top: 1em;">
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                <span style="font-weight: bold;">{{'LABEL'|translate}}:</span>
+                {{settlement.Label}}
+              </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;"> {{( tiersType == tiersTypeEnum.Customer ? 'CLIENT' : 'SUPPLIER')|translate}}:</span>
+              {{tiersAssociated.Name}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{ 'CURRENCY' | translate}}:</span>
+              {{usedCurrency.Code}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{ 'SETTLEMENT_DATE' | translate}}:</span>
+              {{settlement.SettlementDate| date: dateFormat}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin" *ngIf="!companyWithholdingTax">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'FINANCIAL_COMMITMENTS_AMOUNT'|translate}}:</span>
+              {{settlement.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+                        style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin"*ngIf="!companyWithholdingTax">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'ASSETS_AMOUNT'|translate}}:</span>
+              {{settlement.TotalAmountAssets.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+                        style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'PAYMENT_METHOD'|translate}}:</span>
+             {{paymentMethod.MethodName}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin" *ngIf="!isForPos && tiersType == tiersTypeEnum.Customer">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'CASHREGISTER'|translate}}:</span>
+             {{cashRegisterName}}
+            </label>
+          </div>
+          <div *ngIf="paymentMethod && !paymentMethod.Immediate" class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'HOLDER'|translate}}:</span>
+              {{settlement.Holder}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin"  *ngIf="paymentMethod && !(paymentMethod.Code === paymentMethodEnum.CashPayment)">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <div *ngIf="tiersType == tiersTypeEnum.Customer">
+                <span style="font-weight: bold;">{{'ISSUING_BANK'|translate}}:</span>
+                <span>
+                  {{settlement.IssuingBank}}
+                </span>
+              </div>
+              <div *ngIf="tiersType == tiersTypeEnum.Supplier">
+                <span style="font-weight: bold;">{{'BANK_ACCOUNT'|translate}}:</span>
+                <span *ngIf="selectedBankAccount">
+                  {{selectedBankAccount.Rib}}
+                </span>
+              </div>
+            </label>
+          </div>
+          <div *ngIf="paymentMethod && !paymentMethod.Immediate" class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'EXTERNAL_REFERENCE'|translate}}:</span>
+              {{settlement.SettlementReference}}
+            </label>
+          </div>
+          <div  *ngIf="paymentMethod && !paymentMethod.Immediate" class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'COMMITMENT_DATE'|translate}}:</span>
+              {{settlement.CommitmentDate| date: dateFormat}}
+            </label>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-12  margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">
+              <span style="font-weight: bold;">{{'PAYED_AMOUNT'|translate}}:</span>
+              {{settlement.PaidAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: usedCurrency.Precision,
+                style: 'currency', currency: usedCurrency.Code, currencyDisplay:'code'})}}
+            </label>
+          </div>
+          <div class="col-lg-12 col-md-12" *ngIf="filesInfos.length > 0">
+          <label class="col-lg-12 col-md-12">{{'SUPPORTING_DOCUMENTS' | translate }}</label>
+          <div class="col-lg-12 col-md-12">
+              <app-upload-file [fileNameCharactersToShow]="20" [showLabel]="false" [fileToUpload]="filesInfos"  [canUpdateFile]="true">
+              </app-upload-file>
+          </div>
+      </div>
+        </div>
+      </fieldset>
+      <!-- Settlement section End-->
+      <!-- Selected Commitment start-->
+      <fieldset class="col-lg-12 col-md-12" style="padding: 30px; margin-top: 40px;" *ngIf="!this.isForPos">
+        <legend>{{'LIST_SELECTED_FINANCIAL_COMMITMENTS'|translate}} </legend>
+        <app-pop-up-settlement-replacement [ListSettlement]="selectedCommitments">
+        </app-pop-up-settlement-replacement>
+      </fieldset>
+      <!-- Selected Commitment End-->
+      <!-- Gap Div start-->
+      <diV class="row div-error" *ngIf="variance != 0">
+        {{gapMessage}}
+      </diV>
+      <!-- Gap Div End-->
+    </div>
+    <!-- form end -->
+    <!-- Confirm button start -->
+    <div class="row" [ngStyle]="{'padding': '1em'}">
+      <button class="btn btn-sm btn-danger" (click)="save()">
+          <i class="fa fa-floppy-o"></i> {{ 'CONFIRM' |translate }}
+      </button>
+    </div>
+    <!-- Confirm button end -->
+  </div>
+</div>

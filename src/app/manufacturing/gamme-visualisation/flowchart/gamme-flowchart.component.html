@@ -1,0 +1,14 @@
+<h3>{{'GRAPH_VUE'|translate}} {{gammeToBeDisplayedInGraph.reference}} ( {{gammeToBeDisplayedInGraph.article}})</h3>
+<br>
+<button class="btn btn-success" (click)="exportDiagramAsPng()" style="float: left">Export diagram</button>
+<ejs-diagram #diagram id="diagram" width="100%" height="150%"
+             [scrollSettings]='scrollSettings'
+             [layout]='diagram.layout'
+             [pageSettings]="diagram.pageSettings"
+             [constraints]='diagram.constraints'
+             [dataSourceSettings]='diagram.dataSourceSettings'
+             [getNodeDefaults]='nodeDefaults'
+             [getConnectorDefaults]='connDefaults'
+             [tool]='tool'
+             [snapSettings]='snapSettings'>
+</ejs-diagram>

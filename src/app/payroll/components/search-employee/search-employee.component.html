@@ -1,0 +1,15 @@
+<div>
+  <!-- Search input -->
+  <form (submit)='filter()'>
+    <div class="input-group flex-nowrap" style="width: 56%;">
+      <input [(ngModel)]='value' aria-describedby="addon-wrapping" aria-label="Search" autocomplete="off"
+             class="form-control"
+             name='value' placeholder="{{'SEARCH_EMPLOYEE'|translate}}" type="text">
+      <div class="input-group-prepend">
+        <button (click)='filter()' style="background-color: transparent;border-color: transparent;" type="button">
+          <i aria-hidden="true" class="fa fa-search fa-lg"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

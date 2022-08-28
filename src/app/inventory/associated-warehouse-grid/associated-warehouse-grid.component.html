@@ -1,0 +1,375 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card border-0">
+      <div *ngIf = "hasHistoryPermission" class="card-header border-0 pb-0" style="background: none;">
+        <div class="row" style="text-align: right">
+          <div class="col-12">
+            <a class="cursor-pointer" (click)="onClickGoToDetails(item?.Id)" target="_blank">
+              <i class="fa fa-history fa-lg AddIcon"></i>
+              &nbsp;{{'SEE_HISTORY' | translate}}
+            </a>
+          </div>
+        </div>
+      </div>
+      <!--Begin card header-->
+      <div class="card-body">
+        <div class="row form-group" *ngIf="item?.TecDocId || item?.TecDocRef">
+          <div class="col-auto">
+            <div class="row">
+              <div class="col-auto mb-1">
+                <button class="btn btn-block btn-outline-info tecdoc-button" type="button"> &nbsp;
+                  <span class="font-weight-bold text-dark back-to-line" >{{'TECDOC_ID' | translate}}: </span> &nbsp; <span
+                    class="text-dark">{{item.TecDocId}}</span></button>
+              </div>
+              <div class="col-auto">
+                <button class="btn btn-block btn-outline-info tecdoc-button" type="button">
+                  &nbsp;<span class="font-weight-bold text-dark back-to-line" >{{'TECDOC_REFERENCE' | translate}}: </span> &nbsp;
+                  <span class="text-dark">{{item.TecDocRef}}</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form class="form-horizontal">
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                      [skip]="gridSettings.state.skip" [ngStyle]="{'height':assoicatedWarehouseGridHeight}"
+                      [sortable]="false" [pageable]="pagerSettings" [filterable]="false" [reorderable]="false"
+                      [columnMenu]="false" [selectable]="false" [filter]="gridSettings.state.filter">
+            <!-- Name -->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                               [title]="gridSettings.columnsConfig[0].title | translate"
+                               [width]="gridSettings.columnsConfig[0]._width">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <div class="row">
+                  <div class="col-12">
+                    <strong>{{dataItem.WarehouseName}}</strong>
+                  </div>
+                  <div class="col-12 mt-1">
+                    <span *ngIf="dataItem.State == 1"
+                          class="badge badge-success margrin-badget ">{{'INSTOCK'|translate}}</span>
+                    <span *ngIf="dataItem.State == 2"
+                          class="badge badge-info  margrin-badget ">{{'INCOMMAND'|translate}}</span>
+                    <span *ngIf="dataItem.State == 3"
+                          class="badge badge-danger  margrin-badget ">{{'SOLDOUT'|translate}}</span>
+                    <span *ngIf="dataItem.State == 4" class="badge badge-warning  margrin-badget">
+                      {{'IN_STOCK_BUT_NOT_SUFFISANT_QUANTITY'|translate}}
+                    </span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- Shelf & storage -->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                               [title]="gridSettings.columnsConfig[1].title | translate"
+                               [width]="gridSettings.columnsConfig[1]._width">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+                      theme="light">{{'SHELF&STORAGE' | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <label *ngIf="dataItem.Shelf && dataItem.Storage"> {{dataItem.Shelf}}{{dataItem.Storage}} </label>
+                <label *ngIf="!(dataItem.Shelf && dataItem.Storage)"> - </label>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- Available qty -->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[2].field
+                               [title]="gridSettings.columnsConfig[2].title | translate"
+                               [width]="gridSettings.columnsConfig[2]._width">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+                      theme="light">{{'QT_DISPONIBLE' | translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- Final on order -->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[3].field
+                               [title]="gridSettings.columnsConfig[3].title | translate"
+                               [width]="gridSettings.columnsConfig[3]._width">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+                      theme="light">{{'CMD' | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <div class="row">
+                  <div class="col-auto" *ngIf="dataItem.IsCentralWarehouse">
+                    {{dataItem.CMD}}
+                    <button type="button" class="btn mb-1" (click)='onOrderQuantityDetails(dataItem?.IdItem)'
+                            data-toggle="modal" style="color: #4c9aae;" data-target="#modalOfOnOrderQuantity">
+                      <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="col-auto" *ngIf="!dataItem.IsCentralWarehouse">
+                    <span class="invalid-data">{{'-'}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+
+            <!-- Final on order -->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[4].field
+                               [title]="gridSettings.columnsConfig[4].title | translate"
+                               [width]="gridSettings.columnsConfig[4]._width">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+                      theme="light">{{'CRP' | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <div class="row">
+                  <div class="col-auto" *ngIf="dataItem.IsCentralWarehouse">
+                    {{dataItem.CRP}}
+                  </div>
+                  <div class="col-auto" *ngIf="!dataItem.IsCentralWarehouse">
+                    <span class="invalid-data">{{'-'}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+
+            <!-- Minimum quantity -->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[5].field
+                               [title]="gridSettings.columnsConfig[5].title | translate"
+                               [width]="gridSettings.columnsConfig[5]._width">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+                      theme="light">{{'QT_MIN' | translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- Order Sales Quantity-->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[6].field
+                               [title]="gridSettings.columnsConfig[6].title | translate"
+                               [width]="gridSettings.columnsConfig[6]._width">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[6].title | translate}}"
+                      theme="light">{{'QT_SALES' | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <div class="row">
+                  <div class="col-auto" *ngIf="dataItem.SumOnOrderedReservedQuantity">
+                    {{dataItem.SumOnOrderedReservedQuantity}}
+                    <button type="button" class="btn mb-1" (click)='quantityDetails(dataItem)' data-toggle="modal"
+                            style="color: #4c9aae;" data-target="#exampleModalCenter">
+                      <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div class="col-auto" *ngIf="!dataItem.SumOnOrderedReservedQuantity">
+                    <span class="invalid-data">{{'-'}}</span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- Traded Quantity-->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[7].field
+                               [title]="gridSettings.columnsConfig[7].title | translate"
+                               [width]="gridSettings.columnsConfig[7]._width">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[7].title | translate}}"
+                      theme="light">{{'QT_TRADED' | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <div class="row">
+                  <div class="col-auto">
+                    {{dataItem.TradedQuantity}}
+                    <button type="button" class="btn mb-1" (click)='quantityDetails(dataItem)' data-toggle="modal"
+                            style="color: #4c9aae;" data-target="#tradedQuantityModal">
+                      <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+          </kendo-grid>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!----------------------------- MODALS !----------------------------------------------------->
+
+<!-- Start modal on order quantity -->
+<div class="modal fade" id="modalOfOnOrderQuantity" tabindex="-1" role="dialog"
+     aria-labelledby="modalOfOnOrderQuantityTitle" aria-hidden="true" *ngIf='selectedRowOfOnOrderQuantity'
+     style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">{{'DETAILS_ON_ORDER_QUANTITY'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- keys -->
+        <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: center;">
+          <div class="row pb-2 d-flex justify-content-around">
+            <div class="col-auto">
+              <span class="fa fa-square text-danger"></span> {{'ORDER_PROJECT'|translate}}
+            </div>
+            <div class="col-auto">
+              <span class="fa fa-square text-warning"></span> {{'COMMANDE'|translate}}
+            </div>
+            <div class="col-auto">
+              <span class="fa fa-square text-success"></span> {{'FINAL_ORDER'|translate}}
+            </div>
+            <div class="col-auto">
+              <span class="fa fa-square text-info"></span> {{'RECEIVED_ORDER'|translate}}
+            </div>
+          </div>
+        </div>
+        <!-- End of keys -->
+
+        <kendo-grid [data]="dataDetailsOnOrderQuantity" [rowClass]="rowCallback" [pageable]="pagerSettings"
+                    (pageChange)="pageChangeOnOrderQuantity($event)" [pageSize]="pageSizeOnOrderQuantity"
+                    [skip]="skipOnOrderQuantity">
+
+
+          <kendo-grid-column field="Reference" title="{{'REFERENCE'|translate}}" [width]='200'>
+
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <a class="grid-cell-link"
+              *ngIf="(dataItem.DocumentTypeCode == documentEnumerator.PurchaseOrder && dataItem.IdDocumentStatus == statusCode.Provisional && (hasUpdateCommande || hasShowCommande)) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseOrder && dataItem.IdDocumentStatus != statusCode.Provisional && hasShowCommande) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseFinalOrder && dataItem.IdDocumentStatus == statusCode.Provisional && (hasUpdateFinalOrder || hasShowFinalOrder)) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseFinalOrder && dataItem.IdDocumentStatus != statusCode.Provisional &&  hasShowFinalOrder) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseDelivery && dataItem.IdDocumentStatus == statusCode.Provisional && (hasUpdateReceivedOrder || hasShowReceivedOrder)) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseDelivery && dataItem.IdDocumentStatus != statusCode.Provisional &&  hasShowReceivedOrder) ||
+              (dataItem.IsOrderProject && hasShowOrderProject)"
+                 (click)="onClickGoToDocument(dataItem.DocumentTypeCode, dataItem.IdDocumentStatus, dataItem.IdDocument, dataItem.IsOrderProject)">
+                {{dataItem.Reference}}
+              </a>
+              <a
+              *ngIf="!((dataItem.DocumentTypeCode == documentEnumerator.PurchaseOrder && dataItem.IdDocumentStatus == statusCode.Provisional && (hasUpdateCommande || hasShowCommande)) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseOrder && dataItem.IdDocumentStatus != statusCode.Provisional && hasShowCommande) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseFinalOrder && dataItem.IdDocumentStatus == statusCode.Provisional && (hasUpdateFinalOrder || hasShowFinalOrder)) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseFinalOrder && dataItem.IdDocumentStatus != statusCode.Provisional &&  hasShowFinalOrder) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseDelivery && dataItem.IdDocumentStatus == statusCode.Provisional && (hasUpdateReceivedOrder || hasShowReceivedOrder)) ||
+              (dataItem.DocumentTypeCode == documentEnumerator.PurchaseDelivery && dataItem.IdDocumentStatus != statusCode.Provisional &&  hasShowReceivedOrder) ||
+              (dataItem.IsOrderProject && hasShowOrderProject))"
+                 >
+                {{dataItem.Reference}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column field="DateDoc" title="{{'DATE'|translate}}" [width]='200'>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div class="row">
+                <div class="col-4">
+                  {{dataItem.DateDoc | date: formatDate}}
+                </div>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+
+          <kendo-grid-column field="Quantity" title="{{'QUANTITY'|translate}}" [width]='200' editor="numeric">
+          </kendo-grid-column>
+
+          <kendo-grid-column field="IdDocumentStatus" title="{{'STATUS'|translate}}" [width]='200'>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional">
+                <span class="badge badge-warning">{{'PROVISOIRE'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Valid">
+                <span class="badge badge-success">{{'VALID'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.PartiallySatisfied">
+                <span class="badge" style="color: #ffffff; background-color: #20a8d8;"
+                      *ngIf='dataItem.DocumentTypeCode == documentEnumerator.PurchaseFinalOrder'>
+                  {{'PARTIALLY_DELIVERED'|translate}}
+                </span>
+
+                <span class="badge" style="color: #ffffff; background-color: #20a8d8;"
+                      *ngIf='dataItem.DocumentTypeCode == documentEnumerator.PurchaseOrder'>
+                  {{'PARTIALLY_ORDRED'|translate}}
+                </span>
+
+              </div>
+
+            </ng-template>
+          </kendo-grid-column>
+
+        </kendo-grid>
+
+      </div>
+
+      <br/>
+
+    </div>
+  </div>
+</div>
+<!-- End modal on order quantity -->
+
+<!-- Start Modal ORDER SALES QUANTITY -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true" *ngIf='selectedRow' style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{'DETAILS_QANTITY_SALES'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p>
+            <strong class="sizeStyle">{{'TO_ORDER_QUANTITY' | translate}} : </strong>
+            {{selectedRow.ToOrderQuantity}}
+          </p>
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p>
+            <strong class="sizeStyle">
+              {{'RESERVEDQUANTITY' | translate}} :
+            </strong>{{selectedRow.ReservedQuantityInDelivery}}
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal order sales quantity -->
+
+<!-- Start traded quantity modal -->
+<div class="modal fade" id="tradedQuantityModal" tabindex="-1" role="dialog" aria-labelledby="tradedQuantityModalTitle"
+     aria-hidden="true" *ngIf='selectedRow' style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{'DETAILS_QANTITY_TRADED'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p>
+            <strong class="sizeStyle">{{'QUANTITY_TO_TRANSFER' | translate}} : </strong>
+            {{selectedRow.OutTransferedQuantity}}
+          </p>
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <p>
+            <strong class="sizeStyle">
+              {{'QUANTITY_TO_RECEIVE' | translate}} :
+            </strong>{{selectedRow.InTransferedQuantity}}
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End traded quantity modal -->

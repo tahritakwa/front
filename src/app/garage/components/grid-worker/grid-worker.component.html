@@ -1,0 +1,78 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <kendo-grid (cellClick)="lineClickHandler($event)" (save)="saveCurrent()" (remove)="removeLine($event)"
+    (add)="addLine()" [data]="data" id="productsGrid" [style.maxHeight.px]="400" [scrollable]="'virtual'">
+
+    <!--Name Column Start-->
+    <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate" [width]="270">
+      <ng-template kendoGridEditTemplate let-dataItem="dataItem" *ngIf='isEditingMode'>
+        <app-worker-dropdown [group]="garageFormGroup" [workersInGrid]="data" [idGarage]='idGarage' fieldName="Id" (Selected)="onSelectWorker($event)"></app-worker-dropdown>
+        <i #anchor></i>
+        <app-control-message-grid-cell [group]="garageFormGroup" [anchor]="anchor" controlName="Id">
+        </app-control-message-grid-cell>
+      </ng-template>
+    </kendo-grid-column>
+    <!--Name Column End-->
+
+    <!--Address Start-->
+    <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate" [width]='250'>
+      <ng-template kendoGridEditTemplate let-formGroup="garageFormGroup" *ngIf='isEditingMode'>
+        <app-grid-cell-input-template [group]="garageFormGroup" controlName="Address">
+        </app-grid-cell-input-template>
+      </ng-template>
+    </kendo-grid-column>
+    <!--Address End-->
+
+    <!--Phone Column Start-->
+    <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate" [width]='250'>
+      <ng-template kendoGridEditTemplate let-formGroup="garageFormGroup" *ngIf='isEditingMode'>
+        <app-grid-cell-input-template [group]="garageFormGroup" controlName="PhoneNumber">
+        </app-grid-cell-input-template>
+      </ng-template>
+    </kendo-grid-column>
+    <!--Phone Column End-->
+
+    <!--Email Column Start-->
+    <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate" [width]='250'>
+      <ng-template kendoGridEditTemplate let-formGroup="garageFormGroup" *ngIf='isEditingMode'>
+        <app-grid-cell-input-template [group]="garageFormGroup" controlName="Email">
+        </app-grid-cell-input-template>
+      </ng-template>
+    </kendo-grid-column>
+    <!--Email Column End-->
+
+    <!-- Command Start -->
+    <kendo-grid-command-column title="" [width]='100'>
+      <ng-template kendoGridCellTemplate let-isNew="isNew">
+        <div style="display: flex; margin-top: 5%;">
+          <button kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr"
+            style="border: none; color: #E91E63 !important;" type="button" *ngIf="hasUpdatePermission">
+            <i class="fa fa-times fa-lg"></i>
+          </button>
+
+          <button class='noPadding btn-Add' *ngIf="isEditingMode && hasUpdatePermission" kendoGridSaveCommand type="button">
+            <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+          </button>
+
+          <button kendoGridCancelCommand *ngIf="isEditingMode && hasUpdatePermission" class="noPadding btn-Add k-button"
+            (click)="cancelHandler()" type="button">
+            <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+          </button>
+        </div>
+      </ng-template>
+    </kendo-grid-command-column>
+    <!-- Command End-->
+    <!-- Command End -->
+
+    <!-- Add Button Start -->
+    <div>
+      <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+        <button kendoGridAddCommand class="noPadding btn-Add k-button" dir="ltr" style="border: none" type="button" *ngIf="hasUpdatePermission">
+          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+          <span>&nbsp; {{'ADD_WORKER'|translate}}</span>
+        </button><br style="line-height: 2.5em;">
+      </ng-template>
+      <kendo-grid-messages noRecords=""></kendo-grid-messages>
+    </div>
+    <!-- Add Button End -->
+  </kendo-grid>
+</div>

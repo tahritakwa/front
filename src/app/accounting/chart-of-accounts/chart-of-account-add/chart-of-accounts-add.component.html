@@ -1,0 +1,51 @@
+<div class="card">
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="accountFormGroup">
+
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="!isUpdateMode && !isNewClass">
+              <label> {{'CODE'|translate}}<span class="required">*</span></label>
+              <br>
+              <input class="form-control" type="text" name="ParentCode" formControlName="parentCode" />
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="isUpdateMode || isNewClass">
+              <label> {{'CODE'|translate}}<span class="required">*</span></label>
+              <br>
+              <kendo-numerictextbox class="form-control" formControlName="code"
+                                    [format]="formatCodeAccountOptions" [rangeValidation]="true"
+                                    [autoCorrect]=false
+                                    [min]="minCode" [max]="maxCode"></kendo-numerictextbox>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="!isUpdateMode && !isNewClass">
+              <label> {{'SUFFIX'|translate}}<span class="required">*</span></label>
+              <br>
+              <kendo-numerictextbox class="form-control" formControlName="code"
+                                    [format]="formatCodeAccountOptions" [rangeValidation]="true"
+                                    [autoCorrect]=false
+                                    [min]="minCode" [max]="maxCode"></kendo-numerictextbox>
+            </div>
+          </div>
+          <br />
+          <div class="col-lg-12 col-md-12 col-sm-12 row">
+            <div>
+              <label> {{'LABEL'|translate}}<span class="required">*</span></label>
+            </div>
+          </div>
+          <div>
+            <div>
+              <input type="text" class="form-control" formControlName="label" name="label"/>
+              <app-control-messages [control]="accountFormGroup.controls.label" class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+          <br />
+            <button class="btn btn-sm btn-save  pull-right" (click)="save()" type="submit">
+              <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'ADD') |translate}}
+            </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

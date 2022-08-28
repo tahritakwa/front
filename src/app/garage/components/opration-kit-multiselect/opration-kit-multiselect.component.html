@@ -1,0 +1,15 @@
+<div *ngIf="!itemForm">
+  <kendo-multiselect [data]="operationKitFiltredDataSource" (valueChange)="onSelect(this)" [textField]="'Name'"
+    [valuePrimitive]="true" [valueField]="'Id'" [filterable]="true" (filterChange)="handleFilter($event)"
+    [(ngModel)]="selectedValueMultiSelect" [disabled]="disabled">
+  </kendo-multiselect>
+</div>
+
+<div [formGroup]="itemForm" *ngIf='itemForm && isCheckboxMode'>
+  <ng-multiselect-dropdown formControlName="ListOperationKit" [placeholder]="placeholder|translate"
+    [data]="operationKitFiltredDataSource" [settings]="dropdownSettings" [disabled]="disabled"
+    (onSelect)="onOperationKitSelectFromCheckBox($event)" (onDeSelect)="onOperationKitDeSelectFromCheckBox($event)"
+    (onSelectAll)="onSelectAllOperationKit($event)" (onDeSelectAll)="onSelectAllOperationKit($event)">
+  </ng-multiselect-dropdown>
+
+</div>

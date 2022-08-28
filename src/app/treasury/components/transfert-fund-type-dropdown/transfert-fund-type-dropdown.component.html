@@ -1,0 +1,17 @@
+<div [formGroup]="group">
+  <kendo-combobox class="form-control" [data]="transfertFundTypeFiltredDataSource" [textField]="'name'"
+    (valueChange)="onSelect($event)" [valueField]="'value'" name="IdTransfertFundType"
+    formControlName="IdTransfertFundType" [valuePrimitive]="true" [filterable]="true"
+    (filterChange)="handleFilter($event)" [allowCustom]="true">
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <span>{{dataItem.name | uppercase | translate}}</span>
+    </ng-template>
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

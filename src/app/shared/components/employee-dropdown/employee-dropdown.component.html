@@ -1,0 +1,63 @@
+<div *ngIf='form' [formGroup]="form">
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  (valueChange)="onSelect(this)"
+                  [allowCustom]="allowCustom"
+                  [data]="employeeFiltredDataSource"
+                  [disabled]="disabled"
+                  [filterable]="true"
+                  [formControlName]="idEmployeeColName"
+                  [readonly]="readonly"
+                  [textField]="'FullName'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control"
+                  name="idEmployeeColName">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      <span [ngStyle]="dataItem.IsResigned ? {'color': 'red'} : ''">
+        {{ dataItem?.FirstName }} &nbsp; {{ dataItem?.LastName }}
+      </span>
+    </ng-template>
+    <!--footer template-->
+    <ng-container *ngIf="showAddButton && !isForInterview">
+      <ng-template kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+    </ng-container>
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>
+<div *ngIf='!form'>
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  (valueChange)="onSelect(this)"
+                  [(ngModel)]='selectedEmployee'
+                  [allowCustom]="allowCustom"
+                  [data]="employeeFiltredDataSource"
+                  [disabled]="disabled"
+                  [filterable]="true"
+                  [textField]="'FullName'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control"
+                  name="idEmployeeColName">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.FullName }}
+    </ng-template>
+    <!--footer template-->
+    <ng-container *ngIf="showAddButton && !isForInterview">
+      <ng-template kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+    </ng-container>
+      <!--No data template-->
+      <ng-template kendoDropDownListNoDataTemplate>
+        <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+      </ng-template>
+      <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>

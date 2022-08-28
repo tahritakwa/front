@@ -1,0 +1,122 @@
+<!-- Begin notification item -->
+<li class="nav-item dropdown d-md-down-none show" *ngIf="!isListMode">
+  <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+    <img src="../../../assets/image/icons8-objet-avec-minuteur-32.png" width="27px"/>
+    <span class="badge badge-pill badge-danger"
+          *ngIf="unreadCrmNotificationCounter>0">{{unreadCrmNotificationCounter}}</span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-right dropdown-menu-lg stark-drop-down-notification-list">
+    <li class="dropdown-header stark-drop-down-header">
+      <strong>{{'REMINDERS'|translate}}</strong>
+      <a class="stark-link float-right stark-notification-settings-link"
+         (click)="onSettings()"><strong>{{'SETTINGS' | translate}}</strong></a>
+      <a class="stark-link float-right"
+         (click)="onDismissAll()"><strong>{{'NOTIFICATION_DISMISS_ALL' | translate}}</strong></a>
+    </li>
+    <!--NotificationItem-->
+    <div infiniteScroll class="scroll-container" #scroll
+         [infiniteScrollDistance]="2"
+         [infiniteScrollThrottle]="10"
+         [scrollWindow]="false"
+         (scrolled)="onScroll()"
+         (scrolledUp)="onScrollUp()">
+      <div>
+        <div style="border-bottom: 1px solid #c8ced3;" *ngFor="let notification of reminders; let i=index;">
+          <li class="dropdown-item" (click)="keepDropdownOpen($event)">
+            <!--Notification content-->
+            <div class="text-truncate stark-notification-content">
+              <div class="text-muted" [innerHTML]="notification.Text"></div>
+              <b>{{'REPEAT_IN' | translate}}</b>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-sm-12 col-md-12 col-xs-12">
+                <kendo-dropdownlist [defaultItem]="defaultItemRepeat" [data]="repeatDelays"
+                                    (valueChange)="keepDropdownOpen($event)">
+
+                </kendo-dropdownlist>
+              </div>
+              <a title="{{'REPEAT'|translate}}"><img src="../../../assets/image/icons8-reveil-32.png" width="27px"
+                                                     style="margin-left: 130px;"/></a>
+              <a title="{{'DISAPPEAR'|translate}}" class="pull-right"><img
+                src="../../../assets/image/icons8-annuler-32.png"
+                width="27px" style="margin-left: 30px;"/></a>
+            </div>
+            <!--End Notification content-->
+          </li>
+        </div>
+      </div>
+      <!--Loading sipnner-->
+      <div class="loader">
+        <i class="fa fa-circle-o-notch fa-spin" *ngIf="loading"></i>
+      </div>
+      <!--End Loading sipnner-->
+
+    </div>
+
+    <!--Mark all as viewed-->
+    <li class="dropdown-item stark-link text-center stark-drop-down-footer">
+      <a class="stark-link" (click)="onReadAll()"><strong>{{'NOTIFICATION_MARK_ALL_AS_VIEWED' | translate}}</strong></a>
+    </li>
+    <!--End Mark all as viewed-->
+  </ul>
+</li>
+<!--End notification item-->
+
+<!-- Begin notification item for mobile and sm screen -->
+<div class="card" *ngIf="isListMode">
+  <div class="stark-drop-down-notification-list w-100">
+    <div class="dropdown-header stark-drop-down-header">
+      <i [routerLink]="['/main/user_actions/']" class="fa fa-mail-reply fa-lg text-primary"></i>
+      <a class="stark-link float-right stark-notification-settings-link"
+         (click)="onSettings()"><strong>{{'SETTINGS' | translate}}</strong></a>
+      <a class="stark-link float-right"
+         (click)="onDismissAll()"><strong>{{'NOTIFICATION_DISMISS_ALL' | translate}}</strong></a>
+    </div>
+    <!--NotificationItem-->
+    <div infiniteScroll class="scroll-container" #scroll
+         [infiniteScrollDistance]="2"
+         [infiniteScrollThrottle]="10"
+         [scrollWindow]="false"
+         (scrolled)="onScroll()"
+         (scrolledUp)="onScrollUp()">
+      <div>
+        <div style="border-bottom: 1px solid #c8ced3;" *ngFor="let notification of reminders; let i=index;">
+          <div class="dropdown-item" (click)="keepDropdownOpen($event)">
+            <!--Notification content-->
+            <div class="text-truncate stark-notification-content">
+              <div class="text-muted" [innerHTML]="notification.Text"></div>
+              <b>{{'REPEAT_IN' | translate}}</b>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-sm-12 col-md-12 col-xs-12">
+                <kendo-dropdownlist [defaultItem]="defaultItemRepeat" [data]="repeatDelays"
+                                    (valueChange)="keepDropdownOpen($event)">
+
+                </kendo-dropdownlist>
+              </div>
+              <a title="{{'REPEAT'|translate}}"><img src="../../../assets/image/icons8-reveil-32.png" width="27px"
+                                                     style="margin-left: 130px;"/></a>
+              <a title="{{'DISAPPEAR'|translate}}" class="pull-right"><img
+                src="../../../assets/image/icons8-annuler-32.png"
+                width="27px" style="margin-left: 30px;"/></a>
+            </div>
+            <!--End Notification content-->
+          </div>
+        </div>
+      </div>
+      <!--Loading sipnner-->
+      <div class="loader">
+        <i class="fa fa-circle-o-notch fa-spin" *ngIf="loading"></i>
+      </div>
+      <!--End Loading sipnner-->
+
+    </div>
+
+    <!--Mark all as viewed-->
+    <div class="dropdown-item stark-link text-center stark-drop-down-footer">
+      <a class="stark-link" (click)="onReadAll()"><strong>{{'NOTIFICATION_MARK_ALL_AS_VIEWED' | translate}}</strong></a>
+    </div>
+    <!--End Mark all as viewed-->
+  </div>
+</div>
+<!--End notification item for mobile and sm screen-->

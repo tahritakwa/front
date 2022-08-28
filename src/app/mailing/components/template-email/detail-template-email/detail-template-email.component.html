@@ -1,0 +1,125 @@
+<div class="card">
+  <div class="card-header fixheaderdetail">
+    <div class="row">
+      <div class="col-sm-12 col-md-6 col-lg-9">
+        <h3><i class="fa fa-file-text-o"></i> {{templateData ? templateData.name : ''}}</h3>
+      </div>
+
+
+    </div>
+  </div>
+  <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip">
+    <ng-template kendoGridToolbarTemplate>
+      <div class="row" style="float :right; margin-right: 4px;">
+        <app-btn-grid [advencedAdd]='false' [add]='false' [export]='false' [addLink]='"add"'
+                      style="margin-top: -5%;    display: inline-flex;"></app-btn-grid>
+      </div>
+    </ng-template>
+    <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                       [title]="gridSettings.columnsConfig[0].title | translate"
+                       [width]="gridSettings.columnsConfig[0]._width"
+                       [filter]="gridSettings.columnsConfig[0].filter"
+                       [filterable]="gridSettings.columnsConfig[0].filterable"
+                       [format]="gridSettings.columnsConfig[0]">
+    </kendo-grid-column>
+    <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                       [title]="gridSettings.columnsConfig[1].title | translate"
+                       [width]="gridSettings.columnsConfig[1]._width"
+                       [filter]="gridSettings.columnsConfig[1].filter"
+                       [filterable]="gridSettings.columnsConfig[1].filterable"
+                       [format]="gridSettings.columnsConfig[1]">
+    </kendo-grid-column>
+  </kendo-grid>
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home-template" role="tab"
+         aria-controls="nav-home" aria-selected="true">{{'DETAILS'| translate}}</a>
+    </div>
+  </nav>
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-home-template" role="tabpanel" aria-labelledby="nav-home-tab">
+
+      <div style="float: right;"
+           *ngIf="showButtonModify">
+        <button type="button" class="btn btn-primary"
+
+                (click)="changeModeToUpdate()">
+          <i class="cui-pencil"></i>{{'UPDATE' | translate}}
+        </button>
+      </div>
+      <form [formGroup]="updateTemplateForm" style="margin-top: 6%;">
+            <h6 style="color: #4c9aae;">{{'TEMPLATE_DETAILS'| translate}}</h6>
+            <br/>
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TEMPLATE_EMAIL_NAME'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="text" formControlName="name"
+                           [ngClass]="{ 'has-error': (updateTemplateForm.controls.name.touched ||
+                               updateTemplateForm.controls.name.dirty) && !updateTemplateForm.controls.name.valid }"
+                           [readonly]="!isUpdate" [disabled]="!isUpdate">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="updateTemplateForm.controls.name"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TEMPLATE_EMAIL_SUBJECT'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="text" formControlName="subject"
+                           [ngClass]="{ 'has-error': (updateTemplateForm.controls.subject.touched ||
+                           updateTemplateForm.controls.subject.dirty) && !updateTemplateForm.controls.subject.valid }" [readonly]="!isUpdate"
+                           [disabled]="!isUpdate">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="updateTemplateForm.controls.subject"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div *ngIf="!isUpdate">
+              <p-panel [style]="{'height':'320px'}">
+                <div style = "overflow: auto; height: 290px;" [innerHTML]="templateData.body | safePipe"></div>
+              </p-panel>
+            </div>
+            <div *ngIf="isUpdate">
+              <p-editor [(ngModel)]="editorContent" [style]="{'height':'320px'}" [ngModelOptions]="{standalone: true}"></p-editor>
+            </div>
+      </form>
+    </div>
+  </div>
+  <div class="card-footer" style="left: 0;margin-bottom: 30px;width: 100%;">
+
+    <div class="row">
+      <div align="left" class="col-lg-12 col-md-12">
+
+
+        <button class="btn btn-sm btn-primary" (click)="returnToParent()">
+          <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+        </button>
+
+        <button class="btn btn-sm btn-danger" (click)="update()" type="submit" *ngIf="isUpdate">
+          <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

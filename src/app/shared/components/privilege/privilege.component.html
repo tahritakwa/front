@@ -1,0 +1,55 @@
+<div [formGroup]="form">
+  <div class="form-group row" formArrayName="Privilege" *ngFor="let privilege of privilege.controls; let i=index; let
+  isFirst=first">
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <hr *ngIf="!isFirst && !consultMode">
+      <div class='row'>
+        <div [formGroupName]="i" *ngIf="!consultMode" class="col-lg-4 col-md-12 col-sm-12 mt-2">
+          <!--Module-->
+          <kendo-combobox formControlName="module"
+                          (filterChange)="handleFiltreModule($event,i)"
+                          [data]="modules[i]" [value]="modulesSelected[i]"
+                          [valueField]="'valueId'" [textField]="'text'"
+                          class="form-control">
+          </kendo-combobox>
+          <app-control-messages class="error-msg messages text-left text-danger"
+                                [control]="privilege.controls.module">
+          </app-control-messages>
+        </div>
+
+        <div class="col-lg-2 col-md-12 col-sm-12" *ngIf="consultMode">
+          <label *ngIf="modulesSelected[i]">{{modulesSelected[i].text}}</label>
+        </div>
+
+        <div [formGroupName]="i" class="col-lg-5 col-md-12 col-sm-12 mt-2" *ngIf="!consultMode">
+          <kendo-multiselect  formControlName="privilege" [data]="groupedData"
+                             [textField]="'name'" [valueField]="'name'"
+                             (valueChange)="onValueChange($event,i)" [valueField]="'field'" [value]="selectedValues[i]">
+          </kendo-multiselect>
+          <app-control-messages class="error-msg messages text-left text-danger"
+                                [control]="privilege.controls.privilege">
+          </app-control-messages>
+        </div>
+
+        <div *ngIf="consultMode" class="col-lg-10 col-md-12 col-sm-12 text-center">
+            <span *ngFor="let privilege of selectedValues[i]" class="RoleClass m-2"
+                  style="border: 2px solid hsl(184, 32%, 53%) !important;line-height: 35px; padding:3px">
+                <span class="k-text-nowrap">{{privilege.name}}</span>
+              </span>
+        </div>
+
+        <div *ngIf="!consultMode" class="col-lg-2 col-md-12 col-sm-12 mt-2">
+          <button [disabled]="i===0 && isEmptyElement(i)" *ngIf="isLastElement(privilege,i)" class="btn-Add k-button btn btn-add" type="button"
+                  (click)="preparePrivilege(i)">
+            <i class="fa fa-plus fa AddIcon"></i>
+            <span>&nbsp; {{'ADD'|translate}}</span>
+          </button>
+        </div>
+        <div *ngIf="!consultMode" class="col-lg-1 col-md-12 col-sm-12 mt-2">
+          <i *ngIf="!privilegeEditable[i]" type="button" (click)="deletePrivilege(privilege,i)"
+             class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

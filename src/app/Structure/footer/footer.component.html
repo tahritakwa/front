@@ -1,0 +1,19 @@
+<div class="footerStyle">
+  <app-footer>
+    <div class="w-100 row justify-content-between">
+      <div class="col-auto">
+        <span>
+          Copyright &copy; {{copyRightYear | date:'yyyy'}} <a href="#"><b style="color:#4c9aae">Stark-ERP</b> </a> All
+          rights reserved.
+        </span>
+        <span style="font-weight: bold;font-family: monospace;color:red;">
+          STARK-ERP {{ appVersion }}
+        </span>
+      </div>
+      <div *ngIf="isAutoVersion" class="col-auto px-5" tooltip="{{'TECDOC_COPYRIGHT'|translate}}" placement="top">
+        <span>Tecdoc
+          &copy; </span>
+      </div>
+    </div>
+  </app-footer>
+</div>

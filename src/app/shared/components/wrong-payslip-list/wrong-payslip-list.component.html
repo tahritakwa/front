@@ -1,0 +1,149 @@
+<!-- Wrong payslips -->
+<div *ngIf="wrongPayslips && wrongPayslips.length > 0">
+  <label *ngIf="wrongTimeSheets && wrongTimeSheets.length > 0"> {{'PAYSLIPS_TO_CORRECT'|translate}} </label>
+  <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+  [pageable]="pagerSettings" (dataStateChange)="dataStateChange($event)" [selectable]="true">
+  <!--Employee full name -->
+  <kendo-grid-column *ngIf="showEmployee" [field]="gridSettings.columnsConfig[4].field" [width]="gridSettings.columnsConfig[4]._width"
+    [title]="gridSettings.columnsConfig[4].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[4].title|translate}}"
+        theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+  <!--Name-->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [width]="gridSettings.columnsConfig[0]._width"
+    [title]="gridSettings.columnsConfig[0].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+        theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+  <!--Code-->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [width]="gridSettings.columnsConfig[1]._width"
+    [title]="gridSettings.columnsConfig[1].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+        theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+  <!--Month-->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [width]="gridSettings.columnsConfig[2]._width"
+  [title]="gridSettings.columnsConfig[2].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+        theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.Month | date:'MMMM' | uppercase | translate }} {{dataItem.Month | date: 'yyyy'}}
+    </ng-template>
+  </kendo-grid-column>
+  <!--State-->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [width]="gridSettings.columnsConfig[3]._width"
+  [title]="gridSettings.columnsConfig[3].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[3].title|translate}}"
+        theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span *ngIf="dataItem.Status == payslipsStatus.Correct"
+        class="badge badge-success">{{'CORRECT'|translate}}</span>
+      <span *ngIf="dataItem.Status == payslipsStatus.Wrong"
+        class="badge badge-warning">{{'WRONG'|translate}}
+      </span>
+      <span *ngIf="dataItem.Status == payslipsStatus.NotCalculated"
+        class="badge badge-danger">{{'NOT_CALCULATED'|translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
+</div>
+<!-- Wrong timeSheets -->
+<div *ngIf="wrongTimeSheets && wrongTimeSheets.length > 0" style="margin-top: 20px;">
+  <label> {{'TIMESHEETS_TO_CORRECT'|translate}} </label>
+  <kendo-grid [data]="timeSheetsGridSettings.gridData" [pageSize]="timeSheetsGridSettings.state.take" [skip]="timeSheetsGridSettings.state.skip"
+  [pageable]="pagerSettings" (dataStateChange)="timeSheetsdataStateChange($event)" [selectable]="true">
+  <!--Employee full name -->
+  <kendo-grid-column *ngIf="showEmployee" [field]="timeSheetsGridSettings.columnsConfig[2].field" [width]="timeSheetsGridSettings.columnsConfig[2]._width"
+  [title]="timeSheetsGridSettings.columnsConfig[2].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{timeSheetsGridSettings.columnsConfig[2].title|translate}}"
+        theme="light">{{timeSheetsGridSettings.columnsConfig[2].title|translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column [field]="timeSheetsGridSettings.columnsConfig[0].field" [width]="timeSheetsGridSettings.columnsConfig[0]._width"
+  [title]="timeSheetsGridSettings.columnsConfig[0].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{timeSheetsGridSettings.columnsConfig[0].title|translate}}"
+        theme="light">{{timeSheetsGridSettings.columnsConfig[0].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.Month | date:'MMMM' | uppercase | translate }} {{dataItem.Month | date: 'yyyy'}}
+    </ng-template>
+  </kendo-grid-column>
+  <!--State-->
+  <kendo-grid-column [field]="timeSheetsGridSettings.columnsConfig[1].field" [width]="timeSheetsGridSettings.columnsConfig[1]._width"
+    [title]="timeSheetsGridSettings.columnsConfig[1].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{timeSheetsGridSettings.columnsConfig[1].title|translate}}"
+        theme="light">{{timeSheetsGridSettings.columnsConfig[1].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span class="badge badge-warning" *ngIf="dataItem.Status === timeSheetStatus.Draft">
+        {{'DRAFT'|translate}}
+      </span>
+      <span class="badge badge-primary" *ngIf="dataItem.Status === timeSheetStatus.Sended">
+        {{'SENDED'|translate}}
+      </span>
+      <span class="badge badge-success" *ngIf="dataItem.Status === timeSheetStatus.Validated">
+        {{'VALID'|translate}}
+      </span>
+      <span class="badge badge-success" *ngIf="dataItem.Status === timeSheetStatus.PartiallyValidated">
+        {{'PARTIALLY_VALID'|translate}}
+      </span>
+      <span class="badge badge-danger" *ngIf="dataItem.Status === timeSheetStatus.ToReWork">
+        {{'TOREWORK'|translate}}
+      </span>
+    </ng-template>
+  </kendo-grid-column>
+  <!--Invoice -->
+  <kendo-grid-column [width]="timeSheetsGridSettings.columnsConfig[3]._width"
+  [title]="timeSheetsGridSettings.columnsConfig[3].title | translate">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{timeSheetsGridSettings.columnsConfig[3].title|translate}}"
+        theme="light">{{timeSheetsGridSettings.columnsConfig[3].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <div *ngFor="let document of dataItem.Document">
+        <a style="color: blue; text-decoration: underline;"
+          *ngIf="document.IdDocumentStatus==statusCodeDocument.Provisional"
+          [routerLink]="['/main/sales/invoice/edit', document.Id,document.IdDocumentStatus]" target="_blank">
+          {{document.Code}}
+        </a>
+        <a style="color: blue; text-decoration: underline;"
+          *ngIf="document.IdDocumentStatus!=statusCodeDocument.Provisional"
+          [routerLink]="['/main/sales/invoice/show', document.Id,document.IdDocumentStatus]" target="_blank">
+          {{document.Code}}
+        </a>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
+</div>
+
+<div class="fixed-card-footer">
+  <div class="footerStyle">
+    <div class="w-100">
+      <div class="d-flex justify-content-end p-3 footer-content">
+        <button class="btn btn-sm btn-save mx-1" (click)="save(actionEnum.MarkPayslipToWrong)" type="submit" style="margin-left: 10px;margin-top: 10px;">
+          <i class="fa fa-floppy-o"></i> {{'SAVE_AND_UPDATE'|translate}}
+        </button>
+        <button class="btn btn-sm btn-warning mx-1" (click)="save(actionEnum.DoNotMarkPayslipToWrong)" style="margin-left: 10px;color: white;margin-top: 10px;">
+          <i class="fa fa-floppy-o"></i> {{'SAVE_WITHOUT_UPDATING'|translate}}
+        </button>
+        <button class="btn btn-sm btn-primary mx-1" (click)="save(actionEnum.Cancel)" style="margin-left: 10px;margin-top: 10px;">
+          <i class="fa fa-close"></i> {{'CANCEL'|translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

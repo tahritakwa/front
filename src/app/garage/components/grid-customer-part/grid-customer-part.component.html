@@ -1,0 +1,80 @@
+<kendo-grid #grid [data]="customerPartsList" [reorderable]="true" [sortable]="false" [scrollable]="'virtual'"
+  (add)="addHandler($event)" (edit)="editHandler($event)" (save)="saveHandler($event)" (cancel)="cancelHandler($event)"
+  (remove)="removeHandler($event)">
+  <ng-template kendoGridToolbarTemplate>
+    <div class="form-group row">
+      <app-btn-grid class="col" [add]='hasUpdatePermission' [relativeStyle]="false"
+        *ngIf="!intervention || (intervention && intervention.Status === interventionStateEnumerator.Open)">
+      </app-btn-grid>
+    </div>
+  </ng-template>
+  <!-- Reference -->
+  <kendo-grid-column [field]="columnsConfig[0].field" [width]="180" [columnMenu]="false">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{columnsConfig[0].tooltip|translate}}" theme="light">{{columnsConfig[0].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+      <div>
+        <app-grid-cell-input-template [group]="formGroup" controlName="Reference" inputType="text">
+        </app-grid-cell-input-template>
+        <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="Reference">
+        </app-control-message-grid-cell>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Designation -->
+  <kendo-grid-column [field]="columnsConfig[1].field" [width]="180" [columnMenu]="false">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{columnsConfig[1].tooltip|translate}}" theme="light">{{columnsConfig[1].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+      <div>
+        <app-grid-cell-input-template [group]="formGroup" controlName="Designation" inputType="text">
+        </app-grid-cell-input-template>
+        <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="Designation">
+        </app-control-message-grid-cell>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Quantity -->
+  <kendo-grid-column [field]="columnsConfig[2].field" [width]="180" [columnMenu]="false">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{columnsConfig[2].tooltip|translate}}" theme="light">{{columnsConfig[2].title|translate}}</span>
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+      <div>
+        <app-grid-cell-input-template [group]="formGroup" controlName="Quantity" inputType="number" [min]="1">
+        </app-grid-cell-input-template>
+        <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="Quantity">
+        </app-control-message-grid-cell>
+      </div>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <span *ngIf="dataItem.Quantity">{{dataItem.Quantity}}</span>
+      <span *ngIf="!dataItem.Quantity">---</span>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Command-->
+  <kendo-grid-command-column [width]="120" [title]="'ACTIONS' | translate"
+    *ngIf="!intervention || (intervention && intervention.Status === interventionStateEnumerator.Open)">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'ACTIONS' | translate}}" theme="light">{{'ACTIONS' | translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+      <button kendoGridEditCommand tooltip="{{'UPDATE' | translate}}" class='noPadding btn-Add' type="button">
+        <i class="las la-pen cursor-pointer edit-pencil la-lg ng-star-inserted" aria-hidden="true" *ngIf="hasUpdatePermission"></i>
+      </button>
+      <button kendoGridSaveCommand tooltip="{{'SAVE' | translate}}" class='noPadding btn-Add' type="button" *ngIf="hasUpdatePermission">
+        <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+      </button>
+      <button kendoGridCancelCommand tooltip="{{'CANCEL' | translate}}" class="noPadding btn-Add k-button"
+        type="button" *ngIf="hasUpdatePermission">
+        <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+      </button>
+      <button kendoGridRemoveCommand tooltip="{{'DELETE' | translate}}" class="noPadding btn-Add k-button" dir="ltr"
+        style="border: none; color: #E91E63 !important;" type="button" *ngIf="hasUpdatePermission">
+        <i class="fa fa-times fa-lg"></i>
+      </button>
+    </ng-template>
+  </kendo-grid-command-column>
+</kendo-grid>

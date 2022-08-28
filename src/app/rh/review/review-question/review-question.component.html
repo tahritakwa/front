@@ -1,0 +1,44 @@
+<div [formGroup]="questionFormGroup">
+  <div class="col-lg-12 col-md-12 col-sm-12">
+    <div class="row form-group">
+      <!-- Question -->
+      <div class="col-lg-5 col-md-12 col-sm-12">
+        <div class="row form-group">
+          <label class="col-lg-5 col-md-12 col-sm-12"> {{'QUESTION'|translate}} <span class="required">*</span></label>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <textarea [ngClass]="{ 'has-error': (questionFormGroup.controls.QuestionLabel.touched ||
+            questionFormGroup.controls.QuestionLabel.dirty) && !questionFormGroup.controls.QuestionLabel.valid }" class="form-control"
+                      formControlName="QuestionLabel">
+            </textarea>
+            <app-control-messages [control]="questionFormGroup.controls.QuestionLabel"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+
+        </div>
+      </div>
+      <!-- End Question -->
+      <!-- Response -->
+      <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="row form-group">
+          <label class="col-lg-5 col-md-12 col-sm-12"> {{'RESPONSE'|translate}} <span class="required">*</span></label>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <textarea [ngClass]="{ 'textarea-has-error': (questionFormGroup.controls.ResponseLabel.touched ||
+              questionFormGroup.controls.ResponseLabel.dirty) && !questionFormGroup.controls.ResponseLabel.valid }" class="form-control"
+                      formControlName="ResponseLabel">
+            </textarea>
+            <app-control-messages [control]="questionFormGroup.controls.ResponseLabel"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+      </div>
+      <!-- End Response -->
+      <!-- Delete button -->
+      <button (click)="deleteQuestion(currentQuestion)" *ngIf="IsUserInSuperHierarchicalEmployeeList" class="noPadding btn-Add k-button"
+              style="border: none"
+              type="button">
+        <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+      </button>
+      <!-- End Delete button -->
+    </div>
+  </div>
+</div>

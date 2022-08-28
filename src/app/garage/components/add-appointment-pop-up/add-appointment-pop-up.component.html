@@ -1,0 +1,93 @@
+<form class="form-horizontal" [formGroup]="form">
+  <div class="row" style="padding: 0px 15px;">
+    <!-- Tiers Start -->
+    <div class="col-lg-4 col-md-6 col-sm-12 margin">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'GARAGE' | translate}}<span class="required">*</span></label>
+      <app-garage-dropdown [group]="form"></app-garage-dropdown>
+      <app-control-messages [control]="form.controls.IdGarage" class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <!-- Tiers End -->
+    <!-- Vehicle Start -->
+    <div class="col-lg-4 col-md-6 col-sm-12 margin">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'VEHICLE' | translate}}<span class="required">*</span></label>
+      <app-registration-number-of-vehicle-dropdwon [group]="form" [category]="vehicleCategory">
+      </app-registration-number-of-vehicle-dropdwon>
+      <app-control-messages [control]="form.controls.IdVehicle" class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <!-- Vehicle End -->
+    <!-- IsAllDay -->
+    <div class="col-lg-4 col-md-12 col-sm-12 margin">
+      <div class="row" style="margin-top: 35px; margin-left: -10px;">
+        <div class="col-lg-auto col-md-12 col-sm-12 margin">
+          <kendo-switch formControlName="IsAllDay" [checked]="false" style="font-size: 0.4em !important"
+             (valueChange)="isAllDayChange($event)">
+          </kendo-switch>
+        </div>
+        <label>{{'IS_ALL_DAY' | translate}}</label>
+      </div>
+    </div>
+    <!-- IsAllDay End -->
+    <!-- StartDate Start -->
+    <div class="col-lg-4 col-md-4 col-sm-12 margin">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE' | translate}}<span class="required">*</span></label>
+      <kendo-datepicker [format]="formatDate" formControlName="StartDate" class="form-control"
+        (valueChange)="startDateChange($event)">
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+      <app-control-messages [control]="form.controls.StartDate" class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <!-- StartDate End -->
+    <!-- StartHour Start -->
+    <div class="col-lg-4 col-md-4 col-sm-12 margin" *ngIf="!IsAllDay.value">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'START_TIME' | translate}}<span class="required">*</span></label>
+      <input class="form-control" type="time"
+             id="StartHour" name="StartHour"
+             formControlName="StartHour"
+             (change)="startHourChange($event)"
+             [ngClass]="{ 'has-error': (StartHour.touched || StartHour.dirty) && !StartHour.valid }" />
+      <app-control-messages [control]="form.controls.StartHour" class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <!-- StartHour End -->
+    <!-- EndHour Start -->
+    <div class="col-lg-4 col-md-4 col-sm-12 margin" *ngIf="!IsAllDay.value">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'END_TIME' | translate}}<span class="required">*</span></label>
+      <input class="form-control" id="EndHour" name="EndHour"
+             type="time" formControlName="EndHour"
+             (change)="endHourChange($event)"
+             [ngClass]="{ 'has-error': (EndHour.touched || EndHour.dirty) && !EndHour.valid }" />
+      <app-control-messages [control]="form.controls.EndHour" class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <!-- EndHour End -->
+    <!-- EndDate Start -->
+    <div class="col-lg-4 col-md-4 col-sm-12 margin" *ngIf="IsAllDay.value">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'END_DATE' | translate}}<span class="required">*</span></label>
+      <kendo-datepicker [format]="formatDate" formControlName="EndDate" class="form-control"
+         (valueChange)="endDateChange($event)">
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+      <app-control-messages [control]="form.controls.EndDate" class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <!-- EndDate End -->
+    <!-- Note Start -->
+    <div class="col-lg-12 col-md-12 col-sm-12 margin">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'NOTE' | translate}}</label>
+      <p-editor class="col-lg-12 col-sm-12 col-md-12" formControlName="Note"
+        [style]="{'height':'120px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      </p-editor>
+    </div>
+    <!-- Note End -->
+  </div>
+  <div class="col-lg-12 col-md-12" align="right">
+    <button class="btn btn-sm btn-success" type="button" (click)="save()" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+  </div>
+</form>

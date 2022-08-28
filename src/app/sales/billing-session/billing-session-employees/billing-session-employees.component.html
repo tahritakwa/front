@@ -1,0 +1,203 @@
+<div class="card">
+  <!--Begin Card header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'BILLING_SESSION'|translate}}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin Card body-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="sessionFormGroup">
+      <!-- Form Start -->
+      <div class="col-lg-12 col-sm-12 col-md-12 ">
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-4 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}<span
+                class="required">*</span></label>
+            <input class="form-control" formControlName="Code" name="" disabled>
+          </div>
+          <div class="col-sm-12 col-md-5 col-lg-5">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}<span class="required">*</span></label>
+            <input class="form-control" formControlName="Title" type="text" name=""
+              [ngClass]="{ 'has-error': (sessionFormGroup.controls.Title.touched || sessionFormGroup.controls.Title.dirty) && !sessionFormGroup.controls.Title.valid }">
+            <app-control-messages [control]="sessionFormGroup.controls.Title"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'MONTH'|translate}} <span class="required">*</span></label>
+            <kendo-datepicker (valueChange)="onClickInitialiseDate()" [bottomView]="'year'" [topView]="'decade'"
+              [format]="'MMMM yyyy'" formControlName="Month" [max]="max" class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="sessionFormGroup.controls.Month"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 ">
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CUSTOMER'|translate}}</label>
+            <app-supplier-dropdown [type]='1' [idProject]="selectedProject" [itemForm]="sessionFormGroup"
+              (Selected)="supplierValueChange($event)" [placeholder]="'CHOOSE_CUSTOMER_PLACEHOLDER' | translate"></app-supplier-dropdown>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'SERVICE_CONTRACT'|translate}}</label>
+            <app-project-dropdown [default]="false" [isBillable]="true" [idTiers]="selectedTiers"
+              [month]="month" [isForBillingSession]="true" [group]="sessionFormGroup"
+              (projectDropdownValueChanged)="projectValueChange($event)"></app-project-dropdown>
+          </div>
+        </div>
+      </div>
+      <!-- form End -->
+      <!-- Grid strat -->
+      <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:60px">
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+          [sortable]="true" [pageable]="pagerSettings" [reorderable]="true"
+          [selectable]="{enabled: true, checkboxOnly: true }" (selectedKeysChange)="onSelectedKeysChange($event)"
+          [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+          (dataStateChange)="dataStateChange($event)" [kendoGridSelectBy]="'IdEmployee'"
+          [selectedKeys]="employeesIdsSelectedInGrid">
+          <kendo-grid-checkbox-column *ngIf="!isClosed && isEnabled" [width]="100">
+            <ng-template kendoGridHeaderTemplate>
+              <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+                (selectAllChange)="onSelectAllChange($event)">
+              <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+            </ng-template>
+          </kendo-grid-checkbox-column>
+          <!-- Matricule -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+            [width]="gridSettings.columnsConfig[0]._width" [filter]="gridSettings.columnsConfig[0].filter"
+            [filterable]="gridSettings.columnsConfig[0].filterable" [format]="gridSettings.columnsConfig[0].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a class="employee-link" [ngStyle]="!hasShorOrUpdateEmployeePermission ? {'pointer-events':'none'} : {'cursor': 'pointer'}"
+                (click)="hasShorOrUpdateEmployeePermission ? onEmployeeClik(dataItem.IdEmployeeNavigation.Id) : ''" target="_blank">
+                {{dataItem.IdEmployeeNavigation.Matricule}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Nom -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+            [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.columnsConfig[1].filter"
+            [filterable]="gridSettings.columnsConfig[1].filterable" [format]="gridSettings.columnsConfig[1].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a class="employee-link" [ngStyle]="!hasShorOrUpdateEmployeePermission ? {'pointer-events':'none'} : {'cursor': 'pointer'}"
+                (click)="hasShorOrUpdateEmployeePermission ? onEmployeeClik(dataItem.IdEmployeeNavigation.Id) : ''">
+                {{dataItem.IdEmployeeNavigation.FirstName}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Prenom -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+            [width]="gridSettings.columnsConfig[2]._width" [filter]="gridSettings.columnsConfig[2].filter"
+            [filterable]="gridSettings.columnsConfig[2].filterable" [format]="gridSettings.columnsConfig[2].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a class="employee-link"[ngStyle]="!hasShorOrUpdateEmployeePermission ? {'pointer-events':'none'} : {'cursor': 'pointer'}"
+                (click)="hasShorOrUpdateEmployeePermission ? onEmployeeClik(dataItem.IdEmployeeNavigation.Id) : ''">
+                {{dataItem.IdEmployeeNavigation.LastName}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Bouton pour valider le CRA ou envoyer des emails -->
+          <kendo-grid-column width="400" [field]="gridSettings.columnsConfig[3].field" class="border-style">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[3].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span class="label-right" *ngIf="dataItem.IdTimeSheetNavigation.Id === 0">
+                <a style="color: #7f6ebd;cursor: pointer;" (click)="SendMail(dataItem.IdEmployeeNavigation.Id)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_FILL_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheetNavigation.Id !== 0 && dataItem.IdTimeSheetNavigation.Status === statusCode.Draft">
+                <a style="color: #dc3545;cursor: pointer;" (click)="SendMail(dataItem.IdEmployeeNavigation.Id)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_SUBMIT_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheetNavigation.Id !== 0 && dataItem.IdTimeSheetNavigation.Status === statusCode.ToReWork">
+                <a style="color: #dc3545;cursor: pointer;" (click)="SendMail(dataItem.IdEmployeeNavigation.Id)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_CORRECT_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheetNavigation.Id !== 0 && dataItem.IdTimeSheetNavigation.Status === statusCode.Sended">
+                <a *ngIf="!(hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployeeNavigation.Id))"
+                  style="color: #4c9aae;cursor: pointer;" (click)="SendMail(dataItem.IdEmployeeNavigation.Id)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+                <a *ngIf="(hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployeeNavigation.Id))"
+                  style="color: #de8926;cursor: pointer;" (click)="validateCRA(dataItem)">
+                  <i class="fa fa-check-square-o" aria-hidden="true"> {{'VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheetNavigation.Id !== 0 && dataItem.IdTimeSheetNavigation.Status === statusCode.PartiallyValidated">
+                <a *ngIf="!(hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployeeNavigationId))"
+                  style="color: #4c9aae;cursor: pointer;" (click)="SendMail(dataItem.IdEmployeeNavigation.Id)">
+                  <i class="fa fa-envelope" aria-hidden="true"> {{'SEND_REQUEST_TO_VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+                <a *ngIf="hasRightToValidate || isInEmployeesHierarchy(dataItem.IdEmployeeNavigation.Id)"
+                  style="color: #de8926;cursor: pointer;" (click)="validateCRA(dataItem)">
+                  <i class="fa fa-check-square-o" aria-hidden="true"> {{'VALIDATE_TIMESHEET'|translate}}</i>
+                </a>
+              </span>
+              <span class="label-right"
+                *ngIf="dataItem.IdTimeSheetNavigation.Id !== 0 && dataItem.IdTimeSheetNavigation.Status === statusCode.Validated">
+                <span style="color: green;">
+                  <i class="fa fa-check" aria-hidden="true"> CRA {{'VALID'|translate}} </i>
+                </span>
+              </span>
+            </ng-template>
+
+          </kendo-grid-column>
+        </kendo-grid>
+        <div *ngIf="showErrorMessage" class="error-message" style="color:red">
+          {{'EMPLOYEE_MUST_BE_SELECTED'|translate}}
+        </div>
+      </div>
+      <!-- Grid End -->
+    </form>
+  </div>
+  <!-- End card body-->
+  <!--Begin Card footer Start-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="/main/sales/billingSession">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button *ngIf="isEnabled && billingSession.State !== states.Closed" class="btn btn-sm btn-save mx-1" (click)="onAddSessionClick()" type="submit">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+            <button *ngIf="(isEnabled && billingSession.State === states.Closed) || (!isEnabled && (billingSession.State === states.Bills
+              || billingSession.State === states.Closed || billingSession.State === states.Project))" class="btn btn-sm btn-save mx-1" (click)="goNext()" type="submit">
+              <i class="fa fa-angle-right"></i> {{'NEXT'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Begin Card footer End-->
+</div>

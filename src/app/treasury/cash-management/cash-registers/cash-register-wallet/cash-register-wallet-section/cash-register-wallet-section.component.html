@@ -1,0 +1,226 @@
+<div class="body">
+  <div class="col-lg-12">
+    <!-- Filters -->
+    <div class="row" style="margin-bottom: 30px; margin-top: 30px;">
+      <!-- Code settlement -->
+      <div class="col-lg-4 col-md-12 col-sm-12 margin">
+        <label class="col-lg-12 col-md-12 col-sm-12">
+          {{'CODE_SETTLEMENT'|translate}} :
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <input type="text" class="form-control">
+        </div>
+      </div>
+      <!--  End Code settlement-->
+      <!-- Tiers -->
+      <div class="col-lg-4 col-md-12 col-sm-12 margin">
+        <label class="col-lg-12 col-md-12 col-sm-12">
+          {{'TIERS'|translate}} :
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <app-supplier-dropdown [itemForm]='searchFormGroup' [hideAddBtn]="true"> </app-supplier-dropdown>
+        </div>
+      </div>
+      <!-- End tiers -->
+      <!-- Settlement date Start -->
+      <div class="col-lg-4 col-md-12 col-sm-12 margin">
+        <label class="col-lg-12 col-md-12 col-sm-12">
+          {{'SETTLEMENT_DATE'|translate}} :
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <kendo-datepicker class="form-control">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+      </div>
+      <!-- Settlement date end -->
+      <!-- Commitment date -->
+      <div class="col-lg-4 col-md-12 col-sm-12 margin">
+        <label class="col-lg-auto col-md-12 col-sm-12">
+          {{'COMMITMENT_DATE'|translate}} :
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <kendo-datepicker class="form-control">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+      </div>
+      <!-- End Commitment date -->
+      <!-- Amount -->
+      <div class="col-lg-4 col-md-12 col-sm-12 margin">
+        <label class="col-lg-auto col-md-12 col-sm-12">
+          {{'AMOUNT'|translate}} :
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <input type="text" class="form-control">
+        </div>
+      </div>
+      <!-- End Amount -->
+      <!-- Payment status -->
+      <div class="col-lg-4 col-md-12 col-sm-12 margin">
+        <label class="col-lg-auto col-md-12 col-sm-12">
+          {{'STATUS'|translate}} :
+        </label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <app-payment-status-dropdown [group]="searchFormGroup"></app-payment-status-dropdown>
+        </div>
+      </div>
+      <!-- End ayment status -->
+      <div class="col-lg-2 col-md-12 col-sm-12 margin">
+        <button class="btn btn-secondary" style="width:50px; margin-top: 30px; margin-left: 20px;" type="button"
+          (click)="doSearch()">
+          <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+    <!-- End filters -->
+    <div class="row">
+      <!-- Customer bank check -->
+      <div class="card col-12">
+        <div class="card-header" style="background-color: white !important; cursor: pointer;" [ngStyle]="
+          hiddenClientBankCheck && {'border-bottom' : 'none'}"
+          (click)="hiddenClientBankCheck = !hiddenClientBankCheck">
+          <div class="row">
+            <div class="col-lg-3">
+              <button class="noPadding btn-Add k-button"
+                style="margin-left: -20px;background: no-repeat!important;border: none!important;">
+                <i [ngClass]="{'cui-chevron-bottom':hiddenClientBankCheck,'cui-chevron-top':!hiddenClientBankCheck}"
+                  aria-hidden="true" style="color: #4c9aae!important;"></i>
+              </button>
+              <span [ngStyle]="{'font-weight': hiddenClientBankCheck ? 'unset' : 'bold'}">
+                {{'CUSTOMERS_BANK_CHECK' | translate}}
+              </span>
+            </div>
+            <div class="col-lg-9" style="text-align: right;">
+              <span style="color: #4c9ab6;" *ngIf="userCurrency">
+                {{customerBankCheckAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+              style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" [hidden]="hiddenClientBankCheck">
+          <app-wallet-customer-bank-check></app-wallet-customer-bank-check>
+        </div>
+      </div>
+      <!-- End customer bank check -->
+      <!-- Supplier bank check -->
+      <div class="card col-12">
+        <div class="card-header" style="background-color: white !important; cursor: pointer;" [ngStyle]="
+          hiddenSupplierBankCheck && {'border-bottom' : 'none'}"
+          (click)="hiddenSupplierBankCheck = !hiddenSupplierBankCheck">
+          <div class="row">
+            <div class="col-lg-4">
+              <button class="noPadding btn-Add k-button"
+                style="margin-left: -20px;background: no-repeat!important;border: none!important;">
+                <i [ngClass]="{'cui-chevron-bottom':hiddenSupplierBankCheck,'cui-chevron-top':!hiddenSupplierBankCheck}"
+                  aria-hidden="true" style="color: #4c9aae!important;"></i>
+              </button>
+              <span [ngStyle]="{'font-weight': hiddenSupplierBankCheck ? 'unset' : 'bold'}">
+                {{'SUPPLIER_BANK_CHECK' | translate}}
+              </span>
+            </div>
+            <div class="col-lg-8" style="text-align: right;">
+              <span style="color: #4c9ab6;" *ngIf="userCurrency">
+                {{supplierBankCheckAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+              style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" [hidden]="hiddenSupplierBankCheck">
+          <app-wallet-supplier-bank-check></app-wallet-supplier-bank-check>
+        </div>
+      </div>
+      <!-- End supplier bank check -->
+      <!-- Customer bank draft -->
+      <div class="card col-12">
+        <div class="card-header" style="background-color: white !important; cursor: pointer;" [ngStyle]="
+          hiddenClientBankDraft && {'border-bottom' : 'none'}"
+          (click)="hiddenClientBankDraft = !hiddenClientBankDraft">
+          <div class="row">
+            <div class="col-lg-4">
+              <button class="noPadding btn-Add k-button"
+                style="margin-left: -20px;background: no-repeat!important;border: none!important;">
+                <i [ngClass]="{'cui-chevron-bottom':hiddenClientBankDraft,'cui-chevron-top':!hiddenClientBankDraft}"
+                  aria-hidden="true" style="color: #4c9aae!important;"></i>
+              </button>
+              <span [ngStyle]="{'font-weight': hiddenClientBankDraft ? 'unset' : 'bold'}">
+                {{'CUSTOMER_BANK_DRAFT' | translate}}
+              </span>
+            </div>
+            <div class="col-lg-8" style="text-align: right;">
+              <span style="color: #4c9ab6;" *ngIf="userCurrency">
+                {{customerBankDraftAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+              style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" [hidden]="hiddenClientBankDraft">
+          <app-wallet-customer-bank-draft></app-wallet-customer-bank-draft>
+        </div>
+      </div>
+      <!-- End Customer bank draft -->
+      <!-- supplier bank draft -->
+      <div class="card col-12">
+        <div class="card-header" style="background-color: white !important; cursor: pointer;" [ngStyle]="
+          hiddenSupplierBankDraft && {'border-bottom' : 'none'}"
+          (click)="hiddenSupplierBankDraft = !hiddenSupplierBankDraft">
+          <div class="row">
+            <div class="col-lg-4">
+              <button class="noPadding btn-Add k-button"
+                style="margin-left: -20px;background: no-repeat!important;border: none!important;">
+                <i [ngClass]="{'cui-chevron-bottom':hiddenSupplierBankDraft,'cui-chevron-top':!hiddenSupplierBankDraft}"
+                  aria-hidden="true" style="color: #4c9aae!important;"></i>
+              </button>
+              <span [ngStyle]="{'font-weight': hiddenSupplierBankDraft ? 'unset' : 'bold'}">
+                {{'SUPPLIER_BANK_DRAFT' | translate}}
+              </span>
+            </div>
+            <div class="col-lg-8" style="text-align: right;">
+              <span style="color: #4c9ab6;" *ngIf="userCurrency">
+                {{supplierBankDraftAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+              style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" [hidden]="hiddenSupplierBankDraft">
+          <app-wallet-supplier-bank-draft></app-wallet-supplier-bank-draft>
+        </div>
+      </div>
+      <!-- End supplier bank draft -->
+      <!-- Cash -->
+      <div class="card col-12">
+        <div class="card-header" style="background-color: white !important; cursor: pointer;" [ngStyle]="
+          hiddenCash && {'border-bottom' : 'none'}" (click)="hiddenCash = !hiddenCash">
+          <div class="row">
+            <div class="col-lg-4">
+              <button class="noPadding btn-Add k-button"
+                style="margin-left: -20px;background: no-repeat!important;border: none!important;">
+                <i [ngClass]="{'cui-chevron-bottom':hiddenCash,'cui-chevron-top':!hiddenCash}" aria-hidden="true"
+                  style="color: #4c9aae!important;"></i>
+              </button>
+              <span [ngStyle]="{'font-weight': hiddenCash ? 'unset' : 'bold'}">
+                {{'CASH_SETTLEMENT' | translate}}
+              </span>
+            </div>
+            <div class="col-lg-8" style="text-align: right;">
+              <span style="color: #4c9ab6;" *ngIf="userCurrency">
+                {{cashAmount.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+              style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body" [hidden]="hiddenCash">
+          <app-wallet-cash></app-wallet-cash>
+        </div>
+      </div>
+      <!-- End Cash -->
+    </div>
+  </div>
+</div>

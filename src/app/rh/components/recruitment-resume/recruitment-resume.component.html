@@ -1,0 +1,41 @@
+<div *ngIf="currentRecruitment" [ngStyle]="{'width':'95%'}">
+  <h3 class="card-title mb-0">
+    {{'RECRUITMENT_RESUME' | translate}}
+  </h3>
+  <br/>
+  <div>
+
+    <div class="row">
+
+      <!-- begin recruitment resume left part -->
+      <div class="col-lg-5 col-md-12 col-sm-12">
+        <ul>
+          <li>
+            {{'RECRUITMENT_CREATION_DATE' | translate}}: <b>{{currentRecruitment.CreationDate | date : formatDate}}</b>
+          </li>
+          <li>
+            {{'CANDIDACY_NUMBER' | translate}}: <b>{{candidacyNumber}}</b>
+          </li>
+        </ul>
+      </div>
+      <!-- end recruitment resume left part -->
+      <!-- begin recruitment right part -->
+      <div class="col-lg-5 col-md-12 col-sm-12" style="float:right">
+        <ul>
+          <li>
+            {{'RECRUITMENT_CLOSING_DATE' | translate}}: <b>{{currentRecruitment.ClosingDate | date : formatDate}}</b>
+          </li>
+          <li>
+            {{'RECRUITS_NUMBER' | translate}}: <b>{{recruitsNumber}}</b>
+          </li>
+        </ul>
+      </div>
+      <!-- end recruitment right part -->
+
+    </div>
+
+  </div>
+</div>
+<br/>
+
+

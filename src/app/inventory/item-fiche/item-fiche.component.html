@@ -1,0 +1,403 @@
+<div *ngIf="item">
+  <div>
+    <div class="row">
+      <!-- item card-->
+      <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+        <div class="card ">
+          <div class="card-content">
+            <div class="card-body">
+              <div class="row">
+                <!--pictures -->
+                <div class="col-auto m-auto" style="max-width: 230px;">
+                  <div class="img-border m-0 d-flex justify-content-center" id="item-photo" for="file-input">
+
+                    <img class="imgSize" alt="item photo" [src]="firstImageUrl" />
+                  </div>
+                </div>
+                <div class="col mt-3 d-flex align-items-start flex-column">
+                  <div class="row w-100">
+                    <div class="col-auto h3 text-wrap" id="item-description">
+                      {{item.Description}}</div>
+                    <div class="col-auto p-0 h3">
+                      <i class="las la-pen edit-pencil cursor-pointer" (click)="goToAdvancedEdit()"
+                        *ngIf="hasShowPermission || hasUpdatePermission"></i>
+                      <i class="las la-trash-alt text-danger cursor-pointer" (click)="delete()"
+                        *ngIf="hasDeletePermission"></i>
+                      <i class="las la-history text-primary cursor-pointer" (click)="onClickGoToDetails()"
+                        *ngIf="hasHistoryPermission"></i>
+                    </div>
+                  </div>
+                  <div class="w-100">
+                    <p class="code">{{item.Code |translate}}</p>
+                  </div>
+                  <div class="w-100">
+                    <p class="font-weight-bold">{{'TYPE'|translate}}: {{item.LabelNature}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12 pl-lg-0">
+        <div class="row h-100 pb-4">
+
+          <!--Supplier & brand img-->
+          <div class="col d-flex flex-column pr-0">
+            <!--suppliers-->
+            <!-- Note -->
+
+            <div class="row mb-auto">
+              <div class="col-lg-auto">
+                <label class="font-weight-bold ml-3">{{'NOTES' | translate}} : </label>
+              </div>
+              <div class="col">
+                <label class="notes">
+                  <textarea class="form-control no-background" rows="6" disabled [readOnly]="true"
+                    [value]="item.Note"></textarea>
+                </label>
+              </div>
+            </div>
+
+            <!-- TOTAL_QUANTITY -->
+            <div *ngIf="this.item && this.item.IsStockManeged" class="row">
+              <div class="col" style="color:#4b9aad;">
+                <h5 class="ml-3"><b>{{'ALLQUANTITY' | translate }}</b></h5>
+              </div>
+              <div class="col-auto">
+                <span class="details float-right"> {{item.AllAvailableQuantity}}
+                </span>
+              </div>
+            </div>
+
+            <!-- NUMBER_DAYS_OUT_STOCK -->
+            <div *ngIf="this.item && this.item.IsStockManeged" class="row">
+              <div class="col" style="color:#4b9aad;">
+                <h5 class="ml-3"><b>{{'NUMBER_DAYS_OUT_STOCK' | translate }}</b></h5>
+              </div>
+              <div class="col-auto">
+                <span class="details cursor-pointer float-right">
+                  {{item.numberDaysOutOfStock}}
+                </span>
+              </div>
+            </div>
+          </div>
+          <!--Brand Photo-->
+          <div class="col-auto">
+            <div class="img-border m-0 d-flex justify-content-center float-right" id="brand-photo">
+              <img class="imgSize" *ngIf="item.UrlBrandPicture == null || item.UrlBrandPicture==''"
+                [src]="'assets/image/placeholder-logo.png'" alt="brand photo" />
+              <img class="imgSize" *ngIf="item.UrlBrandPicture != null" [src]="imageBrandUrl" alt="brand photo" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--collapses-->
+    <div class="card p-3">
+      <div *ngIf="this.item && this.item.IsStockManeged" class="row">
+        <!--left collapses-->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <p-accordion [multiple]="true" class="w-100">
+            <!-- caracteristique -->
+            <p-accordionTab header="{{'CHARACTERISTICS'| translate}}" [selected]="true">
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 border-bottom mb-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="font-weight-bold">{{'BRAND'| translate}}</label>
+                      </div>
+                      <div class="col-6">
+                        <label *ngIf="item.LabelProduct">{{item.LabelProduct}}</label>
+                        <label *ngIf="!item.LabelProduct"> - </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 border-bottom mb-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="font-weight-bold">{{'FAMILY'| translate}}</label>
+                      </div>
+                      <div class="col-6">
+                        <label *ngIf="item.LabelFamily">{{item.LabelFamily}}</label>
+                        <label *ngIf="!item.LabelFamily"> - </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 border-bottom mb-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="font-weight-bold">{{'SUBFAMILY'| translate}}</label>
+                      </div>
+                      <div class="col-6">
+                        <label *ngIf="item.LabelSubFamily">{{item.LabelSubFamily}}</label>
+                        <label *ngIf="!item.LabelSubFamily"> - </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 border-bottom mb-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="font-weight-bold">{{'BARCODE1D'| translate}}</label>
+                      </div>
+                      <div class="col-6">
+                        <label *ngIf="item.BarCode1D">{{item.BarCode1D}}</label>
+                        <label *ngIf="!item.BarCode1D"> - </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 border-bottom mb-2">
+                    <div class="row">
+                      <div class="col-6">
+                        <label class="font-weight-bold">{{'BARCODE2D'| translate}}</label>
+                      </div>
+                      <div class="col-6">
+                        <label *ngIf="item.BarCode2D">{{item.BarCode2D}}</label>
+                        <label *ngIf="!item.BarCode2D"> - </label>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="row mt-3 d-flex justify-content-center"
+                  *ngIf="item.ItemVehicleBrandModelSubModel?.length > 0">
+                  <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12">
+                    <div class="row border-bottom mb-2  text-info">
+                      <div class="col-4">
+                        <div class="font-weight-bold">{{'VEHICLE_BRAND'| translate}}</div>
+                      </div>
+                      <div class="col-4">
+                        <div class="font-weight-bold">{{'MODEL' | translate}}</div>
+                      </div>
+                      <div class="col-4">
+                        <div class="font-weight-bold">{{'SUBMODEL' | translate}}</div>
+                      </div>
+                    </div>
+                    <div *ngFor="let vehicle of item.ItemVehicleBrandModelSubModel; let i = index">
+                      <div class="row border-bottom mb-2">
+                        <div class="col-4">
+                          <label *ngIf="vehicle.LabelVehicleBrand">{{vehicle.LabelVehicleBrand}}</label>
+                          <label *ngIf="!vehicle.LabelVehicleBrand"> - </label>
+                        </div>
+                        <div class="col-4">
+                          <label *ngIf="vehicle.LabelModel">{{vehicle.LabelModel}}</label>
+                          <label *ngIf="!vehicle.LabelModel"> - </label>
+                        </div>
+                        <div class="col-4">
+                          <label *ngIf="vehicle.LabelSubModel">{{vehicle.LabelSubModel}}</label>
+                          <label *ngIf="!vehicle.LabelSubModel"> - </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+      </div>
+      <div class="row" *ngIf="OemTree && isAutoVersion">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <p-accordion [multiple]="true" class="w-100">
+            <!-- caracteristique -->
+            <p-accordionTab header="{{'OEM'| translate}}" [selected]="true">
+              <div class="card mb-2" *ngFor="let OemGroup of OemTree">
+                <div class="card-body p-1">
+                  <h4 class="card-title">
+                    <span class="badge badge-brand">
+                      {{OemGroup.key}}
+                    </span>
+                  </h4>
+                  <div class="row">
+                    <div class="col">
+                      <div class="row ml-0">
+                        <div class="col-auto px-0" *ngFor="let Oem of OemGroup.OemList">
+                          <div class="badge badge-secondary mr-1 mb-1" style="font-size: 15px;">{{Oem}}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+      </div>
+      <!-- sale/purchase collapses -->
+      <div class="row">
+        <!--Purchasing price-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-accordion [multiple]="true" class="w-100">
+            <p-accordionTab [selected]="true">
+              <p-header>
+                <span class="collapse-title">{{'PURCHASE'| translate}}</span>
+              </p-header>
+              <div class="col-12 p-0">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                      <div class="row">
+                        <div class="col-6 pr-0">
+                          <label class="font-weight-bold">{{'STOCKUNIT'| translate}}</label>
+                        </div>
+                        <div class="col-6 pl-0">
+                          <label *ngIf="item.LabelUnitStock">{{item.LabelUnitStock}}</label>
+                          <label *ngIf="!item.LabelUnitStock"> - </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                      <div class="row">
+                        <div class="col-6 pr-0">
+                          <label class="font-weight-bold">{{'TAX'| translate}}</label>
+                        </div>
+                        <div class="col-6 pl-0">
+                          <div *ngIf="item.TaxesLabel?.length > 0">
+                            <div class="badge badge-pill badge-light font-weight-normal border border-info mr-1"
+                              *ngFor="let taxe of item.TaxesLabel">
+                              {{taxe}}
+                            </div>
+
+                          </div>
+                          <label *ngIf="item.TaxesLabel?.length == 0">{{'-'}}</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="my-2">
+
+                <div *ngIf="this.item && this.item.IsStockManeged" class="col-12">
+                  <div class="row">
+                    <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                      <div class="row">
+                        <div class="col-6  pr-0">
+                          <label class="font-weight-bold">{{'POLICY'| translate}}</label>
+                        </div>
+                        <div class="col-6 pl-0">
+                          <label *ngIf="policyValorisation">{{policyValorisation}}</label>
+                          <label *ngIf="!policyValorisation"> - </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                      <div class="row">
+                        <div class="col-6 pr-0">
+                          <label class="font-weight-bold">{{'COEFFICIENT'| translate}}</label>
+                        </div>
+                        <div class="col-6 pl-0">
+                          <label *ngIf="item.CoeffConversion">{{item.CoeffConversion}}</label>
+                          <label *ngIf="!item.CoeffConversion"> - </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="my-2">
+                <div class="row form-group mt-5" *ngIf="showPurchasePrices">
+                  <div class="col-12">
+                    <div class="col-12">
+                      <div class="row text-info">
+                        <div class="col-6 ">
+                          <div class="font-weight-bold">{{'SUPPLIER'| translate}}</div>
+                        </div>
+                        <div class="col-6 ">
+                          <div class="font-weight-bold">{{'PURCHASING_PRICE_DEVICE' | translate}}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <hr class="my-2">
+                    <div class="col-12 p-0">
+                      <div *ngFor="let supplier of item.TiersPurchasePrice; let i = index">
+                        <div class="row">
+                          <div class="col-6">
+                            <div class="row cursor-pointer">
+                              <div class="col-auto">
+                                <div class="customer-photo d-flex justify-content-center">
+                                  <img *ngIf="supplier.UrlPicture == null"
+                                    [src]="'assets/image/placeholder-logo.png'" />
+                                  <img *ngIf="supplier.UrlPicture != null" [src]="supplier.FileData" />
+                                </div>
+                              </div>
+                              <div class="col">
+                                <div class="row">
+                                  <span class="font-weight-bold">{{supplier.Name}}</span>
+                                </div>
+                                <div class="row">
+                                  <span class="light-reference">{{supplier.CodeTiers}}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-2" style="text-align: right;">
+                            <label *ngIf="supplier?.PurchasePrice">{{supplier.PurchasePrice.toLocaleString(language, {
+                              minimumFractionDigits: supplier.FormatOption.minimumFractionDigits,
+                              style: 'currency', currency: supplier.FormatOption.currency, currencyDisplay: 'symbol'
+                              })}}</label>
+                            <label *ngIf="!supplier.PurchasePrice">-</label>
+                          </div>
+                        </div>
+                        <hr class="my-2">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+        <!--selling price-->
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+          <p-accordion [multiple]="true" class="w-100">
+            <p-accordionTab header="{{'SALE'| translate}}" [selected]="true">
+              <div class="col-12">
+                <div>
+                  <div class="col-12">
+                    <div class="row">
+                      <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" *ngIf="showSalesPrice">
+                        <div class="row">
+                          <div class="col-6">
+                            <label class="font-weight-bold">{{'SALES_PRICE'| translate}}</label>
+                          </div>
+                          <div class="col-6">
+                            <label *ngIf="item.UnitHtsalePrice">{{item.UnitHtsalePrice.toLocaleString(language, {
+                              minimumFractionDigits: salesFormatOption.minimumFractionDigits,
+                              style: 'currency', currency: salesFormatOption.currency, currencyDisplay: 'symbol'
+                              })}}</label>
+                            <label *ngIf="!item.UnitHtsalePrice">-</label>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                        <div class="row">
+                          <div class="col-6">
+                            <label class="font-weight-bold">{{'SALESUNIT'| translate}}</label>
+                          </div>
+                          <div class="col-6">
+                            <label *ngIf="item.LabelUnitSales">{{item.LabelUnitSales}}</label>
+                            <label *ngIf="!item.LabelUnitSales"> - </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,627 @@
+<div class="row pt-3 d-flex justify-content-around">
+  <div class="col-auto">
+    <span class="fa fa-square text-primary"></span> {{'NO_NEGOTIATION_IN_PROGRESS'|translate}}
+  </div>
+  <div class="col-auto">
+    <span class="fa fa-square text-secondary"></span> {{'NO_NEGOTIATION_IN_PROGRESS_BUT_OLD_NEGOTIATION'|translate}}
+  </div>
+  <div class="col-auto">
+    <span class="fa fa-square text-warning"></span> {{'NEGOTIATION_IN_PROGRESS'|translate}}
+  </div>
+  <div class="col-auto">
+    <span class="fa fa-square text-success"></span> {{'NEGOTIATON_ACCEPTED'|translate}}
+  </div>
+  <div class="col-auto">
+    <span class="fa fa-square text-danger"></span> {{'NEGOTIATON_REFUSED'|translate}}
+  </div>
+</div>
+<hr style="width: 90%;
+    border-top: 1px solid #4c9aae61;">
+<div class="row">
+  <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;">
+    <kendo-grid (cellClick)="documentLineClickHandler($event)" [data]="gridSettings.gridData"
+                [skip]="gridSettings.state.skip" id='gridPucrhaseSales' (remove)="removeDocumentLine($event)"
+                [style.maxHeight.px]="550" #grid (add)="addDocumentLine($event)" [pageSize]="pageSize" [pageable]="true"
+                (dataStateChange)="dataStateChange($event)" kendoGridSelectBy="Id" [filterable]="true"
+                [filter]="gridSettings.state.filter" [selectedKeys]="selectionId" [selectable]="selectableSettings">
+
+      <kendo-grid-checkbox-column [width]='60' showSelectAll="true"
+                                  *ngIf='showDiscountForAll() && !isToImport && deleteMultipleLinesRole && documentType !== documentEnumerator.PurchaseBudget'
+                                  tabindex="-1">
+      </kendo-grid-checkbox-column>
+      <kendo-grid-checkbox-column [width]='60' *ngIf='!showDiscountForAll() && isToImport ' tabindex="-1">
+      </kendo-grid-checkbox-column>
+
+      <kendo-grid-column title="" [width]='50'
+                         *ngIf='documentType === documentEnumerator.PurchaseBudget && itemForm.controls["IdDocumentStatus"].value==1'>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div style="display: flex;
+                      margin-top: 5%;">
+            <button class="noPadding btn-Add k-button" dir="ltr" style="border: none; color: #E91E63 !important;"
+                    type="button" *ngIf='!isInEditingMode' data-toggle="modal" data-target="#modalOfReplaceItem"
+                    (click)='openModalOfReplaceItem(dataItem.IdItem, dataItem.IdItemNavigation.Description)'>
+              <i class="fa fa-refresh AddIcon"></i>
+            </button>
+
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="IdLine" hidden="hidden" title="{{'ITEM'|translate}}"></kendo-grid-column>
+      <kendo-grid-column field="Id" [hidden]='true' title="{{'SHELF_AND_STORAGE'|translate}}"></kendo-grid-column>
+
+
+      <!--item designation-->
+      <kendo-grid-column field="RefItem" title="{{'ITEM'|translate }}" [width]='250' [filterable]="true">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title|translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div *ngIf='isNew && currentCompany.AllowRelationSupplierItems'>
+            <app-item-dropdown [itemForm]="gridFormGroup" [parentViewContainerRef]="viewRef"
+                               [tiersAssociated]="tiersAssociatedToItems" [showFilter]='true' [isForPurchase]='true'
+                               [ignoreCharges]='true' [selectedTiers]='itemForm.controls["IdTiers"].value'
+                               (Selected)="itemSelect($event)" [activeKeyPress]='true' [isForSales]='false'
+                               [hideSearch]="hideSearch"
+                               [removeFilter]='true' #item (reload)="filteritem()">
+            </app-item-dropdown>
+            <app-control-messages [control]="gridFormGroup.controls.IdItem"
+                                      class="error-msg messages text-left text-danger">
+            </app-control-messages>
+            <i #anchor></i>
+            <app-control-message-grid-cell [group]="gridFormGroup" [anchor]="anchor" controlName="RefItem">
+            </app-control-message-grid-cell>
+          </div>
+          <div *ngIf='isNew && !currentCompany.AllowRelationSupplierItems'>
+            <app-item-dropdown [itemForm]="gridFormGroup" [parentViewContainerRef]="viewRef"
+                                [showFilter]='true' [isForPurchase]='true'
+                               [ignoreCharges]='true'
+                               (Selected)="itemSelect($event)" [activeKeyPress]='true' [isForSales]='false'
+                               [hideSearch]="hideSearch"
+                               [removeFilter]='true' #item (reload)="filteritem()">
+            </app-item-dropdown>
+            <app-control-messages [control]="gridFormGroup.controls.IdItem"
+                                      class="error-msg messages text-left text-danger">
+            </app-control-messages>
+            <i #anchor></i>
+            <app-control-message-grid-cell [group]="gridFormGroup" [anchor]="anchor" controlName="RefItem">
+            </app-control-message-grid-cell>
+          </div>
+          <div *ngIf='!isNew'>
+            <div *ngIf="!currentCompany.AllowEditionItemDesignation">
+              {{dataItem.Designation}}
+            </div>
+            <div *ngIf="currentCompany.AllowEditionItemDesignation">
+              <app-grid-cell-input-template [group]="gridFormGroup" controlName="RefItem" [stopInputCounter]='true'
+                                            inputType="text">
+              </app-grid-cell-input-template>
+            </div>
+          </div>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div class="row d-flex align-items-center mb-1 mt-1" *ngIf='dataItem'>
+              <div class="col-3 pl-3">
+                <img id="blah" class="rounded-circle card-avatar"
+                [src]="dataItem.image || 'assets/image/placeholder-logo.png'" alt="avatar"/>
+              </div>
+              <div class="col-9 pl-3">
+                <div class="row">
+                  <b>{{dataItem.Designation}}</b>
+                </div>
+                <div class="row mt-1">
+                  <span class="small"> {{dataItem.IdItemNavigation?.Code}}</span>
+                  <p (click)='negotitateQty(dataItem)' class="ml-1" style="margin: auto; cursor: pointer"
+                     *ngIf='!isNew && itemForm.value.IdDocumentAssociated>0 && DocumentLineNegotiationOptions && haveNegotiatedPermission'>
+
+                    <i class="fa fa-info-circle text-warning fa-lg" aria-hidden="true"
+                       *ngIf='dataItem.IsNegotitated && (!dataItem.IsNegotitationAccpted && !dataItem.IsNegotitatedRefused)'></i>
+
+                    <i class="fa fa-info-circle text-secondary fa-lg" aria-hidden="true"
+                       *ngIf='dataItem.IsNegotitatedInOldDocument && !dataItem.IsNegotitated
+                 && (!dataItem.IsNegotitationAccpted && !dataItem.IsNegotitatedRefused)'></i>
+
+                    <i class="fa fa-info-circle text-success fa-lg" aria-hidden="true"
+                       *ngIf='dataItem.IsNegotitationAccpted'></i>
+
+                    <i class="fa fa-info-circle text-danger fa-lg" aria-hidden="true"
+                       *ngIf='dataItem.IsNegotitatedRefused'></i>
+
+                    <i class="fa fa-info-circle text-primary fa-lg" aria-hidden="true"
+                       *ngIf='!dataItem.IsNegotitated && !dataItem.IsNegotitatedInOldDocument && haveNegotiatedPermission'></i>
+                  </p>
+                </div>
+              </div>
+            </div>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <!--MovementQty-->
+      <kendo-grid-column field="MovementQty" title="{{'QUANTITY_ABR'|translate}}" [width]='80' [filterable]="true"
+                         filter="numeric" [style]='{"padding-bottom":" 30px"}'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{'QUANTITY' | translate}}" theme="light">
+            {{column.title|translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template [group]="gridFormGroup" controlName="MovementQty" inputType="number"
+                                        [stopInputCounter]='true'
+                                        (keydown.ArrowRight)='elementFocusOut("HtUnitAmountWithCurrency")' #MovementQty>
+          </app-grid-cell-input-template>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!--Unit price only in pucrhase order-->
+      <kendo-grid-column field="UnitPriceFromQuotation" title="P.U (Devis)"
+                         [width]='130'
+                         *ngIf='((documentType==documentEnumerator.PurchaseOrder || documentType==documentEnumerator.PurchaseFinalOrder) && itemForm.controls["IdDocumentAssociated"].value>0)'
+                         [format]="formatOption" [style]='{"font-family": "Arial, Helvetica, serif",
+                         "color": "#505253",
+                         "text-align":"right",
+                         "padding-bottom": "30px" 
+                         }' [filterable]="true" filter="numeric">
+
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title|translate}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span *ngIf='dataItem.UnitPriceFromQuotation'> {{dataItem.UnitPriceFromQuotation}} </span>
+          <span *ngIf='!dataItem.UnitPriceFromQuotation'> - </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <span *ngIf='dataItem.UnitPriceFromQuotation'> {{dataItem.UnitPriceFromQuotation}} </span>
+          <span *ngIf='!dataItem.UnitPriceFromQuotation'> - </span>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <!--HtUnitAmountWithCurrency-->
+      <kendo-grid-column field="HtUnitAmountWithCurrency" [width]='140' [format]="formatOption" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+      "padding-bottom": "30px"    }' [filterable]="true" filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex" let-dataItem='dataItem'>
+          <span tooltip="{{'LAST_ORDER_PRICE'|translate}}" theme="light">
+            {{(documentType === documentEnumerator.PurchaseOrder) ? translateService.instant('LAST_ORDER_PRICE') : ((documentType === documentEnumerator.PurchaseFinalOrder ? translateService.instant('PURCHASE_PU') : 'P.U'))}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem='dataItem'>
+          <div style="display: inline-flex;">
+            <app-grid-cell-input-template *ngIf="!gridFormGroup.controls['HtUnitAmountWithCurrency'].disabled"
+              [group]="gridFormGroup" controlName="HtUnitAmountWithCurrency"
+              inputType="number" [stopInputCounter]='true'
+              (keydown.ArrowLeft)='elementFocusOut("MovementQty")'
+              (keydown.ArrowRight)='elementFocusOut("DiscountPercentage")'
+              #HtUnitAmountWithCurrency
+              style=" width: 70px;">
+            </app-grid-cell-input-template>
+            <span *ngIf="gridFormGroup.controls['HtUnitAmountWithCurrency'].disabled
+              && dataItem.HtUnitAmountWithCurrency"> {{dataItem.HtUnitAmountWithCurrency}} </span>
+            <span *ngIf=" gridFormGroup.controls['HtUnitAmountWithCurrency'].disabled && !dataItem.HtUnitAmountWithCurrency"> - </span>
+          </div>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span *ngIf='dataItem.HtUnitAmountWithCurrency'> {{dataItem.HtUnitAmountWithCurrency}} </span>
+          <span *ngIf='!dataItem.HtUnitAmountWithCurrency'> - </span>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <kendo-grid-column field="OrderedQty" title="{{'CMD'|translate}}" [width]='80' [filterable]="false"
+                         filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex" let-dataItem='dataItem'>
+          <span tooltip="{{'QTE_CMD'|translate}}" theme="light">
+            {{translateService.instant('CMD')}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <kendo-numerictextbox
+            [spinners]="false" [format]="FormatNumber" [step]="1" style="border: none !important;"
+            class="form-control inputEnabled as-label text-right"
+            [value]="dataItem.OrderedQty" [disabled]="true">
+          </kendo-numerictextbox>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="AvailableQuantity" title="{{'STOCK_QTY'|translate}}" [width]='80' [filterable]="false"
+                         filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex" let-dataItem='dataItem'>
+          <span tooltip="{{'AVAILABLEQUANTITY'|translate}}" theme="light">
+            {{translateService.instant('STOCK_QTY')}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <kendo-numerictextbox
+            [spinners]="false" [format]="FormatNumber" [step]="1" style="border: none !important;"
+            class="form-control inputEnabled as-label text-right"
+            [value]="dataItem.AvailableQuantity" [disabled]="true">
+          </kendo-numerictextbox>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="ReliquaQty" title="{{'QTE_RELIQUAT'|translate}}" [width]='100' [filterable]="false"
+                         filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex" let-dataItem='dataItem'>
+          <span tooltip="{{'BALANCE_QTY'|translate}}" theme="light">
+            {{translateService.instant('QTE_RELIQUAT')}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span tooltip="{{dataItem.DateAvailability | date: formatDate}}" placement="left" theme="light">
+            <kendo-numerictextbox
+              [spinners]="false" [format]="FormatNumber" [step]="1" style="border: none !important;"
+              class="form-control inputEnabled as-label text-right"
+              [value]="dataItem.ReliquaQty" [disabled]="true">
+        </kendo-numerictextbox>
+        </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="UnitHtsalePrice" title="{{'LAST_SALES_AMOUNT_HT_FOR_PUCRHASE'|translate}}"
+                         [format]="formatFoSalesOptions" [width]='160' [headerStyle]='{ "text-align":"center"
+       }' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+       "padding-bottom":" 30px"}' [filterable]="false" filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex" let-dataItem='dataItem'>
+          <span tooltip="{{'SALES_PUHT'| translate}}" theme="light">
+            {{translateService.instant('LAST_SALES_AMOUNT_HT_FOR_PUCRHASE')}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="NewSalesPrice" title="{{'NEW_SALES_PRICE'|translate}}" [format]="formatFoSalesOptions"
+                         [width]='160' [headerStyle]='{  "text-align":"center"
+       }' [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right","padding-bottom":"30px"}'
+                         [filterable]="false" filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex" let-dataItem='dataItem'>
+          <span tooltip="{{'NEW_SALES_PRICE_TOOL_TIP'|translate}}" theme="light">
+            {{translateService.instant('NEW_SALES_PRICE')}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- brand -->
+      <kendo-grid-column field="Marque" title="{{'PRODUCT_BRAND'|translate}}" [width]='120' [filterable]="false">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" style="padding-bottom: 32px;">
+          {{dataItem && dataItem.Marque ? dataItem.Marque : '-' }}
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          {{dataItem && dataItem.Marque ? dataItem.Marque : '-' }}
+        </ng-template>
+      </kendo-grid-column>
+
+      <kendo-grid-column field="IncreaseRate" title="{{'INCREASE_RATE'|translate}}" [width]='100' [filterable]="false"
+                         *ngIf='itemForm.value.IdDocumentAssociated>0' [headerStyle]='{"text-align":"center" }'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div *ngIf='dataItem.HtUnitAmountWithCurrency'>
+            <div *ngIf='dataItem.IncreaseRate' style="margin-top: 20px;">
+              <p class="text-right" [ngStyle]="{'color': dataItem.IncreaseRate>0 ? 'red' : 'green' }">
+                {{dataItem.IncreaseRate}}%</p>
+            </div>
+            <div *ngIf='dataItem.IncreaseRate==0' class="text-right">
+              {{dataItem.IncreaseRate}}%
+            </div>
+          </div>
+          <div *ngIf='!dataItem.HtUnitAmountWithCurrency' class="text-right">-</div>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf='!dataItem.HtUnitAmountWithCurrency' class="text-right">-</div>
+          <div *ngIf='dataItem.HtUnitAmountWithCurrency'>
+            <div *ngIf='dataItem.IncreaseRate' style="margin-top: 20px;">
+              <p class="text-right" [ngStyle]="{'color': dataItem.IncreaseRate>0 ? 'red' : 'green' }">
+                {{dataItem.IncreaseRate}}%</p>
+            </div>
+            <div class="text-right" *ngIf='dataItem.IncreaseRate==0'>
+              {{dataItem.IncreaseRate}}%
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!--TaxeAmount-->
+      <kendo-grid-column field="TaxeAmount" title="{{'TAXEAMOUNT'|translate}}" [width]='130' [filterable]="true"
+      [style]="{'padding-bottom':'30px'}"
+      filter="numeric" [format]="formatOption">
+      <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+      <span tooltip="{{'TAXEAMOUNT' | translate}}" theme="light">
+      {{column.title|translate}}
+      </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <div *ngIf='!showTaxeAmount(dataItem)' class="text-right">-</div>
+        <div *ngIf='showTaxeAmount(dataItem)' class="text-right">
+        <span *ngIf="dataItem.TaxeAmount && formatOption">
+          {{dataItem.TaxeAmount.toLocaleString(language, {
+          minimumFractionDigits: formatOption.minimumFractionDigits,
+          style: 'currency', currency: formatOption.currency, currencyDisplay: 'symbol'
+        })}}
+        </span>
+        <span *ngIf="!dataItem.TaxeAmount && formatOption">
+          {{zero.toLocaleString(language, {
+            minimumFractionDigits: formatOption.minimumFractionDigits ,
+            style: 'currency', currency: formatOption.currency, currencyDisplay: 'symbol'
+        })}}
+        </span>
+        <span *ngIf="dataItem.TaxeAmount && !formatOption"> {{dataItem.TaxeAmount}}</span>
+        </div>
+      </ng-template>
+      <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+      <app-grid-cell-input-template [group]="gridFormGroup" controlName="TaxeAmount" inputType="number"
+                    [stopInputCounter]='true'>
+      </app-grid-cell-input-template>
+      </ng-template>
+      </kendo-grid-column>
+      <!--Discount-->
+      <kendo-grid-column
+        field="DiscountPercentage" title="{{ 'DISCOUNT' | translate }}" [width]="140"
+        [style]="{'font-family': 'Arial, Helvetica, serif', color: '#505253','text-align': 'right','padding-right': '2%','padding-bottom':'30px'}"
+        [filterable]="false" [headerStyle]="{ 'padding-bottom:': '2px' }">
+        <ng-template kendoGridEditTemplate>
+          <app-grid-cell-input-template
+            [group]="gridFormGroup" controlName="DiscountPercentage" inputType="number"
+            [stopInputCounter]="false" (keydown.ArrowRight)="discountPercentageArrowRigthPress()" [disabled]="!updateDiscountRole"
+            (keydown.ArrowLeft)="elementFocusOut('HtUnitAmountWithCurrency')" #DiscountPercentage>
+          </app-grid-cell-input-template>
+        </ng-template>
+        <ng-template kendoGridHeaderTemplate>
+          <div class="row">
+            <div class="px-2 flex-grow-1 bd-highlight">
+              <div class="input-group">
+                <input type="number" class="form-control form-control-sm" placeholder="{{ 'DISCOUNT' | translate }}"
+                  style="border-bottom: 1px solid #e4e7ea !important;" (keydown.enter)="applyDiscountForAllDocumentLines()"
+                  [(ngModel)]="genericDiscount" [disabled] ='!updateDiscountRole || itemForm.controls["IdDocumentStatus"].value != 1'/>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <!--HtTotalLineWithCurrency-->
+      <kendo-grid-column field="HtTotalLineWithCurrency" title="{{'AMOUNTHT'|translate}}" [width]='150'
+                         [format]="formatOption" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"
+       ,"padding-bottom":"30px"}' [filterable]="true" filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!--TtcTotalLineWithCurrency-->
+      <kendo-grid-column field="TtcTotalLineWithCurrency" title="{{'AMOUNTTTC'|translate}}" [width]='150'
+                         [format]="formatOption"
+                         [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right","padding-bottom":"30px"}'
+                         filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-column field="StockMovement" title="{{'AMOUNTHT'|translate}}" [width]='110' hidden="hidden">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <span tooltip="{{column.title | translate}}" theme="light">
+            {{column.title}}
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <kendo-grid-command-column title="" [width]='100' *ngIf='!isEditedGrid'>
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <div style="display: flex;
+                      margin-top: 5%;">
+            <button kendoGridRemoveCommand
+                    *ngIf="dataItem.IdDocumentLineStatus==1 && documentType !== documentEnumerator.PurchaseBudget && !documentService.documentHasExpense
+              && deleteLineRole"
+                    class="noPadding btn-Add k-button" dir="ltr" style="border: none; color: #E91E63 !important;"
+                    type="button">
+              <i class="fa fa-times fa-lg"></i>
+            </button>
+            <button kendoGridSaveCommand *ngIf="isInEditingMode" class="noPadding btn-Add k-button"
+                    (click)="saveCurrent()" type="button" [disabled]="isAfterSave && !itemForm.controls['Id'].value"
+                    id='btnSave'>
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+
+            <button kendoGridCancelCommand *ngIf="isInEditingMode" class="noPadding btn-Add k-button"
+                    (click)="cancelHandler()" type="button">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </div>
+        </ng-template>
+      </kendo-grid-command-column>
+
+      <ng-template kendoGridToolbarTemplate [position]="'top'">
+        <!--delete button -->
+        <button class="btn btn-sm" dir="ltr"
+                style="color: white; background: #f86c6b; float: right; border-radius: 3px;"
+                *ngIf='showDeletBtn() && !documentService.documentHasExpense && deleteMultipleLinesRole'
+                type="button" (click)='deleteAll()'>
+          <i class="fa fa-times fa-lg AddIcon" style="color: #e91e63"></i>
+          <span>&nbsp; {{'DELETE'|translate}}</span>
+        </button>
+
+        <div class="float-right" *ngIf='showBtnAdd() && !isEditedGrid'>
+
+          <!--Add button -->
+          <div class="col-lg-4" *ngIf='showBtnAdd()'>
+            <button kendoGridAddCommand class="btn btn-sm"
+                    dir="ltr" style="background-color: #20a8d8 !important;"
+                    *ngIf='!isInEditingMode && (documentType !== documentEnumerator.PurchaseBudget || addNewLineInDevis)'
+                    type="button">
+              <i style="color: white" class="fa fa-plus fa AddIcon"></i>
+              <span style="color: white">&nbsp; {{'ADD_LINE'|translate}}</span>
+            </button>
+            <br style="line-height: 2.5em;">
+          </div>
+          <div class="col-lg-4"></div>
+          <div class="col-lg-4" *ngIf='!documentService.documentHasExpense  &&  showBtnAdd()'>
+            <button class="noPadding btn-Add k-button" dir="ltr" style="border: none" *ngIf='!isInEditingMode
+            && documentType !==documentEnumerator.PurchaseBudget
+            && documentType !==documentEnumerator.PurchaseOrder && documentType !==documentEnumerator.BE'
+                    data-toggle="modal" data-target="#ImportBLModal" type="button" (click)='checkImportBL()'>
+              <i class="fa fa-download fa-lg AddIcon"></i>
+              <!-- Purchase -->
+              <span
+                *ngIf='documentType === documentEnumerator.PurchaseAsset'>&nbsp;{{'IMPORT_PURCHASE_FAC' |translate}}</span>
+              <span *ngIf='documentType === documentEnumerator.PurchaseInvoices'>
+                &nbsp;{{'IMPORT_PURCHASE_DELIVERY'|translate}}
+              </span>
+              <span *ngIf='documentType === documentEnumerator.PurchaseDelivery'>
+                &nbsp;{{'IMPORT_PURCHASE_FINAL_BC'|translate}}
+              </span>
+              <span *ngIf='documentType === documentEnumerator.PurchaseFinalOrder'>
+                &nbsp;{{'IMPORT_BC'|translate}}
+              </span>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+      <kendo-grid-messages noRecords="">
+      </kendo-grid-messages>
+    </kendo-grid>
+  </div>
+
+</div>
+<div class="modal fade bd-example-modal-lg" id="ImportBLModal" tabindex="-1" role="dialog" aria-labelledby="example"
+     aria-hidden="true" *ngIf='noImport'>
+  <div class="modal-dialog modal-dialog modal-lg" role="document" style="width: 70%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- Purchase -->
+        <h5 *ngIf='documentType === documentEnumerator.PurchaseOrder'>&nbsp;{{'IMPORT_QUOTATION' |translate}}</h5>
+        <h5 *ngIf='documentType === documentEnumerator.PurchaseFinalOrder'>&nbsp;{{'IMPORT_BC' |translate}}</h5>
+        <h5 *ngIf='documentType === documentEnumerator.PurchaseAsset'>&nbsp;{{'IMPORT_PURCHASE_FAC' |translate}}</h5>
+        <h5 *ngIf='documentType === documentEnumerator.PurchaseInvoices'>
+          &nbsp;{{'IMPORT_PURCHASE_DELIVERY'|translate}}
+        </h5>
+        <h5 *ngIf='documentType === documentEnumerator.PurchaseDelivery'>
+          &nbsp;{{'IMPORT_PURCHASE_FINAL_BC' |translate}}
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-import-order-document-lines [itemForm]='itemForm'
+                                         [documentAssociatedType]='documentEnumerator.PurchaseFinalOrder'
+                                         *ngIf='documentType === documentEnumerator.PurchaseDelivery'
+                                         (disableImportButton)="disableImportButton($event)">
+        </app-import-order-document-lines>
+        <app-import-order-document-lines [itemForm]='itemForm'
+                                         [documentAssociatedType]='documentEnumerator.PurchaseOrder'
+                                         *ngIf='documentType === documentEnumerator.PurchaseFinalOrder'
+                                         (disableImportButton)="disableImportButton($event)">
+        </app-import-order-document-lines>
+        <app-import-order-document-lines [itemForm]='itemForm'
+                                         [documentAssociatedType]='documentEnumerator.PurchaseDelivery'
+                                         *ngIf='documentType === documentEnumerator.PurchaseInvoices'
+                                         (disableImportButton)="disableImportButton($event)">
+        </app-import-order-document-lines>
+        <app-import-order-document-lines [itemForm]='itemForm'
+                                         [documentAssociatedType]='documentEnumerator.PurchaseInvoices'
+                                         *ngIf='documentType === documentEnumerator.PurchaseAsset'
+                                         (disableImportButton)="disableImportButton($event)">
+        </app-import-order-document-lines>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-warning" data-dismiss="modal" (click)='saveImportedLine()' type="button"
+                [disabled]="disableButtonImport">
+          {{'IMPORT'|translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal ON_ORDER_QUANTITY -->
+<div class="modal fade" id="modalOfReplaceItem" tabindex="-1" role="dialog" aria-labelledby="modalOfReplaceItemTitle"
+     aria-hidden="true" *ngIf='getselectedRowOfReplaceItem()' style="z-index: 9999999">
+  <div class="modal-dialog modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">{{'REPLACEMENT_ITEM'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="remplacementItemFormGroup" class="container-fluid">
+          <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-12">
+              <div class="row">
+                <span>{{'CODE'|translate}} <span class="required">*</span></span>
+              </div>
+              <div class="row">
+                <input class="form-control" formControlName="Code" type="text" name="Code" [ngClass]="{ 'has-error': (remplacementItemFormGroup.controls.Code.touched ||
+                   remplacementItemFormGroup.controls.Code.dirty) && !remplacementItemFormGroup.controls.Code.valid }">
+                <app-control-messages [control]="remplacementItemFormGroup.controls.Code"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-2"></div>
+            <div class="col-lg-5 col-md-5 col-sm-12">
+              <div class="row">
+                <span>{{'DESCRIPTION'|translate}} <span class="required">*</span></span>
+              </div>
+              <div class="row">
+                <input class="form-control" formControlName="Description" type="text" name="Description"
+                       [ngClass]="{ 'has-error': (remplacementItemFormGroup.controls.Description.touched ||
+                  remplacementItemFormGroup.controls.Description.dirty) && !remplacementItemFormGroup.controls.Description.valid }">
+                <app-control-messages [control]="remplacementItemFormGroup.controls.Description"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div class="row">
+            <div style="margin: auto;">
+              <button class="btn btn-sm btn-danger" type="button" (click)='saveRemplacementItem()' data-dismiss="modal">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <br/>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" tabindex="-1" role="dialog"
+     *ngIf='documentType === documentEnumerator.PurchaseAsset && showImportLines' data-backdrop="false"
+     data-keyboard="false" style="display: block;">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                (click)='showImportLines=!showImportLines;'>
+          <span aria-hidden="true"> &times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-import-order-document-lines [itemForm]='itemForm'
+                                         [documentAssociatedType]='documentEnumerator.PurchaseInvoices'
+                                         (disableImportButton)="disableImportButton($event)" [LinesOnly]='true'
+                                         [idItem]='gridFormGroup.controls["IdItem"].value'>
+        </app-import-order-document-lines>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-warning" data-dismiss="modal" (click)='saveImportedLine(); closeLineOperation();'
+                [disabled]="disableButtonImport" type="button">{{'IMPORT'|translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

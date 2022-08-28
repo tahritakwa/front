@@ -1,0 +1,12 @@
+.grayed,
+.grayed:hover,
+.grayed:focus {
+  background-color: #d9eaee !important;
+  font-weight: bold;
+}
+.currency {
+  text-align: right;
+  font-family: var(--font-family-sans-serif);
+  margin-right: 2%;
+  text-decoration: solid;
+}

@@ -1,0 +1,331 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_GAMME' : 'NEW_GAMME') |translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="formGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-3 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REFERENCE'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" name="reference" formControlName="reference" [readOnly]="true">
+            <app-control-messages [control]="formGroup.controls['reference']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'PRODUCT'|translate}}<span class="required">*</span></label>
+            <app-dropdown-product-items [itemForm]="formGroup"
+                                        [parentViewContainerRef]="viewRef"
+                                        [source]="'GAMME'"
+                                        [selectedItemId]="idItemSelected"
+                                        [showFilter]='true'
+                                        [ignoreCharges]='true'
+                                        [itemListToIgnore]=""
+                                        (Selected)="itemSelect($event)"
+                                        [activeKeyPress]='true'
+                                        [hideSearch]="true"
+                                        [removeFilter]='true' #item>
+              </app-dropdown-product-items>
+            <app-control-messages [control]="formGroup.controls.IdItem" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-3 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'WORKSHOP'|translate}}<span class="required">*</span></label>
+            <app-dropdown-area controlName="areaId" [form]="formGroup" (selectedAreaId)="selectedAreaId($event)">
+            </app-dropdown-area>
+            <app-control-messages [control]="formGroup.controls['areaId']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+      <div class="card  mt-2">
+        <div class="card-content">
+          <div class="card-body p-3" style="min-height: fit-content;">
+            <kendo-grid [data]="gridSettingsGammes.gridData"
+                        [pageSize]="gridSettingsGammes.state.take"
+                        [skip]="gridSettingsGammes.state.skip"
+                        [sort]="gridSettingsGammes.state.sort"
+                        [filter]="gridSettingsGammes.state.filter"
+                        (edit)="editHandler($event)"
+                        (cancel)="cancelHandler($event)"
+                        (save)="saveHandler($event)"
+                        (remove)="removeOperationHandler($event)"
+                        (add)="addHandler($event)"
+                        [pageable]="pagerSettings"
+                        [sortable]="false"
+                        filterable="menu"
+                        [groupable]='false'
+                        [filterable]="false"
+                        [reorderable]="true"
+                        [columnMenu]="false"
+                        [rowClass]="rowCallback"
+                        (dataStateChange)="dataStateChange($event)"
+                        (cellClick)="getCurrentDataItem($event)">
+              <ng-template kendoGridToolbarTemplate [position]="'bottom'" id="addButton" *ngIf="!emptyGammePorducts" >
+                <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end"id="addButton1" >
+                  <button kendoGridAddCommand  id="addButton2" class="btn-Add k-button btn btn-add" style=" border: 2px double #4c9aae!important;">
+                    <i class="fa fa-plus fa AddIcon"></i>
+                    <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+                  </button>
+                </div>
+              </ng-template>
+              <ng-template kendoGridToolbarTemplate [position]="'bottom'" id="addButton" *ngIf="emptyGammePorducts">
+                <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" id="addButton1">
+                  <button kendoGridAddCommand id="addButton2" class="btn-Add k-button btn btn-add" disabled="true"
+                          style=" border: 2px double #4c9aae!important;">
+                    <i class="fa fa-plus fa AddIcon"></i>
+                    <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+                  </button>
+                </div>
+              </ng-template>
+              <kendo-grid-column *ngFor="let col of gridSettingsGammes.columnsConfig; let i = index" [field]="col.field"
+                                 [title]="col.title | translate" [width]="col._width" [filter]="col.filter"
+                                 [filterable]="col.filterable"
+                                 [format]="col.format">
+                <ng-template kendoGridEditTemplate>
+                  <form [formGroup]="operationFormGroup">
+                    <div *ngIf="col.field === 'order'">
+                      <input class="form-control" name="order" formControlName="order" disabled>
+                      <i #anchorOrder></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorOrder"
+                                                     controlName="order" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'unitOfMeasure'">
+                      <kendo-combobox class="form-control"
+                                      [data]="listUnitOfMeasure"
+                                      [textField]="'code'"
+                                      [valueField]="'code'"
+                                      [valuePrimitive]="true"
+                                      [allowCustom]="'allowCustom'"
+                                      formControlName="unitOfMeasure"
+                                      [readonly]="false"
+                                      [filterable]="true"
+                                      (valueChange)="onUnitOfMeasureChanged($event)">
+                        <!--footer template-->
+
+                        <ng-template kendoComboBoxFooterTemplate>
+                          <app-drop-down-footer [addNew]="addNew.bind(this, 'unitOfMeasure')" [hideBtn]="false"></app-drop-down-footer>
+                        </ng-template>
+                        <!--end footer template-->
+                        <!--No data template-->
+                        <ng-template kendoDropDownListNoDataTemplate>
+                          <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                        </ng-template>
+                        <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"></kendo-combobox-messages>
+                        <!--end No data template-->
+                      </kendo-combobox>
+                      <i #anchorUnitOfMeasure></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorUnitOfMeasure"
+                                                     controlName="unitOfMeasure" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'operation.description'" >
+                      <kendo-combobox [data]="listOperations"
+                                          *ngIf="col.field == 'operation.description'"
+                                          name="operation"
+                                          formControlName="operation"
+                                          [textField]="'description'"
+                                          [valueField]="'id'"
+                                          class="form-control">
+                        <!--footer template-->
+
+                        <ng-template kendoComboBoxFooterTemplate>
+                          <app-drop-down-footer [addNew]="addNew.bind(this,'operation')" [hideBtn]="false"></app-drop-down-footer>
+                        </ng-template>
+                        <!--end footer template-->
+                        <!--No data template-->
+                        <ng-template kendoDropDownListNoDataTemplate>
+                          <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                        </ng-template>
+                        <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"></kendo-combobox-messages>
+                        <!--end No data template-->
+                      </kendo-combobox>
+                      <i #anchorOperation></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorOperation"
+                                                     controlName="operation" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'equipment'">
+                      <kendo-multiselect [data]="listMachines" [(ngModel)]="selectedMachines"
+                                         [textField]="'description'"
+                                         [valueField]="'id'" formControlName="equipment" name="equipment"
+                                         *ngIf="col.field == 'equipment'" (valueChange)="onEquipmentsChanged()"
+                                         class="form-control">
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                          <div class="container">
+                            <div class="row">
+                              <span class="small">{{dataItem.description}}</span>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </kendo-multiselect>
+
+                      <i #anchorEquipment></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorEquipment"
+                                                     controlName="equipment" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'NET_TIME_EQUIPMENTS'">
+                      <kendo-maskedtextbox type="number"  class="form-control"
+                                           *ngIf="col.field == 'NET_TIME_EQUIPMENTS'"
+                                           [disabled]="operationFormGroup.controls['disabledEquipmentTimeNetColumn'].value"
+                                           name="equipmentTimeNet"
+                                           formControlName="equipmentTimeNet"
+                                           (keydown)="checkPositive($event, inputEquipmentTimeNet)" #inputEquipmentTimeNet>
+                      </kendo-maskedtextbox>
+                      <i #anchorEquipmentTimeNet></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorEquipmentTimeNet"
+                                                     controlName="equipmentTimeNet" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'person'">
+                      <kendo-multiselect [data]="listUsers" [(ngModel)]="selectedUsers" textField="FullName"
+                                         valueField="Id" formControlName="responsibleId" name="person"
+                                         *ngIf="col.field == 'person'" (valueChange)="onPersonsChanged($event)"
+                                         class="form-control">
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                          <div class="container">
+                            <div class="row">
+                              <span class="small">{{dataItem.FullName}}</span>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </kendo-multiselect>
+
+                      <i #anchorPersons></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorPersons"
+                                                     controlName="responsibleId" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+
+                    <div *ngIf="col.field === 'personTimeNet'">
+                      <kendo-maskedtextbox type="number"  class="form-control"
+                                           *ngIf="col.field == 'personTimeNet'"
+                                           [disabled]="operationFormGroup.controls['disabledPersonTimeNetColumn'].value"
+                                           name="personTimeNet" formControlName="personTimeNet"
+                                           (keydown)="checkPositive($event, inputPersonTimeNet)" #inputPersonTimeNet>
+                      </kendo-maskedtextbox>
+                      <i #anchorPersonTimeNet></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorPersonTimeNet"
+                                                     controlName="personTimeNet" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === operationBeforeDtos">
+                      <kendo-dropdownlist [data]="listItems" name="operationBeforeDtos"
+                                          formControlName="operationBeforeDtos"
+                                          class="form-control"
+                                          (valueChange)="changeCurrentPredecessor($event)"
+                                          [textField]="'description'" [valueField]="'id'">
+                      </kendo-dropdownlist>
+                      <i #anchorOperationBefore></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorOperationBefore"
+                                                     controlName="operationBeforeDtos" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                    <div *ngIf="col.field === 'productNomenclature'">
+                      <kendo-multiselect [data]="listProductNomenclature" [clearButton]="false"
+                                         (removeTag)="removeTag($event)"
+                                         (valueChange)="onProductNomenclaturesChanged($event)"
+                                         [(ngModel)]="selectedProductNomenclatures"
+                                         [textField]="'Code'" [valueField]="'Id'" formControlName="productNomenclatures"
+                                         name="productNomenclatures">
+                        <ng-template kendoMultiSelectItemTemplate let-dataItem>
+                          <div class="container">
+                            <div class="row">
+                              <span class="small">{{dataItem.Code}}</span>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </kendo-multiselect>
+
+                      <i #anchorProductNomenclature></i>
+                      <app-control-message-grid-cell [group]="operationFormGroup" [anchor]="anchorProductNomenclature"
+                                                     controlName="productNomenclatures" [source]="entityNameSource">
+                      </app-control-message-grid-cell>
+                    </div>
+                  </form>
+                </ng-template>
+                <div *ngIf="col.field === 'personTimeNet'">
+                  <ng-template kendoGridHeaderTemplate>
+                <span theme="light"
+                      tooltip="{{'SECONDS' | translate}}">{{'NET_TIME_PERSON' | translate}}</span>
+                  </ng-template>
+                </div>
+                <div *ngIf="col.field === 'NET_TIME_EQUIPMENTS'">
+                  <ng-template kendoGridHeaderTemplate>
+                <span theme="light"
+                      tooltip="{{'SECONDS' | translate}}">{{'NET_TIME_EQUIPMENTS' | translate}}</span>
+                  </ng-template>
+                </div>
+                <div *ngIf="col.field === 'equipment'">
+                  <ng-template kendoGridCellTemplate  let-dataItem="dataItem">
+                    <span style=" white-space: pre-line" *ngFor="let eq of splitItAndReturnArray(dataItem.equipment)">{{eq}}<br/></span>
+                  </ng-template>
+                </div>
+                <div *ngIf="col.field === 'person'">
+                  <ng-template kendoGridCellTemplate  let-dataItem="dataItem">
+                    <span style=" white-space: pre-line" *ngFor="let person of splitItAndReturnArray(dataItem.person)" >{{person}}<br/></span>
+                  </ng-template>
+                </div>
+                <div *ngIf="col.field === 'productNomenclature'">
+                  <ng-template kendoGridCellTemplate  let-dataItem="dataItem">
+                    <span style=" white-space: pre-line" *ngFor="let productNomenclature of splitItAndReturnArray(dataItem.productNomenclature)">{{productNomenclature}}<br/></span>
+                  </ng-template>
+                </div>
+              </kendo-grid-column>
+
+              <kendo-grid-command-column title="{{'ACTION' | translate}}" [width]='100'>
+                <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                  <button *ngIf="!editMode" (click)="handleEditHandler()" kendoGridEditCommand style="background-color: white;" dir="ltr">
+                    <i class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+                  </button>
+                  <button (click)="handledEditHandler()" kendoGridSaveCommand class="noPadding btn-Add k-button" dir="ltr">
+                    <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+                  </button>
+                  <button (click)="handledEditHandler()" kendoGridCancelCommand class="noPadding btn-Add k-button" dir="ltr"
+                          style="border: none; color: #E91E63 !important;">
+                    <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+                  </button>
+                  <button kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr"
+                          style="border: none; color: #E91E63 !important;">
+                    <i class="fa fa-times fa-lg"></i>
+                  </button>
+                </ng-template>
+              </kendo-grid-command-column>
+            </kendo-grid>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer ml-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 flex-align footer-content">
+            <a [routerLink]="'/main/manufacturing/gamme'">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i>
+                {{ "BACK_TO_LIST" | translate }}
+              </span>
+            </a>
+            <button *ngIf="isUpdateMode" class="btn btn-sm btn-save mx-1" (click)="saveOrEditGammeClick()">
+              <i class="fa fa-floppy-o"></i> {{'EDIT_GAMME'  |translate }}
+            </button>
+            <button *ngIf="!isUpdateMode" class="btn btn-sm btn-save mx-1" (click)="saveOrEditGammeClick()">
+              <i class="fa fa-floppy-o"></i> {{'SAVE_GAMME'  |translate }}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,34 @@
+import { Resource } from '../shared/ressource.model';
+import { Employee } from '../payroll/employee.model';
+import { CurriculumVitae } from './curriculumvitae.model';
+import { User } from '../administration/user.model';
+import { Qualification } from '../payroll/qualification.model';
+export class Candidate extends Resource {
+  Sex: number;
+  FirstName: string;
+  LastName: string;
+  FullName: string;
+  Email: string;
+  Cin: string;
+  LinkedIn: string;
+  IsForeign: boolean;
+  IdEmployee: number;
+  IdEmployeeNavigation: Employee;
+  IdCitizenship: number;
+  CreationDate: Date;
+  IdCreationUser: number;
+  IdCreationUserNavigation: User;
+  IdOffice: number;
+  BirthDate: Date;
+  AddressLine1: string;
+  AddressLine2: string;
+  AddressLine3: string;
+  AddressLine4: string;
+  AddressLine5: string;
+  Facebook: string;
+  PersonalPhone: string;
+  ProfessionalPhone: string;
+  CurriculumVitae: Array<CurriculumVitae>;
+  Qualification: Array<Qualification>;
+  Code: string;
+}

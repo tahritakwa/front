@@ -1,0 +1,35 @@
+<div>
+  <!-- Days worked -->
+  <div class="row info">
+    <div class="col-lg-5 col-md-5 col-sm-5">
+      <label> {{'NUMBER_DAYS_WORKED' | translate}}</label>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <span> {{timesheet.NumberOfDaysDayHour.NumberOfDaysWorked.Day}} {{'DAYS_ABBREVIATED' | translate}}
+        {{timesheet.NumberOfDaysDayHour.NumberOfDaysWorked.Hour}} {{'HOURS_ABBREVIATED' | translate}}</span>
+    </div>
+  </div>
+  <!-- End days worked -->
+  <!-- Leave Days -->
+  <div class="row info">
+    <div class="col-lg-5 col-md-5 col-sm-5">
+      <label> {{'NUMBER_DAYS_LEAVE' | translate}}</label>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <span> {{timesheet.NumberOfDaysDayHour.NumberOfLeavesDays.Day}} {{'DAYS_ABBREVIATED' | translate}}
+        {{timesheet.NumberOfDaysDayHour.NumberOfLeavesDays.Hour}} {{'HOURS_ABBREVIATED' | translate}}</span>
+    </div>
+  </div>
+  <!-- End leave Days -->
+  <!-- Days off -->
+  <div class="row info">
+    <div class="col-lg-5 col-md-5 col-sm-5">
+      <label> {{'NUMBER_DAYS_HOLIDAYS' | translate}}</label>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-6">
+      <span> {{timesheet.NumberOfDaysDayHour.NumberOfDaysOff.Day}} {{'DAYS_ABBREVIATED' | translate}}
+        {{'HOURS_ABBREVIATED' | translate}} {{timesheet.NumberOfDaysDayHour.NumberOfDaysOff.Hour}} </span>
+    </div>
+  </div>
+  <!--End days off -->
+</div>

@@ -1,0 +1,201 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 style=" float:left;"
+          class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_OF' : 'CREATION_OF') |translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="formGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'FABRICATION_ID'|translate}}<span
+              class="required">*</span></label>
+            <input type="text" formControlName="reference" class="form-control"/>
+            <app-control-messages [control]="formGroup.controls['reference']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'FABRICATION_CREATION_DATE'|translate}}<span
+              class="required">*</span></label>
+
+            <kendo-datepicker *ngIf="!isUpdateMode" [format]="formatDate" class="form-control"
+                              formControlName="dateCreation">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <kendo-datepicker *ngIf="isUpdateMode" [format]="formatDate" class="form-control"
+                              formControlName="dateCreation" (valueChange)="onUpdateAnyField()">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="formGroup.controls.dateCreation"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CLIENT'|translate}}<span
+              class="required">*</span></label>
+            <app-supplier-dropdown [itemForm]="formGroup"
+                                   [type]="customerType"
+                                   [placeholder]="CHOOSE_CUSTOMER_PLACEHOLDER"
+                                   [selectedValue]="selectedSupplier"
+                                   (afterValueChanged)="onUpdateAnyField()"
+            >
+            </app-supplier-dropdown>
+            <app-control-messages [control]="formGroup.controls['IdTiers']"
+                                  class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'FABRICATION_DATE_DELIVERY'|translate}}<span
+              class="required">*</span></label>
+
+            <kendo-datepicker *ngIf="!isUpdateMode" [format]="formatDate" class="form-control"
+                              formControlName="dateDelivery">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <kendo-datepicker *ngIf="isUpdateMode" [format]="formatDate" class="form-control"
+                              formControlName="dateDelivery" (valueChange)="onUpdateAnyField()">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                         toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="formGroup.controls.dateDelivery"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+      <kendo-grid [data]="gridSettings.gridData" 
+                  [pageSize]="gridSettings.state.take"
+                  [skip]="gridSettings.state.skip"
+                  [pageable]="pagerSettings"
+                  (pageChange)="onPageChange($event)" 
+                  (dataStateChange)="dataStateChange($event)"
+                  [sort]="gridSettings.state.sort" 
+                  [filter]="gridSettings.state.filter"
+                  [sortable]="true" 
+                  filterable="menu" 
+                  [reorderable]="true"
+                  (edit)="editHandler($event)"
+                  (cancel)="cancelHandler($event)" 
+                  (save)="saveHandler($event)"
+                  (remove)="removeProductHandler($event)"
+                  (add)="addHandler($event)"
+                  [columnMenu]="true"
+                  style="width: 100%;height:100%;">
+        <!--Grid Toolbar-->
+        <ng-template kendoGridToolbarTemplate [position]="'bottom'" id="addButton">
+          <div *ngIf="isEditable" class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" id="addButton1">
+            <a kendoGridAddCommand id="addButton2" class="btn-Add k-button btn btn-add"
+               style=" border: 2px double #4c9aae!important;">
+              <i class="fa fa-plus fa AddIcon"></i>
+              <span>&nbsp; {{'ADD_LINE'|translate}}</span>
+            </a>
+          </div>
+        </ng-template>
+        <!--End Grid toolbar-->
+
+        <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index"
+                           [field]="col.field"
+                           [title]="col.title | translate" 
+                           [width]="col._width" 
+                           [filter]="col.filter"
+                           [filterable]="col.filterable"
+                           [format]="col.format">
+          <ng-template kendoGridEditTemplate>
+            <form [formGroup]="ofLineFormGroup">
+              <div *ngIf="col.field === 'description'">
+                <app-dropdown-product-items [itemForm]="ofLineFormGroup"  [source]="'OF'"
+                                   (Selected)="onProduitSelect($event)" (afterValueChanged)="onUpdateAnyField()"  [activeKeyPress]='true'
+                                  ></app-dropdown-product-items>
+                <i class="row" #anchorIdItem></i>
+                <app-control-message-grid-cell [group]="ofLineFormGroup" [anchor]="anchorIdItem" controlName="IdItem">
+                </app-control-message-grid-cell>
+              </div>
+              <div *ngIf="col.field === 'quantitySeized'">
+                <input class="form-control" type="number"  name="quantitySeized" [min]= minQuantitySeized (keydown)="isPositiveQuantitySeized($event)" (input)="onUpdateAnyField()" formControlName="quantitySeized">
+                <i #anchorQuantitySeized></i>
+                <app-control-message-grid-cell [group]="ofLineFormGroup" [anchor]="anchorQuantitySeized"
+                                               controlName="quantitySeized">
+                </app-control-message-grid-cell>
+              </div>
+              <div *ngIf="col.field === 'quantityToManufacture'">
+                <input class="form-control" type="number"
+                       name="quantityToManufacture" formControlName="quantityToManufacture">
+                <i #anchorQuantityToManufacture></i>
+                <app-control-message-grid-cell [group]="ofLineFormGroup" [anchor]="anchorQuantityToManufacture"
+                                               controlName="quantityToManufacture">
+                </app-control-message-grid-cell>
+              </div>
+              <div *ngIf="col.field === 'unite'">
+                <input class="form-control" type="text" name="unite" formControlName="unite">
+                <i #anchorUnite></i>
+                <app-control-message-grid-cell [group]="ofLineFormGroup" [anchor]="anchorUnite"
+                                               controlName="unite">
+                </app-control-message-grid-cell>
+              </div>
+            </form>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-command-column title="{{'ACTION' | translate}}">
+          <ng-template kendoGridCellTemplate *ngIf="isEditable" let-isNew="isNew" let-dataItem="dataItem">
+            <button *ngIf="!editMode" (click)="handleEditHandler()" kendoGridEditCommand style="background-color: white;" dir="ltr">
+              <i class="las la-pen cursor-pointer edit-pencil la-lg"></i>
+            </button>
+            <button (click)="handledEditHandler()" kendoGridSaveCommand class="noPadding btn-Add k-button" dir="ltr" [disabled]="!isValidItem">
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <button (click)="handledEditHandler()" kendoGridCancelCommand class="noPadding btn-Add k-button" dir="ltr"
+                    style="border: none; color: #E91E63 !important;">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+            <button kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr"
+                    style="border: none; color: #E91E63 !important;">
+              <i class="fa fa-times fa-lg"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+      </kendo-grid>
+
+      <!--Begin Card footer-->
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <footer class="app-footer ml-0">
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 flex-align footer-content">
+                <a routerLink='/main/manufacturing/fabricationArrangement'>
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+                </a>
+                <button *ngIf="!isUpdateMode && isEditable" (click)="onOfBtnSaveClick()"
+                        class="btn btn-sm btn-save mx-1" type="button">
+                  <i class="fa fa-floppy-o"></i> {{'SAVE_FABRICATION_ORDRE'|translate}}
+                </button>
+                <button *ngIf="isUpdateMode && isEditable" (click)="onOfBtnSaveClick()" class="btn btn-sm btn-save mx-1"
+                        type="button">
+                  <i class="fa fa-floppy-o"></i> {{'EDIT_FABRICATION_ORDRE'|translate}}
+                </button>
+                <button *ngIf="isValidateButtonVisible && authService.hasAuthorities([MANUFACTURINGPermissions.MANUFACTURING_VALIDATE_OF_PERMISSION])" [disabled]="!isTotallyLoaded" (click)="onOfValidation()"
+                        class="btn btn-sm btn-save mx-1" type="button">
+                  <i class="fa fa-floppy-o"></i> {{'VALIDATE_FABRICATION_ORDRE'|translate}}
+                </button>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+      <!--End card Footer -->
+    </form>
+  </div>
+</div>

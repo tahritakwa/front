@@ -1,0 +1,11 @@
+<div [formGroup]="group">
+  <kendo-combobox     #dayOfWeekComboBox
+                      [data]="dayOfWeekDataSource"
+                      [formControlName]="controlName"
+                      name="controlName" (focus)="openComboBox()"
+                      class="form-control HistoryCommandMargin"
+                      [textField]="'name'"
+                      [valueField]="'value'"
+                      [valuePrimitive]="true">
+  </kendo-combobox>
+</div>

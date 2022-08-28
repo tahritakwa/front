@@ -1,0 +1,12 @@
+<div class="card full-screen-card" >
+<app-current-fiscal-year-header [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-header>
+  <div class="card-header d-flex justify-content-between pr-0 border-0 bg-white">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ACTIVE_LIST'|translate}}</h3>
+    </div>
+    <div class="col-sm-5 mt-1">
+      <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+    </div>
+  </div>
+<app-list-active [accountingImmobilization]="true" [currentFiscalYearId]="currentFiscalYear.id" [dotationAmortizationAccounts]="dotationAmortizationAccounts"></app-list-active>
+</div>

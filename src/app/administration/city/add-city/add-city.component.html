@@ -1,0 +1,69 @@
+<div class="card h-100">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_CITY' : 'ADD_CITY') |translate}}</h3>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+
+  <hr color="#d9d9d9" class="mt-0">
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="cityFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="row">
+
+              <div class="col-lg-5 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+                <input class="form-control" formControlName="Code" type="text" name="Code"
+                       [ngClass]="{ 'has-error': (cityFormGroup.controls.Code.touched || cityFormGroup.controls.Code.dirty) && !cityFormGroup.controls.Code.valid }">
+                <app-control-messages [control]="cityFormGroup.controls.Code"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-lg-5 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESIGNATION'|translate}}<span class="required">*</span></label>
+                <input class="form-control" formControlName="Label" type="text" name="Label">
+                <app-control-messages [control]="cityFormGroup.controls.Label"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-lg-5 col-md-6 col-sm-12 mt-4">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'PAYS'|translate}}<span
+                  class="required">*</span></label>
+                <app-country-dropdown [group]="cityFormGroup" (Selected)="receiveCountryStatus($event)">
+                </app-country-dropdown>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Begin card Footer -->
+  <div  class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="CITY_LIST_URL">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="onAddCityClick()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateCityPermission && isUpdateMode || hasAddCityPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End card Footer -->
+</div>

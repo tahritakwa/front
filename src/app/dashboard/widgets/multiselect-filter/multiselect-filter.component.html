@@ -1,0 +1,21 @@
+<div (click)="$event.stopPropagation()" class="multiselect-container multiselect-filter" >
+
+  <kendo-multiselect #multiselect kendoMultiSelectSummaryTag
+                     [tagMapper]="tagMapper" [data]="dataList" [(ngModel)]="listSelected" (valueChange)="onValueChange()">
+    <ng-template kendoMultiSelectGroupTagTemplate let-dataItems>
+      + {{ dataItems.length }}
+    </ng-template>
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <!--end No data template-->
+  </kendo-multiselect>
+  <span
+    class="toggle-icon k-icon k-i-arrow-chevron-down"
+    (mousedown)="$event.preventDefault()"
+    (click)="handleToggleClick(multiselect)">
+  </span>
+
+</div>

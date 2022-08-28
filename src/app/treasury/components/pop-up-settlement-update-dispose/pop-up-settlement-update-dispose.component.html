@@ -1,0 +1,402 @@
+<div class="card" style="margin-right: 15px;margin-left: 15px;">
+  <div class="card-body">
+    <div class="col-lg-12 col-sm-12 col-md-12 ">
+      <form class="form-horizontal" [formGroup]="settlementFormGroup">
+        <div class="form-group row" style="font-size:15px ;">
+          <fieldset class="col-lg-12 col-md-12">
+            <legend>{{'SETTLEMENT'|translate}}</legend>
+            <div class="form-group row" style="margin-top: 1em;">
+              <div class="col-lg-3 col-md-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;">
+                    {{ ( tiersType == tiersTypeEnum.Customer ? 'CLIENT' : 'SUPPLIER')|translate }}:
+                  </span>
+                  {{settlement.TiersName}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;">{{'AMOUNT'|translate}}:</span>
+                  {{
+settlement.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Precision:settlement.Precision,
+                            style: 'currency', currency: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Code:settlement.CurrencyCode, currencyDisplay:'code'})
+                  }}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="companyWithholdingTax && settlement.WithholdingTax">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;">{{'HOLDING_TAX'|translate}}:</span>
+                  {{
+settlement.WithholdingTax.toLocaleString(language,{minimumFractionDigits: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Precision:settlement.Precision,
+                            style: 'currency', currency: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Code:settlement.CurrencyCode, currencyDisplay:'code'})
+                  }}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;">{{'PAYMENT_METHOD' |translate}} :</span>
+                  {{settlement.MethodName}}
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="!isImmediatePaymentMethod && settlement.CommitmentDate && !isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'COMMITMENT_DATE'|translate}} : </span>
+                  {{settlement.CommitmentDate | date: formatDate}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="!isImmediatePaymentMethod && isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;">
+                  {{'COMMITMENT_DATE'|translate}}
+                  : <span class="required">*</span>
+                </label>
+                <kendo-datepicker formatPlaceholder="formatDate" [format]="formatDate" class="form-control"
+                  formControlName="CommitmentDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                             toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="settlementFormGroup.controls.CommitmentDate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="settlement.SettlementDate && !isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'SETTLEMENT_DATE'|translate}} : </span>
+                  {{settlement.SettlementDate | date: formatDate}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;"> {{'SETTLEMENT_DATE'|translate}}
+                  : <span class="required">*</span></label>
+                <kendo-datepicker formatPlaceholder="formatDate" [format]="formatDate" class="form-control"
+                  formControlName="SettlementDate">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                             toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="settlementFormGroup.controls.SettlementDate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="tiersType === tiersTypeEnum.Customer && settlement.IssuingBank && !isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'ISSUING_BANK'|translate}} : </span>
+                  {{settlement.IssuingBank}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="tiersType === tiersTypeEnum.Customer && isUpdate && settlement.PaymentMethodCode !== paymentMethodEnum.CashPayment">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;">
+                  {{'ISSUING_BANK'|translate}}
+                  :<span class="required">*</span>
+                </label>
+                <input class="form-control" formControlName="IssuingBank" type="text" name="IssuingBank" [ngClass]="{ 'has-error': (settlementFormGroup.controls.IssuingBank.touched || settlementFormGroup.controls.IssuingBank.dirty) &&
+                                !settlementFormGroup.controls.IssuingBank.valid }">
+                <app-control-messages [control]="settlementFormGroup.controls.IssuingBank"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="!isImmediatePaymentMethod && settlement.Holder && !isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'HOLDER'|translate}} : </span>
+                  {{settlement.Holder}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="!isImmediatePaymentMethod && isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;"> {{'HOLDER'|translate}} :
+                  <span class="required">*</span></label>
+                <input class="form-control" formControlName="Holder" type="text" name="Holder" [ngClass]="{ 'has-error': (settlementFormGroup.controls.Holder.touched || settlementFormGroup.controls.Holder.dirty) &&
+                     !settlementFormGroup.controls.Holder.valid }">
+                <app-control-messages [control]="settlementFormGroup.controls.Holder"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="settlement.Label && !isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'LABEL'|translate}} : </span>
+                  {{settlement.Label}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;">
+                  {{'LABEL'|translate}} :
+                </label>
+                <input class="form-control" formControlName="Label" type="text" name="Label" [ngClass]="{ 'has-error': (settlementFormGroup.controls.Label.touched || settlementFormGroup.controls.Label.dirty) &&
+                            !settlementFormGroup.controls.Label.valid }">
+                <app-control-messages [control]="settlementFormGroup.controls.Label"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="!isImmediatePaymentMethod && settlement.SettlementReference && !isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'EXTERNAL_REFERENCE'|translate}} : </span>
+                  {{settlement.SettlementReference}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin" *ngIf="!isImmediatePaymentMethod && isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;">
+                  {{'EXTERNAL_REFERENCE'|translate}} :<span class="required">*</span>
+                </label>
+                <input class="form-control" formControlName="SettlementReference" type="text" name="SettlementReference"
+                       [ngClass]="{ 'has-error': (settlementFormGroup.controls.SettlementReference.touched || settlementFormGroup.controls.SettlementReference.dirty) &&
+                            !settlementFormGroup.controls.SettlementReference.valid }">
+                <app-control-messages [control]="settlementFormGroup.controls.SettlementReference"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="isBankPaymentMethod && settlement && settlement.Rib ">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'BANK_ACCOUNT'|translate}} : </span>
+                  {{settlement.Rib}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="isBankPaymentMethod &&  settlement.Agency">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'AGENCY'|translate}} : </span>
+                  {{settlement.Agency}}
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-12 margin"
+                   *ngIf="isBankPaymentMethod && settlement.bankName ">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  <span style="font-weight: bold;"> {{'BANK'|translate}} : </span>
+                  {{settlement.bankName}}
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-md-12 margin" *ngIf="companyWithholdingTax && settlement.WithholdingTax > 0">
+                <span *ngIf="((withHoldingTaxFileInfos && withHoldingTaxFileInfos.length > 0 ) || isUpdate ) ">
+                  <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;">
+                    {{'WITH_HOLDING_ATTESTATION_FILE' | translate}}
+                  </label>
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <app-upload-file [fileToUpload]="withHoldingTaxFileInfos" [canUpdateFile]="!isUpdate"
+                                     [service]="settlementService">
+                    </app-upload-file>
+                  </div>
+                </span>
+                <button type="button" class="btn btn-sm btn-secondary" *ngIf="isUpdate"
+                        (click)="reGenerateWithholdingTaxReport()" style="margin-top: 15px; margin-left: 15px;">
+                  <i class="fa fa-refresh" aria-hidden="true"></i> {{ 'REGENERATE_CERTIFICATE' |translate }}
+                </button>
+              </div>
+              <div class="col-lg-6 col-md-12 margin" *ngIf="(FilesInfos && FilesInfos.length>0) || isUpdate">
+                <label class="col-lg-12 col-md-12 col-sm-12" style="font-weight: bold;">
+                  {{'SUPPORTING_DOCUMENTS' | translate}}
+                </label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <app-upload-file [fileToUpload]="FilesInfos" [canUpdateFile]="!isUpdate"
+                                   [service]="settlementService">
+                  </app-upload-file>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </form>
+      <div style="padding-bottom: 40px;">
+        <label class="labelStyle">{{'LIST_SELECTED_FINANCIAL_COMMITMENTS_PAID'|translate}}</label>
+        <kendo-grid [data]="gridData" [pageSize]="gridState.take" [skip]="gridState.skip" [sort]="gridState.sort"
+                    [reorderable]="true" [sortable]="true">
+
+          <!-- Type Start-->
+          <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate"
+                             [width]="150">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[0].tooltip|translate}}"
+                    theme="light">{{columnsConfig[0].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+              <span *ngIf="dataItem.Commitment && dataItem.Commitment.IdDocumentNavigation">
+                <span *ngIf="dataItem.Commitment.IdDocumentNavigation.DocumentTypeCode === documentType.SalesInvoices ||
+                         dataItem.Commitment.IdDocumentNavigation.DocumentTypeCode === documentType.PurchaseInvoices">
+                  <span class="badge badge-pill badge-primary" style="margin-right: 3px;">
+                    ECH
+                  </span>
+                  / {{'INVOICE'|translate}}
+                </span>
+                <span *ngIf="dataItem.Commitment.IdDocumentNavigation.DocumentTypeCode === documentType.SalesInvoiceAsset ||
+                        dataItem.Commitment.IdDocumentNavigation.DocumentTypeCode === documentType.PurchaseAsset">
+                  <span class="badge badge-pill badge-danger" style="margin-right: 3px;">
+                    ECH
+                  </span>
+                  / {{'ASSET'|translate}}
+                </span>
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Type End-->
+          <!-- Code Start -->
+          <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate"
+                             [width]="150">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[1].tooltip|translate}}"
+                    theme="light">{{columnsConfig[1].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span class="pointer doc-code" style="font-size: 1em;" *ngIf="dataItem.Commitment && (hasShowSalesInvoicePermission && tiersType == tiersTypeEnum.Customer)
+              || (hasShowPurchaseInvoicePermission && tiersType == tiersTypeEnum.Supplier) "
+                (click)="showDocument(dataItem.Commitment.IdDocumentNavigation)">
+                &nbsp;{{dataItem.Commitment.IdDocumentNavigation['Code']}}
+              </span>
+              <span *ngIf="(!hasShowSalesInvoicePermission && tiersType == tiersTypeEnum.Customer)
+              || (!hasShowPurchaseInvoicePermission && tiersType == tiersTypeEnum.Supplier) "
+                    style="font-size: 1em;">
+                &nbsp;{{dataItem.Commitment.IdDocumentNavigation['Code']}}
+              </span>
+
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Code End -->
+          <!-- Financial Commitment Code Start -->
+          <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate"
+                             [width]="150">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[2].tooltip|translate}}"
+                    theme="light">{{columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span class="pointer doc-code" style="font-size: 1em;" *ngIf="dataItem.Commitment && (hasShowSalesInvoicePermission && tiersType == tiersTypeEnum.Customer)
+              || (hasShowPurchaseInvoicePermission && tiersType == tiersTypeEnum.Supplier) "
+                (click)="showDocument(dataItem.Commitment.IdDocumentNavigation)">
+                &nbsp;{{dataItem.Commitment.Code}}
+              </span>
+              <span *ngIf="(!hasShowSalesInvoicePermission && tiersType == tiersTypeEnum.Customer)
+              || (!hasShowPurchaseInvoicePermission && tiersType == tiersTypeEnum.Supplier) "
+                    style="font-size: 1em;">
+                &nbsp;{{dataItem.Commitment.Code}}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Financial Commitment Code End -->
+          <!-- Amount TTC Start-->
+          <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate" [width]="150"
+                             [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+                             [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[3].tooltip|translate}}"
+                    theme="light">{{columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span *ngIf="dataItem.Commitment">
+                {{
+dataItem.Commitment['AmountWithCurrency'].toLocaleString(language,{minimumFractionDigits: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Precision:settlement.Precision,
+            style: 'currency', currency: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Code:settlement.CurrencyCode, currencyDisplay:'code'})
+                }}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--  Amount TTC End-->
+          <!-- Amount To be paid with currency Start-->
+          <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate" [width]="150"
+                             [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+                             [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[4].tooltip|translate}}"
+                    theme="light">{{columnsConfig[4].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span *ngIf="dataItem.Commitment">
+
+                {{
+dataItem.Commitment['AmountWithoutWithholdingTaxWithCurrency'].toLocaleString(language,{minimumFractionDigits: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Precision:settlement.Precision,
+            style: 'currency', currency: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Code:settlement.CurrencyCode, currencyDisplay:'code'})
+                }}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!--  Amount with currency End-->
+          <!-- Assigned amount with currency Start-->
+          <kendo-grid-column [field]="columnsConfig[5].field" [title]="columnsConfig[5].title | translate" [width]="150"
+                             [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+                             [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[5].tooltip|translate}}"
+                    theme="light">{{columnsConfig[5].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span *ngIf="dataItem.AssignedAmountWithCurrency">
+                {{
+dataItem.AssignedAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Precision:settlement.Precision,
+              style: 'currency', currency: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Code:settlement.CurrencyCode, currencyDisplay:'code'})
+                }}
+                </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Assigned amount with currency End-->
+          <!-- withholding Tax with currency Start-->
+          <kendo-grid-column *ngIf=" " [field]="columnsConfig[6].field" [title]="columnsConfig[6].title | translate"
+                             [width]="150" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+                             [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[6].tooltip|translate}}"
+                    theme="light">{{columnsConfig[6].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span *ngIf="dataItem.Commitment &&  dataItem.Commitment.WithholdingTaxWithCurrency ">
+
+
+                {{
+dataItem.Commitment['WithholdingTaxWithCurrency'].toLocaleString(language,{minimumFractionDigits: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Precision:settlement.Precision,
+                  style: 'currency', currency: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Code:settlement.CurrencyCode, currencyDisplay:'code'})
+                }}
+              </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- withholding Tax with currency End-->
+          <!-- Assigned withholding Tax with currency Start-->
+          <kendo-grid-column *ngIf="companyWithholdingTax" [field]="columnsConfig[7].field"
+                             [title]="columnsConfig[7].title | translate" [width]="150"
+                             [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right"}'
+                             [headerStyle]="{'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[7].tooltip|translate}}"
+                    theme="light">{{columnsConfig[7].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <span *ngIf="dataItem.AssignedWithholdingTaxWithCurrency">
+                {{
+dataItem.AssignedWithholdingTaxWithCurrency.toLocaleString(language,{minimumFractionDigits: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Precision:settlement.Precision,
+                    style: 'currency', currency: settlement.IdUsedCurrencyNavigation? settlement.IdUsedCurrencyNavigation.Code:settlement.CurrencyCode, currencyDisplay:'code'})
+                }}
+              </span>
+              <span *ngIf="!dataItem.AssignedWithholdingTaxWithCurrency"> - </span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Assigned withholding Tax with currency End-->
+        </kendo-grid>
+      </div>
+    </div>
+    <div class="row" style="margin-left: 3px; margin-top: -10px;" *ngIf="!settlement.HideSaveButton && !showButtons">
+      <div class="col-lg-4 col-md-12 col-sm-12">
+        <button
+          *ngIf="!isUpdate && !verifyIfSettlementIsCashedOrIsLinkedToPaymentSlipOrReconciliation() && settlement.IdPaymentStatus !== paymentStatusEnum.Canceled &&
+          ((tiersType === tiersTypeEnum.Customer && hasUpdateCustomerPaymentHistory) || (tiersType === tiersTypeEnum.Supplier && hasUpdateSupplierPaymentHistory))"
+          type="button" class="btn btn-sm btn-success" (click)="updateSettlement()">
+          <i class="fa fa-floppy-o"></i> {{ 'SETTLEMENT_UPDATE' |translate }}
+        </button>
+        <button
+          *ngIf="!isUpdate && !verifyIfSettlementIsCashedOrIsLinkedToPaymentSlipOrReconciliation() && settlement.IdPaymentStatus === paymentStatusEnum.Settled &&
+          ((tiersType === tiersTypeEnum.Customer && hasCancelCustomerSettlement) || (tiersType === tiersTypeEnum.Supplier && hasCancelSupplierSettlement)) && haveCancelPermission"
+          type="button" class="btn btn-sm btn-danger" (click)="replace()">
+          <i class="fa fa-undo"></i> {{ 'CANCEL_SETTLEMENT' |translate }}
+        </button>
+        <button *ngIf="isUpdate && !verifyIfSettlementIsCashedOrIsLinkedToPaymentSlipOrReconciliation() &&
+        ((tiersType === tiersTypeEnum.Customer && hasUpdateCustomerPaymentHistory) || (tiersType === tiersTypeEnum.Supplier && hasUpdateSupplierPaymentHistory))" type="button"
+          class="btn btn-sm btn-success" (click)="save()">
+          <i class="fa fa-floppy-o"></i> {{ 'SETTLEMENT_UPDATE' |translate }}
+        </button>
+        <button *ngIf="isUpdate && !verifyIfSettlementIsCashedOrIsLinkedToPaymentSlipOrReconciliation()" type="button"
+                class="btn btn-sm btn-danger" (click)="cancelUpdate()">
+          <i class="fa fa-times" aria-hidden="true"></i> {{ 'CANCEL' |translate }}
+        </button>
+        <button (click)='onJasperPrintClick()' type="button" class="btn btn-primary btn-sm">
+                <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}}
+              </button>
+      </div>
+    </div>
+  </div>
+</div>

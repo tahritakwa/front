@@ -1,0 +1,84 @@
+.code {
+  color: #8babcb;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.img-border#item-photo {
+  height: 200px !important;
+}
+.img-border#brand-photo {
+  height: 90px !important;
+}
+.details {
+  color: cornflowerblue;
+  font-weight: inherit;
+}
+.supplier-message {
+  color: cornflowerblue;
+  font-size: medium;
+}
+.no-background {
+  background: none;
+}
+
+.notes {
+  float: right;
+  width: 100%;
+}
+.collapse-title {
+  color: #086788;
+}
+
+.wname:hover {
+  text-decoration: none;
+}
+.card-avatar {
+  width: 40px;
+  height: 40px;
+}
+.modal {
+  text-align: center;
+}
+
+.badge-brand {
+  color: #fff;
+  background-color: rgb(76, 154, 174);
+}
+
+@media screen and (min-width: 768px) {
+  .modal:before {
+    display: inline-block;
+    vertical-align: middle;
+    content: " ";
+    height: 100%;
+  }
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.CercleClass {
+  font-size: 12px;
+  border-radius: 100px 100px 100px 100px;
+  -moz-border-radius: 100px 100px 100px 100px;
+  -webkit-border-radius: 100px 100px 100px 100px;
+  border: 3px solid #61a8ad;
+  margin: 4px;
+}
+
+#item-description {
+  word-wrap: normal !important;
+}
+
+.supplier-pill {
+  margin-bottom: 15px;
+  min-width: 150px;
+  .supplier-info {
+    width: calc(100% - 80px);
+  }
+}

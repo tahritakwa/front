@@ -1,0 +1,117 @@
+<form class="form-horizontal">
+  <kendo-grid (dataStateChange)="dataStateChange($event)" (detailExpand)="loadOfferDetailsOfSelectedCandidacy($event)"
+              [data]="gridSettings.gridData" [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings" [reorderable]="true"
+              [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+              [sortable]="true">
+    <!-- Columns data -->
+    <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+                       [filter]="col.filter" [filterable]="col.filterable" [format]="col.format"
+                       [hidden]="col.hidden"
+                       [title]="col.title | translate" [width]="col._width">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="col.field === 'IdCandidateNavigation.FirstName'">
+          <a [routerLink]="['/main/rh/candidate/edit/', dataItem.IdCandidateNavigation.Id]" class="candidate-link"
+             target="_blank">
+            {{dataItem.IdCandidateNavigation.FullName}}
+          </a>
+        </span>
+        <span *ngIf="col.field === 'IdCandidateNavigation.Email'">
+          <a href="mailto:{{dataItem.Email}}">
+            {{dataItem.IdCandidateNavigation.Email}}
+          </a>
+        </span>
+        <span *ngIf="col.field === 'NumberOfOffer'">
+          {{dataItem.NumberOfOffer}}
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [title]="'MAIL_HISTORY' | translate" [width]="120">
+      <ng-template kendoGridHeaderTemplate>
+          <span theme="light"
+                tooltip="{{'MAIL_HISTORY'|translate}}">{{'MAIL_HISTORY'|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <button (click)="getOffreEmailHistoric(dataItem)" class="noPadding btn-Add k-button"
+        ><i aria-hidden="true" class="fa fa-envelope text-primary"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Grid details -->
+    <ng-template kendoGridDetailTemplate let-dataItem="dataItem">
+      <section>
+        <!-- Interviews and marks for each candidacy -->
+        <div class="row">
+          <div *ngIf="dataItem.Offer == null || dataItem.Offer.length == numberConstant.ZERO"
+               class="col-lg-10 col-md-8 col-sm-12">
+            <b style="font-size: 15px; margin-left: 20px;">
+              {{'NO_OFFER' | translate}} </b>
+          </div>
+          <div *ngIf="dataItem.Offer != null">
+            <div *ngFor="let offer of dataItem.Offer;" class="col-lg-10 col-md-8 col-sm-12"
+                 style="margin-left:20px!important">
+              <div style="font-weight: bold;">
+                <button
+                  (click)="removeOffer(offer)"
+                  *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && offer.State === offerState.Draft" class="noPadding btn-Add k-button"
+                  tooltip="{{'DELETE' | translate}}">
+                  <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                </button>
+                <a (click)="openAddOfferDialog(null, offer)" class="candidate-link"
+                   style="text-decoration: underline; cursor: pointer;">
+                  <span style="font-size:normal!important;">{{'OFFER_OF' | translate}}</span>
+                  <span style="font-size:normal!important;">{{offer.CreationDate | date: format}}</span>
+                </a>
+                <span *ngIf="offer.State == offerState.Draft" class="badge badge-secondary"
+                      style="margin: 5px;">{{'DRAFT'|translate}}</span>
+                <span *ngIf="offer.State == offerState.Sended" class="badge badge-warning"
+                      style="margin-left: 5px;">{{'SENDED'|translate}}</span>
+                <span *ngIf="offer.State == offerState.Accepted" class="badge badge-success"
+                      style="margin-left: 5px;">{{'ACCEPTED'|translate}}</span>
+                <span *ngIf="offer.State == offerState.Rejected" class="badge badge-danger"
+                      style="margin-left: 5px;">{{'REJECTED'|translate}}</span>
+                <span class="offset-lg-1">
+                              <kendo-dropdownbutton (itemClick)="generateAndSendTheOffer(offer, $event)"
+                                                    *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && offer.State == offerState.Draft"
+                                                    [data]="langList"
+                                                    [primary]="true"
+                                                    style="width: 10px; height: 10px;">
+                                  <i aria-hidden="true" class="fa fa-envelope"> {{'SEND_THE_OFFER' | translate}}</i>
+                                </kendo-dropdownbutton>
+                  <button
+                    (click)="generateAndSendTheOffer(offer)"
+                    *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && offer.State == offerState.Sended" class="k-button k-primary">
+                    <i aria-hidden="true" class="fa fa-envelope"> {{'RE_SEND_THE_OFFER' | translate}}</i>
+                  </button>
+                  <button
+                    (click)="acceptTheOffer(offer)"
+                    *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && offer.State == offerState.Sended" class="noPadding k-button btn-Add">
+                    <i aria-hidden="true" class="fa fa-check text-success"> {{'ACCEPT_THE_OFFER' | translate}}</i>
+                  </button>
+                  <button
+                    (click)="refuseTheOffer(offer)"
+                    *ngIf="dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && offer.State == offerState.Sended" class="noPadding k-button btn-Add">
+                    <i aria-hidden="true" class="fa fa-check text-primary"> {{'REFUSE_THE_OFFER' | translate}}</i>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Interviews and marks for each candidacy-->
+      </section>
+    </ng-template>
+    <!-- End grid details -->
+    <!-- Columns Command-->
+    <kendo-grid-command-column [width]="130">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <!-- add command directive-->
+        <button (click)="openAddOfferDialog(dataItem.Id, null)" *ngIf="hasFullRecuitmentPermission && dataItem.IdRecruitmentNavigation.State < recruitmentState.Closed && !dataItem.HasAlreadyAnOffer" class="noPadding btn-Add k-button" data-placement="top"
+          data-toggle="tooltip" title="{{'ADD_OFFER' | translate}}">
+          <i aria-hidden="true" class="fa fa-plus text-primary"></i>
+        </button>
+        <!-- end add command directive-->
+      </ng-template>
+    </kendo-grid-command-column>
+    <!-- End Columns Command-->
+  </kendo-grid>
+</form>

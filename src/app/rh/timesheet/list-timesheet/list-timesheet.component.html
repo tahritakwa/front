@@ -1,0 +1,148 @@
+<div class="card">
+  <div class="card-header" style="background-color: white; border:none">
+    <div class="col-sm-2 mt-1">
+      <h3 class="card-title mb-1" tooltip="{{'TIMESHEET_TOOLTIP' | translate}}">{{'TIMESHEET'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <div [formGroup]="listTimeSheetFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 ">
+        <div class="form-group row">
+          <div *ngIf="hasValidatePermission; then thenAllEmployeeBlock else elseHierrarchyEmployee"></div>
+          <ng-template #thenAllEmployeeBlock>
+            <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+              <label class="col-lg-12 col-md-12 col-sm-12" style="text-align: left;">{{'EMPLOYEE'|translate}}<span
+                  class="required">*</span></label>
+              <app-employee-dropdown (Selected)="changeEmployeeDropdownValue($event)" [form]="listTimeSheetFormGroup">
+              </app-employee-dropdown>
+              <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </ng-template>
+          <ng-template #elseHierrarchyEmployee>
+            <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+              <label class="col-lg-12 col-md-12 col-sm-12" style="text-align: left;">{{'EMPLOYEE'|translate}}<span
+                  class="required">*</span></label>
+              <app-employee-dropdown (Selected)="changeEmployeeDropdownValue($event)" [form]="listTimeSheetFormGroup"
+                [hierarchy]="true" [withTeamCollaborater]="true" [withTheSuperior]="true">
+              </app-employee-dropdown>
+              <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </ng-template>
+          <div class="col-lg-4 col-md-6 col-sm-12" style="margin-bottom:15px">
+            <label class="col-lg-12 col-md-12 col-sm-12" style="text-align: left;">{{'FULL_YEAR'|translate}}<span
+                class="required">*</span></label>
+            <kendo-datepicker (valueChange)="onChangeDate()" [bottomView]="'decade'" [format]="'yyyy'"
+              [max]="currentDate" class="form-control" formControlName="Year">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <!-- <div class="form-group row"> -->
+      <div class="row d-flex align-items-center mb-3">
+        <div *ngFor="let timeSheet of TimeSheetList;" class="col-xl-4 col-lg-6 col-md-6 col-sm-12 py-4">
+            <div class="column">
+              <!-- Post-->
+              <div class="post-module">
+                <!-- Thumbnail-->
+                <div class="thumbnail">
+                  <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.ToDo"
+                    style="background-color: black">
+                    <div class="size">
+                      {{'TODO'|translate}}
+                    </div>
+                  </div>
+                  <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.Draft"
+                    style="background-color: orange">
+                    <div class="size">
+                      {{'DRAFT'|translate}}
+                    </div>
+                  </div>
+                  <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.Sended"
+                    style="background-color: rgb(76, 169, 231)">
+                    <div class="size">
+                      {{'SENDED'|translate}}
+                    </div>
+                  </div>
+                  <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.Validated"
+                    style="background-color: rgb(110, 236, 110)">
+                    <div class="size">
+                      {{'VALID'|translate}}
+                    </div>
+                  </div>
+                  <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.PartiallyValidated"
+                    style="background-color: greenyellow">
+                    <div class="size">
+                      {{'PARTIALLY_VALID'|translate}}
+                    </div>
+                  </div>
+                  <div class="status" *ngIf="timeSheet && timeSheet.Status === statusCode.ToReWork"
+                    style="background-color: rgb(222, 233, 129)">
+                    <div class="size">
+                      {{'TOREWORK'|translate}}
+                    </div>
+                  </div>
+                  <img src="../../../../assets/image/pngtree-simple-cra.png" />
+                </div>
+                <!-- Post Content-->
+                <div class="post-content">
+                  <div class="category">{{timeSheet.Month | date:'MMMM' | uppercase | translate}}</div>
+                  <div class="p-3 d-flex align-items-center">
+
+                    <span style=" margin-left: 20px; min-height: 80px; max-height: 80px; overflow-x: hidden ">
+                        <table>
+                            <tbody>
+                                <tr>
+                                  <td><i class="fa fa-user-plus color-blue"> {{'NUMBER_DAYS_WORKED' | translate}}: </i></td>
+                                  <td> <span  class="ml-4">
+                                      {{timeSheet.NumberOfDaysDayHour.NumberOfDaysWorked.Day}} {{'DAYS_ABBREVIATED' | translate}}
+                                      {{timeSheet.NumberOfDaysDayHour.NumberOfDaysWorked.Hour}} {{'HOURS_ABBREVIATED' | translate}}
+                                    </span></td>
+                                </tr>
+                                <tr>
+                                    <td><i class="fa fa-user-times color-blue"> {{'NUMBER_DAYS_LEAVE' | translate}}: </i></td>
+                                    <td> <span  class="ml-4">
+                                        {{timeSheet.NumberOfDaysDayHour.NumberOfDaysWorked.Day}} {{'DAYS_ABBREVIATED' | translate}}
+                                        {{timeSheet.NumberOfDaysDayHour.NumberOfDaysWorked.Hour}} {{'HOURS_ABBREVIATED' | translate}}
+                                      </span></td>
+                                  </tr>
+                                  <tr>
+                                      <td><i class="fa fa-slideshare color-blue"> {{'NUMBER_DAYS_HOLIDAYS' | translate}}: </i></td>
+                                      <td> <span class="ml-4">
+                                          {{timeSheet.NumberOfDaysDayHour.NumberOfDaysOff.Day}} {{'DAYS_ABBREVIATED' | translate}}
+                                          {{timeSheet.NumberOfDaysDayHour.NumberOfDaysOff.Hour}} {{'HOURS_ABBREVIATED' | translate}}
+                                        </span></td>
+                                    </tr>
+                           </tbody>
+                        </table>
+
+                    </span>
+                    <div class="container_footer">
+                    <span style="float: right;">
+                        <span tooltip="{{'EDIT' | translate}}" *ngIf="((hasShowPermission && timeSheet.Status !== statusCode.ToDo) || (hasAddPermission && timeSheet.Status === statusCode.ToDo))
+                        && (myTimeSheet || isUpperHierrarchyOrTeamManager)"><i
+                            class="las la-pen cursor-pointer edit-pencil la-lg AddIcon" (click)="goToAdvancedEdit(timeSheet)"></i></span>
+                      
+                        <span tooltip="{{'VALIDATE' | translate}}" *ngIf="(hasValidatePermission || isUpperHierrarchyOrTeamManager) && (timeSheet.Status == statusCode.Sended || timeSheet.Status == statusCode.PartiallyValidated) && !myTimeSheet"><i class="fa fa-check-circle fa-lg"
+                            style="color: #69af81;" (click)="validateTimesheet(timeSheet)"></i></span>
+                        <span tooltip="{{'DELETE' | translate}}" *ngIf="hasDeletePermission && timeSheet.Id > 0"><i class="fa fa-trash-o fa-lg text-danger" (click)="deleteTimeSheet(timeSheet)"></i></span>
+                    </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <!-- </div> -->
+  </div>
+</div>

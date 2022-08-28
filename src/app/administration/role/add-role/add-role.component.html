@@ -1,0 +1,82 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_ROLE' : 'ADD_ROLE') |translate }}</h3>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="roleFormGroup">
+      <!--Begin Card body-->
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'CODE'|translate}}<span class="required">*</span> </label>
+                <input class="form-control" formControlName="Code" name="Code">
+                <app-control-messages [control]="roleFormGroup.controls.Code"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'DESIGNATION'|translate}}<span class="required">*</span></label>
+                <input class="form-control" type="text" formControlName="Label" name="Label">
+                <app-control-messages [control]="roleFormGroup.controls.Label"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+            <br />
+            <br />
+            <div style="margin-left:25%; margin-top: 2%">
+              <form (submit)='search()'>
+              <div class="input-group flex-nowrap" style="width: 56%;">
+                <input type="text" class="form-control" autocomplete="off" placeholder="{{'SEARCH_ROLE'|translate}}" name='valueToSearch'
+                        aria-label="Search" aria-describedby="addon-wrapping" [(ngModel)]='valueToSearch'>
+                <div class="col-auto p-2">
+                  <i class="fa fa-search fa-lg" aria-hidden="true" (click)='search()'></i>
+                </div>
+              </div>
+            </form>
+          </div>
+  
+          </div>
+        </div>
+        <br/>
+        <div class="col-lg-3 col-md-12 col-sm-12 ">
+          <p>{{'ROLE_CONFIG'|translate}}</p>
+        </div>
+
+      </div>
+      <app-role-config-category-treeview [searching]="searching"
+                                         [filtredMenu]= "filtredMenu"
+                                         [modules]= "modules"
+                                         ></app-role-config-category-treeview>
+
+    </form>
+  </div>
+  <!-- End principal  part -->
+  <div [ngClass]="getFooterClass()">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="'/main/settings/administration/role'">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button *ngIf = "hasAddPermission || hasUpdatePermission" (click)="saveRole()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

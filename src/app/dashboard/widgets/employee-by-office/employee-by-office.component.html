@@ -1,0 +1,25 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-12">
+      <h4 class="card-title mb-0"> Employés par bureau </h4>
+      <div *ngIf="hasEmployeeByOfficeData" class="small text-muted">
+       Mois en cours
+      </div>
+      <div *ngIf="!hasEmployeeByOfficeData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card-body">
+  <canvas *ngIf="hasEmployeeByOfficeData && EmployeeByOfficeChart" baseChart
+    [datasets]="EmployeeByOfficeChart.barChartData" [labels]="EmployeeByOfficeChart.barChartLabels"
+    [colors]="EmployeeByOfficeChart.barChartColors" [options]="EmployeeByOfficeChart.barChartOptions"
+    [legend]="EmployeeByOfficeChart.barChartLegend" [chartType]="EmployeeByOfficeChart.barChartType"></canvas>
+  <div *ngIf="!hasEmployeeByOfficeData && !EmployeeByOfficeLoading" >
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NODATAFOUND' | translate}} </h5>
+  </div>
+  <div *ngIf="EmployeeByOfficeLoading && !hasEmployeeByOfficeData" >
+    <app-spinner></app-spinner>
+  </div>
+</div>

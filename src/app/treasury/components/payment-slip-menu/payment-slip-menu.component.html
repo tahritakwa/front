@@ -1,0 +1,73 @@
+<div class="col-lg-12 col-md-12 col-sm-122">
+  <div class="row">
+    <div class="card" style="width:100%;">
+      <div class="card-content">
+        <!--Begin card body-->
+        <div class="card-body">
+          <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6" style="margin-bottom: 15px;">
+              <h2> {{ 'SLIP'|translate}}
+              </h2>
+            </div>
+          </div>
+          <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+                               (filtrePredicateToSend)="getFiltrePredicate($event)"
+                               (predicateOperator)="getOperatorPredicate($event)"
+                               (resetClickEvent)="resetClickEvent()" (searchClickEvent)="searchClick()">
+          </app-advanced-search>
+
+        </div>
+      </div>
+      <div class="row card-margin">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" (click)="changeValueActiveTab(false)">
+              <a class="nav-link nav-link-new active" data-toggle="tab" href="#check" role="tab" #checkNav
+                 aria-controls="home" aria-selected="true">
+                {{'CHECK_SETTLEMENT'|translate}}&nbsp;
+                <span tooltip="{{getAddCheckTooltipMessage()}}" *ngIf="settlementTotalNumberToAddInBankCheck> 0"
+                      class="badge badge-danger">
+                                    {{settlementTotalNumberToAddInBankCheck}}
+                                </span>
+                <span tooltip="{{getAddCheckTooltipMessage()}}" *ngIf="settlementTotalNumberToAddInBankCheck === 0"
+                      class="badge badge-success">
+                                    {{settlementTotalNumberToAddInBankCheck}}
+                                </span>
+              </a>
+            </li>
+            <li class="nav-item" (click)="changeValueActiveTab(true)">
+              <a class="nav-link nav-link-new" data-toggle="tab" href="#draft" role="tab" #draftNav
+                 aria-controls="history" aria-selected="false">
+                {{'DRAFT_SETTLEMENT'|translate}}&nbsp;
+                <span tooltip="{{getAddDraftTooltipMessage()}}" *ngIf="settlementTotalNumberToAddInBankDraft > 0"
+                      class="badge badge-danger">
+                                    {{settlementTotalNumberToAddInBankDraft}}
+                                </span>
+                <span tooltip="{{getAddDraftTooltipMessage()}}" *ngIf="settlementTotalNumberToAddInBankDraft === 0"
+                      class="badge badge-success">
+                                    {{settlementTotalNumberToAddInBankDraft}}
+                                </span>
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane active pt-0 show" id="check" role="tabpanel" #checkDiv>
+              <app-list-check-payment-slip [predicateAdvancedSearch]="predicateAdvancedSearch"
+                                           [isClickedSearch]="isClickedSearch"
+                                           [isClickedReset]="isClickedReset" [isActiveTab]="!draftSelected"
+                                           (settlementTotalNumberEmitter)="receiveSettlementTotalNumberToAddInBankCheck($event)">
+              </app-list-check-payment-slip>
+            </div>
+            <div class="tab-pane" id="draft" role="tabpanel" #draftDiv>
+              <app-list-draft-payment-slip [predicateAdvancedSearch]="predicateAdvancedSearch"
+                                           [isClickedSearch]="isClickedSearch"
+                                           [isClickedReset]="isClickedReset" [isActiveTab]="draftSelected"
+                                           (settlementTotalNumberEmitter)="receiveSettlementTotalNumberToAddInBankDraft($event)">
+              </app-list-draft-payment-slip>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

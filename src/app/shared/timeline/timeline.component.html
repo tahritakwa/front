@@ -1,0 +1,22 @@
+<div div *ngIf="list && list.length!=0" class="timeline">
+  <ul>
+    <li *ngFor="let item of list">
+      <div class="content">
+        <h4> <a>{{item.Content}} <i class="las la-external-link-alt la-lg btn-link cursor-pointer"
+              (click)="GoToLink(item)"></i></a>
+        </h4>
+        <p class="subcontent" *ngIf="item.SubContent">{{item.SubContent}}</p>
+      </div>
+      <div class="time">
+        <h4>{{item.Time | date:'dd/MM/yyyy HH:mm'}}</h4>
+      </div>
+    </li>
+    <div style="clear:both;"></div>
+  </ul>
+</div>
+
+<div *ngIf="list.length==0">
+  <div class="no-data-text">
+    <h6> {{getNoActivityMessage() | translate}} </h6>
+  </div>
+</div>

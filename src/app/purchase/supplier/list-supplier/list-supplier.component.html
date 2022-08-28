@@ -1,0 +1,204 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card border-0 full-screen-card">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'SUPPLIER_LIST'|translate}}</h3>
+          </div>
+        </div>
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body">
+          <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+            (filtrePredicateToSend)="getFiltrePredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+            (searchClickEvent)="initGridDataSource(false)" (resetClickEvent)="resetClickEvent()">
+          </app-advanced-search>
+          <div class="row d-flex justify-content-between mt-3">
+            <app-search-tiers class="col-lg-3" [type]="tiers_type" (sendData)="receiveData($event)"></app-search-tiers>
+            <app-btn-grid class="col"  [addLink]='"AdvancedAdd"' [cardView]='!isCardView'
+              [listView]='isCardView' (cardViewEvent)="changeViewToCard()" (listViewEvent)="changeViewToList()"
+              [relativeStyle]='true' [model]="true" (incomingFileEvent)="incomingFile($event)"
+              (downLoadFileEvent)="downLoadFile($event)" [gridSettings]="exportGridSettings" [advencedAdd]='haveAddPermission'
+              [fileName]="'SUPPLIER_LIST'|translate" [service]="tiersService" [predicate]="predicateTiers"
+              api="getDataWithSpecificFilter" [isExportExcel]="true" [isImportFile]="true" [isExportModel]="false">
+            </app-btn-grid>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 px-0">
+            <div class="mb-3" style="float: left;width: 100%">
+              <div class="tab-pane active show" id="home1" role="tabpanel">
+                <div *ngIf="!isCardView">
+                  <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                    [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+                    [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)" [sortable]="true"
+                    [pageable]="pagerSettings" [filterable]="false" [reorderable]="true" [columnMenu]="true">
+                    <!--Columns-->
+
+                    <!-- Supplier -->
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[1].title | translate"
+                      [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.columnsConfig[1].filter"
+                      [filterable]="gridSettings.columnsConfig[1].filterable"
+                      [format]="gridSettings.columnsConfig[1].format" [tooltip]="gridSettings.columnsConfig[1].title"
+                      [field]="gridSettings.columnsConfig[1].field" [columnMenu]="false">
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+                          theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+                      </ng-template>
+                      <ng-template kendoGridCellTemplate let-dataItem>
+
+                        <div class="row" (click)="(haveShowPermission || haveUpdatePermission || (haveDeletePermission && haveShowPermission))? goToProfile(dataItem) : ''">
+                          <div class="col-auto">
+                            <div class="customer-photo d-flex justify-content-center">
+                              <img id="ThumbnailSupplier" class="imgSize" alt="Illustration des problèmes de suddation"
+                                border="0" [src]="dataItem.image" />
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="row">
+                              <span class="font-weight-bold" [ngClass]="{'cursor-pointer': haveShowPermission || haveUpdatePermission ||(haveDeletePermission && haveShowPermission)}">{{dataItem.Name}}</span>
+                            </div>
+                            <div class="row">
+                              <span class="light-reference">{{dataItem.CodeTiers}}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!--Actions-->
+                    <kendo-grid-command-column [width]="60" [columnMenu]="false">
+                      <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                        <!--Open advanced edit form -->
+                        <i class="las la-pen cursor-pointer edit-pencil la-lg" aria-hidden="true"
+                          (click)="goToAdvancedEdit(dataItem)" *ngIf="haveShowPermission || haveUpdatePermission"></i>
+                      </ng-template>
+                    </kendo-grid-command-column>
+
+                    <!-- Email -->
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[2].title | translate"
+                      [width]="gridSettings.columnsConfig[2]._width" [filter]="gridSettings.columnsConfig[2].filter"
+                      [filterable]="gridSettings.columnsConfig[2].filterable"
+                      [format]="gridSettings.columnsConfig[2].format" [field]="gridSettings.columnsConfig[2].field"
+                      [columnMenu]="false">
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+                          theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+                      </ng-template>
+                      <ng-template kendoGridCellTemplate let-dataItem>
+                        <span *ngIf="dataItem.Email"> {{dataItem.Email}}</span>
+                        <span *ngIf="!dataItem.Email">-</span>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <!-- Country -->
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[4].title | translate"
+                      [width]="gridSettings.columnsConfig[4]._width" [filter]="gridSettings.columnsConfig[4].filter"
+                      [filterable]="gridSettings.columnsConfig[4].filterable"
+                      [format]="gridSettings.columnsConfig[4].format" [field]="gridSettings.columnsConfig[4].field"
+                      [columnMenu]="false">
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+                          theme="light">{{gridSettings.columnsConfig[4].title | translate}}</span>
+                      </ng-template>
+                      <ng-template kendoGridCellTemplate let-dataItem>
+                        <span *ngIf="dataItem?.Address" tooltip="{{getCountriesForTooltip(dataItem.Address)}}"
+                          theme="dark" placement="bottom">
+                          {{dataItem?.Address[0]?.IdCountryNavigation?.NameFr}}
+                        </span>
+                        <span *ngIf="!dataItem.Address || (dataItem.Address && dataItem.Address.length === 0)
+                          || ( dataItem.Address && dataItem.Address.length > 0 && !dataItem.Address[0].IdCountryNavigation)">-</span>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <!-- City -->
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[3].title | translate"
+                      [width]="gridSettings.columnsConfig[3]._width" [filter]="gridSettings.columnsConfig[3].filter"
+                      [filterable]="gridSettings.columnsConfig[3].filterable"
+                      [format]="gridSettings.columnsConfig[3].format" [field]="gridSettings.columnsConfig[3].field"
+                      [columnMenu]="false">
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+                          theme="light">{{gridSettings.columnsConfig[3].title | translate}}</span>
+                      </ng-template>
+
+                      <ng-template kendoGridCellTemplate let-dataItem>
+                        <span *ngIf="dataItem?.Address" tooltip="{{getCitiesForTooltip(dataItem.Address)}}" theme="dark"
+                          placement="bottom">
+                          {{dataItem?.Address[0]?.IdCityNavigation?.Label}}
+                        </span>
+                        <span *ngIf="!dataItem.Address || (dataItem.Address && dataItem.Address.length === 0)
+                          || ( dataItem.Address && dataItem.Address.length > 0 && !dataItem.Address[0].IdCityNavigation)">-</span>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <!-- Devise -->
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[5].title | translate"
+                      [width]="gridSettings.columnsConfig[5]._width" [filter]="gridSettings.columnsConfig[5].filter"
+                      [filterable]="gridSettings.columnsConfig[5].filterable"
+                      [format]="gridSettings.columnsConfig[5].format" [field]="gridSettings.columnsConfig[5].field"
+                      [columnMenu]="false">
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+                          theme="light">{{gridSettings.columnsConfig[5].title | translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Tax Group -->
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[6].title | translate"
+                      [width]="gridSettings.columnsConfig[6]._width" [filter]="gridSettings.columnsConfig[6].filter"
+                      [filterable]="gridSettings.columnsConfig[6].filterable"
+                      [format]="gridSettings.columnsConfig[6].format" [field]="gridSettings.columnsConfig[6].field"
+                      [columnMenu]="false">
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[6].title | translate}}"
+                          theme="light">{{gridSettings.columnsConfig[6].title | translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- phone -->
+                    <kendo-grid-column [title]="gridSettings.columnsConfig[7].title | translate"
+                      [width]="gridSettings.columnsConfig[7]._width" [filter]="gridSettings.columnsConfig[7].filter"
+                      [filterable]="gridSettings.columnsConfig[7].filterable"
+                      [format]="gridSettings.columnsConfig[7].format" [field]="gridSettings.columnsConfig[7].field"
+                      [columnMenu]="false">
+                      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        <span *ngIf="dataItem.IdPhoneNavigation?.Number">
+                          {{dataItem.IdPhoneNavigation.DialCode}}
+                          {{dataItem.IdPhoneNavigation.Number}}
+                        </span>
+                        <span *ngIf="!dataItem.IdPhoneNavigation">-</span>
+                      </ng-template>
+
+                    </kendo-grid-column>
+
+                    <!-- column select -->
+                    <kendo-grid-command-column [width]="50" [columnMenu]="true">
+                    </kendo-grid-command-column>
+                    <!--End Columns-->
+                    <!--End Actions-->
+                  </kendo-grid>
+                </div>
+                <div *ngIf="isCardView">
+                  <app-card-suppliers [Cardstate]="gridSettings.state" [data]="gridSettings.gridData.data"
+                  [haveDeletePermission]='haveDeletePermission' [haveUpdatePermission]='haveShowPermission'
+                    [totalCards]="totalCards" [totalSuppliers]="totalSuppliers" (DoPaginte)="paginate($event)"
+                    [gridSettings]="gridSettings">
+                  </app-card-suppliers>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" style="z-index: 10000;"
+  [ngClass]="{'grid-importer-show':dataImported, 'grid-importer-hide': !dataImported}">
+  <a class="closebtn" (click)="onClosePopupImport()" style="z-index:999">&times;</a>
+  <div class="overlay-content" *ngIf="dataImported">
+    <app-grid-import [importResult]="importData" [saveImportedData]="saveImportedData.bind(this)"
+      [formGroup]="importFormGroup" [importColumnsConfig]="importColumnsConfig"></app-grid-import>
+  </div>
+</div>

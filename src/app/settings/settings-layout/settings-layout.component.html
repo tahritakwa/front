@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-12">
+    <app-scroll-bar (outputActiveMenu)="onActivatedMenu($event)" [subMenus]="subMenus" [activeMenu]="activatedMenu" ></app-scroll-bar>
+  </div>
+</div>
+
+<div class="row mt-2">
+  <div class="col-lg-2">
+    <div class="card h-100 full-screen-card">
+      <div class="card-body p-0">
+        <ul class="nav flex-column sub-settings-menu">
+          <li class="nav-item" *ngFor="let subMenu of subMenus">
+            <span *ngIf="subMenu.permission && this.authService.hasAuthorities(subMenu.permission)">
+            <a id="{{subMenu.menu}}" class="nav-link py-3" routerLinkActive="active font-weight-bold"
+             [routerLink]="subMenu.url" >
+              {{subMenu.menu | translate}}
+            </a>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-10 pl-lg-0">
+    <div class="card h-100 full-screen-card">
+      <div class="card-body p-0">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>

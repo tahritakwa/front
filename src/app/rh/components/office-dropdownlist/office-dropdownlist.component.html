@@ -1,0 +1,16 @@
+<div [formGroup]="group">
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  (valueChange)="onSelect(this)"
+                  [allowCustom]="false"
+                  [data]="officeFiltredDataSource"
+                  [disabled]="disabled"
+                  [filterable]="true"
+                  [formControlName]="idOfficeColName"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin"
+                  name="idOfficeColName"
+                  textField="OfficeName"
+  >
+  </kendo-combobox>
+</div>

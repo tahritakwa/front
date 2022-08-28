@@ -1,0 +1,180 @@
+<div class="card">
+  <div class="card-header" *ngIf="!related"
+       style="background-color: white; border:none">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ACTIONS_LIST'|translate}}</h3>
+    </div>
+  </div>
+  <div>
+
+  </div>
+  <div class="card-body" style="margin-block-end: 1%!important;">
+    <div class="row" *ngIf="!fromRelatedArchiving && !isFromArchive" style=" margin-right: 4px;">
+      <div class="col-auto">
+        <app-search-action *ngIf="!isFromArchive"
+                           [actions]="selectedFilter === this.allActionsFilter ? actionsList : filteredActions"
+                           [paramsFromActionList]="actionsListParams"
+                           (sendData)="receiveFilterAndSearchData($event)"
+                           [related]="related" [sourceId]="sourceId" [source]="source"
+                           [isProspect]="isProspect" (stopSendingEvent)="preventReloadDataFromSearch()"
+                           [reloadData]="updateReloadDataEventIsPossible? updateSearchAction.asObservable() : null">
+        </app-search-action>
+      </div>
+      <div class="col" style="float: right;position:relative">
+        <ng-container>
+          <app-btn-grid *ngIf="this.actionsSelected.length > 1 && (isNotArchivingModeAndNotFromRelated() && this.authService.hasAuthorities([CRMPermissions.ADD_ACTION]))"
+                        [advencedAdd]='false' [add]='false' [export]='false' [source]="'Action'"
+                        [addLink]="'add'" [crmConfig]="crmConfig" (deleteSelectedItems)="deleteSelectedActions()"
+                        style="margin-top: -5%;    display: inline-flex;"
+                        (archiveSelectedItems)="archiveSelectedActions()"
+                        (restoreSelectedItems)="restoreSelectedActions()">
+          </app-btn-grid>
+
+          <div *ngIf="isNotArchivingModeAndNotFromRelated() && authService.hasAuthorities([CRMPermissions.ADD_ACTION])" style="position:absolute; bottom:0;right: 0;">
+            <div class="btn btn-sm" type="button" (click)="source? openAddPopUp() : passToAdvancedAdd()"
+                 style="background-color: #20a8d8 !important;">
+              <i aria-hidden="true" style="color: white" class="fa fa-plus fa AddIcon"
+                 style="color: white"></i>
+              <span style="color: white">&nbsp; {{'ADD'|translate}}</span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <form>
+
+      <kendo-grid [data]="gridSettings.gridData"
+                  [pageSize]="gridSettings.state.take"
+                  [skip]="gridSettings.state.skip"
+                  [sortable]="true"
+                  (pageChange)="onPageChange($event)"
+                  [pageable]="pagerSettings"
+                  [reorderable]="true"
+                  [columnMenu]="false"
+                  (remove)="removeHandler($event)"
+                  [sort]="gridSettings.state.sort"
+                  [filter]="gridSettings.state.filter"
+                  (dataStateChange)="dataStateChange($event)"
+                  (sortChange)="sortChange($event)"
+                  [selectedKeys]="actionsSelected"
+                  [kendoGridSelectBy]="selectKey">
+
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0]._width"
+                           [filter]="gridSettings.columnsConfig[0].filter"
+                           [filterable]="gridSettings.columnsConfig[0].filterable"
+                           [format]="gridSettings.columnsConfig[0].format">
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="showColOrganization && source !== 'organisation'"
+                           [field]="gridSettings.columnsConfig[1].field"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1]._width"
+                           [filter]="gridSettings.columnsConfig[1].filter"
+                           [filterable]="gridSettings.columnsConfig[1].filterable"
+                           [format]="gridSettings.columnsConfig[1].format">
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                           [title]="gridSettings.columnsConfig[2].title | translate"
+                           [width]="gridSettings.columnsConfig[2]._width"
+                           [filter]="gridSettings.columnsConfig[2].filter"
+                           [filterable]="gridSettings.columnsConfig[2].filterable"
+                           [format]="gridSettings.columnsConfig[2].format">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="dataItem.progress || dataItem.progress == 0"><span>{{ dataItem.progress}} %</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngIf="showModeMyActions && showColCollaborater"
+                           [field]="gridSettings.columnsConfig[3].field"
+                           [title]="gridSettings.columnsConfig[3].title | translate"
+                           [width]="gridSettings.columnsConfig[3]._width"
+                           [filter]="gridSettings.columnsConfig[3].filter"
+                           [filterable]="gridSettings.columnsConfig[3].filterable"
+                           [format]="gridSettings.columnsConfig[3].format">
+          <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+            <div><span>{{allActionsCommercialsNames[rowIndex % 10]}}</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                           [title]="gridSettings.columnsConfig[4].title | translate"
+                           [width]="gridSettings.columnsConfig[4]._width"
+                           [filter]="gridSettings.columnsConfig[4].filter"
+                           [filterable]="gridSettings.columnsConfig[4].filterable"
+                           [format]="gridSettings.columnsConfig[4].format">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div *ngIf="dataItem.deadLine"><span>{{ dataItem.deadLine| date : formatDate }}</span>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+                           [title]="gridSettings.columnsConfig[5].title | translate"
+                           [width]="gridSettings.columnsConfig[5]._width"
+                           [filter]="gridSettings.columnsConfig[5].filter"
+                           [filterable]="gridSettings.columnsConfig[5].filterable"
+                           [format]="gridSettings.columnsConfig[5].format"
+                           *ngIf="showColState">
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+                           [title]="gridSettings.columnsConfig[6].title | translate"
+                           [width]="gridSettings.columnsConfig[6]._width"
+                           [filter]="gridSettings.columnsConfig[6].filter"
+                           [filterable]="gridSettings.columnsConfig[6].filterable"
+                           [format]="gridSettings.columnsConfig[6].format"
+                           *ngIf="showColType">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span *ngIf="dataItem.type">{{dataItem.type | translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column [field]="gridSettings.columnsConfig[7].field"
+                           [title]="gridSettings.columnsConfig[7].title | translate"
+                           [width]="gridSettings.columnsConfig[7]._width"
+                           [filter]="gridSettings.columnsConfig[7].filter"
+                           [filterable]="gridSettings.columnsConfig[7].filterable"
+                           [format]="gridSettings.columnsConfig[7].format"
+                           *ngIf="showColPriority">
+        </kendo-grid-column>
+
+
+        <kendo-grid-command-column [width]="COMMAND_COLUMN_WIDTH" [title]="'ACTIONS' | translate">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+            <i class="las la-pen cursor-pointer edit-pencil la-lg" *ngIf="authService.hasAuthorities([CRMPermissions.OWN_ACTION, CRMPermissions.EDIT_ACTION])&& !isArchivingMode && !isFromArchive" title="{{'SHOW'| translate }}"
+               (click)="showActionDetails(dataItem)"></i>
+
+            <i class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+               *ngIf="!fromRelatedArchiving && !isFromArchive &&  !isArchivingMode && authService.hasAuthorities([CRMPermissions.DELETE_ACTION])" (click)="removeHandler(dataItem) " title="{{'DELETE'| translate }}"></i>
+
+            <!--archive -->
+            <button class="k-button btnKendoGrid archiveBtn"
+                    *ngIf="!isArchivingMode && !fromRelatedArchiving && !isFromArchive && authService.hasAuthorities([CRMPermissions.ARCHIVE_ACTION])"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="{{'ARCHIVE_ACTION_CONFIRM_BOUTON'| translate }}"
+                    (click)="archiveAction(dataItem.id)">
+              <i class="fa fa-archive"></i>
+            </button>
+
+
+            <!--restore -->
+            <button class="btnKendoGrid" *ngIf="isArchivingMode && !fromRelatedArchiving && !related && !isFromArchive && authService.hasAuthorities([CRMPermissions.RESTORE_ARCHIVED_ACTION])"
+                    style="background: none;"
+                    data-toggle="tooltip" data-placement="bottom"
+                    title="{{'RESTART_ACTION_CONFIRM_BOUTON'| translate }}"
+                    (click)="restoreAction(dataItem.id)">
+              <i class="fa fa-refresh"></i>
+            </button>
+
+          </ng-template>
+        </kendo-grid-command-column>
+      </kendo-grid>
+    </form>
+  </div>
+</div>
+<app-side-nav-action *ngIf="showDetailAction && authService.hasAuthorities([CRMPermissions.OWN_ACTION])" [actionFromActionsList]="actionToShowInSideNav"
+                     [isArchivingMode]="isArchivingMode"
+                     [isFromArchive]="isFromArchive"
+                     (sideNavUpdateMode)="setSideNavUpdateMode($event)"
+                     (closeSidNav)="SidNavEvent()">
+
+</app-side-nav-action>

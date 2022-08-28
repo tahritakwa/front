@@ -1,0 +1,34 @@
+.ui-accordion .ui-accordion-header:not(.ui-state-active):not(.ui-state-disabled):hover a {
+  color: #6b778d;
+  /* background-color: #d3f6f3; */
+}
+
+.ui-accordion .ui-accordion-header:not(.ui-state-disabled).ui-state-active {
+  width: inherit;
+  border: none;
+}
+
+.text {
+  color: #336699;
+  font-size: medium;
+}
+.RoleClass {
+  font-size: 12px;
+  border-radius: 100px 100px 100px 100px;
+  -moz-border-radius: 100px 100px 100px 100px;
+  -webkit-border-radius: 100px 100px 100px 100px;
+  border: 3px solid #61a8ad;
+}
+
+.social-media {
+  position: absolute;
+  vertical-align: bottom;
+  bottom:15px;
+  right:15px;
+}
+
+.card-element {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 15px;
+}

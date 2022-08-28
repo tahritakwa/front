@@ -1,0 +1,250 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card w-100">
+      <div class="card-content">
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body py-0 px-0" style="min-height: fit-content;">
+          <div class="row py-0 px-0">
+            <div class="col-md-12 mx-auto">
+              <!-- Profile widget -->
+              <div class="bg-white shadow rounded overflow-hidden">
+                <div class="px-4 pt-0 pb-2 cover">
+                  <div class="employee-title float-right"> {{'EMPLOYEE_RECORD'|translate}} </div>
+                  <div class="media align-items-end profile-head">
+                    <div class="profile mr-3"><img
+                        [src]="pictureEmployesSrc || '../../../../assets/image/user-new-icon.png'" alt="..." class="rounded mb-2 img-thumbnail">
+                      <a *ngIf="hasShowPermission || hasUpdatePermission" class="btn btn-update btn-sm btn-block"
+                        (click)="goToEditEmployee()">{{'UPDATE'|translate}}</a>
+                    </div>
+                    <div class="media-body mb-0 text-white">
+                      <h4 class="mt-0 mb-0">{{employeeToUpdate.FullName}}</h4>
+                      <p class="small mb-4"
+                        *ngIf="employeeToUpdate.JobEmployee[0] && employeeToUpdate.JobEmployee[0].IdJobNavigation"> <i
+                          class="fas fa-map-marker-alt mr-2"></i>{{employeeToUpdate.JobEmployee[0].IdJobNavigation.Designation}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-light p-4 d-flex justify-content-end text-center">
+                </div>
+                <div class="about-section pt-4 px-3 px-lg-4 mt-1">
+                  <div class="row">
+                    <div class="col-md-12 offset-md-1">
+                      <div class="row mt-2">
+                        <div class="col-md-4">
+                          <div class="col-md-4">
+                            <div class="pb-1">{{'GENDER'|translate}}</div>
+                          </div>
+                          <div class="col-sm-8">
+                            <div class="pb-1 text-secondary" *ngIf="employeeToUpdate.Sex == 2">{{'FEMALE'|translate}}
+                            </div>
+                            <div class="pb-1 text-secondary" *ngIf="employeeToUpdate.Sex == 1">{{'MALE'|translate}}
+                            </div>
+                          </div>
+                          <div class="col-sm-4">
+                            <div class="pb-1">{{'EMAIL'|translate}}</div>
+                          </div>
+                          <div class="col-sm-8">
+                            <div class="pb-1 text-secondary">{{employeeToUpdate.Email}}</div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="col-md-8">
+                            <div class="pb-1">{{'NATIONALITY'|translate}}</div>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="pb-1 text-secondary" *ngIf="employeeToUpdate.IdCitizenshipNavigation">
+                              {{employeeToUpdate.IdCitizenshipNavigation.NameFr}}</div>
+
+                          </div>
+                          <div class="col-md-4">
+                            <div class="pb-1" *ngIf="employeeToUpdate.AddressLine1 != ''">{{'ADDRESS'|translate}}</div>
+                          </div>
+                          <div class="col-sm-8">
+                            <div class="pb-1 text-secondary">{{employeeToUpdate.AddressLine1}}</div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="col-md-8">
+                            <div class="pb-1" *ngIf="employeeToUpdate.MaritalStatus">{{'MARITAL_STATUS'|translate}}</div>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="pb-1 text-secondary"
+                              *ngIf="employeeToUpdate.MaritalStatus == maritalStatus.Single">{{'SINGLE'|translate}}
+                            </div>
+                            <div class="pb-1 text-secondary"
+                              *ngIf="employeeToUpdate.MaritalStatus == maritalStatus.Married">{{'MARRIED'|translate}}
+                            </div>
+                            <div class="pb-1 text-secondary"
+                              *ngIf="employeeToUpdate.MaritalStatus == maritalStatus.Divorced">{{'DIVORCED'|translate}}
+                            </div>
+                            <div class="pb-1 text-secondary"
+                              *ngIf="employeeToUpdate.MaritalStatus == maritalStatus.Widow">{{'WIDOW'|translate}}</div>
+                          </div>
+                          <div class="col-md-8">
+                            <div class="pb-1" *ngIf="employeeToUpdate.PersonalPhone">{{'PROFESSIONAL_PHONE'|translate}}</div>
+                          </div>
+                          <div class="col-sm-8">
+                            <div class="pb-1 text-secondary">{{employeeToUpdate.PersonalPhone}}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="d-print-none" />
+                <div class="row col-md-12">
+                  <div class="work-experience-section px-3 col-md-6">
+                    <h2 class="h3 mb-4">{{'WORK_EXPERIENCE'|translate}}</h2>
+                    <div class="timeline">
+                      <div class="timeline-card timeline-card-primary card shadow-sm">
+                        <div class="card-body">
+                          <div class="h5 mb-1">Frontend Developer <span class="text-muted h6">at STARK solution</span>
+                          </div>
+                          <div class="text-muted text-small mb-2">May, 2019 - Present</div>
+                          <div>Leverage agile frameworks to provide a robust synopsis for high level overviews.
+                            Iterative
+                            approaches to corporate strategy foster collaborative thinking to further the overall value
+                            proposition.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="work-experience-section px-3 col-md-6" *ngIf="employeeToUpdate.Qualification.length > 0">
+                    <h2 class="h3 mb-4"> {{'EDUCATION'|translate}}</h2>
+                    <div class="timeline" *ngFor="let qualification of employeeToUpdate.Qualification">
+                      <div class="timeline-card timeline-card-success card shadow-sm">
+                        <div class="card-body">
+                          <div class="h5 mb-1">{{qualification.IdQualificationTypeNavigation.Label}} <span class="text-muted h6">
+                              {{'FROM'|translate}} {{qualification.University}}
+                          </span></div>
+                          <div class="text-muted text-small mb-2"> {{qualification.GraduationYearDate|date: dateFormat}}</div>
+                          <div>{{qualification.QualificationDescritpion}}.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="d-print-none"  *ngIf="employeeToUpdate.EmployeeSkills.length > 0"/>
+                <div class="py-4 px-4" *ngIf="employeeToUpdate.EmployeeSkills.length > 0">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="h3 mb-0">{{'SKILLS'|translate}}</h5>
+                  </div>
+                  <div class="row element-centred mt-4 col-md-12">
+                    <div class="col-md-2 col-sm-6 centered" *ngFor="let skills of employeeToUpdate.EmployeeSkills">
+                      <div class="progress {{skills.ColorRate}}" [attr.data-percentage]="skills.RatePercent">
+                        <span class="progress-left">
+                          <span class="progress-bar"></span>
+                        </span>
+                        <span class="progress-right">
+                          <span class="progress-bar"></span>
+                        </span>
+                        <div class="progress-value">{{skills.RatePercent}} %</div>
+                      </div>
+                      <p class="h4">{{skills.IdSkillsNavigation.Description}}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <hr class="d-print-none"  *ngIf="leaveBalanceRemaining && leaveBalanceRemaining.length > 0"/>
+                <div class="py-4 px-4" *ngIf="leaveBalanceRemaining && leaveBalanceRemaining.length > 0">
+                  <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="h3 mb-0">{{'LEAVE_BALANCE'|translate}}</h5>
+                  </div>
+                  
+                  <div class="row mt-4 ml-1 col-md-12" style="place-content: center;">
+                    <div *ngFor="let balanceRemaining of leaveBalanceRemaining; let i=index;">
+                    <ul class="tilesWrap">
+                      <li>
+                        <h2>{{ balanceRemaining.RemainingBalance.Day }} {{'DAY_ABBREVIATED' | translate}} </h2>
+                        <h3>{{ balanceRemaining.IdLeaveTypeNavigation.Label }}</h3>
+                        <table *ngIf="balanceRemaining" [ngStyle]="{'width':'100%'}" class="mt-4">
+                          <thead>
+                              <tr>
+                                  <th scope="col" style="font-size: large;">{{'CUMULATIVE_ACQUIRED_SHORT' | translate}}</th>
+                                  <th scope="col" style="font-size: large;">{{'CUMULATIVE_TAKEN_SHORT' | translate}}</th>
+                                  <th scope="col" style="font-size: large;">{{'REMAINING_BALANCE_SHORT' | translate}}</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                                  <td style="font-size: x-large;color: silver;">{{ balanceRemaining.CumulativeAcquired.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                                    {{ balanceRemaining.CumulativeAcquired.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                                  </td>
+                                  <td style="font-size: x-large;color: silver;">{{ balanceRemaining.CumulativeTaken.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                                    {{ balanceRemaining.CumulativeTaken.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                                  </td>
+                                  <td style="font-size: x-large;color: silver;">{{ balanceRemaining.RemainingBalance.Day }} {{'DAY_ABBREVIATED' | translate}} 
+                                    {{ balanceRemaining.RemainingBalance.Hour }} {{'HOUR_ABBREVIATED' | translate}}
+                                  </td>
+                          </tbody>
+                      </table>
+                      </li>
+                    </ul>
+                  </div>
+                  </div>
+                </div>
+
+                <hr class="d-print-none" />
+
+                <div class="py-4 px-4">
+
+                  <div class="row element-centred col-md-12">
+                    <div class="work-experience-section col-md-4 px-3">
+                      <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="h3 mb-0">{{'LANGUAGE'|translate}}</h5>
+                      </div>
+                      <div class="row px-4 py-4 mb-4 justify-content-between">
+                        <div class="progress black" [attr.data-percentage]="40">
+                          <span class="progress-left">
+                            <span class="progress-bar"></span>
+                          </span>
+                          <span class="progress-right">
+                            <span class="progress-bar"></span>
+                          </span>
+                          <div class="progress-value">English</div>
+                        </div>
+                        <div class="progress black" [attr.data-percentage]="60">
+                          <span class="progress-left">
+                            <span class="progress-bar"></span>
+                          </span>
+                          <span class="progress-right">
+                            <span class="progress-bar"></span>
+                          </span>
+                          <div class="progress-value">Franch</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="work-experience-section col-md-8 px-3">
+                      <div class="d-flex align-items-center justify-content-between mb-3">
+                        
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <hr class="d-print-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div class="fixed-card-footer">
+  <div class="footerStyle">
+    <footer class="app-footer">
+      <div class="w-100">
+        <div class="d-flex justify-content-end p-3 footer-content">
+          <a routerLink="/main/payroll/employee">
+            <span class="btn btn-sm btn-primary btn-back-to-list" #BackToList>
+              <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+            </span>
+          </a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</div>

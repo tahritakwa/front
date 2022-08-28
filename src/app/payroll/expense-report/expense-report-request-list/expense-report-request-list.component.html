@@ -1,0 +1,127 @@
+<div class="card">
+  <div class="card-header" style="background-color: white; border:none">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'LIST_EXPENSE_REPORT_REQUEST'|translate}}</h3>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+    <div>
+      <form class="form-horizontal">
+        <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+          (filtrePredicateToSend)="getFiltrePredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+          (searchClickEvent)="initGridDataSource()" (resetClickEvent)="resetClickEvent()">
+        </app-advanced-search>
+        <div class="row d-flex justify-content-between mt-3">
+          <app-action-dropdown *ngIf="hasUpdateExpenseReportPermission" style="display: inline-flex;" [Actions]="listOfAction" (selectedValue)="selectedAction($event)">
+          </app-action-dropdown>
+          <app-btn-grid class="col" [advencedAdd]='hasAddPermission' [addLink]='"add"'
+            [relativeStyle]='true' [model]="true" [gridSettings]="gridSettings"
+            [fileName]="'LIST_EXPENSE_REPORT_REQUEST'|translate" [service]="expenseReportService" [predicate]="predicate"
+            api="getDataSourcePredicate" [isExportExcel]="true">
+          </app-btn-grid>
+        </div>
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+          [skip]="gridSettings.state.skip" [sortable]="true" [reorderable]="true" [selectable]="true"
+          (remove)="removeHandler($event)" (dataStateChange)="dataStateChange($event)" [sort]="gridSettings.state.sort"
+          [filter]="gridSettings.state.filter"[selectable]="{enabled: true && hasUpdateExpenseReportPermission, checkboxOnly: true && hasUpdateExpenseReportPermission}"
+          (selectedKeysChange)="onSelectedKeysChange($event)" [kendoGridSelectBy]="'Id'" [selectedKeys]="expenseIdsSelected">
+          <!--Check box Start -->
+          <kendo-grid-checkbox-column [width]="80" *ngIf="hasUpdateExpenseReportPermission">
+            <ng-template kendoGridHeaderTemplate>
+              <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState">
+              <label class="k-checkbox-label" for="selectAllCheckboxId" ></label>
+            </ng-template>
+          </kendo-grid-checkbox-column>
+          <!--Check box End -->
+          <!--Employee-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+            [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+            [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+            [format]="gridSettings.columnsConfig[0].format">
+          </kendo-grid-column>
+          <!-- Submission Date -->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+            [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+            [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+            [format]="gridSettings.columnsConfig[1].format">
+            <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+              <kendo-grid-date-filter-cell [format]="dateFormat" [column]="column" [filter]="filter" [operator]="equals"  (click)="translateToday()">
+              </kendo-grid-date-filter-cell>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.SubmissionDate | date: gridSettings.columnsConfig[1].format}}
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Total expense-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+            [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+            [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+            [format]="gridSettings.columnsConfig[2].format">
+            <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+              <kendo-grid-numeric-filter-cell [column]="column" [filter]="filter" [min]=0>
+              </kendo-grid-numeric-filter-cell>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div class="amount-position">{{dataItem.TotalAmount}} {{userCurrencySymbol}} </div>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Treatment Date-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+            [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+            [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+            [format]="gridSettings.columnsConfig[3].format">
+            <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+              <kendo-grid-date-filter-cell [format]="dateFormat" [column]="column" [filter]="filter" [operator]="equals"  (click)="translateToday()">
+              </kendo-grid-date-filter-cell>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div *ngIf="dataItem.TreatmentDate">{{dataItem.TreatmentDate | date: gridSettings.columnsConfig[3].format}}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Treated By-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+            [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+            [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+            [format]="gridSettings.columnsConfig[4].format">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <div *ngIf="dataItem.TreatedByNavigation">{{dataItem.TreatedByNavigation.FullName}}</div>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- State-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+            [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+            [filter]="gridSettings.columnsConfig[5].filter" [filterable]="gridSettings.columnsConfig[5].filterable"
+            [format]="gridSettings.columnsConfig[5].format">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span *ngIf="dataItem.Status === statusCode.Waiting"
+                class="badge badge-warning status-badge">{{'WAITING'|translate}}</span>
+              <span *ngIf="dataItem.Status === statusCode.Accepted"
+                class="badge badge-success status-badge">{{'ACCEPTED'|translate}}</span>
+              <span *ngIf="dataItem.Status === statusCode.Refused"
+                class="badge badge-danger status-badge">{{'REFUSED'|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Command-->
+          <kendo-grid-command-column [width]="130">
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              <i class="fa fa-download" tooltip="{{'DOWNLOAD' | translate}}" (click)="DownloadExpenseReportDocumentsWar(dataItem.Id)"></i>
+              <!-- Update contract -->
+              <i *ngIf="hasUpdatePermission || hasShowPermission" class="las la-pen edit-pencil cursor-pointer la-lg" (click)="goToAdvancedEdit(dataItem)"
+                tooltip="{{'UPDATE' | translate}}"></i>
+              <!-- Remove Contract-->
+              <i *ngIf="dataItem.Status === statusCode.Waiting && (hasDeletePermission || dataItem.IdEmployee === connectedEmployee)"
+                class="las la-trash-alt text-danger cursor-pointer la-lg cursor-pointer" tooltip="{{'DELETE' | translate}}" (click)="removeHandler(dataItem)"></i>
+            </ng-template>
+          </kendo-grid-command-column>
+          <!--grid pdf & excel-->
+          <app-grid-export [gridSettings]="gridSettings" fileName="{{'LIST_EXPENSE_REPORT'|translate}}" pdf="true"
+            excel="true" [service]="expenseReportService" [predicate]="predicate">
+          </app-grid-export>
+          <!--end grid pdf & excel-->
+        </kendo-grid>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+.dropdown-item-active{
+  display: block !important;
+  width: 100% !important;
+  padding: 0.25rem 1.5rem !important;
+  clear: both !important;
+  font-weight: 400 !important;
+  text-align: inherit !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: relative !important;
+  padding: 10px 20px !important;
+  border-bottom: 1px solid #c8ced3 !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  background-color: #4c9aae !important;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.doc-code {
+  color: rgb(76, 154, 174);
+  text-decoration: underline;
+}
+
+input[type=text] {
+  border: 1px solid #e4e7ea!important;
+}
+

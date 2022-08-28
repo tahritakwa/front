@@ -1,0 +1,12 @@
+.form-control:disabled {
+  background-color: transparent;
+  cursor: not-allowed;
+}
+fieldset {
+  padding: 20px;
+}
+legend {
+  color: #13688c;
+  width: fit-content !important;
+  font-size: medium;
+}

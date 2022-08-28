@@ -1,0 +1,21 @@
+<div class="modal-body">
+  <h6 style="font-weight: bolder">{{'PAYMENT_Date'|translate}}</h6>
+  <h6>
+    {{ payment.SettlementDate | date: format }}
+  </h6>
+  <br>
+  <h6 style="font-weight: bolder">{{'PAYMENT_METHOD'|translate}}</h6>
+  <h6>{{ payment.IdPaymentMethodNavigation.MethodName }}</h6>
+  <br>
+  <h6 style="font-weight: bolder">{{'PAYMENT_AMOUNT'|translate}}</h6>
+  <h6>
+    {{ payment.SettlementAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: precision,
+      style: 'currency', currency: payment.IdUsedCurrencyNavigation.Code, currencyDisplay:'code'}) }}
+  </h6>
+  <br>
+  <h6 style="font-weight: bolder">{{'ASSIGNED_AMOUNT'|translate}}</h6>
+  <h6>
+    {{ payment.AssignedAmountWithCurrency.toLocaleString(language,{minimumFractionDigits: precision,
+      style: 'currency', currency: payment.IdUsedCurrencyNavigation.Code, currencyDisplay:'code'}) }}
+  </h6>
+</div>

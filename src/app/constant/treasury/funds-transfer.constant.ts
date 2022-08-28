@@ -1,0 +1,40 @@
+export class FundsTransferConstant {
+    public static readonly ID = 'Id';
+    public static readonly CODE = 'Code';
+    public static readonly TRANSFER_DATE = 'TransferDate';
+    public static readonly TYPE = 'Type';
+    public static readonly ID_SOURCE_CASH = 'IdSourceCash';
+    public static readonly ID_DESTINATION_CASH = 'IdDestinationCash';
+    public static readonly AMOUNT_WITH_CURRENCY = 'AmountWithCurrency';
+    public static readonly AMOUNT = 'Amount';
+    public static readonly STATUS = 'Status';
+    public static readonly ID_CURRENCY = 'IdCurrency';
+    public static readonly ID_CASHIER = 'IdCashier';
+    public static readonly ID_SOURCE_NAVIGATION = 'IdSourceCashNavigation';
+    public static readonly ID_SOURCE_NAVIGATION_ID = 'IdSourceCashNavigation.Id';
+    public static readonly CODE_SOURCE_NAVIGATION = 'IdSourceCashNavigation.Code';
+    public static readonly NAME_SOURCE_NAVIGATION = 'IdSourceCashNavigation.Name';
+    public static readonly ID_DESTINATION_NAVIGATION = 'IdDestinationCashNavigation';
+    public static readonly ID_DESTINATION_NAVIGATION_ID = 'IdDestinationCashNavigation.Id';
+    public static readonly CODE_DESTINATION_NAVIGATION = 'IdDestinationCashNavigation.Code';
+    public static readonly NAME_DESTINATION_NAVIGATION = 'IdDestinationCashNavigation.Name';
+    public static readonly ID_CURRENCY_NAVIGATION = 'IdCurrencyNavigation';
+    public static readonly CODE_CURRENCY_NAVIGATION = 'IdCurrencyNavigation.Code';
+    public static readonly DATE_SETTLEMENT = 'SettlementDate';
+    public static readonly TRANSFER_TYPE_TITLE = 'TRANSFER_TYPE';
+    public static readonly SOURCE_TITLE = 'SOURCE';
+    public static readonly DESTINATION_TITLE = 'DESTINATION';
+    public static readonly STATE_TITLE = 'STATE_TITLE';
+    public static readonly AMOUNT_WITH_CURRENCY_TITLE = 'AMOUNT_TITLE';
+    public static readonly AMOUNT_TITLE = 'AMOUNT_TITLE';
+    public static readonly DATE_TITLE = 'DATE_TITLE'
+    public static readonly TRANSFER_CODE_TITLE = 'TRANSFER_CODE_TITLE';
+    public static readonly SOURCE = 'Source';
+    public static readonly DESTINATION = 'Destination';
+    public static readonly NAVIGATE_TO_EDIT_FUNDS_TRANSFER = '/main/treasury/CashManagement/FundsTransfer/edit/';
+    public static readonly GET_SOURCE_BY_TYPE = 'getSourceCashsDropdown';
+    public static readonly GET_DESTINATION_BY_TYPE = 'getDestinationCashsDropdown';
+    public static readonly GET_DATA_WITH_SPECIFIC_FILTER = 'getDataWithSpecificFilter';
+    public static readonly NAVIGATE_TO_FUNDS_TRANSFER_LIST = '/main/treasury/CashManagement/FundsTransfer/'; 
+    
+}

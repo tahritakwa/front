@@ -1,0 +1,156 @@
+<div class="row">
+  <label class="col-lg-2 col-md-4 col-sm-12">
+    {{'DELIVERY_FORM'|translate}}
+  </label>
+  <div class="col-lg-10 col-md-6 col-sm-12">
+    <kendo-multiselect class="form-control HistoryCommandMargin" [data]="filtredBlList" (valueChange)="filterData()"
+      [textField]="'Code'" [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilter($event)"
+      [valueField]="'Id'" [(ngModel)]="IdBl"></kendo-multiselect>
+  </div>
+</div>
+<br />
+<kendo-grid #gridImportBL (cellClick)="editHandlerImportBl($event)" [data]="listDocumentLineBL"
+  [style.maxHeight.px]="500" [pageSize]="pageSize" [skip]="skip" [pageable]="true" (pageChange)="pageChange($event)"
+  [selectable]="{enabled: true, checkboxOnly: true }" [kendoGridSelectBy]="'Id'"
+  (selectedKeysChange)="onSelectedKeysChange($event)" [selectedKeys]="mySelection">
+
+  <kendo-grid-checkbox-column [width]='50'>
+    <ng-template kendoGridHeaderTemplate>
+      <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+        (selectAllChange)="onSelectAllChange($event)" type="checkbox">
+      <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+    </ng-template>
+  </kendo-grid-checkbox-column>
+
+  <kendo-grid-column field="IdDocumentNavigation.Code" title="{{'CODE'|translate}}" [width]='100'>
+    <ng-template kendoGridHeaderTemplate>
+      <div>
+        <div class="d-flex align-items-end px-3">{{'CODE'|translate}}</div>
+        <div class="input-group">
+          <input type="search" (input)="filterData()" class="form-control form-control-sm"
+            placeholder="{{'SEARCH'|translate}}" style="border-bottom: 1px solid #e4e7ea !important;"
+            aria-describedby="addon-wrapping" [(ngModel)]='codeSearch'>
+
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="Designation" title="{{'DESCRITPION'|translate}}" [width]='300'>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      {{dataItem.IdItemNavigation.Code}}-{{dataItem.IdItemNavigation.Description}}
+    </ng-template>
+    <ng-template kendoGridHeaderTemplate>
+      <div>
+        <div class="d-flex align-items-end px-3">{{'DESCRITPION'|translate}}</div>
+        <div class="input-group">
+          <input type="search" (input)="filterData()" class="form-control form-control-sm"
+            placeholder="{{'SEARCH'|translate}}" style="border-bottom: 1px solid #e4e7ea !important;"
+            aria-describedby="addon-wrapping" [(ngModel)]='descriptionSearch'>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+  <kendo-grid-column field="MovementQty" title="{{'QUANTITY'|translate}}" [width]='100'>
+
+    <ng-template kendoGridHeaderTemplate>
+      <div>
+        <div class="d-flex align-items-end px-3">{{'QUANTITY'|translate}}</div>
+        <div class="input-group">
+          <input type="number" (input)="filterData()" class="form-control form-control-sm"
+            placeholder="{{'SEARCH'|translate}}" style="border-bottom: 1px solid #e4e7ea !important;"
+            aria-describedby="addon-wrapping" [(ngModel)]='qtySearch'>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template kendoGridEditTemplate>
+      <app-grid-cell-input-template [group]="formGroupImportBl" controlName="MovementQty" inputType="number"
+        [stopInputCounter]='true' (focusout)="onFocusOutMvtQuantity()">
+      </app-grid-cell-input-template>
+    </ng-template>
+
+  </kendo-grid-column>
+
+  <kendo-grid-column field="TaxeString" title="{{'TAX'|translate}}" [width]='120'>
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <div *ngFor='let documentTax of dataItem.Taxe' class="taxClass"
+        style="border: 2px solid #61a8ad !important; padding: 2px">
+        {{documentTax.Label}}
+      </div>
+    </ng-template>
+
+  </kendo-grid-column>
+
+  <kendo-grid-column field="HtUnitAmountWithCurrency" title="{{'PU'|translate}}" [width]='150'
+    [format]="formatForSalesOptions">
+    <ng-template kendoGridHeaderTemplate>
+      <div>
+        <div class="d-flex align-items-end px-3">{{'PU'|translate}}</div>
+        <div class="input-group">
+          <input type="number" (input)="filterData()" class="form-control form-control-sm"
+            placeholder="{{'SEARCH'|translate}}" style="border-bottom: 1px solid #e4e7ea !important;"
+            aria-describedby="addon-wrapping" [(ngModel)]='puSearch'>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+
+  <kendo-grid-column field="DiscountPercentage" title="{{'DISCOUNT'|translate}}" [width]='80'>
+
+  </kendo-grid-column>
+
+  <kendo-grid-column field="HtAmountWithCurrency" title="{{'NET_PRICE'|translate}}" [width]='150'
+    [format]="formatForSalesOptions">
+    <ng-template kendoGridHeaderTemplate>
+      <div>
+        <div class="d-flex align-items-end px-3">{{'NET_PRICE'|translate}}</div>
+        <div class="input-group">
+          <input type="number" (input)="filterData()" class="form-control form-control-sm"
+            placeholder="{{'SEARCH'|translate}}" style="border-bottom: 1px solid #e4e7ea !important;"
+            aria-describedby="addon-wrapping" [(ngModel)]='netPriceSearch'>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <kendo-grid-column field="HtTotalLineWithCurrency" title="{{'AMOUNTHT'|translate}}" [width]='150'
+    [format]="formatForSalesOptions">
+    <ng-template kendoGridHeaderTemplate>
+      <div>
+        <div class="d-flex align-items-end px-3">{{'AMOUNTHT'|translate}}</div>
+        <div class="input-group">
+          <input type="number" (input)="filterData()" class="form-control form-control-sm"
+            placeholder="{{'SEARCH'|translate}}" style="border-bottom: 1px solid #e4e7ea !important;"
+            aria-describedby="addon-wrapping" [(ngModel)]='amountHtSearch'>
+        </div>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+
+</kendo-grid>
+<hr />
+<div class="row" style="float:right">
+  <div class="text-right num-key">
+    <div style="font-size: 15px;
+                            font-style: normal;
+                            color: black;">
+      {{'TOTAL_HT'|translate}}
+    </div>
+  </div>
+  <div class="num-value-large num-value">
+    <span theme="light" style="border:none">
+      <kendo-numerictextbox [spinners]="false" [format]="formatForSalesOptions" [step]="1" [value]="sumHT"
+        [readonly]="true" class="important-amount num-field form-control disabledInput" style="margin-top: -5%;
+                                          font-family: Roboto; border:none; color: rgb(80, 82, 83);">
+      </kendo-numerictextbox>
+    </span>
+  </div>
+</div>
+<br />
+<hr />
+
+<button class="btn btn-warning" data-dismiss="modal" [disabled]="disableButtonImport" (click)='saveImportedLine()'
+  style="float:right" type="button">
+  {{'IMPORT'|translate}}
+</button>

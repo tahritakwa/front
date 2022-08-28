@@ -1,0 +1,154 @@
+<div class="col-12 card full-screen-card w-100">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header" style="background-color: white; border:none">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 mb-2">
+            <h3
+              class="card-title mb-0">{{(isArchivingMode ? ORGANISATION_LIST_PROSPECT : ORGANISATION_LIST)|translate}}</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <app-advanced-search [filtreFieldsColumns]="filterFieldsColumns" [filtreFieldsInputs]="filterFieldsInputs" *ngIf="!isArchivingMode"
+                               (filtrePredicateToSend)="getFilterPredicate($event)"
+                               (predicateOperator)="getOperatorPredicate($event)"
+                              (resetClickEvent)="resetClickEvent()" (searchClickEvent)="searchClick()" >
+          </app-advanced-search>
+          <div class="row d-flex justify-content-between mt-3" >
+          <app-organization-filter class="col-lg-3" *ngIf="!isArchivingMode"
+                                   (sendData)="initGridDataSource($event)" [prospectType]="prospectType"
+                                   [isArchivingMode]="isArchivingMode"
+                                   [paramsFromOrgList]="orgListParams"
+                                   [gridSettings]="gridSettings"></app-organization-filter>
+
+
+            <app-btn-grid  class="col"
+                          [advencedAdd]='!isArchivingMode && hasAddPermission' [addLink]='"add"'
+                          [cardView]='!cardViewB' [params]="prospectType"
+                          [listView]='cardViewB' (cardViewEvent)="changeViewToCard($event)"
+                          (listViewEvent)="changeViewToList($event)"
+                          (sendMailEvent)="sendMail()"
+                          (downLoadFileEvent)="downLoadFile($event)"
+                          [isExportExcel]="false" [isImportFile]="false" [isExportModel]="false"
+                          (incomingFileEvent)="incomingFile($event)"
+                          [isFromCRM]="false"
+            >
+            </app-btn-grid>
+
+
+          </div>
+
+
+
+          <div class="col-lg-12 col-md-12 col-sm-12" style="float: left;">
+            <div class="navItems my-3">
+              <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist" *ngIf="!isArchivingMode">
+                <li class="nav-item">
+                  <a class="nav-link nav-link-new" [ngClass]="prospectNavItemClass" data-toggle="tab" href="#home1" *ngIf="authService.hasAuthorities([CRMPermissions.VIEW_ORGANISATION_LEAD])"
+                     role="tab"
+                     aria-controls="home1" (click)="switchOrg()"
+                     aria-selected="true">{{'PROSPECTS.PROSPECTS'|translate}}
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link nav-link-new" [ngClass]="clientNavItemClass" data-toggle="tab" href="#home1" *ngIf="authService.hasAuthorities([CRMPermissions.VIEW_ORGANISATION_CLIENT])"
+                     role="tab" aria-controls="home1"
+                     (click)="switchClient()"
+                     aria-selected="false"> {{'CONTACT_CLIENT'|translate}}
+                  </a>
+                </li>
+              </ul>
+              <div class="tab-content tab-content-new mt-3" id="tabContent">
+                <div class="tab-pane active show" id="home1" role="tabpanel">
+                  <kendo-grid *ngIf="!cardViewB" [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                              [skip]="gridSettings.state.skip"
+                              [sortable]="{allowUnsort: true, mode: 'single'}"
+                              [pageable]="pagerSettings" [reorderable]="true"
+                              [columnMenu]="false" (pageChange)="onPageChange($event)"
+                              (dataStateChange)="dataStateChange($event)"
+                              (remove)="removeHandler($event)" (sortChange)="sortChange($event)"
+                              [sort]="gridSettings.state.sort"
+                              [filter]="gridSettings.state.filter"
+                              [selectedKeys]="organisationsSelected"
+                              [kendoGridSelectBy]="selectKey">
+                    <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                                       [title]="gridSettings.columnsConfig[0].title | translate"
+                                       [width]="gridSettings.columnsConfig[0]._width"
+                                       [filter]="gridSettings.columnsConfig[0].filter"
+                                       [filterable]="gridSettings.columnsConfig[0].filterable"
+                                       [format]="gridSettings.columnsConfig[0].format">
+                    </kendo-grid-column>
+                    <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                                       [title]="gridSettings.columnsConfig[1].title | translate"
+                                       [width]="gridSettings.columnsConfig[1]._width"
+                                       [filter]="gridSettings.columnsConfig[1].filter"
+                                       [filterable]="gridSettings.columnsConfig[1].filterable"
+                                       [format]="gridSettings.columnsConfig[1]">
+                    </kendo-grid-column>
+                    <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                                       [title]="gridSettings.columnsConfig[2].title | translate"
+                                       [width]="gridSettings.columnsConfig[2]._width"
+                                       [filter]="gridSettings.columnsConfig[2].filter"
+                                       [filterable]="gridSettings.columnsConfig[2].filterable"
+                                       [format]="gridSettings.columnsConfig[2]">
+                    </kendo-grid-column>
+                    <kendo-grid-column
+                      *ngIf="showCountryCityCol"
+                      [field]="gridSettings.columnsConfig[3].field"
+                      [title]="gridSettings.columnsConfig[3].title | translate"
+                      [width]="gridSettings.columnsConfig[3]._width"
+                      [filter]="gridSettings.columnsConfig[3].filter"
+                      [filterable]="gridSettings.columnsConfig[3].filterable"
+                      [format]="gridSettings.columnsConfig[3]">
+                      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                    <span style=" white-space: pre-line" tooltip="{{getAdresse(adresse)}}"
+                          *ngFor="let adresse of dataItem.addresses">{{getAdresse(adresse)}}<br/></span>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-command-column [width]="150">
+                      <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+                        <!-- edit command directive-->
+                        <i class="las la-pen cursor-pointer edit-pencil la-lg" tooltip="{{'SHOW' | translate}}"  *ngIf="(authService.hasAuthorities([CRMPermissions.OWN_ORGANISATION]) ||  authService.hasAuthorities([CRMPermissions.EDIT_ORGANISATION]))&& !isArchivingMode"
+                           (click)="goToAdvancedEdit(dataItem)"></i>
+                        <!-- remove command directive -->
+                        <i class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true" *ngIf="authService.hasAuthorities([CRMPermissions.DELETE_ORGANISATION]) && !isArchivingMode"
+                           (click)="removeHandler(dataItem)" tooltip="{{'DELETE' | translate}}"></i>
+                        <!--archive -->
+                        <button class="k-button btnKendoGrid archiveBtn" *ngIf="!isArchivingMode && prospectType && authService.hasAuthorities([CRMPermissions.ARCHIVE_ORGANISATION])"
+                                (click)="archiveSelected(dataItem)" tooltip="{{'ARCHIVE' | translate}}">
+                          <i class="fa fa-archive"></i>
+                        </button>
+                        <!--restore-->
+                        <button *ngIf="isArchivingMode && prospectType && authService.hasAuthorities([CRMPermissions.RESTORE_ARCHIVED_ORGANISATION])" class="btnKendoGrid"
+                                (click)="restoreSelected(dataItem)" style="background: none;">
+                          <i class="fa fa-refresh"></i>
+                        </button>
+                      </ng-template>
+                    </kendo-grid-command-column>
+                  </kendo-grid>
+                  <div *ngIf="cardViewB">
+                    <app-organisation-card-view
+                      (pageChangeEvent)="onPageChange($event,'card')"
+                      [organisationFiltred]="organisationFiltred"
+                      [organisationType]="organisationType"
+                      [prospectType]="prospectType"
+                      [isArchivingMode]="isArchivingMode"
+                      (organisationFromCard)="getcarddetail($event)"
+                      (sendOrganisationToDelete)="deleteFromCard($event)"
+                      (sendOrganisationToArchive)="archiveFromCard($event)"
+                      (sendOrganisationToRestore)="restoreFromCard($event)"
+                      (stateChangeEvent)="dataStateChange($event)"
+                    ></app-organisation-card-view>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-permission [uuid]="uuid" [parent]="parentPermission" style="display:none"></app-permission>

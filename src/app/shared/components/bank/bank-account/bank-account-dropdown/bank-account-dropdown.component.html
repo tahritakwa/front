@@ -1,0 +1,17 @@
+<div [formGroup]="bankAccountForm">
+  <kendo-combobox [data]="bankFiltredDataSource" class="form-control" [textField]="'Rib'" [filterable]="true"
+    name="IdBankAccount" formControlName="IdBankAccount" [allowCustom]="allowCustom" [valueField]="'Id'"
+    [valuePrimitive]="true"  (filterChange)="handleFilter($event)" (valueChange)="onSelect($event)">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate *ngIf="this.authService.hasAuthority(AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS) && canAddNew">
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

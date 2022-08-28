@@ -1,0 +1,62 @@
+<div class="card">
+  <div class="card-body">
+    <button class="d-flex justify-content-start btn btn-outline-secondary btn-lg btn-block"
+            type="button" (click)='onClickProfile()'>
+      <i class="fa fa-user p-1"></i>
+      <span class="mx-2">{{'PROFIL' | translate}}</span>
+    </button>
+    <p-accordion>
+      <p-accordionTab>
+        <p-header>
+          <div>
+            <img src="../../../assets/image/log_s.svg" width="20" alt=" Stark Logo">
+            <span class="mx-2" style="color: cornflowerblue;font-family:Arial, Helvetica, sans-serif ;">{{selectedCompany}}</span>
+          </div>
+        </p-header>
+        <button class="btn btn-outline-info btn-lg btn-block" *ngFor="let company of companiesFiltredDataSource"
+                (click)="selectionChange(company)">
+          <div class="d-flex justify-content-start">
+            <img class="k-display-flex justify-content-start" src="../../../assets/image/log_s.svg" width="20" alt=" Stark Logo">
+            <span class="mx-2" style="color: cornflowerblue;font-family:Arial, Helvetica, sans-serif ;">{{company.Name}}</span>
+          </div>
+        </button>
+      </p-accordionTab>
+    </p-accordion>
+    <button class="d-flex justify-contsent-start btn btn-outline-success btn-lg btn-block mt-2"
+            type="button" (click)="onClickNotification()">
+      <i class="fa fa-bell-o p-1"></i>
+      <span class="mx-2">{{'NOTIFICATIONS' | translate}}</span>
+      <span class="badge badge-success">{{countNotifications}}</span>
+    </button>
+    <button class="d-flex justify-content-start btn btn-outline-info btn-lg btn-block" type="button">
+      <i class="fa fa-envelope p-1"></i>
+      <span class="mx-2">{{'EMAIL' | translate}}</span>
+      <span class="badge badge-info">{{countEmailsNotifications}}</span>
+    </button>
+    <button class="d-flex justify-content-start btn btn-outline-warning btn-lg btn-block" type="button"
+    (click)="onClickActionsNotification()">
+      <i class="fa fa-tasks p-1"></i>
+      <span class="mx-2">{{'ACTIONS' | translate}}</span>
+      <span class="badge badge-warning">{{countActionsNotifications}}</span>
+    </button>
+    <button class="d-flex justify-content-start btn btn-outline-danger btn-lg btn-block" type="button"
+    (click)="onClickB2BNotification()">
+      <i class="las la-shopping-cart  p-1"></i>
+      <span class="mx-2">{{'B2B' | translate}}</span>
+      <span class="badge badge-danger">{{countB2BNotifications}}</span>
+    </button>
+    <button class="d-flex justify-content-start btn btn-outline-danger btn-lg btn-block" type="button">
+      <i class="las la-shopping-cart  p-1"></i>
+      <span class="mx-2">{{'B2C' | translate}}</span>
+      <span class="badge badge-danger">{{countB2CNotifications}}</span>
+    </button>
+    <button class="d-flex justify-content-start btn btn-outline-secondary btn-lg btn-block" type="button"
+            [routerLink]="['/main/settings']">
+      <i class="fa fa-cog p-1"></i> <span class="mx-2">{{'SETTINGS' | translate}}</span>
+    </button>
+    <button class="d-flex justify-content-start btn btn-outline-secondary btn-lg btn-block" type="button"
+            (click)='onClickLogout()'>
+      <i class="icon-logout p-1"></i> <span class="mx-2">{{'LOGOUT' | translate}}</span>
+    </button>
+  </div>
+</div>

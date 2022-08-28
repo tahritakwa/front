@@ -1,0 +1,27 @@
+<div [formGroup]="AddCvFormGroup" class="form-group row" style="padding-left:3%;padding-right:3%">
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ENTITLED'|translate}}<span class="required">*</span></label>
+    <div style="margin-bottom:15px">
+      <input [ngClass]="{ 'has-error': (Entitled.touched || Entitled.dirty) && !Entitled.valid }" class="form-control" formControlName="Entitled"
+             type="text">
+      <app-control-messages [control]="Entitled"
+                            class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12"> {{'DEPOSIT_DATE'|translate}}<span class="required">*</span></label>
+    <kendo-datepicker [format]="formatDate" class="form-control" formControlName="DepositDate">
+      <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                 toggle="Cambiar calendario"></kendo-datepicker-messages>
+    </kendo-datepicker>
+    <app-control-messages [control]="DepositDate"
+                          class="error-msg messages text-left text-danger"></app-control-messages>
+  </div>
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <label class="col-lg-12 col-md-12 col-sm-12"></label>
+    <app-upload-file *ngIf="isFileArrayReady" [fileToUpload]="CvFileInfo"
+            [canUpdateFile]="!canUpdateFile"
+            [service]="candidateService"></app-upload-file>
+  </div>
+</div>
+<hr>

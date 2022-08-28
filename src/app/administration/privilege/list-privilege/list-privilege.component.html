@@ -1,0 +1,63 @@
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'LIST_PRIVILEGES'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        (dataStateChange)="dataStateChange($event)" (save)="saveHandler($event)" (cancel)="cancelHandler($event)"
+        (edit)="editHandler($event)" [pageable]="true" [sortable]="true" [sort]="gridSettings.state.sort"
+        [filterable]="true" [selectable]="true" [filter]="gridSettings.state.filter">
+        <!-- Toolbar Start-->
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row" style="float :right; margin-right: 40px;margin-left: -1%;height: 40px;">
+            <app-btn-grid [export]='true' style="margin-top: -5%;display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!-- Toolbar end -->
+        <!-- Label Start -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+          [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+          [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+          [format]="gridSettings.columnsConfig[0].format">
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="formGroup" controlName="Label" inputType="text">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Label End-->
+        <!-- Description Start -->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [format]="gridSettings.columnsConfig[1].format">
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="formGroup" controlName="Description" inputType="text">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Description End -->
+        <!-- Command-->
+        <kendo-grid-command-column [width]="130">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button kendoGridEditCommand [primary]="true" class="btnKendoGrid">
+              <i class="fa fa-pencil-square-o"></i>
+            </button>
+            <!-- save command directive, will be visible when in edit mode -->
+            <button kendoGridSaveCommand class="btnKendoGrid"><span class="fa fa-save"></span></button>
+            <!-- cancel command directive, will be visible when in edit mode -->
+            <button kendoGridCancelCommand class="btnKendoGrid"><span class="fa fa-close"></span></button>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" fileName="{{'LIST_PRIVILEGES'|translate}}" pdf="true"
+          excel="true" [service]="privilegeService">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,240 @@
+<div class="row d-flex justify-content-center" *ngIf="ismodal">
+  <div class="row mr-5">
+    <input *ngIf='!isForWarehouseDetail' type="radio" name="decision" id="maybe-radio" (click)="searchmode(0)"
+      class="form-control" />
+    <label *ngIf='!isForWarehouseDetail' for="maybe-radio"> {{'SEARCH_BY'|translate}} {{'CATEGORY'|translate}}</label>
+  </div>
+  <div class="row ml-5 mr-5">
+    <input type="radio" name="decision" id="yes-radio" (click)="searchmode(1)" checked class="form-control" />
+    <label *ngIf='!isForWarehouseDetail' for="yes-radio"> {{'SEARCH_BY'|translate}} {{'REFERENCE'|translate}}</label>
+  </div>
+  <div class="row ml-5 mr-5">
+    <input type="radio" name="decision" id="yes-radio" (click)="searchmode(2)" checked class="form-control" />
+    <label *ngIf='!isForWarehouseDetail' for="yes-radio"> {{'SEARCH_BY'|translate}} {{'OEM'|translate}}</label>
+  </div>
+</div>
+
+<!-- Global Search-->
+<div class="form-group row d-flex justify-content-around" *ngIf="mode==5">
+  <div class="col">
+    <div >
+      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: -15px; display: flex;">
+           <input type="text" class="form-control input-text"  placeholder="{{'GLOBAL_SEARCH_TECDOC'|translate}}" 
+           [(ngModel)]='GlobalSearchValue' (keyup.enter)="getItemsByGlobalSearchEnter()">
+        <div class="col-lg-2 col-md-2 col-sm-2" style="display: flex; margin-top: 20px;"> 
+          <span tooltip="{{'EXACT_SEARCH'|translate}}" theme="light">
+        <input type="checkbox" id="isExactSearch" class="input-checkbox100"  (click)='setEqualValue()'[checked]="false" />
+          <label class="label-checkbox100" for="isExactSearch"></label>
+          </span>
+        </div>
+      </div>
+      </div>
+  </div>
+</div>
+<!-- End Global Search-->
+
+<!-- reference Search-->
+<div class="form-group row d-flex justify-content-around" *ngIf="mode==1">
+  <div class="col">
+    <div class="row">
+      <div class="col-lg-12 col-md-6 col-sm-12 mb-2">
+        <input type="text" class="form-control" placeholder="{{'REFERENCE_SEARCH'|translate}}" name='reference'
+          aria-describedby="addon-wrapping" [(ngModel)]='reference' (keypress)="pressKeybordEnter($event)"
+           (keydown.Tab)="pressKeybordEnter($event)">
+      </div>
+      <div class="col-lg-12 col-md-6 col-sm-12 mb-3">
+        <kendo-combobox class="w-100" [data]=BrandListFiltredDataSource [filterable]="true"
+          (filterChange)="handleBrandListFilter($event)" [disabled]="!reference || DisableBrand"
+          [(ngModel)]="selectedBrandFilter" [placeholder]="'BRAND'|translate"
+          (valueChange)="handleBrandRefListChange($event)">
+          <!--No data template-->
+          <ng-template kendoDropDownListNoDataTemplate>
+            <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+          </ng-template>
+          <!--end No data template-->
+        </kendo-combobox>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isVisibleTecdocSearchBtn && ismodal" class="col-lg-1 px-lg-0 px-md-0 col-md-1 col-sm-12">
+    <button class="btn btn-secondary col-12" type="button" id="searchBtnByReference" (click)='getItemsByReference()'>
+      <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+    </button>
+  </div>
+
+
+</div>
+<!-- OEM Search-->
+<div class="form-group row d-flex justify-content-around" *ngIf="mode==2">
+  <div class="col">
+    <div class="row">
+  <div class="col-lg-12 col-md-6 col-sm-12 mb-2">
+    <input type="text" class="form-control" placeholder="{{'OEM_SEARCH'|translate}}" name='OemNumber'
+      aria-label="OemSearch" aria-describedby="addon-wrapping" [(ngModel)]='OemNumber'
+      (keypress)="pressKeybordOemEnter($event)" (keydown.Tab)="pressKeybordOemEnter($event)">
+  </div>
+    <div class="col-lg-12 col-md-6 col-sm-12 mb-2">
+      <kendo-combobox class="w-100" [data]="BrandListFiltredDataSource" [disabled]="!OemNumber || DisableBrand"
+        [placeholder]="'BRAND'|translate" (valueChange)="handleBrandOemListChange($event)" [(ngModel)]="selectedBrandFilter">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+  </div>
+  </div>
+  <div *ngIf="isVisibleTecdocSearchBtn && ismodal" class="col-lg-1 px-lg-0 px-md-0 col-md-1 col-sm-12">
+  <button class="btn btn-secondary col-12" type="button" id="searchItemsByOem" (click)='getItemsByOem()'  [disabled]='UnlockSearch(OemNumber)'>
+    <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+  </button>
+  </div>
+</div>
+<!-- marque-->
+<div class="form-group row d-flex justify-content-around" *ngIf="false">
+  <div class="col-11">
+    <div class="row">
+      <div class="col-11">
+        <kendo-combobox class="w-100" [data]=BrandListFiltredDataSource [textField]="'Name'" [valueField]="'Name'"
+          [value]="selectedBrand" [filterable]="true" (filterChange)="handleBrandListFilter($event) "
+          [placeholder]="'BRAND'|translate" (valueChange)="handleBrandListChange($event)">
+          <!--No data template-->
+          <ng-template kendoDropDownListNoDataTemplate>
+            <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+          </ng-template>
+          <!--end No data template-->
+        </kendo-combobox>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="form-group row d-flex justify-content-around" *ngIf="mode==4">
+  <div class="col-11">
+    <div class="row">
+      <div class="col-11">
+        <input type="text" class="form-control" placeholder="{{'ID_SEARCH'|translate}}" name='Id' aria-label="IdSearch"
+          aria-describedby="addon-wrapping" [(ngModel)]='Id' (keypress)="pressKeybordIdEnter($event)">
+      </div>
+      <button class="btn btn-secondary col-1" type="button" id="searchItemsById" (click)='getItemsById()'>
+        <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</div>
+<!-- category search-->
+<div class="form-group row d-flex justify-content-around" *ngIf="mode==0 ">
+  <div class="form-group row justify-content-center m-0">
+    <div class="col-lg-12 col-md-4 col-sm-12 mb-3">
+      <kendo-combobox class="w-100" [data]=tecDocMFAFiltredDataSource [textField]="'ManuName'" [valueField]="'ManuId'"
+        [value]="selectedMFA" [disabled]="isDisabledMFA" [filterable]="true" (filterChange)="handleMFAFilter($event) "
+        [placeholder]="'MANUFACTURER'|translate" (valueChange)="handleMFAChange($event)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+    <div class="col-lg-12 col-md-4 col-sm-12 mb-3">
+      <kendo-combobox class="w-100" [data]=tecDocMSFiltredDataSource [textField]="'ModelName'" [valueField]="'ModelId'"
+        [value]="selectedMS" [disabled]="isDisabledMS" [filterable]="true" (filterChange)="handleMSFilter($event)"
+        [placeholder]="'MODEL_SERIE'|translate" (valueChange)="handleMSChange($event)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+    <div class="col-lg-12 col-md-4 col-sm-12 mb-3">
+      <kendo-combobox class="w-100" [data]=tecDocPCFiltredDataSource [textField]="'CarName'" [valueField]="'CarId'"
+        [value]="selectedPC" [disabled]="isDisabledPC" [filterable]="true" (filterChange)="handlePCFilter($event)"
+        [placeholder]="'PASSENGER_CAR'|translate" (valueChange)="handlePCChange($event)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+  </div>
+
+  <div class="form-group row d-flex justify-content-center m-0" *ngIf="selectedPC">
+
+    <div class="col-lg-12 col-md-6 col-sm-12 mb-3">
+      <kendo-combobox class="w-100" [data]=TecDocProductTreeFiltred [textField]="'NodeText'" [valueField]="'IdNode'"
+        [disabled]="isDisabledRoot" [value]="selectedRoot" [filterable]="true" [placeholder]="'CATEGORY'|translate"
+        (filterChange)="handleProductTreeFilter($event)" (valueChange)="handleProductTreeChange($event)"
+        *ngIf="selectedPC">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+    <div class="col-lg-12 col-md-6 col-sm-12 mb-3" *ngIf="!isDisabledNode1">
+      <kendo-combobox class="w-100" [data]=TecDocNode1 [textField]="'NodeText'" [valueField]="'IdNode'"
+        [disabled]="isDisabledNode1" [value]="selectedNode1" (valueChange)="handleNode1TreeChange($event)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+  </div>
+
+  <div class="form-group row d-flex justify-content-center m-0" *ngIf="!isDisabledNode2">
+    <div class="col-lg-12 col-md-6 col-sm-12 mb-3" *ngIf="!isDisabledNode2">
+      <kendo-combobox class="w-100" [data]=TecDocNode2 [textField]="'NodeText'" [valueField]="'IdNode'"
+        [value]="selectedNode2" [disabled]="isDisabledNode2" (valueChange)="handleNode2TreeChange($event)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+    <div class="col-lg-12 col-md-6 col-sm-12 mb-3" *ngIf="!isDisabledNode3">
+      <kendo-combobox class="w-100" [data]=TecDocNode3 [textField]="'NodeText'" [valueField]="'IdNode'"
+        [value]="selectedNode3" [disabled]="isDisabledNode3" (valueChange)="handleNode3TreeChange($event)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+  </div>
+
+  <div class="form-group row d-flex justify-content-center m-0">
+    <div class="col-lg-12 col-md-6 col-sm-12 mb-3" *ngIf="!isDisabledProduct">
+      <kendo-combobox class="w-100" [data]=tecDocProductsFiltred [textField]="'Designation'"
+        [valueField]="'GenericArticleId'" [value]="selectedproduct" [disabled]="isDisabledProduct"
+        [placeholder]="'PRODUCT'|translate" (valueChange)="handleProductChange($event)">
+        <!--No data template-->
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+    <div class="col-lg-12 col-md-6 col-sm-12 mb-3" *ngIf="!isDisabledProduct">
+      <kendo-combobox class="w-100" [data]=BrandListFiltredDataSource [filterable]="true" [disabled]="DisableCatBrand"
+        [placeholder]="'BRAND'|translate" (valueChange)="handleBrandRefListChange($event)" [(ngModel)]="selectedBrandFilter">
+        <!--No data template-->+
+        <ng-template kendoDropDownListNoDataTemplate>
+          <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+        </ng-template>
+        <!--end No data template-->
+      </kendo-combobox>
+    </div>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,59 @@
+.ui-picklist-source-controls{
+  display: none !important;
+}
+
+.ui-picklist-target-controls{
+  display: none !important;
+}
+
+.level-class{
+  padding: 20px;
+  max-height: 178px;
+  overflow-x: hidden;
+  border-style: solid;
+  margin: 18px 0px 10px 0px;
+  border-color: #a9a9a969;
+  border-width: 1px;
+  height: 100%;
+}
+.titleColumnMin {
+display:none;
+}
+@media screen and (max-width: 990px) {
+.search {
+  width: 100%;
+}
+.titleColumnMax {
+  display: none;
+}
+
+.titleColumnMin {
+  display:block;
+}
+}
+label {
+white-space: nowrap;
+padding-bottom: 0.25rem;
+padding-top: 0.25rem;
+margin-top: 0.25rem;
+}
+
+.k-grid-header .k-header {
+padding-left: 0%!important;
+}
+.spinner {
+  padding-top: 20%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #00000052;
+  z-index: 9999;
+}
+
+ .amount >.k-numeric-wrap > .k-input {
+  padding: 0em 1em 0em 0em;
+  text-align: left !important;
+  margin-left: 15px;
+}

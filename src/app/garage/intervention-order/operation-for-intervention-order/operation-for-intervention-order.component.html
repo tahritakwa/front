@@ -1,0 +1,150 @@
+<!-- Show intervention type and mileage selected -->
+<div *ngIf="isProposedOperationGridVisible" style="margin-bottom: 2em;">
+  <span style="font-weight: bold; ">{{'INTERVENTION_TYPE' | translate}} :</span>
+  <span>{{'PLANNED_INTERVENTION_FOR' | translate}}&nbsp;{{selectedMileage}}</span>
+</div>
+<!-- Proposed operation accordeon -->
+<fieldset [ngStyle]="{border:setBorderStyleForProposedOperation, 'padding-top': '1px' }"
+  *ngIf="isProposedOperationGridVisible">
+  <legend>{{"PROPOSED_OPERATIONS"|translate}}
+    <i *ngIf="!isProposedOperationContentVisible" class="las la-angle-double-down la-angle-color"
+      (click)="showProposedOperationContent()"></i>
+    <i *ngIf="isProposedOperationContentVisible" class="las la-angle-double-up la-angle-color"
+      (click)="hideProposedOperationContent()"></i>
+  </legend>
+  <!-- Grid proposed Operations Start -->
+  <div *ngIf="isProposedOperationContentVisible">
+    <app-operations-proposed-grid [idIntervention]='idIntervention' [idMileageProgrammed]='idMileageProgrammed'
+      [companyCurrency]='companyCurrency' [language]="language" [interventionOperations]='interventionOperationsList'
+      (idAddedOperation)="operationAddedFromProposition($event)" [isUpdateMode]="isUpdateMode"
+      [isInterventionCompleted]="isInterventionCompleted" [hasUpdatePermission]="hasUpdatePermission">
+    </app-operations-proposed-grid>
+  </div>
+  <!-- Grid proposed Operations End -->
+</fieldset>
+
+<!-- Operation to be performed accordeon -->
+<fieldset [ngStyle]="{border: setBorderStyleForOperationToBePerformed, 'padding-top': '1px', 'margin-top': '3em' }">
+  <legend>{{"OPERATIONS_TO_BE_PERFORMED"|translate}}
+    <i *ngIf="!isOperationToBePerformedContentVisible" class="las la-angle-double-down la-angle-color"
+      (click)="showOperationToBePerformedContent()"></i>
+    <i *ngIf="isOperationToBePerformedContentVisible" class="las la-angle-double-up la-angle-color"
+      (click)="hideOperationToBePerformedContent()"></i>
+  </legend>
+  <!-- Operations to be performed Start -->
+  <div *ngIf="isOperationToBePerformedContentVisible">
+    <app-operation-to-be-performed #operationToBePerformedChild
+      [interventionOperationsList]="interventionOperationsList" [idIntervention]="idIntervention"
+      [companyCurrency]="companyCurrency" [language]="language" [operationListIdsToIgnore]="operationListIdsToIgnore"
+      [isUpdateMode]="isUpdateMode" [isInterventionCompleted]="isInterventionCompleted"
+      (operationsChanged)="operationsToBePerformedValueChanged($event)">
+    </app-operation-to-be-performed>
+  </div>
+  <!-- Operations to be performed Start End-->
+</fieldset>
+
+<!-- Spare parts accordeon-->
+<fieldset [ngStyle]="{border:setBorderStyleForNecessaryParts, 'padding-top': '1px', 'margin-top': '3em' }">
+  <legend>{{"NECESSARY_PARTS"|translate}}
+    <i *ngIf="!isNecessaryPartContentVisible" class="las la-angle-double-down la-angle-color"
+      (click)="showNecessaryPartContent()"></i>
+    <i *ngIf="isNecessaryPartContentVisible" class="las la-angle-double-up la-angle-color"
+      (click)="hideNecessaryPartContent()"></i>
+  </legend>
+  <!-- tab header -->
+  <div *ngIf="isNecessaryPartContentVisible">
+    <div class="col-lg-12 col-md-8 col-sm-8">
+      <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link nav-link-new active" id="billingParts-tab" data-toggle="tab" href="#billingParts"
+            role="tab" aria-controls="billingParts" aria-selected="false">{{'BILLING_PARTS'|translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-new" id="customerParts-tab" data-toggle="tab" href="#customerParts" role="tab"
+            aria-controls="customerParts" aria-selected="true">{{"CUSTOMER_PARTS"|translate}}</a>
+        </li>
+      </ul>
+    </div>
+    <!-- tab content -->
+    <div class="tab-content tab-content-new" id="tabContent">
+      <!-- billing parts -->
+      <div class="tab-pane fade show active px-2" id="billingParts" role="tabpanel" aria-labelledby="billingParts-tab"
+        [ngStyle]="{'overflow-x': 'hidden'}">
+        <!-- Spare parts Start -->
+        <app-spare-part-for-intervention #sparePartViewChild [interventionItemList]="interventionItemList"
+          [idIntervention]="idIntervention" [idGarage]="idGarage" [idWarehouse]="idWarehouse"
+          [isUpdateMode]="isUpdateMode" [intervention]="interventionOrder" [hasUpdatePermission]="hasUpdatePermission"
+          [companyCurrency]="companyCurrency" [language]="language" (updateInterventionParts)="updateInterventionParts()"
+          (sparePartsChanged)="onSparePartsChanged($event)">
+        </app-spare-part-for-intervention>
+      </div>
+      <!-- Custom parts -->
+      <div class="tab-pane fade px-2" id="customerParts" role="tabpanel" aria-labelledby="customerParts-tab"
+        [ngStyle]="{'overflow-x': 'hidden'}">
+        <app-grid-customer-part #customerPartsViewChild [idIntervention]="idIntervention" [intervention]="intervention"
+          [customerPartsList]="customerPartsList" [hasUpdatePermission]="hasUpdatePermission"
+          (customerPartsChanged)="onCustomerPartsChanged($event)">
+        </app-grid-customer-part>
+        <div>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>
+<!-- Inputs Start-->
+<form class="form-horizontal" [formGroup]="form" style="margin-top: 4em;">
+  <div class="col-lg-12 col-sm-12 col-md-12">
+    <div class="form-group row">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <!-- Intervention date -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'INTERVENTION_DATE' | translate}}</label>
+            <kendo-datepicker [format]="formatDate" formControlName="InterventionDate"
+              (valueChange)="interventionDateChange($event)" class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="form.controls.InterventionDate"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- Intervention hours-->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'INTERVENTION_HOUR' | translate}}</label>
+            <kendo-timepicker formControlName="InterventionHours" class="form-control" [format]="'HH:mm'"
+              (valueChange)="interventionHoursChange($event)">
+            </kendo-timepicker>
+            <app-control-messages [control]="form.controls.InterventionHours"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <!-- Expected delivery date-->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DELIVERY_DATE' | translate}}</label>
+            <kendo-datepicker [format]="formatDate" formControlName="ExpectedDeliveryDate"
+              (valueChange)="expectedDeliveryDateChange($event)" class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="form.controls.ExpectedDeliveryDate"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- Expected delivery hours-->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DELIVERY_HOURS' | translate}}</label>
+            <kendo-timepicker formControlName="ExpectedDeliveryHours" class="form-control" [format]="'HH:mm'"
+              (valueChange)="expectedDeliveryHoursChange($event)">
+            </kendo-timepicker>
+            <app-control-messages [control]="form.controls.ExpectedDeliveryHours"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<!-- Inputs End-->

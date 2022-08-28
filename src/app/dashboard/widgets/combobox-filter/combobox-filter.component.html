@@ -1,0 +1,13 @@
+<div (click)="$event.stopPropagation()" class="combobox-container combobox-filter">
+
+  <kendo-combobox [allowCustom]="true" [valuePrimitive]="true" [filterable]="true" [placeholder]="placeholder"
+                  (click)="$event.stopPropagation()" #combobox
+                  (valueChange)="onSelect($event)" (filterChange)="handleFilter($event)" [data]="dataList">
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <!--end No data template-->
+  </kendo-combobox>
+
+</div>

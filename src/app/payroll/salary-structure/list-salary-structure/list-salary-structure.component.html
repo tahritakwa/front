@@ -1,0 +1,66 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'SALARY_STRUCTURE_COMPONENT.LIST'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row d-flex justify-content-between mt-3">
+      <app-btn-grid class="col" [advencedAdd]='hasAddPermission' [addLink]='"add"'
+        [relativeStyle]='true'>
+      </app-btn-grid>
+    </div>
+    <form class="form-horizontal">
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+        [sortable]="true" [reorderable]="true" (remove)="removeHandler($event)"
+        [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter" [selectable]="true"
+        (dataStateChange)="dataStateChange($event)" (edit)="goToEditSalaryStructure($event)" [pageable]="pagerSettings">
+        <!--Reference-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [width]="gridSettings.columnsConfig[0]._width"
+          [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+          [format]="gridSettings.columnsConfig[0].format">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Name-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [width]="gridSettings.columnsConfig[1]._width"
+          [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+          [format]="gridSettings.columnsConfig[1].format">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Order-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [width]="gridSettings.columnsConfig[2]._width"
+          [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+          [format]="gridSettings.columnsConfig[2].format">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+              theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-command-column [width]="150">
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+            <!--Clone -->
+            <i *ngIf="hasAddPermission" class="fa fa-clone cursor-pointer mr-2 ml-auto la-lg" style="color: gray"
+              (click)="colneItem(dataItem.Id)" tooltip="{{'CLONE_MODEL' | translate}}"></i>
+            <!-- Update -->
+            <i *ngIf="hasShowPermission || hasUpdatePermission" class="las la-pen edit-pencil cursor-pointer la-lg" (click)="goToEditSalaryStructure(dataItem)"
+              tooltip="{{'UPDATE' | translate}}"></i>
+            <!-- Remove -->
+            <i *ngIf="hasDeletePermission" class="las la-trash-alt text-danger cursor-pointer la-lg"
+              tooltip="{{'DELETE' | translate}}" (click)="removeHandler(dataItem)"></i>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" fileName="{{'SALARY_STRUCTURE_COMPONENT.LIST'|translate}}"
+          pdf="true" excel="true" [service]="salaryStructureService" [predicate]="predicate">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div [formGroup]="form">
+  <kendo-combobox [formControlName]="idUserColName" name="idUserColName" [data]="UserFiltredData" class="form-control"
+    [textField]="'FullName'" [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true"(valueChange)="handleValueChange($event)"
+    [disabled]="disabled" [filterable]="true" (filterChange)="handleFilter($event)">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem
+    *ngIf="!isForCompany">
+      {{ dataItem?.FirstName }} &nbsp; {{ dataItem?.LastName }}
+    </ng-template>
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem
+    *ngIf="isForCompany">
+      {{ dataItem?.FirstName }}
+    </ng-template>
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

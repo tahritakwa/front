@@ -1,0 +1,16 @@
+<ngx-dropzone (change)="onSelect($event)">
+  <ngx-dropzone-label>
+    <h1>{{'DRAG_AND_DROP'|translate}}</h1>
+    <h1>{{'OR'|translate}}</h1>
+    <h1>{{'BROWSE_FILE'|translate}}</h1>
+  </ngx-dropzone-label>
+  <ngx-dropzone-preview (removed)="onRemove(file)" *ngFor="let file of files" [removable]="true">
+    <ngx-dropzone-label>{{ file.name }}</ngx-dropzone-label>
+  </ngx-dropzone-preview>
+</ngx-dropzone>
+<br>
+<mat-dialog-actions align="center">
+  <button mat-dialog-close mat-raised-button>{{'CANCEL'|translate}}</button>
+  <button (click)="save(fileToUpload)" color="primary" mat-dialog-close
+          mat-raised-button>{{'UPLOAD'|translate}}</button>
+</mat-dialog-actions>

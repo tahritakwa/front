@@ -1,0 +1,16 @@
+<div [formGroup]="form">
+  <kendo-combobox [formControlName]="idZipColName" name="idZipColName" [data]="ZipCodeFiltredData" class="form-control"
+    [textField]="'Code'" [valueField]="'Id'" [allowCustom]="allowCustom" [valuePrimitive]="true"
+    [disabled]="disabled" [filterable]="true" >
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      {{ dataItem?.Code }} 
+    </ng-template>
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

@@ -1,0 +1,237 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_PERIOD' : 'ADD_PERIOD') |translate }}</h3>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="periodFormGroup">
+      <!--Begin Card body-->
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'LABEL'|translate}}<span
+                  class="required">*</span></label>
+                <input class="form-control" formControlName="Label"
+                       [ngClass]="{ 'has-error': (Label.touched || Label.dirty) && !Label.valid }">
+                <app-control-messages [control]="Label"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'STARTDATE'|translate}}<span
+                  class="required">*</span></label>
+                <kendo-datepicker [format]="formatDate"
+                                  formatPlaceholder="formatDate"
+                                  formControlName="StartDate"
+                                  class="form-control"
+                                  [ngClass]="{ 'has-error': (StartDate.touched || StartDate.dirty) && !StartDate.valid }">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{'STARTDATE'|translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="StartDate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ENDDATE'|translate}}<span
+                  class="required">*</span></label>
+                <kendo-datepicker [format]="formatDate"
+                                  formatPlaceholder="formatDate"
+                                  formControlName="EndDate"
+                                  class="form-control"
+                                  [ngClass]="{ 'has-error': (EndDate.touched || EndDate.dirty) && !EndDate.valid }">
+                  <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{'ENDDATE'|translate}}">
+                  </kendo-datepicker-messages>
+                </kendo-datepicker>
+                <app-control-messages [control]="EndDate"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'FIRST_DAY_OF_WORK'|translate}}<span
+                  class="required">*</span></label>
+                <app-dayofweek-dropdown [group]="periodFormGroup"
+                                        [controlName]="'FirstDayOfWork'"></app-dayofweek-dropdown>
+                <app-control-messages [control]="FirstDayOfWork"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'LAST_DAY_OF_WORK'|translate}}<span
+                  class="required">*</span></label>
+                <app-dayofweek-dropdown [group]="periodFormGroup"
+                                        [controlName]="'LastDayOfWork'"></app-dayofweek-dropdown>
+                <app-control-messages [control]="LastDayOfWork"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+
+
+            <p-accordion [multiple]="true" class="w-100">
+
+
+              <!-- Collapse schedules -->
+              <p-accordionTab header="{{'SCHEDULE'| translate}}" [selected]="scheduleCollapseIsOpened"
+                  (click)="openScheduleCollapse()" (selectedChange)="this.scheduleCollapseIsOpened = ! this.scheduleCollapseIsOpened">
+                <div class="form-group border-0">
+
+                  <div >
+                    <div formArrayName="Hours" *ngFor="let hour of Hours.controls; let i=index; let isFirst=first">
+                      <div [formGroup]="hour" *ngIf="isHourRowVisible(i)">
+                        <hr *ngIf="!isFirst">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <div class="row py-1 d-flex justify-content-between">
+                            <div *ngIf="hourElementIsInModeEdit[i]" class="col px-0">
+                              <div class="row">
+                                <div class="col-lg-4 col-md-6 col">
+                                  <input class="w-100 form-control" type="text" formControlName="Label"
+                                         [value]="hour.value.Label"
+                                         (keydown.enter)="changeLabelElementEditMode(i,false)">
+                                </div>
+                                <div class="col-auto d-flex align-items-center">
+                                  <i class="fa fa-check fa-lg text-primary"
+                                     (click)="changeLabelElementEditMode(i,false)"></i>
+                                </div>
+                                <div class="col-12">
+                                  <app-control-messages class="error-msg messages text-left text-danger"
+                                                        [control]="hour.controls.Label">
+                                  </app-control-messages>
+                                </div>
+                              </div>
+                            </div>
+                            <div *ngIf="!hourElementIsInModeEdit[i]" class="col-auto px-0">
+                              <div style=" white-space: nowrap;color:#4c9aae; padding: 8px 13px">
+                                {{hour.value.Label}}<span *ngIf="this.isHourLabelStandard[i]">&nbsp;{{i + 1}}</span>
+                                <i class="las la-pen la-lg" (click)="changeLabelElementEditMode(i,true)"></i>
+                              </div>
+                            </div>
+                            <i *ngIf="numberOfValideHoursLines('Hours') > 1 && canEdit
+                            && !hourElementIsInModeEdit[i]" type="button" (click)="deleteHour(i, hour)"
+                               class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"></i>
+                          </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-sm-12 col-md-6 col-lg-4">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{'START_TIME'|translate}}<span
+                              class="required">*</span></label>
+                            <input class="form-control" formControlName="StartTime" type="time"
+                                   [ngClass]="{ 'has-error': (hour.controls.StartTime.touched
+                                  || hour.controls.StartTime.dirty) && !hour.controls.StartTime.valid }"/>
+                            <app-control-messages [control]="hour.controls.StartTime"
+                                                  class="error-msg messages text-left text-danger"></app-control-messages>
+                          </div>
+                          <div class="col-sm-12 col-md-6 col-lg-4">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{'END_TIME'|translate}}<span
+                              class="required">*</span></label>
+                            <input class="form-control" formControlName="EndTime" type="time"
+                                   [ngClass]="{ 'has-error': (hour.controls.EndTime.touched || hour.controls.EndTime.dirty) && !hour.controls.EndTime.valid }"/>
+                            <app-control-messages [control]="hour.controls.EndTime"
+                                                  class="error-msg messages text-left text-danger"></app-control-messages>
+                          </div>
+                          <div class="col-sm-12 col-md-6 col-lg-4">
+                            <input class="input-checkbox100" id="{{i}}" type="checkbox" formControlName="WorkTimeTable">
+                            <label id="checkBox" class="label-checkbox100"
+                                   for="{{i}}">{{'WORK_TIME_TABLE'|translate}}</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="canEdit  && (hadUpdatePeriodPermission && isUpdateMode || hadAddPeriodPermission && !isUpdateMode)" class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+                      <button class="btn-Add k-button btn btn-add" type="button" (click)='addHour()'>
+                        <i class="fa fa-plus fa AddIcon"></i>
+                        <span>&nbsp; {{'ADD'|translate}}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </p-accordionTab>
+
+              <!-- Collapse days off -->
+              <p-accordionTab header="{{'DAY_OFF'| translate}}" [selected]="dayOffCollapseIsOpened"
+               (selectedChange)="this.dayOffCollapseIsOpened = ! this.dayOffCollapseIsOpened">
+                <div class="form-group border-0">
+                  <div style="overflow-x: hidden ">
+                    <div formArrayName="DayOff" *ngFor="let dayOff of DayOff.controls; let i=index; let isFirst=first">
+                      <div [formGroup]="dayOff" *ngIf="isDayOffRowVisible(i)">
+                        <hr *ngIf="!isFirst">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <div class="row py-1 d-flex justify-content-between">
+                            <div class="col px-0">
+                              <i *ngIf="hadUpdatePeriodPermission && isUpdateMode || hadAddPeriodPermission && !isUpdateMode" type="button"
+                                 (click)="deleteDayOff(i)" style="float: right;"
+                                 class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"></i>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-12 col-md-6 col-lg-4">
+                            <label class="col-lg-12 col-md-12 col-sm-12"> {{'LABEL'|translate}}<span
+                              class="required">*</span></label>
+                            <input class="form-control" formControlName="Label"
+                                   [ngClass]="{ 'has-error': (dayOff.controls.Label.touched
+                                 || dayOff.controls.Label.dirty) && !dayOff.controls.Label.valid }">
+                            <app-control-messages [control]="dayOff.controls.Label"
+                                                  class="error-msg messages text-left text-danger"></app-control-messages>
+                          </div>
+                          <div class="col-lg-4 col-md-6 col-sm-12">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{'DATE'|translate}}<span
+                              class="required">*</span></label>
+                            <kendo-datepicker [format]="formatDate"
+                                              formatPlaceholder="formatDate"
+                                              formControlName="Date"
+                                              class="form-control">
+                              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{'DAY_OFF_DATE'|translate}}">
+                              </kendo-datepicker-messages>
+                            </kendo-datepicker>
+                            <app-control-messages [control]="dayOff.controls.Date"
+                                                  class="error-msg messages text-left text-danger"></app-control-messages>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+                  <button *ngIf="hadUpdatePeriodPermission && isUpdateMode || hadAddPeriodPermission && !isUpdateMode" class="btn-Add k-button btn btn-add" type="button" (click)='addDayOff()'>
+                    <i class="fa fa-plus fa AddIcon"></i>
+                    <span>&nbsp; {{'ADD'|translate}}</span>
+                  </button>
+                </div>
+              </p-accordionTab>
+
+            </p-accordion>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="listUrl">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button *ngIf="hadUpdatePeriodPermission && isUpdateMode || hadAddPeriodPermission && !isUpdateMode" (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Card footer End-->
+</div>
+

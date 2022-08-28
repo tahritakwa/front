@@ -1,0 +1,109 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'RESERVATION_LIST'|translate}}</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sortable]="true" [pageable]="pagerSettings" filterable="menu"
+            [reorderable]="true" [columnMenu]="true" (remove)="removeHandler($event)" [sort]="gridSettings.state.sort"
+            [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)">
+            <!-- Head Start-->
+            <ng-template kendoGridToolbarTemplate>
+              <div>
+                <div class="btn-group col-lg-3 col-md-8 col-sm-12" style="padding-left: 0px; width: 250px;">
+                  <button class="btn btn-primary dropdown-toggle btnColor" type="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="true">
+                    {{choosenFilter}}
+                  </button>
+
+                  <div class="dropdown-menu" style="border: 1px solid rgb(200, 206, 211) !important;">
+                    <button [ngClass]="{
+                      'dropdown-item':choosenFilterNumber != 0,
+                      'dropdown-item-active':choosenFilterNumber == 0
+                      }" (click)="onChangeStatusTransfertMovement(0)">
+                      {{'ALL_RESERVATIONS'|translate}}
+                    </button>
+                    <button [ngClass]="{
+                      'dropdown-item':choosenFilterNumber != 1,
+                      'dropdown-item-active':choosenFilterNumber == 1
+                      }" (click)="onChangeStatusTransfertMovement(1)">
+                      {{'RESERVATION'|translate}}
+                    </button>
+
+                    <button [ngClass]="{
+                      'dropdown-item':choosenFilterNumber != 2,
+                      'dropdown-item-active':choosenFilterNumber == 2
+                      }" (click)="onChangeStatusTransfertMovement(2)">
+                      {{'LIBERATION'|translate}}
+                    </button>
+                  </div>
+                </div>
+                <app-btn-grid [advencedAdd]='true' [add]='false' [export]='true'
+                  [addLink]='"/main/ecommerce/transfertMovement/advancedAdd"'
+                  style="float: right;margin-right: 40px;   display: inline-flex;"></app-btn-grid>
+              </div>
+
+            </ng-template>
+
+            <!-- Head end-->
+            <!--Code-->
+
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+              [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+              [format]="gridSettings.columnsConfig[0].format">
+            </kendo-grid-column>
+            <!-- Date -->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+              [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+              [format]="gridSettings.columnsConfig[1].format">
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.DocumentDate|date: gridSettings.columnsConfig[1].format}}
+              </ng-template>
+            </kendo-grid-column>
+            <!--Warehouse Source-->
+            <kendo-grid-column [field]=gridSettings.columnsConfig[2].field
+              [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+              [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+              [format]="gridSettings.columnsConfig[2].format">
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <div *ngIf="dataItem.IdWarehouseSourceNavigation.IsCentral">
+                  <span class="badge badge-success">{{'RESERVATION'|translate}}</span>
+                </div>
+                <div *ngIf="!dataItem.IdWarehouseSourceNavigation.IsCentral">
+                  <span class="badge badge-primary">{{'LIBERATION'|translate}}</span>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+            <!-- Warehouse Destination -->
+            <!--Status-->
+            <kendo-grid-command-column width="150">
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <button class="noPadding btn-Add k-button k-grid-save-command" (click)="goToAdvancedEdit(dataItem.Id)">
+                  <i class="fa fa-eye fa-lg AddIcon text-primary"></i>
+                </button>
+
+              </ng-template>
+            </kendo-grid-command-column>
+
+            <kendo-grid-messages pagerItems="{{'RESERVATION_PAGE'|translate}}"
+              pagerItemsPerPage="{{'RESERVATION_PAGE'|translate}} par page">
+            </kendo-grid-messages>
+            <!-- Command-->
+            <!--grid pdf & excel-->
+            <app-grid-export [gridSettings]="gridSettings" fileName="{{'RESERVATION_LIST'|translate}}" pdf="true"
+              excel="true" [service]="stockDocumentsService" [predicate]="predicate">
+            </app-grid-export>
+            <!--end grid pdf & excel-->
+          </kendo-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

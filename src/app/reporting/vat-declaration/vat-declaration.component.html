@@ -1,0 +1,193 @@
+<div class="card">
+  <!--Begin Card Header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'VAT_DECLARATION'|translate}}</h3>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-3 col-md-12 col-sm-12 px-lg-0 mb-3">
+        <label class="col-lg-12 col-md-12 col-sm-12 mx-1">
+          {{'START_DATE'|translate}} <span class="required">*</span>
+        </label>
+        <div class="col-12">
+          <kendo-datepicker class="form-control" [format]="formatDate" formatPlaceholder="formatDate"
+            (valueChange)="startDateValueChange($event)" [ngClass]="{'has-error' : showStartDateErrorMessage}"
+            [max]="maxStartDate">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+        <div class="col-12" *ngIf="showStartDateErrorMessage">
+          <label class="error-msg messages text-left text-danger">{{'REQUIRED'|translate}}</label>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-12 col-sm-12 px-lg-0 mb-3">
+        <label class="col-lg-12 col-md-12 col-sm-12 mx-1">
+          {{'END_DATE'|translate}} <span class="required">*</span>
+        </label>
+        <div class="col-12">
+          <kendo-datepicker class="form-control" [format]="formatDate" formatPlaceholder="formatDate"
+            (valueChange)="endDateValueChange($event)" [ngClass]="{'has-error': showEndDateErrorMessage}"
+            [min]="minEndDate">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+        <div class="col-12" *ngIf="showEndDateErrorMessage">
+          <label class="error-msg messages text-left text-danger">{{'REQUIRED'|translate}}</label>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-3">
+          <label *ngIf="!isPurchaseType" class="col-lg-12 col-md-12 col-sm-12">{{'CUSTOMER'|translate}} 
+          </label>
+          <label *ngIf="isPurchaseType" class="col-lg-12 col-md-12 col-sm-12">{{'SUPPLIER'|translate}} 
+          </label>
+      <app-supplier-dropdown *ngIf="!isPurchaseType" [type]=1 [itemForm]="documentForm" (Selected)="tierSelected($event)"
+                             [hideAddBtn]="true" #tiersDropDown>
+      </app-supplier-dropdown>
+      <app-supplier-dropdown *ngIf="isPurchaseType" [type]=2 [itemForm]="documentForm" (Selected)="tierSelected($event)"
+                             [hideAddBtn]="true" #tiersDropDown>
+      </app-supplier-dropdown>
+    </div>
+      <div class="col-lg-3 col-md-6 col-sm-12 d-flex mb-2" style="margin-top: 35px;">
+        <label class="ml-2 pr-3 cursor-pointer" for="checkTypePurchase">{{"SALE"|translate}}</label>
+        <label class="switch switch-pill switch-primary switch-sm">
+          <input (change)="ChangeType()" class="switch-input" type="checkbox" id="checkIsCalculable" [checked]="isPurchaseType == true ? 'checked': null"><span
+            class="switch-slider"></span></label>
+        <label class="ml-2 pl-2 cursor-pointer" for="checkTypePurchase">{{"PURCHASE"|translate}}</label>
+        </div>
+      <div>
+        <div>
+          <!-- begin button -->
+          <div class="d-flex flex-row-reverse mb-2">
+            <div class="col-auto">
+              <div class="col-lg-12 col-md-12 col-sm-12 mt-4">
+                <button class="btn btn-sm btn-search" type="button" (click)="clickSearch()">
+                  <i class="fa fa-search fa"></i>
+                  <span>&nbsp; {{'SEARCH'|translate}}</span>
+                </button>
+                &nbsp;
+                &nbsp;
+                <!-- Jasper Report  -->
+                <button *ngIf= "havePrintPermission" class="btn btn-sm btn-print" (click)="onJasperPrintClick()">
+                  <i class="fa fa-print fa-lg"></i>
+                  {{'PRINT' | translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- end button -->
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+            (dataStateChange)="dataStateChange($event)" [sortable]="true" [pageable]="pagerSettings"
+            [filterable]="false" [reorderable]="false" [filter]="gridSettings.state.filter">
+
+            <!--Reference-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+              [filterable]="true" [format]="gridSettings.columnsConfig[0].format">
+              <ng-template kendoGridFooterTemplate>
+                <div style=" font-weight:bold;color: #4c9aae; font-size: 16px; padding-top: 7px;
+            padding-bottom: 7px;"> {{'TOTAL'| translate}}</div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--Date-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+              [filterable]="true" [format]="gridSettings.columnsConfig[1].format" filter="date">
+            </kendo-grid-column>
+
+
+            <!--Tiers-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+              [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+              [filterable]="true" [format]="gridSettings.columnsConfig[2].format">
+
+            </kendo-grid-column>
+
+
+            <!--TotalHt-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+              [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+              [filterable]="true" [format]="gridSettings.columnsConfig[3].format" filter="numeric" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+           "padding-right": "4%"}'>
+              <ng-template kendoGridCellTemplate let-dataItem>
+
+                <div *ngIf="dataItem">
+                  {{dataItem.TotalHTWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.Precision})}}
+                  {{dataItem.Currency}}
+                </div>
+              </ng-template>
+              <ng-template kendoGridFooterTemplate>
+                <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="totalLine">
+                  {{totalLine.TotalHT.toLocaleString(language,{minimumFractionDigits: totalLine.Precision})}}
+                  {{companyCurrency}}
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--Timbre fiscal-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+              [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+              [filterable]="true" [format]="gridSettings.columnsConfig[4].format" filter="numeric" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+        "padding-right": "4%"}'>
+              <ng-template kendoGridCellTemplate let-dataItem>
+
+                <div *ngIf="dataItem">
+                  {{dataItem.FiscalStamp.toLocaleString(language, {minimumFractionDigits: dataItem.Precision})}}
+                  {{dataItem.Currency}}
+                </div>
+              </ng-template>
+              <ng-template kendoGridFooterTemplate>
+                <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="totalLine">
+                  {{totalLine.FiscalStamp.toLocaleString(language, {minimumFractionDigits: totalLine.Precision})}}
+                  {{companyCurrency}}</div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--TotalTVA-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+              [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+              [filterable]="true" [format]="gridSettings.columnsConfig[5].format" filter="numeric" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+       "padding-right": "4%"}'>
+              <ng-template kendoGridCellTemplate let-dataItem>
+
+                <div *ngIf="dataItem">
+                  {{dataItem.TotalVatWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.Precision})}}
+                  {{dataItem.Currency}}
+                </div>
+              </ng-template>
+              <ng-template kendoGridFooterTemplate>
+                <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="totalLine">
+                  {{totalLine.TotalVat.toLocaleString(language,{minimumFractionDigits: totalLine.Precision})}}
+                  {{companyCurrency}}</div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--TotalTTC-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+              [title]="gridSettings.columnsConfig[6].title | translate" [width]="gridSettings.columnsConfig[6]._width"
+              [filterable]="true" [format]="gridSettings.columnsConfig[6].format" filter="numeric" [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right",
+      "padding-right": "4%"}'>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div *ngIf="dataItem">
+                  {{dataItem.TotalTTCWithCurrency.toLocaleString(language,{minimumFractionDigits: dataItem.Precision})}}
+                  {{dataItem.Currency}}
+                </div>
+              </ng-template>
+              <ng-template kendoGridFooterTemplate>
+                <div style="font-weight:bold; font-size: 16px; text-align:right;" *ngIf="totalLine">
+                  {{totalLine.TotalTTC.toLocaleString(language,{minimumFractionDigits: totalLine.Precision})}}
+                  {{companyCurrency}}</div>
+              </ng-template>
+            </kendo-grid-column>
+          </kendo-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

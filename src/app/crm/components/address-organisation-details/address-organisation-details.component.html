@@ -1,0 +1,57 @@
+<div [formGroup]="address">
+  <div class="row form-group" style="padding-top: 2%;">
+    <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'COUNTRY'|translate}}</label>
+      <kendo-combobox [data]="countriesFiltred"
+                      class="form-control HistoryCommandMargin"
+                      name="idCountryColName"
+                      formControlName="country"
+                      textField="NameFr"
+                      allowCustom="true"
+                      [valuePrimitive]="true"
+                      [filterable]="true"
+                      (filterChange)="handleCountryFilter($event)"
+                      (valueChange)="fillRelatedCities($event)" >
+                      <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      </kendo-combobox>
+    </div>
+
+    <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'CITY'|translate}}</label>
+      <kendo-combobox [data]="citiesFiltred"
+                      class="form-control HistoryCommandMargin"
+                      name="idCountryColName"
+                      formControlName="city"
+                      textField="Code"
+                      valueField="Code"
+                      allowCustom="true"
+                      [valuePrimitive]="true"
+                      (filterChange)="handleCityFilter($event)"
+                      [filterable]="true">
+                      <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      </kendo-combobox>
+    </div>
+
+    <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ZIPCODE'|translate}}</label>
+      <input class="form-control" type="texte" formControlName="zipCode"
+             [ngClass]="{ 'has-error': (address.controls.zipCode.touched || address.controls.zipCode.dirty) && !address.controls.zipCode.valid }">
+      <app-control-messages [control]="address.controls.zipCode"
+                            class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+
+    <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'COMP_ADDRESS'|translate}}</label>
+      <input class="form-control" type="text" formControlName="extraAddress"  >
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div [formGroup]="form">
+  <div class="row">
+    <div class="col-lg-12 col-xl-6 col-md-12 col-sm-12">
+      {{'SKILLS'|translate}}
+      <app-skills-dropdown (SkillsListChanged)="skillsConfigChangedEvent()"
+                           (selected)="valueChanged($event)" [skillsFamilySelected]="skillsFamilySelected"
+                           [skillsForm]="form"></app-skills-dropdown>
+      <app-control-messages [control]="form.controls.IdSkills"
+                            class="error-msg messages text-left text-danger"></app-control-messages>
+    </div>
+    <div class="col-lg-1">
+    </div>
+    <div *ngIf="showSlider" class="col-lg-12 col-xl-5 col-md-12 col-sm-12">
+      <div>
+        <ng5-slider
+          (userChangeEnd)="valueChanged2($event)"
+          [options]="options"
+          formControlName="Rate"
+          style="margin-left:-2%">
+        </ng5-slider>
+        <div style="text-align: center; margin-top: -2px"> {{'LEVEL'|translate}}</div>
+      </div>
+    </div>
+  </div>
+</div>

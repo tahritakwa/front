@@ -1,0 +1,77 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card body-->
+        <div class="card-body">
+          <div class="row d-flex justify-content-between mt-3">
+            <!-- search div-->
+            <div class="d-flex justify-content-center">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-10" >
+                    <input type="text" style="width: 200px;" class="form-control" placeholder="{{'SEARCH_GROUP_TAX'|translate}}" name='reference'
+                           aria-label="Username" aria-describedby="addon-wrapping" [(ngModel)]='groupTaxe'(keyup)='filter()'>
+                  </div>
+                  <div class="col-2 p-1">
+                    <i class="fa fa-search fa-lg mx-1" aria-hidden="true" (click)='filter()'></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <!-- End search div-->
+          <app-btn-grid class="col" [advencedAdd]='hasAddGroupTaxPermission' [addLink]='"AdvancedAdd"'
+                        [model]='true' [relativeStyle]='true'
+                        [fileName]="'GROUP_TAXE'|translate"
+                        [gridSettings]="gridSettings"
+                        [service]="taxeGroupService"
+                        [predicate]="predicate"
+                        [isExportExcel]="true">
+          </app-btn-grid>
+        </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 px-0">
+            <div class="mb-3" style="float: left;width: 100%">
+              <div class="tab-pane active show" id="home1" role="tabpanel">
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+            [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+            (dataStateChange)="dataStateChange($event)" [sortable]="true" [pageable]="pagerSettings"
+            [reorderable]="true" [columnMenu]="false">
+            <!--Columns-->
+            <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+              [title]="col.title | translate" [width]="col._width" [filter]="col.filter" [filterable]="col.filterable"
+              [format]="col.format">
+              <ng-template kendoGridEditTemplate>
+                <!--Code edit template-->
+                <app-grid-cell-input-template *ngIf="col.field == 'Code'" [group]="formGroup" controlName="Code"
+                  inputType="text">
+                </app-grid-cell-input-template>
+                <!--Label edit template-->
+                <app-grid-cell-input-template *ngIf="col.field == 'Label'" [group]="formGroup" controlName="Label"
+                  inputType="text">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End Columns-->
+            <!--Actions-->
+            <kendo-grid-command-column [width]="170" [title]="'ACTIONS'| translate " [columnMenu]="false"
+                                       [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <!-- edit command directive, will do nothing if dataItem is not editable -->
+                <i *ngIf="btnEditVisible && (hasShowGroupTaxPermission || hasUpdateGroupTaxPermission)" class="las la-pen cursor-pointer edit-pencil la-lg"
+                   (click)="goToAdvancedEdit(dataItem)"></i>
+                <!-- remove command directive -->
+                <i class="fa fa-trash-o la-lg text-danger" aria-hidden="true" *ngIf="hasDeleteGroupTaxPermission"
+                   (click)="removeHandler(dataItem)"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--End Actions-->
+          </kendo-grid>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

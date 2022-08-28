@@ -1,0 +1,42 @@
+<div *ngIf='form' [formGroup]="form">
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  [allowCustom]="allowCustom"
+                  [data]="skillFiltredDataSource"
+                  [filterable]="true"
+                  [textField]="'Label'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control"
+                  formControlName="IdSkill"
+                  name="IdSkill">
+    <!--footer template-->
+    <ng-template *ngIf="isAdvancedAdd" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>
+
+
+<div *ngIf='!form'>
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  (valueChange)="onSelect($event)"
+                  [(value)]="selectedSkill"
+                  [allowCustom]="allowCustom"
+                  [data]="skillFiltredDataSource"
+                  [disabled]="disabled"
+                  [filterable]="true"
+                  [textField]="'Label'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control"
+                  name="IdSkill">
+
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>
+

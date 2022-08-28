@@ -1,0 +1,393 @@
+<div class="card" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card header-->
+  <div class="card-header" *ngIf="!isModal">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0" *ngIf="tiersType == 2">{{ (isUpdateMode ? 'EDIT_SUPPLIER' : 'ADD_SUPPIER')
+          |translate
+          }}</h3>
+        <h3 class="card-title mb-0" *ngIf="tiersType == 1">{{ (isUpdateMode ? 'EDIT_CUSTOMER' : 'ADD_CUSTOMER')
+          |translate
+          }}</h3>
+        <h3 class="card-title mb-0" *ngIf="!tiersType">{{ (isUpdateMode ? 'EDIT_CUSTOMER_SUPPLIER' :
+          'ADD_CUSTOMER_SUPPLIER') |translate
+          }}</h3>
+      </div>
+      <div class="col-auto d-flex align-items-end">
+        <span class="codeTiers">{{tiersToUpdate?.CodeTiers}}</span>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin Card body-->
+  <div class="card-body">
+    <!--Begin add form-->
+    <form class="form-horizontal" [formGroup]="tiersFormGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-10 col-sm-12 col-md-12">
+            <div class="form-group row">
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'NAME'|translate}}<span class="required">*</span></label>
+                <input class="form-control" formControlName="Name" type="text" name="Name"
+                  [ngClass]="{ 'has-error': (tiersFormGroup.controls.Name.touched || tiersFormGroup.controls.Name.dirty) && !tiersFormGroup.controls.Name.valid }"
+                  [attr.disabled]=" isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null ">
+                <app-control-messages [control]="tiersFormGroup.controls.Name"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'CIN_PASSEPORT'|translate}}</label>
+                <input class="form-control" formControlName="CIN" type="text" name="CIN" [ngClass]="{ 'has-error': (tiersFormGroup.controls.CIN.touched || tiersFormGroup.controls.CIN.dirty)
+                    && !tiersFormGroup.controls.CIN.valid }"
+                  [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                <app-control-messages [control]="tiersFormGroup.controls.CIN"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TAX_REGISTRATION_NUMBER'|translate}}</label>
+                <input class="form-control" formControlName="MatriculeFiscale" type="text" name="MatriculeFiscale"
+                  [ngClass]="{ 'has-error': (tiersFormGroup.controls.MatriculeFiscale.touched || tiersFormGroup.controls.MatriculeFiscale.dirty)
+                    && !tiersFormGroup.controls.MatriculeFiscale.valid }"
+                  [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                <app-control-messages [control]="tiersFormGroup.controls.MatriculeFiscale"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'CURRENCY'|translate}}<span
+                    class="required">*</span></label>
+                <app-currency-dropdown [group]="tiersFormGroup" (Selected)="getSelectedCurrency($event)"
+                  [disabled]="isUpdateMode">
+                </app-currency-dropdown>
+                <app-control-messages [control]="tiersFormGroup.controls.IdCurrency"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1" *ngIf='tiersTypeInput==2'>
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'DELIVERY_DELAY'|translate}}</label>
+                <input class="form-control" formControlName="DeleveryDelay" type="number" name="DeleveryDelay"
+                  oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');"
+                  [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                <app-control-messages [control]="tiersFormGroup.controls.DeleveryDelay"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1" *ngIf='tiersTypeInput==1'>
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'PAYMENT_DELAY'|translate}}</label>
+                <input class="form-control" formControlName="PaymentDelay" type="number" name="PaymentDelay"
+                  oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" [ngClass]="{ 'has-error': (tiersFormGroup.controls.PaymentDelay.touched || tiersFormGroup.controls.PaymentDelay.dirty)
+                    && !tiersFormGroup.controls.PaymentDelay.valid }"
+                  [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                <app-control-messages [control]="tiersFormGroup.controls.PaymentDelay"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ACTIVITY_SECTOR'|translate}}</label>
+                <kendo-combobox #activitySectorReference formControlName="ActivitySector" [data]="activitySectors"
+                  [filterable]="true" (filterChange)="handleFiltreActivitySectors($event)" [valueField]="'enumValue'"
+                  [textField]="'enumText'" [valuePrimitive]="true" style="width: 100%;"
+                  (focus)="openActivtySectorCombobox()"
+                  [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                  <!--No data template-->
+                  <ng-template kendoDropDownListNoDataTemplate>
+                    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                  </ng-template>
+                  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="tiersFormGroup.controls.ActivitySector"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'LEAD_SOURCE'|translate}}</label>
+                <kendo-combobox #leadSourceReference formControlName="LeadSource" [data]="leadSources"
+                  [filterable]="true" (filterChange)="handleFiltreLeadSource($event)" [valueField]="'enumValue'"
+                  [textField]="'enumText'" [valuePrimitive]="true" style="width: 100%;"
+                  (focus)="openLeadSourceCombobox()" [ngClass]="{ 'has-error': (tiersFormGroup.controls.LeadSource.touched || tiersFormGroup.controls.LeadSource.dirty) &&
+                    !tiersFormGroup.controls.LeadSource.valid }"
+                  [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                  <!--No data template-->
+                  <ng-template kendoDropDownListNoDataTemplate>
+                    <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+                  </ng-template>
+                  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="tiersFormGroup.controls.LeadSource"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1" *ngIf='tiersTypeInput==1'>
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'PRICE_CATEGORY'|translate}}</label>
+                <app-sales-price-dropdown [formGroup]="tiersFormGroup">
+                </app-sales-price-dropdown>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1" *ngIf="tiersType === 1">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'BILLING_METHOD'|translate}}</label>
+                <app-tier-category-dropdown [group]="tiersFormGroup"></app-tier-category-dropdown>
+                <app-control-messages [control]="tiersFormGroup.controls.IdTierCategory"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 mt-1">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRITPION'|translate}}</label>
+                <textarea class="form-control" formControlName="Description" type="text" name="Description" [ngClass]="{ 'has-error': (tiersFormGroup.controls.Description.touched || tiersFormGroup.controls.Description.dirty) &&
+                    !tiersFormGroup.controls.Description.valid }"
+                  [attr.disabled]="isUpdateMode && ((tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null"></textarea>
+                <app-control-messages [control]="tiersFormGroup.controls.Description"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+            <label class="img-border  d-flex justify-content-center" for="file-input" #fileInput>
+              <img id="tierPicture" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                [src]="pictureTierSrc || 'assets/image/placeholder-logo.png'" />
+              <i class="fa fa-camera fa-lg"></i>
+              <i *ngIf="pictureTierSrc && (tiersFormGroup.value.Id === 0 ||  tiersFormGroup.value.Id > 0 && (( hasUpdateCustomerPermission && tiersType === 1) || ( haveUpdateSupplierPermission && tiersType === 2)))"
+                class="fa fa-close fa-xs" (click)="removeTiersPicture($event)"></i>
+            </label>
+            <input
+              *ngIf="(tiersFormGroup.value.Id === 0 || tiersFormGroup.value.Id > 0 && (( hasUpdateCustomerPermission && tiersType === 1) || (haveUpdateSupplierPermission && tiersType === 2)))"
+              id="file-input" type='file' (change)="uploadPicture($event)" accept="image/*">
+          </div>
+
+          <div class="row">
+            <p-accordion [multiple]="true" class="w-100">
+              <!-- Collapse TIERS details -->
+              <p-accordionTab header="{{'COLLAPSE_CORDINATION_TITLE'| translate}}"
+                (selectedChange)="openTiersDetailsCollapse = !openTiersDetailsCollapse"
+                [selected]="openTiersDetailsCollapse">
+                <div class="form-group row">
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'EMAIL'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="email" formControlName="Email"
+                        [value]="tiersFormGroup.value.Email"
+                        [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fa fa-envelope"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <app-control-messages [control]="tiersFormGroup.controls.Email"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12" formGroupName="IdPhoneNavigation">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'PHONE'|translate}}</label>
+                    <div class="input-group">
+                      <input ng2TelInput type="text" class="form-control w-100" formControlName="Number"
+                        oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" [ng2TelInputOptions]="{initialCountry:loadPhoneCountryFlag(),
+                          preferredCountries:[defaultPhoneCountryTn,defaultPhoneCountryFr,defaultPhoneCountryGb]}"
+                        (hasError)="isValidPhone($event)" (countryChange)="onCountryPhoneChange($event)"
+                        [ngClass]="{'has-error':tiersPhoneHasError}"
+                        [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null" />
+                      <span class="wrong-pattern mt-2" *ngIf="tiersPhoneHasError">{{"WRONG_PATERN"|translate}}</span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'FAX'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="number" formControlName="Fax" [value]="tiersFormGroup.value.Fax"
+                        [ngClass]="{ 'has-error': (tiersFormGroup.controls.Fax.touched || tiersFormGroup.controls.Fax.dirty) &&
+                          !tiersFormGroup.controls.Fax.valid }"
+                        [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fa fa-fax"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <app-control-messages [control]="tiersFormGroup.controls.Fax"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'LINKEDIN'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="text" formControlName="Linkedin"
+                        [value]="tiersFormGroup.value.Linkedin" [ngClass]="{ 'has-error': (tiersFormGroup.controls.Linkedin.touched || tiersFormGroup.controls.Linkedin.dirty) &&
+                          !tiersFormGroup.controls.Linkedin.valid }"
+                        [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fa fa-linkedin"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <app-control-messages [control]="tiersFormGroup.controls.Linkedin"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'FACEBOOK'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="email" formControlName="Facebook"
+                        [value]="tiersFormGroup.value.Facebook" [ngClass]="{ 'has-error': (tiersFormGroup.controls.Facebook.touched || tiersFormGroup.controls.Facebook.dirty) &&
+                          !tiersFormGroup.controls.Facebook.valid }"
+                        [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fa fa-facebook"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <app-control-messages [control]="tiersFormGroup.controls.Facebook"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'TWITTER'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="text" formControlName="Twitter"
+                        [value]="tiersFormGroup.value.Twitter" [ngClass]="{ 'has-error': (tiersFormGroup.controls.Twitter.touched || tiersFormGroup.controls.Twitter.dirty) &&
+                          !tiersFormGroup.controls.Twitter.valid }"
+                        [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                      <div class="input-group-append">
+                        <span class="input-group-text">
+                          <i class="fa fa-twitter"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <app-control-messages [control]="tiersFormGroup.controls.Twitter"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                </div>
+              </p-accordionTab>
+              <!-- Collapse ADDRESS details -->
+              <p-accordionTab header="{{'COLLAPSE_ADRESS_TITLE'| translate}}"
+                (selectedChange)="openAddressDetailsCollapse = !openAddressDetailsCollapse"
+                [selected]="openAddressDetailsCollapse" (click)="openAddressDetailCollapse()">
+                <app-tiers-address [tiersFormGroup]="tiersFormGroup" [tiersAddressToUpdate]="tiersAddress"
+                  [collapseOnOpenAction]="collapseAddressOpened" [typeTier]="this.tiersType"></app-tiers-address>
+              </p-accordionTab>
+              <!-- Collapse FINANCIAL_INFORMATION -->
+              <p-accordionTab header="{{'FINANCIAL_INFORMATION'| translate}}"
+                (selectedChange)="openFinancialInformationsCollapse = !openFinancialInformationsCollapse"
+                [selected]="openFinancialInformationsCollapse">
+                <div class="form-group row" *ngIf="this.tiersType === 1">
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                    <input class="input-checkbox100" id="checkCeilling" type="checkbox"
+                      [checked]="haveCeillling? 'checked': null" (click)='checkCeillingClick()' name="Ceilling"
+                      style="border: 1px solid #e4e7ea !important;     border-radius: 5px;"
+                      [attr.disabled]="isModal || (isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null)">
+                    <label class="label-checkbox100" for="checkCeilling">
+                      {{'USE_CEILLING'|translate}}&nbsp;
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <div *ngIf="this.tiersType === 1 && haveCeillling" class="col-lg-4 col-md-6 col-sm-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'CURRENT_CIELING'|translate}}<span
+                        class="required">*</span></label><br *ngIf='isModal'>
+                    <kendo-numerictextbox class="form-control" formControlName="AuthorizedAmountInvoice"
+                      [format]="formatSaleOptions" style="border: 1px solid #e4e7ea !important; border-radius: 5px;"
+                      [ngClass]="{ 'has-error': (tiersFormGroup.controls.AuthorizedAmountInvoice.touched || tiersFormGroup.controls.AuthorizedAmountInvoice.dirty)
+                        && !tiersFormGroup.controls.AuthorizedAmountInvoice.valid }"
+                      [attr.disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                    </kendo-numerictextbox>
+                    <app-control-messages [control]="tiersFormGroup.controls.AuthorizedAmountInvoice"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <div *ngIf="this.tiersType === 1 && haveCeillling" class="col-lg-4 col-md-6 col-sm-12 mt-2">
+
+                    <span tooltip="{{'MONTHLY'|translate}}" theme="light" class="mb-1">
+                      {{'PROVISIONAL_AUTHORIZED_AMOUNT'|translate}}
+                    </span><br *ngIf='isModal'>
+                    <kendo-numerictextbox class="form-control mt-2"
+                      formControlName="ProvisionalAuthorizedAmountDelivery" [format]="formatSaleOptions" [ngClass]="{ 'has-error': (tiersFormGroup.controls.ProvisionalAuthorizedAmountDelivery.touched || tiersFormGroup.controls.ProvisionalAuthorizedAmountDelivery.dirty) &&
+                        !tiersFormGroup.controls.ProvisionalAuthorizedAmountDelivery.valid }"
+                      [attr.disabled]="isUpdateMode && !hasUpdateCustomerPermission ? '' : null">
+                    </kendo-numerictextbox>
+                    <app-control-messages [control]="tiersFormGroup.controls.ProvisionalAuthorizedAmountDelivery"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'TAX_GROUP'|translate}}<span
+                        class="required">*</span></label><br *ngIf='isModal'>
+                    <app-taxe-group-tiers [group]="tiersFormGroup" (Selected)="receiveTaxeGroupTiers($event)"
+                      [isFromFormGroup]="true"
+                      [disabled]="isUpdateMode &&  (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                    </app-taxe-group-tiers>
+                    <app-control-messages [control]="tiersFormGroup.controls.IdTaxeGroupTiers"
+                      class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2" *ngIf="hasShowAccountPermission">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'ACCOUNT'|translate}}</label>
+                    <app-accounts-dropdown-component [fieldName]="'IdAccountingAccountTiers'" [group]="tiersFormGroup"
+                      (Selected)="receiveAccounts($event)" [tiersTypeInput]="tiersTypeInput"
+                      [disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                    </app-accounts-dropdown-component>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2" *ngIf='tiersTypeInput==1'>
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'PAYMENT'|translate}}</label>
+                    <app-settlement-mode-drop-down [addNewLine]="false" [group]="tiersFormGroup"
+                      [disabled]="isUpdateMode && !hasUpdateCustomerPermission">
+                    </app-settlement-mode-drop-down>
+                  </div>
+                  <div class="col-lg-4 col-md-6 col-sm-12 mt-2">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'DELIVERY_TYPE'|translate}}</label>
+                    <app-delivery-type-dropdown [itemForm]="tiersFormGroup"
+                      [disabled]="isUpdateMode && (( tiersType === 1 && !hasUpdateCustomerPermission ) || ( tiersType === 2 &&  !haveUpdateSupplierPermission )) ? '' : null">
+                    </app-delivery-type-dropdown>
+                  </div>
+                </div>
+
+              </p-accordionTab>
+              <!-- Collapse CONTACTS details -->
+              <p-accordionTab header="{{'CONTACTS'| translate}}"
+                (selectedChange)="openTiersContactsCollapse = !openTiersContactsCollapse"
+                [selected]="openTiersContactsCollapse" (click)="openContactDetailCollapse()">
+                <app-tiers-contact [tiersFormGroup]="tiersFormGroup" [tiersContactToUpdate]="tiersContact"
+                  [contactLabel]="contactLabel" [typeTier]="tiersType" [collapseOnOpenAction]="collapseContactOpened"
+                  (phoneHasErrorEvent)="isContactPhoneHasError($event)">
+                </app-tiers-contact>
+              </p-accordionTab>
+              <!-- Collapse VEHICLE details -->
+              <p-accordionTab *ngIf="tiersType === 1" header="{{'VEHICLE'| translate}}"
+                (selectedChange)="openTiersVehicleCollapse = !openTiersVehicleCollapse"
+                [selected]="openTiersVehicleCollapse" (click)="openVehicleDetailCollapse()">
+                <app-tiers-vehicle [tiersFormGroup]="tiersFormGroup" [tiersVehicleToUpdate]="tiersVehicle"
+                  [typeTier]="tiersType" [collapseOnOpenAction]="collapseVehicleOpened">
+                </app-tiers-vehicle>
+              </p-accordionTab>
+
+            </p-accordion>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--End Card body-->
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer" *ngIf="!isModal">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a *ngIf="hasCustomerListPermission || hasSupplierListPermission" routerLink="{{tiersListURL}}">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button
+              *ngIf="(!isUpdateMode && hasAddCustomerPermission && tiersType ==1) || (!isUpdateMode && haveAddSupplierPermission && tiersType ==2 ) || (isUpdateMode && hasUpdateCustomerPermission && tiersType ==1) || (isUpdateMode && haveUpdateSupplierPermission && tiersType ==2)"
+              (click)="onAddTiersClick()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!--Begin Card footer-->
+  <div *ngIf="isModal">
+    <div class="isShowedModalSideBar">
+      <footer class="app-footer mx-0 footerModal">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button
+              *ngIf="(!isUpdateMode && hasAddCustomerPermission && tiersType ==1) || (!isUpdateMode && haveAddSupplierPermission && tiersType ==2 ) || (isUpdateMode && hasUpdateCustomerPermission && tiersType ==1) || (isUpdateMode && haveUpdateSupplierPermission && tiersType ==2)"
+              (click)="onAddTiersClick()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>

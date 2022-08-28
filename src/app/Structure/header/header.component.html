@@ -1,0 +1,88 @@
+<app-header [fixed]="true" [sidebarToggler]="false" [mobileAsideMenuToggler]="false" [asideMenuToggler]="false">
+  <a class="navbar-brand" type="button" (click)="goToDashboard()">
+    <img class="navbar-brand-full" src="../../../assets/image/logo_stark.svg" height="35" alt=" Stark Logo">
+    <img class="navbar-brand-minimized" src="../../../assets/image/log_s.svg" height="35" alt=" Stark Logo">
+  </a>
+  <button type="button" class="navbar-toggler d-md-down-none" appSidebarMinimizer appBrandMinimizer><span
+      class="navbar-toggler-icon"></span></button>
+
+  <ul class="nav navbar-nav">
+    <li class="nav-icon d-sm-down-none">
+      <app-header-shortcut (goToAddAssetEvent)="goToAddAsset()" (goToDeliveryListEvent)="goToDeliveryList()"
+        (goToDeliveryEvent)="goToDelivery()" (goToQuotationEvent)="goToQuotation()"
+        (goToSearchItemEvent)="goToSearchItem()"
+        (goToCounterSalesEvent)="goToCounterSales()"
+        [RoleConfigConstant]="RoleConfigConstant"></app-header-shortcut>
+    </li>
+  </ul>
+  <ng-container
+  *ngIf="showSalesSettingsMenu || showPurchaseSettingsMenu || showStockSettingsMenu || activeListPermission
+    || this.authService.hasAuthorities([RoleConfigConstant.SettingsConfig,RoleConfigConstant.CRMSettings, RoleConfigConstant.AccountingSettings])"
+ >
+    <ol class="breadcrumb mb-1 d-sm-down-none" *ngIf="home!== translate.instant(users_actions)">
+      <!-- Breadcrumb Menu-->
+      <li class="breadcrumb-item" aria-current="page">{{home}}</li>
+      <span *ngIf="home === translate.instant(notifications)"
+        class="ml-2 px-2 h-50 badge badge-success">{{countNotifications}}</span>
+      <span *ngIf="home === translate.instant(actions_notifications)"
+        class="ml-2 px-2 h-50 badge badge-warning">{{countNotifications}}</span>
+      <li *ngIf="(!this.DashboardRoute && currentpage && !actionpage && NoOnglet ||
+               !this.DashboardRoute && actionpage && !currentpage && NoOnglet) && menu" class="breadcrumb-item"><a
+          [routerLink]="[router_url]">{{menu}}</a></li>
+
+
+      <li *ngIf="(!NoOnglet || !this.DashboardRoute && !currentpage && !actionpage
+              || !this.DashboardRoute && currentpage && actionpage )&& menu" class="breadcrumb-item active"
+        aria-current="page">{{menu}}</li>
+
+      <li *ngIf="(!this.DashboardRoute && currentpage) && actionpage" class="breadcrumb-item"><a
+          [routerLink]="[router_url]">{{currentpage}}</a></li>
+
+      <li *ngIf="(!this.DashboardRoute&& !actionpage) && currentpage " class="breadcrumb-item active"
+        aria-current="page">{{currentpage}}</li>
+
+      <li *ngIf="!this.DashboardRoute && actionpage" class="breadcrumb-item active" aria-current="page">{{actionpage}}
+      </li>
+    </ol>
+  </ng-container>
+  <ul class="nav navbar-nav ml-auto">
+    <li class="nav-icon d-sm-down-none">
+      <app-company-dropdown></app-company-dropdown>
+    </li>
+    <li class="nav-icon-b2b d-sm-down-none">
+      <app-b-tob-notif *ngIf="orderListPermissions">
+      </app-b-tob-notif>
+    </li>
+    <li class="nav-icon d-sm-down-none">
+      <!--dropdown notification -->
+      <ng-container *ngIf="showSideBarButton && showReminderCRM">
+        <app-reminder-dropdown *ngIf="this.authService.hasAuthorities([RoleConfigConstant.SettingsConfig,RoleConfigConstant.CRMSettings])">
+        </app-reminder-dropdown>
+      </ng-container>
+      <!--dropdown notification-->
+    </li>
+    <li class="nav-icon d-sm-down-none">
+      <!--dropdown notification -->
+      <ng-container *ngIf="showSideBarButton">
+        <app-notification-dropdown></app-notification-dropdown>
+      </ng-container>
+      <!--dropdown notification-->
+    </li>
+    <li class="nav-icon d-sm-down-none">
+      <!--dropdown language -->
+      <app-language-dropdown></app-language-dropdown>
+      <!--End dropdown language -->
+    </li>
+    <li class="nav-icon d-sm-down-none">
+      <!--dropdown user actions-->
+      <!--dropdown user actions-->
+      <app-user-actions-dropdown [user]="user"></app-user-actions-dropdown>
+      <!--end dropdown user actions-->
+    </li>
+    <li class="nav-icon d-block d-sm-block d-md-none d-lg-none">
+      <!--dropdown user actions mobile-->
+      <app-user-action-nav-mobile [user]="user"></app-user-action-nav-mobile>
+      <!--end dropdown user actions-->
+    </li>
+  </ul>
+</app-header>

@@ -1,0 +1,12 @@
+<div [formGroup]="form">
+  <kendo-combobox class="form-control" [data]="immobilizationTypes" [textField]="'name'" [valueField]="'value'"
+    formControlName="ImmobilisationType" name="ImmobilisationType" [valuePrimitive]="true">
+
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

@@ -1,0 +1,305 @@
+<!--Begin card body-->
+<div class="card-body">
+  <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+                       (filtrePredicateToSend)="getFiltrePredicate($event)"
+                       (predicateOperator)="getOperatorPredicate($event)"
+                       (resetClickEvent)="resetClickEvent()" (searchClickEvent)="searchClick()">
+  </app-advanced-search>
+
+  <!-- quick search-->
+  <div class="form-group row mt-3 multi-check">
+    <!-- Payment method list -->
+    <div class="row col-lg-12 col-md-12 margin">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <ng-multiselect-dropdown
+          [placeholder]="'SEARCH_BY_INVOICE'|translate"
+          [data]="invoicesList"
+          [disabled]="false"
+          [settings]="dropdownSettings"
+          [(ngModel)]="invoicesListSelected"
+          (onSelect)="valueChange()"
+          (onDeSelect)="valueChange()"
+        >
+        </ng-multiselect-dropdown>
+      </div>
+    </div>
+
+    <div class="form-group has-search col-12 justify-quickSearch">
+      <span class="fa fa-search form-control-feedback" ></span>
+      <input type="text" class="form-control" placeholder="{{'SEARCH_PAYMENT_HISTORY'|translate}}"
+              [(ngModel)]='paymentHistory' (afterValueChanged)='filter()'>
+    </div>
+  </div>
+
+  <!-- Settlements grid -->
+  <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+              [pageable]="pagerSettings" (dataStateChange)="dataStateChange($event)" [filterable]="false" #grid
+              [filter]="gridState.filter">
+    <!-- Code -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                       [title]="gridSettings.columnsConfig[0].title | translate" [width]="130" [filterable]="true"
+                       [format]="gridSettings.columnsConfig[0].format">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridFooterTemplate>
+        <div style="font-weight:bold;color: #4c9aae; font-size: 16px; padding-top: 7px; padding-bottom: 7px;">
+          {{'TOTAL'| translate}}
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Label -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                       [title]="gridSettings.columnsConfig[1].title | translate" [width]="160" [filterable]="true"
+                       [format]="gridSettings.columnsConfig[1].format">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="dataItem.Label">
+          {{dataItem.Label}}
+        </span>
+        <span *ngIf="!dataItem.Label">
+          ---
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Settlement reference -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                       [title]="gridSettings.columnsConfig[2].title | translate" [width]="160" [filterable]="true"
+                       [format]="gridSettings.columnsConfig[2].format">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="dataItem.SettlementReference">{{dataItem.SettlementReference}}</span>
+        <span *ngIf="!dataItem.SettlementReference">---</span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Client -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [title]="getTiersTitle() | translate"
+                       [width]="170" [filterable]="true" [format]="gridSettings.columnsConfig[3].format">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+              theme="light">{{getTiersTitle()|translate}}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Settlement date -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                       [title]="gridSettings.columnsConfig[4].title | translate" [width]="120" [filterable]="true"
+                       [format]="gridSettings.columnsConfig[4].format" filter="date">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        {{dataItem.SettlementDate | date: gridSettings.columnsConfig[4].format}}
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Commitment date -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+                       [title]="gridSettings.columnsConfig[5].title | translate" [width]="110" filter="date"
+                       [filterable]="true"
+                       [format]="gridSettings.columnsConfig[5].format">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[5].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[5].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="dataItem.CommitmentDate">
+          {{dataItem.CommitmentDate | date: gridSettings.columnsConfig[4].format}}
+        </span>
+        <span *ngIf="!dataItem.CommitmentDate">
+          ---
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Method name -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+                       [title]="gridSettings.columnsConfig[6].title | translate" [width]="110" [filterable]="true"
+                       [format]="gridSettings.columnsConfig[6].format">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[6].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[6].title|translate}}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Amount -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[7].field"
+                       [title]="gridSettings.columnsConfig[7].title | translate" [width]="150" filter="numeric"
+                       [filterable]="true"
+                       [format]="gridSettings.columnsConfig[7].format" [style]='{"font-family": "Arial, Helvetica, serif",
+                "color": "#505253",
+                "text-align":"right",
+                "padding-right": "3%"}'>
+      <ng-template kendoGridHeaderTemplate>
+                  <span tooltip="{{gridSettings.columnsConfig[7].tooltip|translate}}"
+                        theme="light">{{gridSettings.columnsConfig[7].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType === tiersTypeEnum.Customer">
+        <span *ngIf="dataItem.AmountWithCurrency && !dataItem.IdUsedCurrencyNavigation">
+          {{
+dataItem.AmountWithCurrency.toLocaleString(language, {
+        minimumFractionDigits: dataItem.Precision,
+        style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+      })
+          }}
+          </span>
+          <span *ngIf="dataItem.AmountWithCurrency && dataItem.IdUsedCurrencyNavigation">
+            {{
+  dataItem.AmountWithCurrency.toLocaleString(language, {
+          minimumFractionDigits: dataItem.IdUsedCurrencyNavigation.Precision,
+          style: 'currency', currency: dataItem.IdUsedCurrencyNavigation.Code, currencyDisplay: 'code'
+        })
+            }}
+            </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType === tiersTypeEnum.Supplier">
+        <span *ngIf="dataItem.AmountWithCurrency && !dataItem.IdUsedCurrencyNavigation">
+          {{
+dataItem.AmountWithCurrency.toLocaleString(language, {
+        minimumFractionDigits: dataItem.Precision,
+        style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+      })
+          }}
+          </span>
+          <span *ngIf="dataItem.AmountWithCurrency && dataItem.IdUsedCurrencyNavigation">
+            {{
+  dataItem.AmountWithCurrency.toLocaleString(language, {
+          minimumFractionDigits: dataItem.IdUsedCurrencyNavigation.Precision,
+          style: 'currency', currency: dataItem.IdUsedCurrencyNavigation.Code, currencyDisplay: 'code'
+        })
+            }}
+            </span>
+      </ng-template>
+      <ng-template kendoGridFooterTemplate>
+        <div style="text-align: left;font-weight:bold; font-size: 16px;padding-top: 7px;
+          padding-bottom: 7px; text-align: right; padding-right: 18%;" *ngIf="tiersType === tiersTypeEnum.Customer && userCurrency && totalAmountSettlements">
+          {{totalAmountSettlements.toLocaleString(language, {
+          minimumFractionDigits: userCurrency.Precision,
+          style: 'currency', currency: userCurrency.Code, currencyDisplay: 'code'
+        })}}
+        </div>
+        <div style="text-align: left;font-weight:bold; font-size: 16px;padding-top: 7px;
+          padding-bottom: 7px; text-align: right; padding-right: 18%;" *ngIf="tiersType === tiersTypeEnum.Supplier && userCurrency && totalAmountSettlements">
+          {{totalAmountSettlements.toLocaleString(language, {
+          minimumFractionDigits: userCurrency.Precision,
+          style: 'currency', currency: userCurrency.Code, currencyDisplay: 'code'
+        })}}
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- withHoldingTax -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[8].field"
+                       [title]="gridSettings.columnsConfig[8].title | translate" [width]="110" filter="numeric"
+                       [filterable]="true"
+                       [format]="gridSettings.columnsConfig[8].format" [style]='{"font-family": "Arial, Helvetica, serif",
+       "color": "#505253",
+       "text-align":"right",
+       "padding-right": "3%"}'>
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[8].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[8].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType === tiersTypeEnum.Customer">
+        <span *ngIf="dataItem.WithholdingTax && !dataItem.IdUsedCurrencyNavigation">
+          {{
+dataItem.WithholdingTax.toLocaleString(language, {
+        minimumFractionDigits: dataItem.Precision,
+        style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+      })
+          }}
+          </span>
+          <span *ngIf="dataItem.WithholdingTax && dataItem.IdUsedCurrencyNavigation">
+            {{
+  dataItem.WithholdingTax.toLocaleString(language, {
+          minimumFractionDigits: dataItem.IdUsedCurrencyNavigation.Precision,
+          style: 'currency', currency: dataItem.IdUsedCurrencyNavigation.Code, currencyDisplay: 'code'
+        })
+            }}
+            </span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="tiersType === tiersTypeEnum.Supplier">
+        <span *ngIf="dataItem.WithholdingTax && !dataItem.IdUsedCurrencyNavigation">
+          {{
+dataItem.WithholdingTax.toLocaleString(language, {
+        minimumFractionDigits: dataItem.Precision,
+        style: 'currency', currency: dataItem.CurrencyCode, currencyDisplay: 'code'
+      })
+          }}
+          </span>
+          <span *ngIf="dataItem.WithholdingTax && dataItem.IdUsedCurrencyNavigation">
+            {{
+  dataItem.WithholdingTax.toLocaleString(language, {
+          minimumFractionDigits: dataItem.IdUsedCurrencyNavigation.Precision,
+          style: 'currency', currency: dataItem.IdUsedCurrencyNavigation.Code, currencyDisplay: 'code'
+        })
+            }}
+            </span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Payment status -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[9].field"
+                       [title]="gridSettings.columnsConfig[9].title | translate" [width]="100" filter="numeric"
+                       [filterable]="true"
+                       [format]="gridSettings.columnsConfig[9].format"
+                       [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+      <ng-template kendoGridHeaderTemplate>
+        <span tooltip="{{gridSettings.columnsConfig[9].tooltip|translate}}"
+              theme="light">{{gridSettings.columnsConfig[9].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+        <app-payment-status-dropdown [group]="settlementFormGroup" (selectedValue)="paymentMethodFilterChange($event)">
+        </app-payment-status-dropdown>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <div>
+          <span class="badge badge-warning"
+                *ngIf="dataItem.IdPaymentStatus === paymentStatusEnum.Settled">{{'SETTLED' | translate}}
+          </span>
+        </div>
+        <div>
+          <span class="badge badge-primary"
+                *ngIf="dataItem.IdPaymentStatus === paymentStatusEnum.RemittanceSlip">{{'REMITTANCESLIP' | translate}}
+          </span>
+        </div>
+        <div>
+          <span class="badge badge-info"
+                *ngIf="dataItem.IdPaymentStatus === paymentStatusEnum.Issued">{{'ISSUED' | translate}}
+          </span>
+        </div>
+        <div>
+          <span class="badge badge-secondary"
+                *ngIf="dataItem.IdPaymentStatus === paymentStatusEnum.InBank">{{'IN_BANK' | translate}}
+          </span>
+        </div>
+        <div>
+          <span class="badge badge-success"
+                *ngIf="dataItem.IdPaymentStatus === paymentStatusEnum.Cashed">{{'CASHED' | translate}}
+          </span>
+        </div>
+        <div>
+        <span class="badge badge-danger"
+              *ngIf="dataItem.IdPaymentStatus === paymentStatusEnum.Unpaid">{{'UN_PAID' | translate}}
+        </span>
+          <span class="badge" style="background-color: black; color: white;"
+                *ngIf="dataItem.IdPaymentStatus === paymentStatusEnum.Canceled">{{'PAYMENT_CANCELED' | translate}}
+        </span>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+
+    <!--Actions-->
+    <kendo-grid-column [width]="80">
+      <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+        <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true"
+        *ngIf="(tiersType === tiersTypeEnum.Customer && (hasShowCustomerPaymentHistoryPermission || hasUpdateCustomerPaymentHistoryPermission) ) ||
+          (tiersType === tiersTypeEnum.Supplier && (hasShowtSupplierPaymentHistoryPermission || hasUpdateSupplierPaymentHistoryPermission))"
+           (click)="openDetailsForm(dataItem)" data-placement="top" title="{{'DETAILS'|translate}}"></i>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid>
+</div>
+<!--End card body-->

@@ -1,0 +1,119 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card" style="width:-webkit-fill-available;">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'TRAINING_CATALOG'|translate}}</h3>
+          </div>
+        </div>
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body">
+          <!-- Search zone start-->
+          <div style="margin-left:20%;
+              max-width: 100%; " class="row col-sm-12" [formGroup]="searchCatalogFormGroup">
+            <div class="col-lg-2 col-md-12 col-sm-12" style="padding-right: 0px;
+                      padding-left: 0px;">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                {{'BY_NAME'|translate}}
+              </label>
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <input type="text" class="form-control" autocomplete="off" formControlName="Name" (change)="clickSearch()"
+                       aria-describedby="addon-wrapping">
+              </div>
+            </div>
+            <div class="col-lg-2 col-md-12 col-sm-12" style="padding-right: 0px;
+                  padding-left: 0px;">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                {{'BY_TYPE'|translate}}
+              </label>
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <kendo-dropdownlist class="form-control" (valueChange)="clickSearch()" [data]="typeFilter"
+                                    textField="name" valueField="id" formControlName="Type" [(ngModel)]="defaultType">
+                  <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+                    {{ dataItem?.name | translate }}
+                  </ng-template>
+                </kendo-dropdownlist>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-2 col-xs-6">
+              <div class="row align-items-end">
+                <div class="col-lg-12">
+                  <label><br></label>
+                </div>
+                <div class="col">
+                  <button class="btn btn-secondary" style="width:50px" type="button" id="button-addon2" (click)="clickSearch()">
+                    <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Search zone end-->
+          <!-- Cards start-->
+          <div class="col-lg-12 col-sm-12 col-md-12 " style="float :right; margin-bottom: 20px;" *ngIf="hasAddPermission">
+            <div class='favourite' style="float:right;" (click)="saveTraining()" >
+              <div class='favourite_heart'>
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+          <div class="row col-lg-12 col-sm-12 col-md-12 " style="margin-left: 20px; margin-top: 20px">
+            <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12"
+                 *ngFor="let training of data;">
+              <div class="card" style="min-height: 225px;">
+                <div class="card-header px-3 py-2" style="background: #78b4c314;">
+                  <span> {{training.Name}} </span>
+                  <span  style="float: right;">
+                              <button class="k-button btnKendoGrid" (click)="saveTraining(training)" style=" background-color: #fafcff;
+                              border-color: #b7c6da;" *ngIf="hasShowPermission">
+                                  <i class="fa fa-edit fa-lg AddIcon"></i>
+                              </button>
+                              <button class="k-button btnKendoGrid" (click)="deleteTraining(training)" style=" background-color: #fafcff;
+                              border-color: #b7c6da;" *ngIf="hasDeletePermission">
+                                  <i class="fa fa-trash-o fa-lg AddIcon text-danger"></i>
+                              </button>
+                            </span>
+                </div>
+                <div class="card-body p-3 d-flex align-items-center">
+                        <span>
+                          <img id="blah" class="imgSize" border="0" [src]="training.TrainingPictureFileInfo ? getPictureSrc(training): defaultPictureUrl" style="width:80px; height:80px"/>
+                        </span>
+                  <span style="min-height: 105px; max-height: 105px; overflow-x: hidden ">
+                          <div style="margin-left: 20px">
+                            <div class="text-muted" style="font-size: 120%; font-weight: 400;">
+                                <i class="fa fa-clipboard color-blue"> {{'DESCRIPTION' | translate}}: </i>
+                                <span style="font-size: inherit;"> {{training.Description}} </span>
+                            </div>
+                          </div>
+                        </span>
+                </div>
+                <div class="card-footer px-3 py-2" *ngIf="hasAddTrainingRequestPermission || hasAddTrainingSessionPermission">
+                  <div  style="float: right; padding-left: 20px;" *ngIf="hasAddTrainingRequestPermission" (click)="addTrainingRequest(training.Id)">
+                    <a style="color: #4c9aae; cursor: pointer;"><b>{{'REQUEST' | translate}}</b></a>
+                  </div>
+                  <div  style="float: right;" *ngIf="hasAddTrainingSessionPermission"  (click)="PlanifyTraining(training.Id)" >
+                    <a style="color: #20a8d8bf; cursor: pointer;"><b>{{'PLANIFY_SESSION' | translate}}</b></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Cards end-->
+          <!-- Paginator start-->
+          <div class="row" style="margin-left: 30px">
+            <app-pager  [dataSource]="this.gridSettings" (pageChangeEvent)="onPageChange($event)"
+                        (stateChangeEvent)="dataStateChange($event)">
+            </app-pager>
+          </div>
+
+
+          <!-- Paginator end-->
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

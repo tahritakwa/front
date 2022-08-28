@@ -1,0 +1,403 @@
+<div class="row">
+
+  <form [formGroup]="formGroupFilter" class="col-lg-12 col-md-12 col-sm-12">
+    <div class="col-xs-12 col-lg-12 col-lg-12" style="text-align: center;" *ngIf='!LinesOnly'>
+      <div class="row">
+
+
+        <div class="col-sm-12 col-md-5 col-lg-4 row">
+          <label class="col-lg-5 col-md-5 col-sm-12" style="margin-top: auto;"> {{'STARTDATE'|translate}}</label>
+          <kendo-datepicker formControlName="StartDate" class="form-control col-lg-7 col-md-7 col-sm-12"
+            (valueChange)="changeStartDate()" [max]="maxStartDate" [popupSettings]="{ appendTo: containerRef }">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+
+        </div>
+        <div class="col-sm-12 col-md-5 col-lg-3 row">
+          <label class="col-lg-5 col-md-5 col-sm-12" style="margin-top: auto;"> {{'ENDDATE'|translate}}</label>
+          <kendo-datepicker formControlName="EndDate" class="form-control col-lg-7 col-md-7 col-sm-12"
+            (valueChange)="changeEndDate()" [min]="minEndDate" [popupSettings]="{ appendTo: containerRef }">
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+
+        </div>
+
+        <div class="col-sm-12 col-md-5 col-lg-4 row">
+            <label class="col-lg-5 col-md-5 col-sm-12" style="margin-top: auto;">{{'USER'|translate}}</label>
+              <app-user-dropdown [form]="formGroupFilter" [idUserColName]= "'IdUser'" style="width: 40%;"></app-user-dropdown>
+        </div>
+
+        <div class="col-sm-12 col-md-2 col-lg-1">
+          <button type="button" (click)='setDataSourceWithSpecificDates()' class="btn btn-primary"
+            style="background: #4c9aae; border: none;">
+            <i class="fa fa-search" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+      <div class="row col-sm-12 col-md-12 col-lg-12">
+        <app-control-messages [control]="formGroupFilter.controls.StartDate" class="error-msg messages text-danger">
+        </app-control-messages>
+
+        <app-control-messages [control]="formGroupFilter.controls.EndDate" class="error-msg messages text-danger">
+        </app-control-messages>
+
+      </div>
+      <br />
+    </div>
+
+  </form>
+
+  <!-- Import Purchase Order start -->
+  <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;" *ngIf='!LinesOnly'>
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card header Start-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-0">
+            <h6 class="card-title mb-0">{{'IMPORT_DOCUMENT'|translate}}</h6>
+          </div>
+        </div>
+        <!--End card header End-->
+        <!--Begin card body Start-->
+        <div class="card-body body-responsive">
+
+          <kendo-grid [style.maxHeight.px]="400" [selectable]="selectableSettings" [scrollable]="'virtual'"
+                      [data]="documentView" [selectedKeys]="service.DataToImport" [kendoGridSelectBy]="'Id'"
+                      (selectedKeysChange)="selectOrderRow($event)">
+
+            <kendo-grid-checkbox-column [width]='70'>
+              <ng-template kendoGridHeaderTemplate *ngIf="!blOnly">
+                <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+                       (selectAllChange)="onSelectAllChange($event)" type="checkbox">
+                <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+              </ng-template>
+            </kendo-grid-checkbox-column>
+
+            <!--Code-->
+            <kendo-grid-column field="Code" title="{{'CODE'|translate}}" [width]='200'>
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <div class="d-flex align-items-end mb-3">{{'CODE'|translate}}</div>
+                <input type="search" [(ngModel)]='shearchCodeRef'
+                       [placeholder]='"CODE"|translate' (keydown.enter)="shearchCode()"
+                       class="form-control form-control-sm header-input-filter">
+
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--Date-->
+            <kendo-grid-column field="DocumentDate" title="{{'DOCUMENT_DATE'|translate}}" [width]='200'>
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <div>
+                  <div class="header-without-filter">
+                    {{'DOCUMENT_DATE'|translate}}
+                  </div>
+
+                </div>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.DocumentDate|date: format}}
+              </ng-template>
+            </kendo-grid-column>
+
+
+            <!--Amount HT-->
+            <kendo-grid-column field="DocumentHtpriceWithCurrency" title="{{'AMOUNTHT'|translate}}" [width]='200'>
+
+              <ng-template kendoGridHeaderTemplate>
+                <div>
+                  <div class="d-flex align-items-end mb-3">{{'AMOUNTHT'|translate}}</div>
+                  <div class="input-group">
+                    <input type="number"  (keydown.enter)="filterData()" (input)="filterData()" class="form-control form-control-sm header-input-filter"
+                           placeholder="{{'SEARCH'|translate}}"
+                           [(ngModel)]='amountHtSearch'>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <kendo-numerictextbox [spinners]="false"
+                                      [format]="dataItem.FormatOption"
+                                      [step]="1" style="border: none !important;"
+                                      class="form-control inputEnabled as-label"
+                                      [value]="dataItem.DocumentHtpriceWithCurrency"
+                                      [disabled]="true">
+                </kendo-numerictextbox>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--Amount TTC-->
+            <kendo-grid-column field="DocumentTtcpriceWithCurrency" title="{{'AMOUNTTTC'|translate}}" [width]='200'>
+              <ng-template kendoGridHeaderTemplate>
+                <div>
+                  <div class="d-flex align-items-end mb-3">{{'AMOUNTTTC'|translate}}</div>
+                  <div class="input-group">
+                    <input type="number"   (keydown.enter)="filterData()" (input)="filterData()" class="form-control form-control-sm header-input-filter"
+                           placeholder="{{'SEARCH'|translate}}"
+                           [(ngModel)]='amountTtcSearch'>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <kendo-numerictextbox [spinners]="false"
+                                      [format]="dataItem.FormatOption"
+                                      [step]="1" style="border: none !important;"
+                                      class="form-control inputEnabled as-label"
+                                      [value]="dataItem.DocumentTtcpriceWithCurrency"
+                                      [disabled]="true">
+                </kendo-numerictextbox>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column title="{{'USER'|translate}}" [width]='120' [filterable]="false">
+              <ng-template kendoGridHeaderTemplate>
+                <div>
+                  <div class="header-without-filter">{{'USER'|translate}}</div>
+                </div>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem && dataItem.IdCreatorNavigation && dataItem.IdCreatorNavigation.FullName ? dataItem.IdCreatorNavigation.FullName : '-' }}
+              </ng-template>
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                {{dataItem && dataItem.IdCreatorNavigation && dataItem.IdCreatorNavigation.FullName ? dataItem.IdCreatorNavigation.FullName : '-' }}
+              </ng-template>
+            </kendo-grid-column>
+
+
+          </kendo-grid>
+
+
+
+
+
+
+
+
+          <hr />
+
+
+
+          <div class="row justify-content-between">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="row align-items-end">
+                <label class="col-lg-auto col-md-12 col-sm-12">
+                  <span theme="light">
+                    {{'TOTAL_TTC'|translate}}
+                  </span>
+                </label>
+                <div class="col">
+                  <kendo-numerictextbox [spinners]="false" [format]="formatFoSalesOptions" [step]="1" [value]="sumAllHT"
+                                        [readonly]="true" class="important-amount num-field form-control disabledInput" style="margin-top: -5%;
+                                          font-family: Roboto; border:none; color: rgb(80, 82, 83);">
+                  </kendo-numerictextbox>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6">
+              <div class="row justify-content-end">
+                <label class="col-lg-auto col-md-12 col-sm-12">
+                  <span theme="light">
+                    {{'TOTAL_SELECTED_TTC'|translate}}
+                  </span>
+                </label>
+                <div class="col-auto pl-0">
+                  <kendo-numerictextbox [spinners]="false" [format]="formatFoSalesOptions" [step]="1" [value]="sumHT"
+                                        [readonly]="true" class="get-amount-to-right important-amount num-field form-control disabledInput"
+                                        style="width: 152px;">
+                  </kendo-numerictextbox>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <hr />
+
+
+
+
+
+
+
+
+
+        </div>
+        <!--Begin card body End-->
+      </div>
+    </div>
+  </div>
+  <!-- Import Purchase Order End -->
+  <!-- Import Balances Start -->
+  <div class="col-xs-12 col-lg-12 col-lg-12" style="display: flex; flex-direction: column;" *ngIf='!isToMergeBL && !blOnly'>
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card header Start-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-0">
+            <h6 class="card-title mb-0" *ngIf='!LinesOnly'>{{'IMPORT_BALANCES'|translate}}</h6>
+            <h6 class="card-title mb-0" *ngIf='LinesOnly'>{{'IMPORT'|translate}}</h6>
+          </div>
+        </div>
+        <!--End card header End-->
+        <!--Begin card body Start-->
+        <div class="card-body body-responsive">
+          <kendo-grid #gridBalance [selectable]="selectableBalancesSettings" [data]="balancesView"
+                      [style.maxHeight.px]="400" [scrollable]="'virtual'" [kendoGridSelectBy]="'Id'"
+                      (selectedKeysChange)="selectBalance($event)" [selectedKeys]="selectedBalancedLines">
+            <kendo-grid-checkbox-column [width]='70'>
+              <ng-template kendoGridHeaderTemplate>
+                <input class="k-checkbox" id="selectOtherAllCheckboxId" kendoGridSelectAllCheckbox
+                       [state]="selectAllOtherState" (selectAllChange)="onSelectAllOtherChange($event)" type="checkbox">
+                <label class="k-checkbox-label" for="selectOtherAllCheckboxId"></label>
+              </ng-template>
+            </kendo-grid-checkbox-column>
+
+            <kendo-grid-column field="DocumentCode" title="{{'CODE'|translate}}" [width]='200'>
+
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <div class="d-flex align-items-end mb-3">{{'CODE'|translate}}</div>
+                <input type="search" [(ngModel)]='shearchCodeDocRef' *ngIf='!isToMergeBL'
+                       [placeholder]='"CODE"|translate' (keydown.enter)="shearch()"
+                       class="form-control form-control-sm header-input-filter">
+                <div *ngIf='isToMergeBL'> {{'CODE'|translate}}</div>
+              </ng-template>
+
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.IdDocumentNavigation.Code}}
+              </ng-template>
+
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                {{dataItem.IdDocumentNavigation.Code}}
+              </ng-template>
+            </kendo-grid-column>
+
+
+            <kendo-grid-column field="Designation" title="{{'DESCRITPION'|translate}}" [width]='200'>
+
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <div class="d-flex align-items-end mb-3">{{'DESCRIPTION'|translate}}</div>
+                <input type="search" [(ngModel)]='shearchDescRef' *ngIf='!isToMergeBL'
+                       [placeholder]='"REFERENCE_DESCRIPTION_SEARCH"|translate' (keydown.enter)="shearch()"
+                       class="form-control form-control-sm header-input-filter">
+                <div *ngIf='isToMergeBL'> {{'CODE'|translate}}</div>
+              </ng-template>
+
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.IdItemNavigation.Code}}-{{dataItem.IdItemNavigation.Description}}
+              </ng-template>
+
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                {{dataItem.IdItemNavigation.Code}}-{{dataItem.IdItemNavigation.Description}}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="RemainingQuantity" title="{{'REMAINING_QUANTITY'|translate}}" [width]='200'>
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <div>
+                  <div class="header-without-filter">
+                    {{'REMAINING_QUANTITY'|translate}}
+                  </div>
+
+                </div>
+              </ng-template>
+
+            </kendo-grid-column>
+
+            <kendo-grid-column field="TaxeString" title="{{'TAX'|translate}}" [width]='200'>
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <div>
+                  <div class="header-without-filter">
+                    {{'TAX'|translate}}
+                  </div>
+
+                </div>
+              </ng-template>
+
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <div *ngFor='let documentTax of dataItem.Taxe' class="taxClass"
+                     style="border: 2px solid #61a8ad !important; padding: 2px">
+                  {{documentTax.Label}}
+                </div>
+              </ng-template>
+
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <div *ngFor='let documentTax of dataItem.Taxe' class="taxClass"
+                     style="border: 2px solid #61a8ad !important; padding: 2px">
+                  {{documentTax.Label}}
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column field="HtUnitAmountWithCurrency" title="{{'PU'|translate}}" [width]='200'>
+              <ng-template kendoGridHeaderTemplate let-dataItem="dataItem">
+                <div>
+                  <div class="header-without-filter">
+                    {{'PU'|translate}}
+                  </div>
+
+                </div>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <kendo-numerictextbox [spinners]="false"
+                                      [format]="dataItem.IdDocumentNavigation.FormatOption"
+                                      [step]="1" style="border: none !important;"
+                                      class="form-control inputEnabled as-label"
+                                      [value]="dataItem.HtUnitAmountWithCurrency ? dataItem.HtUnitAmountWithCurrency : '-'"
+                                      [disabled]="true">
+                </kendo-numerictextbox>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column title="{{'USER'|translate}}" [width]='120' [filterable]="false">
+              <ng-template kendoGridHeaderTemplate let-column>
+                <div>
+                  <div class="header-without-filter">{{'USER'|translate}}</div>
+                </div>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem && dataItem.IdDocumentNavigation.IdCreatorNavigation && dataItem.IdDocumentNavigation.IdCreatorNavigation.FullName ? dataItem.IdDocumentNavigation.IdCreatorNavigation.FullName : '-' }}
+              </ng-template>
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                {{dataItem && dataItem.IdDocumentNavigation.IdCreatorNavigation && dataItem.IdDocumentNavigation.IdCreatorNavigation.FullName ? dataItem.IdDocumentNavigation.IdCreatorNavigation.FullName : '-' }}
+              </ng-template>
+            </kendo-grid-column>
+          </kendo-grid>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+        <!--Begin card body End-->
+      </div>
+    </div>
+  </div>
+  <div class="card-footer" *ngIf='isNotForImport' style="background: white;border: none;">
+    <button type="button" class="btn btn-warning" data-dismiss="modal" (click)='saveLines();'
+      [disabled]="disableButtonImport">
+      {{'IMPORT'|translate}}
+    </button>
+  </div>
+  <div class="card-footer" *ngIf='isFromCounterSale' style="background: white;border: none;">
+    <button type="button" class="btn btn-warning" data-dismiss="modal" (click)='saveImportedBL();'
+      [disabled]="disableButtonImport">
+      {{'IMPORT'|translate}}
+    </button>
+  </div>
+  <!-- Import Balances End -->
+</div>

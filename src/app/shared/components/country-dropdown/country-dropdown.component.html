@@ -1,0 +1,13 @@
+<div *ngIf="group" [formGroup]="group">
+  <kendo-combobox [data]="countryFiltredDataSource" class="form-control HistoryCommandMargin" name="idCountryColName"
+    [(ngModel)]="SelectedValue" [formControlName]="idCountryColName" textField="NameFr" (valueChange)="Onchange($event)"
+    valueField="Id" [allowCustom]="allowCustom" [valuePrimitive]="true" [filterable]="true"
+    (filterChange)="handleFilter($event)">
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

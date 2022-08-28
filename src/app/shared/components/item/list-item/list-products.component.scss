@@ -1,0 +1,86 @@
+.k-widget,
+.k-grid {
+  font-size: 14px;
+}
+
+.config-btn {
+  height: 13px;
+}
+
+tr .tec-doc {
+  text-align: center;
+  padding: 0;
+  color: rgb(76, 154, 174);
+  cursor: pointer;
+}
+
+.k-grid tr.small-fonts {
+  font-size: small;
+}
+.grid-cell {
+  font-family: var(--font-family-sans-serif);
+}
+
+.noPadding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.margrin-badget {
+  margin-top: 8px;
+  margin-left: 2px;
+  margin-right: 5%;
+}
+p {
+  display: inline-block;
+  margin-right: 5%;
+}
+.itemWarehouse {
+  border: 1px solid #4c9aae !important;
+  background-color: #e4e5e666;
+  border-left: 4px solid var(--green) !important;
+  margin: -0.85% -0.9% -0.9% -1%;
+}
+.itemWarehouseCentral {
+  margin-left: 1%;
+  margin-top: 1%;
+}
+.tec-doc-bar {
+  background-color: #3e787e;
+  margin: -0.85% -0.9% 0.85% -1%;
+  padding: 1% 170px 1% 0%;
+  color: azure;
+}
+.tabTitle {
+  font-size: 16px;
+  margin-left: 5px;
+}
+.hideTab {
+  display: none;
+}
+@media only screen and (min-width: 992px) and (max-width: 1250px) {
+  .sizeStyle {
+    font-size: 12px;
+  }
+}
+@media screen and (min-width: 1416px) {
+  .warehouseDetails {
+    margin-left: 50%;
+  }
+}
+
+.modal-content {
+  -webkit-box-shadow: 0px 0px 0px 800px rgba(0, 0, 0, 0.47) !important;
+  -moz-box-shadow: 0px 0px 0px 800px rgba(0, 0, 0, 0.47) !important;
+  box-shadow: 0px 0px 0px 800px rgba(0, 0, 0, 0.47) !important;
+}
+
+.card-avatar {
+  width: 50px;
+  height: 50px;
+}
+
+.container {
+  max-width: 100% !important;
+}
+

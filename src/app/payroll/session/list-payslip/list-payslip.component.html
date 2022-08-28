@@ -1,0 +1,177 @@
+<div class="cad">
+  <div class="card border-0 full-screen-card">
+    <!--Begin Card eader-->
+    <div class="card-header">
+      <div class="row">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'LIST_PAYSLIP'|translate}}</h3>
+      </div>
+      <div class="col-lg-2 ml-auto">
+        <div class="row d-flex justify-content-end">
+          <div class="col-auto d-flex align-items-end" style="width: 220px">
+            <input class="form-control InvoiceNumber pb-0" [value]="sessionInfos?.Code">
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-1 mt-3 mr-2">
+        <div class="row d-flex justify-content-end">
+          <h4 class="statusAlignment" *ngIf="!isClosed">
+            <span class="badge badge-success">{{"OPEN" | translate }}</span>
+          </h4>
+          <h4 class="statusAlignment" *ngIf="isClosed">
+            <span class="badge badge-danger">{{ "CLOSED" | translate }}</span>
+          </h4>
+        </div>
+      </div>
+    </div>
+    </div>
+    <div class="card-body">
+      <form class="form-horizontal">
+        <!-- Start Form-->
+        <app-session-header [courantSession]="sessionInfos" [page]="'payslip'"></app-session-header>
+        <br>
+        <div class="col-lg-12 col-sm-12 col-md-12">
+          <div *ngIf="showProgress">
+            <app-progress-bar [progress]="progression"></app-progress-bar>
+          </div>
+          <div align="right" *ngIf="showGrid == false">
+            <button class="generate ml-3 mr-2" (click)="onGenerateClick()" *ngIf="!showProgress && !canUpdatePays">
+              <i class="fa fa-cogs fa-sm AddIcon"></i>
+              <span>&nbsp; {{'GENERATE'|translate}}</span>
+            </button>
+          </div>
+          <div align="right" *ngIf="showGrid == true" class="col-lg-12 col-md-12 col-sm-12 col-sx-12">
+            <button class="generate ml-3 mr-2" (click)="getResume()">
+              <i class="fa fa-money fa-sm AddIcon"></i>&nbsp; {{'SESSIONRESUME'|translate}}
+            </button>
+            <button class="generate ml-3 mr-2" (click)="downloadAllPayslip()">
+              <i class="fa fa-download fa-sm AddIcon"></i>
+              <span>&nbsp; {{'DOWNLOAD_ALL'|translate}}</span>
+            </button>
+            <button *ngIf="hasRegeneratePayslipPermission && !isClosed" class="generate ml-3 mr-2" (click)="regenerateClick()">
+              <i class="fa fa-refresh fa-sm AddIcon"></i>
+              <span>&nbsp; {{'REGENERATE'|translate}}</span>
+            </button>
+            <button class="generate ml-3 mr-2" *ngIf="hasBroadcastPayslipPermission" (click)="distributePayslips()">
+              <i class="fa fa-share fa-sm AddIcon"></i>
+              <span>&nbsp; {{'DISTRIBUTE_PAYSLIPS'|translate}}</span>
+            </button>
+          </div>
+        </div>
+        <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+          [sortable]="true" [pageable]="pagerSettings" [selectable]="true" [reorderable]="true"
+          [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+          (dataStateChange)="dataStateChange($event)" style="margin-top:20px" *ngIf="!showProgress && showGrid">
+          <!-- Head Start-->
+          <ng-template kendoGridToolbarTemplate>
+            <div style="margin-bottom: 5px;">
+              <div class="col-lg-4 col-md-6 col-sm-12" style="float: left;">
+                <label style="font-size: 16px; color: #4c9aae;">
+                  {{gridSettings.gridData.total}} &nbsp; {{'GENERATED_PAYSLIP' | translate}}&nbsp;
+                </label>
+              </div>
+            </div>
+          </ng-template>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+            [title]="gridSettings.columnsConfig[0].title | translate" [filter]="gridSettings.columnsConfig[0].filter"
+            [width]="gridSettings.columnsConfig[0]._width" filter="numeric">
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+            [filter]="gridSettings.columnsConfig[1].filter" [title]="gridSettings.columnsConfig[1].title | translate"
+            [width]="gridSettings.columnsConfig[3]._width">
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <a class="employee-link" [routerLink]="['/main/payroll/employee/edit', dataItem.IdEmployeeNavigation.Id]"
+                target="_blank">
+                {{dataItem.IdEmployeeNavigation.FullName}}
+              </a>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+            [filter]="gridSettings.columnsConfig[2].filter" [title]="gridSettings.columnsConfig[2].title | translate"
+            [width]="gridSettings.columnsConfig[2]._width">
+            <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+              <app-contract-type-dropdown (selectedValue)="activateContractTypeFilter($event)">
+              </app-contract-type-dropdown>
+            </ng-template>
+          </kendo-grid-column>
+          <!--IsActive-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+            [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+            [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+            [format]="gridSettings.columnsConfig[3].format">
+            <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+              <app-status-dropdown [isPayslip]="true" [form]="statusSearchDropdownFormGroup"
+                (selectedValue)="statusFilter($event)">
+              </app-status-dropdown>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <span *ngIf="dataItem.Status == payslipsStatus.Correct"
+                    class="badge badge-success">{{'CORRECT'|translate}}</span>
+            <div *ngIf="dataItem.ErrorMessage; then withTooltip else withoutTooltip"></div>
+            <ng-template #withTooltip>
+                <span *ngIf="dataItem.Status == payslipsStatus.Wrong" class="badge badge-warning"
+                      tooltip="{{dataItem.ErrorMessage | translate}}">{{'WRONG'|translate}}
+                </span>
+            </ng-template>
+            <ng-template #withoutTooltip>
+                <span *ngIf="dataItem.Status == payslipsStatus.Wrong"
+                      class="badge badge-warning">{{'WRONG'|translate}}
+                </span>
+              </ng-template>
+              <span *ngIf="dataItem.Status == payslipsStatus.NotCalculated"
+                class="badge badge-danger">{{'NOT_CALCULATED'|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-command-column [width]="130">
+            <ng-template kendoGridCellTemplate let-dataItem let-isNew="isNew">
+              <button *ngIf="hasRegeneratePayslipPermission && !isClosed" class="btnKendoGrid k-button k-primary" data-toggle="tooltip"
+                data-placement="top" title="{{'REGENERATE' | translate}}" (click)="regenerateOnePayslip(dataItem)" style="background-color: transparent;">
+                <i class="fa fa-refresh AddIcon"></i>
+              </button>
+              <button *ngIf="hasPrintPayslipPermission" class="btnKendoGrid" data-toggle="tooltip" data-placement="top" title="{{'DOWNLOAD' | translate}}"
+                (click)="downloadPayslip(dataItem)" style="background-color: transparent;">
+                <i class="fa fa-download"></i>
+              </button>
+              <button *ngIf="hasBroadcastPayslipPermission" class="btnKendoGrid" data-toggle="tooltip" data-placement="top"
+                title="{{'DISTRIBUTE_PAYSLIP' | translate}}" (click)="distributePayslip(dataItem)" style="background-color: transparent;">
+                <i class="fa fa-share fa-sm AddIcon"></i>
+              </button>
+            </ng-template>
+          </kendo-grid-command-column>
+        </kendo-grid>
+      </form>
+      <!--End add form-->
+    </div>
+    <!--Begin Card footer Start-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+
+
+              <a routerLink="{{'/main/payroll/session'}}">
+                <span class="btn btn-sm btn-back-to-list btn-primary ">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+
+
+              <button class="btn btn-sm btn-save mx-1 previous" (click)="onPreviousClik()">
+                <i class="fa fa-angle-left"></i> {{'PREVIOUS'|translate}}
+              </button>
+              <button *ngIf="hasCloseSessionPermission && !isClosed" class="btn btn-sm btn-primary next" type="submit"
+                (click)="closeSessionClick()">
+                <i class="fa fa-floppy-o"></i> {{'CLOSEANYSESSION'|translate}}
+              </button>
+
+
+
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!--End Card footer-->
+  </div>
+</div>

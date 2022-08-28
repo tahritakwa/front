@@ -1,0 +1,38 @@
+<div [formGroup]="group" class="col-lg-12 col-sm-12 col-md-12 mr-5">
+  <div class="form-group row col-12">
+    <div class="row col-9 top-space">
+      <div class="col-12">
+        <label class="col-12" style="margin-top: 50px;">
+          {{'VARIABLE_COMPONENT.FORMULE'|translate}} <span class="required">*</span>
+        </label>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-12 col-sm-12" style="margin-bottom:15px">
+      <label *ngIf="isFirstElement" class="col-12">
+        {{'START_DATE'|translate}} <span  class="required">*</span>
+      </label>
+      <kendo-datepicker *ngIf="isFirstElement" [bottomView]="'year'" [topView]="'decade'" [format]="'MMMM yyyy'"
+        formControlName="StartDate" class="form-control"
+        [ngClass]="{ 'has-error': (group.controls.StartDate.touched || group.controls.StartDate.dirty) && !group.controls.StartDate.valid }">
+        <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+        </kendo-datepicker-messages>
+      </kendo-datepicker>
+      <app-control-messages [control]="group.controls.StartDate" class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+    <div class="row col-12">
+      <div *ngIf ="isVariable" class="col-12">
+        <textarea [readonly]="!isFirstElement" class="form-control col-12" formControlName="Formule" name="Formule" rows="7"
+        [ngClass]="{ 'has-error': (group.controls.Formule.touched || group.controls.Formule.dirty) && !group.controls.Formule.valid }"></textarea>
+        <app-control-messages [control]="group.controls.Formule" class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+      <div *ngIf ="!isVariable" class="col-12">
+        <textarea [readonly]="!isFirstElement" class="form-control col-12" formControlName="Rule" name="Rule" rows="7"
+        [ngClass]="{ 'has-error': (group.controls.Rule.touched || group.controls.Rule.dirty) && !group.controls.Rule.valid }"></textarea>
+        <app-control-messages [control]="group.controls.Rule" class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+    </div>
+  </div>
+</div>

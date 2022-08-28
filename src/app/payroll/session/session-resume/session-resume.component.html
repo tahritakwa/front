@@ -1,0 +1,137 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="card border-0 full-screen-card">
+    <!--Begin Card eader-->
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'SESSIONRESUME'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <form class="form-horizontal">
+        <!-- Start Form-->
+        <app-session-header [courantSession]="sessionInfos"></app-session-header>
+        <!--End add form-->
+      </form>
+      <br />
+      <div class="form-horizontal">
+        <div class="col-sm-12 col-md-6 col-xl-4 col-lg-">
+          {{'SEARCH_EMPLOYEE'|translate}}
+          <app-employee-multiselect (selected)="employeeSelected($event)"> </app-employee-multiselect>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:35px">
+        <kendo-grid [data]="gridData" [pageable]="pagerSettings" [pageSize]="gridState.take" [skip]="gridState.skip"
+          (dataStateChange)="dataStateChange($event)" [selectable]="true">
+          <!-- Employee Name Start -->
+          <kendo-grid-column [locked]="true" [headerStyle]="{'background-color':'#f0f3f552'}"
+            [field]="generiqueColumnConfig[0].field" [width]="generiqueColumnConfig[0]._width"
+            [style]="{'background-color': getColor(1), 'text-align':'center'}">
+            <ng-template kendoGridHeaderTemplate>
+              <div style="text-align:center;"> {{generiqueColumnConfig[0].title|translate}} </div>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.IdContractNavigation; then thenBlock else elseBlock"></div>
+              <ng-template #thenBlock>
+                <div>
+                  <a class="employee-link"
+                    [routerLink]="['/main/payroll/employee/edit', dataItem.IdContractNavigation.IdEmployee]"
+                    target="_blank">
+                    {{dataItem.IdContractNavigation.IdEmployeeNavigation.Matricule}}
+                  </a>
+                </div>
+              </ng-template>
+              <ng-template #elseBlock>
+                <div class="totaux">{{'TOTALS' | translate}}</div>
+              </ng-template>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Employee Name Start -->
+          <kendo-grid-column [locked]="true" [headerStyle]="{'background-color':'#f0f3f552'}"
+            [field]="generiqueColumnConfig[1].field" [width]="generiqueColumnConfig[1]._width"
+            [style]="{'background-color': getColor(0), 'text-align':'left'}">
+            <ng-template kendoGridHeaderTemplate>
+              <div style="text-align:center"> {{generiqueColumnConfig[1].title|translate}} </div>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.IdContractNavigation">
+                <a class="employee-link"
+                  [routerLink]="['/main/payroll/employee/edit', dataItem.IdContractNavigation.IdEmployee]"
+                  target="_blank">
+                  {{dataItem.IdContractNavigation.IdEmployeeNavigation.FullName}}
+                </a>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Employee Name -->
+          <kendo-grid-column [locked]="true" [headerStyle]="{'background-color':'#f0f3f552'}"
+            [field]="generiqueColumnConfig[2].field" [width]="generiqueColumnConfig[2]._width"
+            [style]="{'background-color': getColor(1), 'text-align':'center'}">
+            <ng-template kendoGridHeaderTemplate>
+              <div style="text-align:center"> {{generiqueColumnConfig[2].title|translate}} </div>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div *ngIf="dataItem.IdContractNavigation">
+                <a class="employee-link"
+                  [routerLink]="['/main/payroll/employee/edit', dataItem.IdContractNavigation.IdEmployee]"
+                  target="_blank">
+                  {{dataItem.IdContractNavigation.IdContractTypeNavigation.Code}}
+                </a>
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Number of day worked -->
+          <kendo-grid-column [headerStyle]="{'background-color':'#f0f3f553', 'text-align':'right'}"
+            [title]="generiqueColumnConfig[3].title | translate" [field]="generiqueColumnConfig[3].field"
+            [width]="generiqueColumnConfig[3]._width" [style]="{'background-color': getColor(1), 'text-align':'right'}">
+          </kendo-grid-column>
+          <!-- Number of paid leave -->
+          <kendo-grid-column [headerStyle]="{'background-color':'#f0f3f554', 'text-align':'right'}"
+            [title]="generiqueColumnConfig[4].title | translate" [field]="generiqueColumnConfig[4].field"
+            [width]="generiqueColumnConfig[4]._width" [style]="{'background-color': getColor(1), 'text-align':'right'}">
+          </kendo-grid-column>
+          <!--Columns-->
+          <kendo-grid-column *ngFor="let col of columnsConfig; let i = index" [field]="col.field"
+            [title]="col.title | translate" [width]="col._width" [filter]="col.filter" [filterable]="col.filterable"
+            [format]="col.format" [headerStyle]="{'background-color': getColor(i), 'text-align': 'right'}"
+            [style]="{'background-color': getColor(i), 'text-align':'right'}">
+            <ng-template kendoGridHeaderTemplate>
+              <div style="text-align:center"> {{col.title|translate}} </div>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <div [ngClass]="(dataItem.IdContractNavigation) ? '' : 'totaux'">
+                {{dataItem.RuleListAndValues[col.selector]}}
+              </div>
+            </ng-template>
+          </kendo-grid-column>
+          <!--End Columns-->
+          <kendo-grid-column title="" [width]="1">
+          </kendo-grid-column>
+        </kendo-grid>
+      </div>
+      <br />
+    </div>
+    <!--Begin Card footer Start-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer ml-0">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a routerLink="{{'/main/payroll/session'}}">
+                <span class="btn btn-sm btn-back-to-list btn-primary ">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <!--print-->
+              <button class="btn btn-sm btn-primary" *ngIf="hasPrintPayrollResumePermission" (click)="onPrintSessionResume()">
+                <i class="fa fa-print"></i> {{'PRINT'|translate}}
+              </button>
+              <button class="btn btn-sm btn-save mx-1 previous" (click)="onPreviousClik()">
+                <i class="fa fa-angle-left"></i> {{'PREVIOUS'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>

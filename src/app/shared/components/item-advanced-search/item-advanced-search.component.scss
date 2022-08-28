@@ -1,0 +1,27 @@
+fieldset {
+  padding: 20px;
+}
+legend {
+  color: #13688c;
+  width: fit-content !important;
+  font-size: medium;
+}
+label {
+  color: #000000;
+}
+.la-angle-color {
+  color: #13688c;
+}
+.item_advanced_search {
+  height: calc(100vh - 75px);
+}
+
+fieldset.rounded-border {
+  position: fixed;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.btn-position {
+  position: relative;
+  margin-top: 10px !important;
+}

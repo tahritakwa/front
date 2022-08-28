@@ -1,0 +1,383 @@
+<div class="card" [ngStyle]="related?{'margin':'0px', 'padding' : '0px'} : ''">
+  <div class="card-header" [ngStyle]="related?{'margin':'0px', 'padding' : '0px'} : ''"
+       style="background-color: white; border:none" *ngIf="!related">
+    <div class="row">
+      <div class="col-sm-5 mt-1 col-lg-9">
+        <h3 class="card-title mb-0">{{(isArchivingMode ? 'CONTACTS_LIST_PROSPECT' : 'CONTACTS LIST')|translate}}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body" [ngStyle]="related?{'margin':'0px', 'padding' : '0px'} : ''">
+    <div style="    text-align: center;" *ngIf="!related && !isFromArchive">
+      <div class="row" style="padding-top: 1%">
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 text-align-box" style="margin-bottom: 2%">
+              <label style="color: white"></label>
+            </div>
+            <div class="btn-group col-lg-11 col-md-8 col-sm-12">
+              <button class="btn btn-primary dropdown-toggle btnColor" type="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="true">
+                {{filterG|translate}}
+              </button>
+
+              <div class="dropdown-menu drop-resp-right" style="border: 1px solid rgb(200, 206, 211) !important;">
+                <button [ngClass]="{
+                    'dropdown-item':choosenFilterNumber!=0,
+                    'dropdown-item-active':choosenFilterNumber==0
+                    }"
+                        (click)="filterContacts(0)">
+                  {{'ALL_CONTACTS'|translate}}
+                </button>
+                <button [ngClass]="{
+                    'dropdown-item':choosenFilterNumber!=1,
+                    'dropdown-item-active':choosenFilterNumber==1
+                    }"
+                        (click)="filterContacts(1)">
+                  {{'ORGANISM_LABEL'|translate}}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-12" style="padding-left: 0;">
+          <div class="col-lg-12  col-md-12 col-sm-12 text-align-box" style="text-align: left;margin-left: 1%;">
+            <label *ngIf="filterByOrg">{{'ORGANISATION.ORGANISM_LABEL' | translate}}</label>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <kendo-combobox id="contact-list-dropdownlist" *ngIf="filterByOrg && showingModeIsContacts"
+                            [filterable]="true"
+                            [data]="filteredOrganisationList" (filterChange)="filterOrganizationsList($event)"
+                            (valueChange)="filterByOrganization($event, gridState.skip)"
+                            valueField="id" textField="name" style=" width: 120%;">
+              <ng-template kendoDropDownListValueTemplate let-dataItem>
+
+                <span style="width: 200px;" class="template" *ngIf="dataItem">{{dataItem.name}}</span>
+
+              </ng-template>
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+            <kendo-combobox id="clients-list-dropdownlist" *ngIf="filterByOrg && !showingModeIsContacts"
+                            [filterable]="true"
+                            [data]="filteredClientsList" (filterChange)="filterClientList($event)"
+                            (valueChange)="finalSearchAndFilterByClient($event)"
+                            valueField="Id" textField="Name" style="width: 120%;">
+              <ng-template kendoDropDownListValueTemplate let-dataItem>
+
+                <span style="width: 200px;" class="template" *ngIf="dataItem">{{dataItem.name}}</span>
+
+              </ng-template>
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row form-group">
+      <div class="col-12" *ngIf="!isFromArchive || isFromOrganisationArchive">
+
+        <div class="d-flex flex-row mt-2" *ngIf="!isFromArchive && !isFromOrganisationArchive">
+          <div class="col-auto float-left">
+            <div class="has-search col-auto"*ngIf="!related">
+              <div class="form-group has-search">
+                <span class="fa fa-search form-control-feedback"></span>
+                <input type="text" class="form-control input-text" placeholder="{{'SEARCH_CONTACT'|translate}}"
+                       (afterValueChanged)="finalSearchAndFilter(gridState.skip)"
+                       [(ngModel)]='searchValue'>
+              </div>
+            </div>
+          </div>
+          <div class="flex-grow-1 float-right" style="margin-right: 4px;">
+            <div class="row float-right" *ngIf="!related">
+
+            <app-btn-grid [advencedAdd]='!isArchivingMode && !isFromArchive && !related && hasAddPermission' [export]='false'
+                          [params]="showingModeIsContacts"
+                          [cardView]='!cardViewB'
+                          [listView]='cardViewB'
+                          [sendMail]='false'
+                          [addLink]='"addContact"'
+                          (cardViewEvent)="changeViewToCard($event)" (listViewEvent)="changeViewToList($event)"
+                          (sendMailEvent)="sendMail()"
+                          (downLoadFileEvent)="downLoadFile($event)"
+                          [isExportExcel]="false" [isImportFile]="false" [isExportModel]="false" [isFromCRM]="false"
+                          (incomingFileEvent)="incomingFile($event)">
+            </app-btn-grid>
+              </div>
+
+          </div>
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-sm-12" [ngStyle]="related?{'margin':'0px', 'padding' : '0px'} : ''"
+             style="float: left">
+          <div class="navItems my-3">
+            <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist" *ngIf="!related && !isArchivingMode && !isFromOrganisationArchive">
+              <li class="nav-item">
+                <a [ngClass]="prospectNavItemClass" data-toggle="tab" href="#home1" role="tab" aria-controls="home1" *ngIf="authService.hasAuthorities([CRMPermissions.VIEW_CONTACT_LEAD])"
+                   (click)="changeShowingMode(1)"
+                   aria-selected="true"> {{'PROSPECTS.PROSPECTS'|translate}}
+                </a>
+              </li>
+              <li class="nav-item" style="display: flex; border-bottom: 0;">
+                <a [ngClass]="clientNavItemClass" data-toggle="tab" href="#home2" role="tab" aria-controls="home2" *ngIf="authService.hasAuthorities([CRMPermissions.VIEW_CONTACT_CLIENT])"
+                   (click)="changeShowingMode(2)"
+                   aria-selected="false">{{'CONTACT_CLIENT'|translate}}
+                </a>
+              </li>
+            </ul>
+            <div class="tab-content tab-content-new" [ngClass]="{'borderRemoved':related}"
+                 style="float: left;width: 100%">
+              <div [ngClass]="tabProspectClass" id="home1" role="tabpanel" *ngIf="((related)||(isProspect)) && tabType == 1 "
+                   [ngStyle]="related?{'padding': '0px;'} : ''">
+                <kendo-grid *ngIf="!cardViewB" id="contact-list-grid" [data]="gridSettings.gridData"
+                            [pageSize]="gridSettings.state.take"
+                            [skip]="gridSettings.state.skip"
+                            [sortable]="{allowUnsort: true, mode: 'single'}"
+                            [pageable]="pagerSettings" [reorderable]="true"
+                            [columnMenu]="false" (pageChange)="onPageChange($event)"
+                            (remove)="removeHandler($event)" (sortChange)="sortChange($event)"
+                            [sort]="gridSettings.state.sort"
+                            [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)"
+                            kendoGridSelectBy="id"
+                            [selectedKeys]="selectedRows"
+                            [ngStyle]="related?{'width':'100%'} : ''">
+                  <!--Full name-->
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                                     [title]="gridSettings.columnsConfig[0].title | translate"
+                                     [width]="gridSettings.columnsConfig[0]._width"
+                                     [filter]="gridSettings.columnsConfig[0].filter"
+                                     [filterable]="gridSettings.columnsConfig[0].filterable"
+                                     [format]="gridSettings.columnsConfig[0].format">
+                    <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                      theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="showingModeIsContacts">
+                      <span>{{dataItem.name}} {{dataItem.lastName}}</span>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--Organisation name -->
+                  <kendo-grid-column *ngIf="!hideOrgColumn" [field]="gridSettings.columnsConfig[4].field"
+                                     [title]="gridSettings.columnsConfig[4].title | translate"
+                                     [width]="gridSettings.columnsConfig[4]._width"
+                                     [filter]="gridSettings.columnsConfig[4].filter"
+                                     [filterable]="gridSettings.columnsConfig[4].filterable"
+                                     [format]="gridSettings.columnsConfig[4]">
+                    <ng-template kendoGridHeaderTemplate>
+                <span
+                  tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      <span>{{dataItem.organisationName}}</span>
+                    </ng-template>
+
+                  </kendo-grid-column>
+                  <!--Poste -->
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                                     [title]="gridSettings.columnsConfig[1].title | translate"
+                                     [width]="gridSettings.columnsConfig[1]._width"
+                                     [filter]="gridSettings.columnsConfig[1].filter"
+                                     [filterable]="gridSettings.columnsConfig[1].filterable"
+                                     [format]="gridSettings.columnsConfig[1]">
+                    <ng-template kendoGridHeaderTemplate>
+                <span
+                  tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--Phone  -->
+
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                                     [title]="gridSettings.columnsConfig[3].title | translate"
+                                     [width]="gridSettings.columnsConfig[3]._width"
+                                     [filter]="gridSettings.columnsConfig[3].filter"
+                                     [filterable]="gridSettings.columnsConfig[3].filterable"
+                                     [format]="gridSettings.columnsConfig[3]">
+                    <ng-template kendoGridHeaderTemplate>
+                <span
+                  tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+                    </ng-template>
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngFor="let phoneNumber of dataItem.phone">
+                  {{phoneNumber['phone']}}<br/>
+                </span>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <!--Email -->
+
+                  <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                                     [title]="gridSettings.columnsConfig[2].title | translate"
+                                     [width]="gridSettings.columnsConfig[2]._width"
+                                     [filter]="gridSettings.columnsConfig[2].filter"
+                                     [filterable]="gridSettings.columnsConfig[2].filterable"
+                                     [format]="gridSettings.columnsConfig[2]">
+                    <ng-template kendoGridHeaderTemplate>
+                <span
+                  tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+                    </ng-template>
+                  </kendo-grid-column>
+
+                  <kendo-grid-command-column [width]="150">
+                    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+                      <!-- edit command directive-->
+                      <i class="las la-pen cursor-pointer edit-pencil la-lg" tooltip="{{'SHOW' | translate}}" *ngIf="authService.hasAuthorities([CRMPermissions.OWN_CONTACT, CRMPermissions.EDIT_CONTACT]) && !isArchivingMode && !isFromOrganisationArchive"
+                         (click)="goToDetails(dataItem)"></i>
+                      <!-- remove command directive -->
+                      <i
+                        *ngIf="!checkTypeItem(dataItem) && showingModeIsContacts && (!fromRelatedArchiving) && !isFromArchive && !isArchivingMode && authService.hasAuthorities([CRMPermissions.DELETE_CONTACT])"
+                        class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+                        (click)="removeHandler(dataItem)" tooltip="{{'DELETE' | translate}}"></i>
+                      <!--archive -->
+                      <button class="k-button btnKendoGrid archiveBtn"
+                              *ngIf="!isArchivingMode && isProspect && (!fromRelatedArchiving) && !isFromArchive && authService.hasAuthorities([CRMPermissions.ARCHIVE_CONTACT])"
+                              (click)="archiveSelected(dataItem)" tooltip="{{'ARCHIVE' | translate}}">
+                        <i class="fa fa-archive"></i>
+                      </button>
+                      <!--restore-->
+                      <button *ngIf="isArchivingMode && isProspect && (!fromRelatedArchiving) && !isFromArchive  && authService.hasAuthorities([CRMPermissions.RESTORE_ARCHIVED_CONTACT])"
+                              class="btnKendoGrid"
+                              (click)="restoreSelected(dataItem)" style="background: none;">
+                        <i class="fa fa-refresh"></i>
+                      </button>
+
+                    </ng-template>
+                  </kendo-grid-command-column>
+                </kendo-grid>
+
+                <app-contact-card-view *ngIf="cardViewB"
+                                       (prospectPageChangeEvent)="onPageChange($event,'fromCard')"
+                                       (prospectStateChangeEvent)="dataStateChange($event)"
+                                       [contactType]="contactType"
+                                       [prospectType]="isProspect"
+                                       [contactFiltred]="gridSettings"
+                                       (contactFromCard)="getCardDetail($event)"
+                                       (sendContactToDelete)="deleteFromCard($event)"
+                                       [isArchivingMode]="isArchivingMode"
+                                       (sendContactToRestore)="restoreFromCard($event)"
+                                       (sendContactToArchive)="archiveFromCard($event)"></app-contact-card-view>
+              </div>
+              <div [ngClass]="tabClientClass" id="home2" role="tabpanel"
+                   *ngIf="((!related) || (!isProspect)) && tabType == 2">
+                <kendo-grid *ngIf="!cardViewB" [data]="gridSettingsContacts.gridData"
+                            [pageSize]="gridSettingsContacts.state.take"
+                            [skip]="gridSettingsContacts.state.skip"
+                            [sortable]="{
+                  allowUnsort: true,
+                  mode: 'single'
+                  }" [pageable]="pagerSettings" [reorderable]="true"
+                            [columnMenu]="false" (pageChange)="onContactPageChange($event)"
+                            (sortChange)="sortChange($event)" [sort]="gridSettingsContacts.state.sort"
+                            [filter]="gridSettingsContacts.state.filter"
+                            (dataStateChange)="contactDataStateChange($event)"
+                            kendoGridSelectBy="Id" (remove)="removeHandler($event)"
+                            [selectedKeys]="selectedRows">
+
+                  <kendo-grid-column [field]="gridSettingsContacts.columnsConfig[0].field"
+                                     [title]="gridSettingsContacts.columnsConfig[0].title | translate"
+                                     [width]="gridSettingsContacts.columnsConfig[0]._width"
+                                     [filter]="gridSettingsContacts.columnsConfig[0].filter"
+                                     [filterable]="gridSettingsContacts.columnsConfig[0].filterable"
+                                     [format]="gridSettingsContacts.columnsConfig[0].format">
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      <span> {{dataItem.FirstName}} {{dataItem.LastName}}</span>
+                    </ng-template>
+                  </kendo-grid-column>
+                  <kendo-grid-column *ngIf="!hideOrgColumn" [field]="gridSettingsContacts.columnsConfig[4].field"
+                                     [title]="gridSettingsContacts.columnsConfig[4].title | translate"
+                                     [width]="gridSettingsContacts.columnsConfig[4]._width"
+                                     [filter]="gridSettingsContacts.columnsConfig[4].filter"
+                                     [filterable]="gridSettingsContacts.columnsConfig[4].filterable"
+                                     [format]="gridSettingsContacts.columnsConfig[4]">
+                    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                      <span>{{dataItem.organisationName}}</span>
+                    </ng-template>
+
+                  </kendo-grid-column>
+
+                  <kendo-grid-column [field]="gridSettingsContacts.columnsConfig[1].field"
+                                     [title]="gridSettingsContacts.columnsConfig[1].title | translate"
+                                     [width]="gridSettingsContacts.columnsConfig[1]._width"
+                                     [filter]="gridSettingsContacts.columnsConfig[1].filter"
+                                     [filterable]="gridSettingsContacts.columnsConfig[1].filterable"
+                                     [format]="gridSettingsContacts.columnsConfig[1]">
+
+                  </kendo-grid-column>
+
+                  <kendo-grid-column [field]="gridSettingsContacts.columnsConfig[3].field"
+                                     [title]="gridSettingsContacts.columnsConfig[3].title | translate"
+                                     [width]="gridSettingsContacts.columnsConfig[3]._width"
+                                     [filter]="gridSettingsContacts.columnsConfig[3].filter"
+                                     [filterable]="gridSettingsContacts.columnsConfig[3].filterable"
+                                     [format]="gridSettingsContacts.columnsConfig[3]">
+                  </kendo-grid-column>
+
+                  <kendo-grid-column [field]="gridSettingsContacts.columnsConfig[2].field"
+                                     [title]="gridSettingsContacts.columnsConfig[2].title | translate"
+                                     [width]="gridSettingsContacts.columnsConfig[2]._width"
+                                     [filter]="gridSettingsContacts.columnsConfig[2].filter"
+                                     [filterable]="gridSettingsContacts.columnsConfig[2].filterable"
+                                     [format]="gridSettingsContacts.columnsConfig[2]">
+                  </kendo-grid-column>
+
+                  <kendo-grid-command-column [width]="130" [title]="'ACTIONS' | translate">
+                    <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                      <!--Open advanced edit form -->
+
+
+                      <!-- edit command directive-->
+                      <i class="las la-pen cursor-pointer edit-pencil la-lg" tooltip="{{'SHOW' | translate}}"  *ngIf="( authService.hasAuthorities([CRMPermissions.OWN_CONTACT]) || authService.hasAuthorities([CRMPermissions.EDIT_CONTACT]))&& !isArchivingMode"
+                         (click)="goToDetails(dataItem)"></i>
+                      <!-- remove command directive -->
+                      <i *ngIf="(!fromRelatedArchiving) && !isFromArchive  && authService.hasAuthorities([CRMPermissions.DELETE_CONTACT]) && !isArchivingMode"
+                         class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+                         (click)="removeHandler(dataItem)" tooltip="{{'DELETE' | translate}}"></i>
+
+                    </ng-template>
+                  </kendo-grid-command-column>
+                </kendo-grid>
+                <app-contact-card-view *ngIf="cardViewB"
+                                       (clientPageChangeEvent)="onContactPageChange($event,'fromCard')"
+                                       (clientStateChangeEvent)="contactDataStateChange($event)"
+                                       [contactType]="contactType"
+                                       [prospectType]="isProspect"
+                                       [contactFiltred]="gridSettingsContacts"
+                                       [isArchivingMode]="isArchivingMode"
+                                       (contactFromCard)="getCardDetail($event)"
+                                       (sendContactToRestore)="restoreFromCard($event)"
+                                       (sendContactToDelete)="deleteFromCard($event)"
+                                       (sendContactToArchive)="archiveFromCard($event)"></app-contact-card-view>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <app-sid-nav *ngIf="showDetailContact &&( authService.hasAuthorities([CRMPermissions.OWN_CONTACT]) || authService.hasAuthorities([CRMPermissions.EDIT_CONTACT]))" [source]="source"
+                 [contactFromContactList]="contactToShowInSideNav"
+                 [isArchivingMode]="isArchivingMode"
+                 [isFromArchive]="isFromArchive"
+                 [fromRelatedArchiving]="fromRelatedArchiving"
+                 (sideNavUpdateMode)="setSideNavUpdateMode($event)"
+                 (closeSidNav)="SidNavEvent()">
+
+    </app-sid-nav>
+  </div>
+</div>
+<app-permission [uuid]="uuid" [parent]="parentPermission" style="display:none"></app-permission>

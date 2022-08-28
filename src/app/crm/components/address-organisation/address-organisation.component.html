@@ -1,0 +1,70 @@
+<div [formGroup]="address" >
+  <div class="row form-group">
+    <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'COUNTRY'|translate}}<span
+        class="required">*</span></label>
+      <kendo-combobox [data]="countries"
+                      class="form-control HistoryCommandMargin"
+                      name="idCountryColName"
+                      formControlName="country"
+                      textField="NameFr"
+                      allowCustom="true"
+                      [valuePrimitive]="true"
+                      [filterable]="true"
+                      (filterChange)="handleCountriesFilter($event)"
+                      (valueChange)="fillRelatedCities($event)">
+                      <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      </kendo-combobox>
+      <app-control-messages [control]="address.controls.country"
+                            class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+
+    <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12">{{'CITY'|translate}} <span
+        class="required">*</span></label>
+      <kendo-combobox [data]="cities"
+                      class="form-control HistoryCommandMargin"
+                      name="idCountryColName"
+                      formControlName="city"
+                      textField="Code"
+                      valueField="Code"
+                      allowCustom="true"
+                      [valuePrimitive]="true"
+                      (filterChange)="handleCitiesFilter($event)"
+                      (valueChange)="handleCityName($event)"
+                      [filterable]="true" [readonly]="!country.value">
+                      <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+      </kendo-combobox>
+      <app-control-messages [control]="address.controls.city"
+                            class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+
+    <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ZIPCODE'|translate}}</label>
+      <input class="form-control" type="text" formControlName="zipCode" [readonly]="!isUpdateMode"
+             value="address.value.zipCode"
+             [ngClass]="{ 'has-error': (address.controls.zipCode.touched || address.controls.zipCode.dirty) && !address.controls.zipCode.valid }">
+      <app-control-messages [control]="address.controls.zipCode"
+                            class="error-msg messages text-left text-danger">
+      </app-control-messages>
+    </div>
+
+
+    <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+      <label class="col-lg-12 col-md-12 col-sm-12"> {{'COMP_ADDRESS'|translate}}</label>
+      <input class="form-control" type="text" formControlName="extraAddress" [readonly]="!isUpdateMode"
+             value="address.value.extraAddress">
+
+    </div>
+  </div>
+</div>

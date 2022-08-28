@@ -1,0 +1,48 @@
+.card-content {
+  border-width: medium;
+  border-radius: 10px;
+}
+.badge-shelf {
+  color: #23282c;
+  background-color: #4dbd7499;
+}
+
+.badge-shelf:hover {
+  border-color: #def8e7;
+  background-color: #def8e7;
+}
+
+.warehouse {
+  border-color: #f2be22;
+}
+
+.warehouse:hover {
+  background-color: #f2be22;
+}
+
+.zone {
+  border-color: #ed5565;
+}
+
+.zone:hover {
+  background-color: #ed5565;
+}
+
+.central-warehouse:hover {
+  border-color: #f2be22;
+  background-color: #f2be22;
+}
+
+.shelf-storage-warehouse {
+  border-color: #4dbd74;
+}
+
+.shelf-storage-warehouse:hover {
+  background-color: #4dbd74;
+}
+.disabled-search {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: grey;
+}
+

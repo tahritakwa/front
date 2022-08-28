@@ -1,0 +1,36 @@
+.card-content {
+  border-width: medium;
+  border-radius: 10px;
+}
+.badge-shelf {
+  color: #23282c;
+  background-color: #4dbd7499;
+}
+
+.badge-shelf:hover {
+  border-color: #def8e7;
+  background-color: #def8e7;
+}
+
+.warehouse {
+  border-color: #cd4d5d;
+}
+.warehouse:hover {
+  background-color: #cd4d5d;
+}
+
+.central-storage-card {
+  border: 3px solid var(--green);
+  border-radius: 10px;
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  background: white;
+  padding: 10px;
+  width: calc(100% - 30px);
+}
+.disabled-search {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: grey;
+}

@@ -1,0 +1,182 @@
+<!---->
+<div class="card-body" style="min-height: 300px;">
+  <kendo-grid (add)="addHandler()" (dataStateChange)="dataStateChange($event)" [data]="gridSettings.gridData"
+    [filter]="gridSettings.state.filter" [navigable]="true" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+    [reorderable]="true" [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [sortable]="true">
+    <!-- Head Start-->
+    <ng-template *ngIf="!isModal" kendoGridToolbarTemplate>
+      <div class="row" style="float :right; margin-right: 40px;">
+        <app-btn-grid [add]='hasAddInterviewPermission && !isRefused' [advencedAdd]='false' [export]="true"
+          style="margin-top: -5%;    display: inline-flex;"></app-btn-grid>
+      </div>
+    </ng-template>
+    <!-- Head end-->
+    <!--Interview Date -->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                       [filter]="gridSettings.columnsConfig[0].filter"
+                       [filterable]="gridSettings.columnsConfig[0].filterable"
+                       [format]="gridSettings.columnsConfig[0].format"
+                       [title]="gridSettings.columnsConfig[0].title | translate"
+                       [width]="gridSettings.columnsConfig[0]._width">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        {{dataItem.InterviewDate | date:formatDate}}
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Interview Hour-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                       [filter]="gridSettings.columnsConfig[1].filter"
+                       [filterable]="gridSettings.columnsConfig[1].filterable"
+                       [format]="gridSettings.columnsConfig[1].format"
+                       [title]="gridSettings.columnsConfig[1].title | translate"
+                       [width]="gridSettings.columnsConfig[1]._width">
+    </kendo-grid-column>
+    <!-- Status-->
+    <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                       [filter]="gridSettings.columnsConfig[2].filter"
+                       [filterable]="gridSettings.columnsConfig[2].filterable"
+                       [format]="gridSettings.columnsConfig[2].format"
+                       [title]="gridSettings.columnsConfig[2].title | translate"
+                       [width]="gridSettings.columnsConfig[2]._width">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewRequestedToAllInterviewers">
+          <span class="badge badge-danger">{{'WAITING_FOR_INTERVIEWERS_VALIDATION'|translate}}</span>
+        </div>
+
+        <div
+          *ngIf="dataItem.Status === inteviewEnumerator.AllInterviewersAvailabilityConfirmed && allRequiredConfirmed(dataItem)">
+          <span class="badge badge-warning">{{'ALL_INTERVIEWERS_AVAILABILITY_CONFIRMED'|translate}}</span>
+        </div>
+
+        <div
+          *ngIf="dataItem.Status === inteviewEnumerator.InterviewRequestedToCandidate && allRequiredConfirmed(dataItem)">
+          <span class="badge badge-primary">{{'WAITING_FOR_CANDIDATE_VALIDATION'|translate}}</span>
+        </div>
+
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewConfirmedByCandidate">
+          <span class="badge badge-success">{{'MEETING_CONFIRMED'|translate}}</span>
+        </div>
+
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewDone">
+          <span class="badge badge-secondary">{{'MEETING_DONE'|translate}}</span>
+        </div>
+
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewRefused">
+          <span class="badge badge-dark">{{'MEETING_REFUSED'|translate}}</span>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [title]="'MAIL_HISTORY' | translate" [width]="180" *ngIf = "hasHistoryMailInterviewPermission">
+      <ng-template kendoGridHeaderTemplate>
+          <span theme="light"
+                tooltip="{{'MAIL_HISTORY'|translate}}">{{'MAIL_HISTORY'|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <button (click)="getInterviewEmailHistoric(dataItem)" class="noPadding btn-Add k-button" 
+        ><i aria-hidden="true" class="fa fa-envelope text-primary"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+    <ng-template kendoGridDetailTemplate let-dataItem>
+      <section>
+
+        <!-- Required interviewer-->
+        <div *ngIf="dataItem.InterviewMark">
+          <span><b>{{'REQUIRED_INTERVIEWERS'|translate}}</b></span>
+          <div *ngFor="let interviewMark of dataItem.InterviewMark" class="row" style="margin-top:5px!important"
+               style="margin-left:20px!important">
+            <div *ngIf="interviewMark.IsRequired" class="col-lg-6 col-md-8 col-sm-12">
+              <span style="font-size:smaller!important">
+                {{interviewMark.IdEmployeeNavigation.FullName}}</span>
+              <button (click)="confirmAvailability(interviewMark)" *ngIf="(hasConfirmDisponibilityPermission || (connectedEmployee && interviewMark.IdEmployee === connectedEmployee.Id))
+               && isInterviewMarkRequestedToInterviewer(interviewMark.Status) && (dataItem.Status != inteviewEnumerator.InterviewRefused)"
+                      class="noPadding k-button btn-Add right_side" style="float:right!important">
+                <i aria-hidden="true" class="fa fa-check text-primary">
+                  {{'CONFIRM_AVAILABILITY' | translate}}</i>
+              </button>
+              <i *ngIf="!isInterviewMarkRequestedToInterviewer(interviewMark.Status)" aria-hidden="true"
+                 class="fa fa-check text-success"></i>
+            </div>
+          </div>
+        </div>
+        <!-- optional interviewer-->
+        <div *ngIf="dataItem.InterviewMark" style="margin-top:10px!important">
+          <span><b>{{'OPTIONAL_INTERVIEWERS'|translate}}</b></span>
+          <div *ngFor="let interviewMark of dataItem.InterviewMark" class="row" style="margin-left:20px!important">
+            <div *ngIf="!interviewMark.IsRequired" class="col-lg-6 col-md-8 col-sm-12">
+              <span style="font-size:smaller!important">
+                {{interviewMark.IdEmployeeNavigation.FullName}}</span>
+              <button (click)="confirmAvailability(interviewMark)" *ngIf="(hasConfirmDisponibilityPermission || interviewMark.IdEmployee === connectedEmployee.Id) 
+              && isInterviewMarkRequestedToInterviewer(interviewMark.Status) && (dataItem.Status != inteviewEnumerator.InterviewRefused)"
+                      class="noPadding k-button btn-Add right_side" style="float:right!important">
+                <i aria-hidden="true" class="fa fa-check text-primary">
+                  {{'CONFIRM_AVAILABILITY' | translate}}</i>
+              </button>
+              <i *ngIf="!isInterviewMarkRequestedToInterviewer(interviewMark.Status)" aria-hidden="true"
+                 class="fa fa-check text-success"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div *ngIf="hasInviteEmployeePermission && dataItem.Status === inteviewEnumerator.AllInterviewersAvailabilityConfirmed
+                      && allRequiredConfirmed(dataItem)" class="col-12 right_side">
+          <span [ngStyle]="{'float': 'right'}">
+            <!--email invite-->
+            <kendo-dropdownbutton (itemClick)="prepareEmailHandler(dataItem, $event)" [data]="langList"
+                                  [primary]="true" class="lang_drop_btn">
+              <i aria-hidden="true" class="fa fa-envelope"> {{'INVITE_THE_EMPLOYEE' | translate}}</i>
+            </kendo-dropdownbutton>
+            <!--end email invite-->
+          </span>
+        </div>
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewRequestedToCandidate && allRequiredConfirmed(dataItem)" class="col-lg-12 col-md-12 col-sm-12"
+             style="float:right!important">
+          <button (click)="confirmCandidateDisponibility(dataItem)" class="btn btn-sm btn-success right_side" *ngIf = "hasConfirmDisponibilityPermission"
+                  style="float:right!important">
+            <i aria-hidden="true" class="fa fa-check">
+              {{'CONFIRM_THE_PRESENCE_OF_EMPLOYEE' | translate}}</i>
+          </button>
+          <!--re email invite-->
+          <kendo-dropdownbutton *ngIf = "hasInviteEmployeePermission" (itemClick)="prepareEmailHandler(dataItem, $event)"
+                                [data]="langList" [primary]="true" style="float:right!important; margin-right:10px!important; margin-left:10px!important; ">
+            <i aria-hidden="true" class="fa fa-envelope"> {{'INVITE_THE_EMPLOYEE_AGAIN' | translate}}</i>
+          </kendo-dropdownbutton>
+          <!--end re-->
+        </div>
+      </section>
+    </ng-template>
+    <!-- Command-->
+    <kendo-grid-command-column [width]="200">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+        <!-- edit command directive-->
+        <button (click)="openEditInterviewModal(dataItem.Id)" *ngIf="hasUpdateInterviewPermission && dataItem.Status !== inteviewEnumerator.InterviewDone &&
+          dataItem.Status !== inteviewEnumerator.InterviewRequestedToCandidate && dataItem.Status !== inteviewEnumerator.InterviewConfirmedByCandidate
+          && dataItem.Status !== inteviewEnumerator.InterviewRefused" class="noPadding btn-Add k-button"
+                kendoGridEditCommand tooltip="{{'UPDATE'|translate}}">
+          <i aria-hidden="true" class="fa fa-pencil text-primary"></i>
+        </button>
+        <!--Delay mode -->
+        <button (click)="openDelayMeetingModal(dataItem.Id)" *ngIf="hasDelayInterviewPermission && dataItem.Status !== inteviewEnumerator.InterviewDone &&
+          dataItem.Status !== inteviewEnumerator.InterviewRequestedToCandidate && dataItem.Status !== inteviewEnumerator.InterviewConfirmedByCandidate
+          && dataItem.Status !== inteviewEnumerator.InterviewRefused"
+                class="noPadding btn-Add k-button refuse_button" tooltip="{{'DELAY_INTERVIEW'|translate}}">
+          <i class=" fa fa-clock-o fa-lg AddIcon text-primary"></i>
+        </button>
+        <!--Cancel mode-->
+        <button (click)="openPostponeInterviewDialog(dataItem.Id)" *ngIf="hasCancelInterviewPermission && !((dataItem.Status == inteviewEnumerator.InterviewDone)
+          || (dataItem.Status == inteviewEnumerator.InterviewRefused))"
+                class="noPadding btn-Add k-button refuse_button" tooltip="{{'CANCEL_INTERVIEW'|translate}}">
+          <i class=" fa fa-ban fa-lg AddIcon text-danger"></i>
+        </button>
+        <!-- remove command directive-->
+        <button (click)="deleteInterview(dataItem)" *ngIf="hasDeleteInterviewPermission && (dataItem.Status == inteviewEnumerator.InterviewRequestedToAllInterviewers)" class="noPadding btn-Add k-button"
+                kendoGridRemoveCommand
+                style="margin-left:-4px!important" tooltip="{{'DELETE'|translate}}">
+          <i class=" fa fa-trash-o fa-lg AddIcon text-danger"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-command-column>
+
+  </kendo-grid>
+
+</div>

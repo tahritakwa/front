@@ -1,0 +1,128 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(!isUpdateMode ? 'ADD_NEW_WORKER': 'EDIT_WORKER') | translate}}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="workerFormGroup">
+      <!-- Begin principal menu  part-->
+      <div class="col-12">
+        <div class="form-group row">
+          <div class="col-lg-10 col-sm-12 col-md-12">
+            <div class="row">
+
+              <!-- First Name-->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'FIRST_NAME' | translate}}
+                  <span class="required">*</span></label>
+                <input class="form-control" formControlName="FirstName" type="text" name="FirstName" [ngClass]="{ 'has-error': (workerFormGroup.controls.FirstName.touched || workerFormGroup.controls.FirstName.dirty) && 
+                         !workerFormGroup.controls.FirstName.valid }">
+                <app-control-messages [control]="workerFormGroup.controls.FirstName"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- First Name-->
+
+              <!-- Last Name-->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'LAST_NAME' | translate}}
+                  <span class="required">*</span></label>
+                <input class="form-control" formControlName="LastName" type="text" name="LastName" [ngClass]="{ 'has-error': (workerFormGroup.controls.LastName.touched || workerFormGroup.controls.LastName.dirty) && 
+                         !workerFormGroup.controls.LastName.valid }">
+                <app-control-messages [control]="workerFormGroup.controls.LastName"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Last Name-->
+              <!-- CIN-->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CIN' | translate}}
+                  <span class="required">*</span></label>
+                <input class="form-control" formControlName="Cin" type="text" name="Cin" [ngClass]="{ 'has-error': 
+                (workerFormGroup.controls.Cin.touched && !workerFormGroup.controls.Cin.value)
+                 && !workerFormGroup.controls.Cin.valid }">
+                <app-control-messages [control]="workerFormGroup.controls.Cin"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- CIN-->
+
+              <!-- Address-->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'ADDRESS' | translate}}</label>
+                <input class="form-control" formControlName="Address" type="text" name="Address" 
+                [ngClass]="{ 'has-error': (workerFormGroup.controls.Address.touched || workerFormGroup.controls.Address.dirty) && 
+                         !workerFormGroup.controls.Address.valid }">
+                <app-control-messages [control]="workerFormGroup.controls.Address"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Address-->
+              <!-- Phone-->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin" formGroupName="IdPhoneNavigation">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'PHONE' | translate}}</label>
+                <input ng2TelInput type="text" class="form-control w-100" formControlName="Number"
+                  oninput="value = value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" 
+                  [ng2TelInputOptions]="{initialCountry:loadPhoneCountryFlag(),
+                    preferredCountries:[defaultPhoneCountryTn,defaultPhoneCountryFr,defaultPhoneCountryGb]}"
+                  (hasError)="isValidPhone($event)" (countryChange)="onCountryPhoneChange($event)"
+                  [ngClass]="{'has-error':workerPhoneHasError }" />
+                <span class="wrong-pattern mt-2" *ngIf="workerPhoneHasError">{{"WRONG_PATERN"|translate}}</span>
+
+              </div>
+              <!-- Phone-->
+              <!-- Email-->
+              <div class="col-lg-4 col-md-6 col-sm-12 margin">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'EMAIL' | translate}}
+                </label>
+                <input class="form-control" formControlName="Email" type="text" name="Email" [ngClass]="{ 'has-error': (workerFormGroup.controls.Email.touched || workerFormGroup.controls.Email.dirty) && 
+                         !workerFormGroup.controls.Email.valid }">
+                <app-control-messages [control]="workerFormGroup.controls.Email"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <!-- Email-->
+              <!-- Responsable-->
+              <div class="col-lg-4 col-md-6 col-sm-12" style="margin-top: 2rem;">
+                <input type="checkbox" class="input-checkbox100" id="IsResponsableId" formControlName="IsResponsable"
+                  name="IsResponsable" />
+                <label class="label-checkbox100" for="IsResponsableId">{{'RESPONSABLE'|translate}}
+                </label>
+              </div>
+              <!-- Responsable-->
+            </div>
+          </div>
+          <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center">
+            <label class="img-border  d-flex justify-content-center" for="file-input">
+              <img id="tierPicture" class="img-upload" alt="Illustration des problèmes de suddation" border="0"
+                [src]="workerImgSrc || 'assets/image/placeholder-logo.png'" />
+              <i class="fa fa-camera fa-lg"></i>
+              <i *ngIf="workerImgSrc" class="fa fa-close fa-xs" (click)="removeWorkerPicture($event)"></i>
+            </label>
+            <input id="file-input" type='file' (change)="onFileChanged($event)">
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="cancelAction()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+
+</div>

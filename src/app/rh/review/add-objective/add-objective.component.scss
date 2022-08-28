@@ -1,0 +1,136 @@
+/*
+  Radio button
+*/
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.form-control:disabled, .form-control[readonly] {
+  background-color: #fff;
+  opacity: 1;
+}
+
+.objective-label {
+  text-align: justify;
+  vertical-align: middle;
+  height: 7em;
+  display: inline-flex;
+  overflow-y: auto;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  border-top: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+}
+
+// table style
+.table-bordered {
+  border: none;
+  border-left: 1px solid gainsboro;
+  border-right: 1px solid gainsboro;
+  border-bottom: 1px solid gainsboro;
+  border-top: 1px solid #4c9aae;
+  width: 100%;
+  height: 100%;
+}
+
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+}
+
+table {
+  display: table;
+  border-spacing: 2px;
+  -webkit-border-horizontal-spacing: 2px;
+  -webkit-border-vertical-spacing: 2px;
+  border-color: grey;
+}
+
+// No past data found
+.default-frame {
+  height: 3em;
+  border-left: 2px solid gainsboro;
+  border-right: 2px solid gainsboro;
+  border-top: 1px solid #4c9aae;
+  border-bottom: 2px solid gainsboro;
+  margin-top: 0.14em;
+}
+
+.default-frame-text {
+  font-size: 1.2em;
+  margin-top: 0.3em;
+  margin-left: 0.3em;
+  text-align: center;
+}
+
+.text-area-style {
+  border: none;
+  resize: none;
+}
+
+.text-area-style :active {
+  border: 1px solid gray;
+}
+
+.textarea-has-error {
+  border: 1px solid red;
+}
+
+.add-button-style {
+  margin-left: 2em;
+  margin-top: -2em;
+}
+
+.delete-button-style {
+  margin-bottom: -0.4em;
+}
+
+.skills-not-found-row-sytle {
+  border-left: 2px solid gainsboro;
+  border-right: 2px solid gainsboro;
+  border-bottom: 2px solid gainsboro;
+  margin-top: -1.2em;
+}

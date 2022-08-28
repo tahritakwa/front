@@ -1,0 +1,121 @@
+<!-- <div class="form-group row"> -->
+<div class="row">
+
+  <label *ngIf="!checkExisteData()">{{'NODATAFOUND'|translate}}</label>
+  <div class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch cursor-pointer" style="min-height: 225px;"
+       *ngFor="let contact of this.contactFiltred.gridData.data;let index = index"
+       (click)="goToDetails(contact)">
+    <div class="card">
+      <!-- CARD BODY -->
+      <div class="card-body">
+        <!-- IMAGE -->
+        <div class="row d-flex align-items-center mb-3 pr-3">
+          <div class="col-11">
+            <div class="row">
+              <div class="col-auto">
+          <span class="square" *ngIf="checkArrayPicture(index)">
+              <img class="rounded-circle card-avatar"
+                   [src]="checkArrayPicture(index) ? arrayBase64[index]  :'../../../../assets/image/profile.png'" alt="avatar"/>
+            </span>
+                <span *ngIf="!checkArrayPicture(index)">
+            <img class="rounded-circle card-avatar"
+                 [src]="'../../../../assets/image/placeholder-logo.png'"alt="avatar"/>
+            </span>
+              </div>
+              <div class="col pl-0">
+                  <span
+                    class="tiers-title"> <a>{{contact.IdTiers ? contact.FirstName + ' ' + contact.LastName : contact.name +
+                    ' ' + contact.lastName }}  </a>  </span>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 d-flex">
+            <div class="col-1">
+              <i (click)="goToDetails(contact)" class="las la-pen cursor-pointer edit-pencil la-2x" *ngIf="authService.hasAuthorities([CRMPermissions.EDIT_CONTACT])"  ></i>
+            </div>
+            <div class="col-1">
+
+              <i class="fa fa-trash-o fa-2x text-danger" (click)="deleteContact(contact,$event)" *ngIf="authService.hasAuthorities([CRMPermissions.DELETE_CONTACT])"></i>
+            </div>
+            <div class="col-1">
+              <i class="fa fa-archive fa-2x AddIcon" *ngIf="!contact.IdTiers && !isArchivingMode && authService.hasAuthorities([CRMPermissions.ARCHIVE_CONTACT])"
+                 (click)="archiveContact(contact,$event)"></i>
+            </div>
+            <div class="col-1">
+              <i class="fa fa-refresh fa-2x AddIcon" *ngIf="!contact.IdTiers && isArchivingMode && authService.hasAuthorities([CRMPermissions.RESTORE_ARCHIVED_CONTACT])"
+                 (click)="restoreContact(contact,$event)"></i>
+            </div>
+
+          </div>
+        </div>
+        <!-- INFOs-->
+
+        <div class="row">
+          <div class="col">
+            <!-- EMAIL -->
+            <div class="mb-2">
+
+        <span class="field-title" *ngIf="checkMail(contact)">
+                  <!-- EMAIL -->
+           <i class="fa fa-envelope icon-from-label" aria-hidden="true"></i>
+
+          {{'EMAIL' | translate}}: </span>
+
+              <span style="font-size: inherit;" >
+                               {{contact.IdTiers ? contact.Email : contact.mail}}
+                    </span>
+            </div>
+
+
+            <!-- PHONE -->
+            <div class="mb-2" *ngIf="checkPhone(contact)">
+                  <span class="field-title">
+
+
+                     <i class="fa fa-phone icon-from-label" aria-hidden="true">   </i>
+                    {{'PHONE' | translate}}:
+                  </span>
+              <span style="font-size: inherit;">
+                      &nbsp;{{contact.IdTiers ? contact.Tel1 : contact.telephone }}
+                    </span>
+
+
+            </div>
+            <!-- FAX -->
+            <div class="mb-2" *ngIf="checkFax(contact)">
+                  <span class="field-title">
+
+                     <i class="fa fa-fax icon-from-label" aria-hidden="true">  </i> {{'FAX' | translate}}:
+                  </span>
+              <span style="font-size: inherit;">
+                      &nbsp;{{contact.IdTiers ? contact.Fax1 : contact.fax }}
+                     </span>
+
+
+            </div>
+
+
+            <div class="mb-2" *ngIf="contact.organisationName !== null && contact.organisationName !== undefined">
+
+               <span class="field-title">
+                 <i class="fa fa-building icon-from-label" aria-hidden="true"> </i> {{'CARD.COMPANY' | translate}}
+                 : </span>
+              <span style="font-size: inherit;">
+                    &nbsp;{{contact.organisationName}}
+                  </span>
+
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-pager-crm *ngIf="showed" [dataSource]="contactFiltred"
+               (pageChangeEvent)="onPageChange($event)" (stateChangeEvent)="dataStateChange($event)">
+</app-pager-crm>

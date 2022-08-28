@@ -1,0 +1,87 @@
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+
+<mat-toolbar>
+  <mat-icon (click)="navigateUp()" *ngIf="canNavigateUp" class="pointer">arrow_back</mat-icon>
+  <span style="margin-left: 8px;">{{ path || "Accueil" }}</span>
+  <span class="spacer"></span>
+  <button (click)="openUploadModalDialog()" class="btn btn-sm" type="button">
+    <div class='favourite'>
+      <div class='favourite_heart'>
+        <i aria-hidden="true" class="fa fa-cloud-upload"></i>
+      </div>
+    </div>
+  </button>
+  <app-upload-filedrive [idParent]="idParent" [path]="path"></app-upload-filedrive>
+  <button (click)="openNewFolderDialog()" class="btn btn-sm" type="button">
+    <div class='favourite'>
+      <div class='favourite_heart'>
+        <i aria-hidden="true" class="fa fa-plus"></i>
+      </div>
+    </div>
+  </button>
+</mat-toolbar>
+
+<div class="container" fxFlex fxLayout="row" fxLayoutAlign="space-between stretch">
+  <div class="content" fxFlex fxLayout="row">
+    <mat-grid-list cols="8" fxFlex rowHeight="170px">
+      <mat-grid-tile *ngFor="let element of fileElements" class="file-or-folder">
+        <span #menuTrigger="matMenuTrigger" [matMenuTriggerData]="{ element: element }"
+              [matMenuTriggerFor]="rootMenu"></span>
+        <div (click)="navigate(element)" (contextmenu)="openMenu($event, menuTrigger)" fxLayout="column"
+             fxLayoutAlign="space-between center">
+          <mat-icon *ngIf="!element.Type && element.Id !== 5; else file" class="file-or-folder-icon pointer"
+                    color="primary">folder
+          </mat-icon>
+          <ng-template #file>
+            <mat-icon *ngIf="element.Id !== 5; else trash" class="file-or-folder-icon pointer" color="primary">
+              insert_drive_file
+            </mat-icon>
+          </ng-template>
+          <ng-template #trash>
+            <mat-icon class="file-or-folder-icon pointer" color="primary">delete</mat-icon>
+          </ng-template>
+          <span>{{ element.Name }}</span>
+        </div>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+</div>
+
+<mat-menu #rootMenu="matMenu" [overlapTrigger]="false">
+  <ng-template let-element="element" matMenuContent>
+    <button *ngIf="(element.Id > 5)" [matMenuTriggerData]="{ self: element }" [matMenuTriggerFor]="moveToMenu"
+            mat-menu-item>
+      <mat-icon>open_with</mat-icon>
+      <span>{{'MOVE_TO'|translate}}</span>
+    </button>
+    <button (click)="openRenameDialog(element)" *ngIf="(element.Id > 5)" mat-menu-item>
+      <mat-icon>edit</mat-icon>
+      <span>{{'RENAME'|translate}}</span>
+    </button>
+    <button (click)="deleteElement(element)" *ngIf="(element.Id > 5)" mat-menu-item>
+      <mat-icon>delete</mat-icon>
+      <span>{{'DELETE'|translate}}</span>
+    </button>
+    <button (click)="downloadFile(element)" *ngIf="(element.Id !== 5)" mat-menu-item>
+      <mat-icon>cloud_download</mat-icon>
+      <span>{{'DOWNLOAD'|translate}}</span>
+    </button>
+    <button (click)="openDetailsModalDialog(element)" mat-menu-item>
+      <mat-icon>info</mat-icon>
+      <span>{{'DETAILS'|translate}}</span>
+    </button>
+    <button (click)="openSharedModalDialog(element)" *ngIf="(element.Id > 5)" mat-menu-item>
+      <mat-icon>share</mat-icon>
+      <span>{{'SHARE_DOCUMENT'|translate}}</span>
+    </button>
+  </ng-template>
+</mat-menu>
+
+<mat-menu #moveToMenu="matMenu">
+  <ng-template let-self="self" matMenuContent>
+    <ng-container *ngFor="let element of fileElements">
+      <button (click)="moveElement(self, element)" *ngIf="!element.Type && element.Id !== 5 && element.randomId !== self.randomId"
+              mat-menu-item>{{ element.Name }}</button>
+    </ng-container>
+  </ng-template>
+</mat-menu>

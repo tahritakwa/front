@@ -1,0 +1,18 @@
+<div [formGroup]="group">
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  (valueChange)="onSelect()"
+                  [data]="candidateFiltredDataSource"
+                  [filterable]="true"
+                  [ngClass]="{ 'has-error': (IdCandidate.touched || IdCandidate.dirty) && !IdCandidate.valid }"
+                  [textField]="'FullName'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control"
+                  formControlName="IdCandidate">
+    <!--footer template-->
+    <ng-template *ngIf="haveAddPermission" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer *ngIf="isFromStepper" [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-combobox>
+</div>

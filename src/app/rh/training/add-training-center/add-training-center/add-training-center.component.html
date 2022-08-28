@@ -1,0 +1,154 @@
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="trainingCenterFormGroup" class="form-horizontal">
+
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.Name.touched ||
+          trainingCenterFormGroup.controls.Name.dirty) && !trainingCenterFormGroup.controls.Name.valid }" class="form-control" formControlName="Name" name="Name" type="text">
+          <app-control-messages [control]="trainingCenterFormGroup.controls.Name"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'PLACE'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.Place.touched ||
+          trainingCenterFormGroup.controls.Place.dirty) && !trainingCenterFormGroup.controls.Place.valid }" class="form-control" formControlName="Place" name="Place" type="text">
+          <app-control-messages [control]="trainingCenterFormGroup.controls.Place"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'OPENING_TIME'|translate}}<span
+            class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.OpeningTime.touched ||
+          trainingCenterFormGroup.controls.OpeningTime.dirty) && !trainingCenterFormGroup.controls.OpeningTime.valid }" class="form-control" formControlName="OpeningTime" name="OpeningTime" type="time">
+          <app-control-messages [control]="trainingCenterFormGroup.controls.OpeningTime"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'CLOSING_TIME'|translate}}<span
+            class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.ClosingTime.touched ||
+          trainingCenterFormGroup.controls.ClosingTime.dirty) && !trainingCenterFormGroup.controls.ClosingTime.valid }" class="form-control" formControlName="ClosingTime" name="ClosingTime" type="time">
+          <app-control-messages [control]="trainingCenterFormGroup.controls.ClosingTime"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'PAYMENT_METHOD'|translate}}</label>
+          <kendo-dropdownlist [data]="paymentMethodList" class="form-control"
+                              formControlName="ModeOfPayment"></kendo-dropdownlist>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <div class="col-lg-6 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'PHONE_NUMBER'|translate}}<span
+            class="required">*</span></label>
+          <kendo-maskedtextbox [mask]="'(+216)00000000'" [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.CenterPhoneNumber.touched ||
+            trainingCenterFormGroup.controls.CenterPhoneNumber.dirty) && !trainingCenterFormGroup.controls.CenterPhoneNumber.valid }" class="form-control"
+                               formControlName="CenterPhoneNumber"
+                               name="CenterPhoneNumber"></kendo-maskedtextbox>
+          <app-control-messages [control]="trainingCenterFormGroup.controls.CenterPhoneNumber"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label class="col-lg-12 col-md-12 col-sm-12"> {{'CENTER_MANAGER'|translate}}</label>
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'FIRST_NAME'|translate}}<span
+            class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.FirstName.touched ||
+          trainingCenterFormGroup.controls.FirstName.dirty) && !trainingCenterFormGroup.controls.FirstName.valid }" class="form-control" formControlName="FirstName" name="FirstName" type="text">
+          <app-control-messages [control]="trainingCenterFormGroup.controls.FirstName"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'LAST_NAME'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.LastName.touched ||
+          trainingCenterFormGroup.controls.LastName.dirty) && !trainingCenterFormGroup.controls.LastName.valid }" class="form-control" formControlName="LastName" name="LastName" type="text">
+          <app-control-messages [control]="trainingCenterFormGroup.controls.LastName"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'PERSONAL_PHONE'|translate}}<span
+            class="required">*</span></label>
+          <kendo-maskedtextbox [mask]="'(+216)00000000'" [ngClass]="{ 'has-error': (trainingCenterFormGroup.controls.PhoneNumber.touched ||
+            trainingCenterFormGroup.controls.PhoneNumber.dirty) && !trainingCenterFormGroup.controls.PhoneNumber.valid }" class="form-control"
+                               formControlName="PhoneNumber"
+                               name="PhoneNumber"></kendo-maskedtextbox>
+          <app-control-messages [control]="trainingCenterFormGroup.controls.PhoneNumber"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+      </div>
+
+    </form>
+
+
+    <div class="col-lg-12 col-md-12 col-sm-12" style="margin-top: 23px; margin-left: 3px;">
+      <div class="row">
+        <button (click)="addTrainingCenterRoom()" class="noPadding btn-Add k-button" dir="ltr"
+                style="border: none; margin-bottom: 20px" type="button">
+          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+          <span>&nbsp;{{'ADD_ROOM'|translate}}</span>
+        </button>
+      </div>
+    </div>
+    <div *ngFor="let trainingCenterRoomAddFormGroup of TrainingCenterRoom.controls; let i=index"
+         [formGroup]="trainingCenterRoomAddFormGroup"
+         class="col-lg-12 col-md-12 col-sm-12"
+         style="margin-bottom:20px;">
+      <div *ngIf="isTrainingCenterRoomRowVisible(i)" class="row" style="margin-top: 5px;">
+
+        <div class="col-lg-4 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterRoomAddFormGroup.controls.Name.touched ||
+              trainingCenterRoomAddFormGroup.controls.Name.dirty) && !trainingCenterRoomAddFormGroup.controls.Name.valid }" class="form-control" formControlName="Name"
+                 type="text"/>
+          <app-control-messages [control]="trainingCenterRoomAddFormGroup.controls.Name"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'CAPACITY'|translate}}<span class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterRoomAddFormGroup.controls.Capacity.touched ||
+              trainingCenterRoomAddFormGroup.controls.Capacity.dirty) && !trainingCenterRoomAddFormGroup.controls.Capacity.valid }" class="form-control" formControlName="Capacity" min="0"
+                 type="number"/>
+          <app-control-messages [control]="trainingCenterRoomAddFormGroup.controls.Capacity"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12"> {{'RENT_PER_HOUR'|translate}}<span
+            class="required">*</span></label>
+          <input [ngClass]="{ 'has-error': (trainingCenterRoomAddFormGroup.controls.RentPerHour.touched ||
+              trainingCenterRoomAddFormGroup.controls.RentPerHour.dirty) && !trainingCenterRoomAddFormGroup.controls.RentPerHour.valid }" class="form-control" formControlName="RentPerHour" min="0"
+                 type="number"/>
+          <app-control-messages [control]="trainingCenterRoomAddFormGroup.controls.RentPerHour"
+                                class="error-msg messages text-danger"></app-control-messages>
+        </div>
+
+        <div class="col-lg-1 col-md-12 col-sm-12" style=" margin-top:30px">
+          <button (click)="deleteTrainingCenterRoom(i)" *ngIf="i !== 0" class="noPadding btn-Add k-button" style="border: none"
+                  type="button">
+            <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <button (click)="save()" class="btn btn-sm btn-danger" type="submit">
+      <i class="fa fa-floppy-o"></i> {{'ADD'|translate}}
+    </button>
+  </div>
+</div>

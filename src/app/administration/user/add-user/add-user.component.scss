@@ -1,0 +1,127 @@
+.dropdown-style{
+    margin-bottom: 35px;
+}
+
+@media (max-width: 990px) {
+    .lang {
+      margin-top: 65px;
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .telephone {
+        margin-top: 50px;
+    }
+  }
+  input[type="file"] {
+    display: none;
+  }
+
+  .carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .picture-details > .p-grid {
+    // border: 1px solid #b3c2ca;
+    border-radius: 3px;
+    margin: 0.3em;
+    text-align: center;
+    padding: 2em 0 2.25em 0;
+  }
+
+  .carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .picture-data .picture-title {
+    font-weight: 700;
+    font-size: 20px;
+    margin-top: 24px;
+  }
+
+  .carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .picture-data .picture-subtitle {
+    margin: 0.25em 0 2em 0;
+  }
+
+  .carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .picture-data button {
+    margin-left: 0.5em;
+  }
+
+  .carousel-demo .ui-carousel .ui-carousel-content .ui-carousel-item .picture-data button:first-child {
+    margin-left: 0;
+  }
+
+  .carousel-demo .ui-carousel.custom-carousel .ui-carousel-dot-icon {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50%;
+    display: none !important;
+  }
+
+  .carousel-demo
+    .ui-carousel.ui-carousel-horizontal
+    .ui-carousel-content
+    .ui-carousel-item.ui-carousel-item-start
+    .picture-details
+    > .p-grid {
+    margin-left: 0.6em;
+  }
+
+  .carousel-demo
+    .ui-carousel.ui-carousel-horizontal
+    .ui-carousel-content
+    .ui-carousel-item.ui-carousel-item-end
+    .picture-details
+    > .p-grid {
+    margin-right: 0.6em;
+  }
+
+  .modal {
+    display: block !important;
+  }
+
+  .modal-dialog {
+    overflow-y: initial !important;
+  }
+
+  .modal-body {
+    height: 250px;
+    overflow-y: auto;
+  }
+
+  .codeTiers {
+    background: transparent !important;
+    border: none !important;
+    font-size: 1.3125rem !important;
+    color: #4c9aae !important;
+  }
+
+  .img-border {
+    position: relative;
+    display: inline-block;
+    border: 3px dotted #dfe9e2;
+    height: 105px;
+    margin: 32px 0 0 0;
+    overflow: hidden;
+  }
+
+  i.fa.fa-camera.fa-lg {
+    bottom: 5px;
+    left: 5px;
+    position: absolute;
+    color: #cecece;
+  }
+
+  .imgSize {
+    height: 100%;
+  }
+  textarea{
+    overflow: scroll;
+    overflow-x: hidden;
+    resize: none;
+  }
+
+  .init-pwd {
+    text-decoration: underline;
+    font-weight: bold;
+    white-space: nowrap;
+    color:#4c9aae;
+    padding: 8px 13px;
+  }
+
+  .checkbox-style{
+    margin-top: 30px;
+  }

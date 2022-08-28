@@ -1,0 +1,217 @@
+<br *ngIf="related"/>
+<div class="k-form-field" style="margin-left:2%">
+  <input type="radio" id="myActionsButton" name="action" class="k-radio"
+         (click)="filterAction(actionsFilter.ACTION_MY_ACTIONS)">
+  <label class="k-radio-label" for="myActionsButton">{{'MY_ACTIONS' | translate}}</label>
+
+  <input type="radio" id="allActionsButton" name="action" class="k-radio" [defaultChecked]="true"
+         (click)="returnToAllActionMode()">
+  <label class="k-radio-label" for="allActionsButton">{{'ALL_ACTIONS' | translate}}</label>
+</div>
+
+<div style="text-align: center;" style="margin-left:2%;">
+  <div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 text-align-box">
+          <label style="color: white"></label>
+        </div>
+        <div class="btn-group col-lg-11 col-md-8 col-sm-12">
+          <button class="btn btn-primary dropdown-toggle btnColor" type="button" data-toggle="dropdown"
+                  aria-haspopup="true" aria-expanded="true">
+            {{selectedFilter|translate}}
+          </button>
+          <div class="dropdown-menu drop-resp-right"
+               style="border: 1px solid rgb(200, 206, 211) !important; overflow-y: scroll; height: 250px;">
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_ALL,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_ALL
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_ALL)">
+              {{'ALL_ACTIONS'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_UPCOMING,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_UPCOMING
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_UPCOMING)">
+              {{'ACTION_UPCOMING'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_PREVIOUS,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_PREVIOUS
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_PREVIOUS)">
+              {{'ACTION_PREVIOUS'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_BY_STATE,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_BY_STATE
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_BY_STATE)">
+              {{'ACTION_BY_STATE'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_BY_PRIORITY,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_BY_PRIORITY
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_BY_PRIORITY)">
+              {{'ACTION_BY_PRIORITY'|translate}}
+            </button>
+            <button *ngIf="!isByUserConnectedShowMode && !this.related"
+                    [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_BY_COMMERCIAL,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_BY_COMMERCIAL
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_BY_COMMERCIAL)">
+              {{'BY_COLLABORATER'|translate}}
+            </button>
+            <button *ngIf="source!== 'opportunity'" [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_ASSIGNED_TO,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_ASSIGNED_TO
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_ASSIGNED_TO)">
+              {{'ACTIONS_ASSOCIATED_TO'|translate}}
+            </button>
+            <button *ngIf="source!== 'organisation'" [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_BY_ORGANIZATION,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_BY_ORGANIZATION
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_BY_ORGANIZATION)">
+              {{'BY_ORGANIZATION'|translate}}
+            </button>
+
+            <button *ngIf="source!== 'contact'" [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_BY_CONTACT,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_BY_CONTACT
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_BY_CONTACT)">
+              {{'ACTION_BY_CONTACT'|translate}}
+            </button>
+            <button [ngClass]="{
+                    'dropdown-item':chosenFilterNumber!=actionsFilter.ACTION_BY_TYPE,
+                    'dropdown-item-active':chosenFilterNumber==actionsFilter.ACTION_BY_TYPE
+                    }"
+                    (click)="filterAction(actionsFilter.ACTION_BY_TYPE)">
+              {{'TYPE'|translate}}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 text-align-box">
+            <label *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_TYPE">{{'BY_TYPE' | translate}}</label>
+            <label
+              *ngIf="chosenFilterNumber=== actionsFilter.ACTION_ASSIGNED_TO">{{'ACTIONS_ASSOCIATED_TO' | translate}}</label>
+            <label
+              *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_CONTACT">{{'ACTION_BY_CONTACT' | translate}}</label>
+            <label
+              *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_ORGANIZATION">{{'BY_ORGANIZATION' | translate}}</label>
+            <label *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_STATE">{{'ACTION_BY_STATE' | translate}}</label>
+            <label
+              *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_PRIORITY">{{'ACTION_BY_PRIORITY' | translate}}</label>
+            <label
+              *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_COMMERCIAL">{{'BY_COLLABORATER' | translate}}</label>
+          </div>
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <kendo-combobox *ngIf="chosenFilterNumber === actionsFilter.ACTION_BY_COMMERCIAL"
+                            [data]="listResponsablesUsers"
+                            [valuePrimitive]="true"
+                            textField="FullName" valueField="Id"
+                            [filterable]="true"
+                            (filterChange)="handleFilterResponsables($event)"
+                            (valueChange)="filterActionsByCostumer($event)"
+                            style="width: 100%;">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+            <kendo-dropdownlist id="types_dropdown" *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_TYPE"
+                                [data]="actionsTypes"
+                                (selectionChange)=filterActionsByType($event)
+                                valueField="value" textField="name"
+                                [defaultItem]="selectAllType" style="float: left;width: 100%;">
+              <ng-template kendoDropDownListValueTemplate let-dataItem>
+                <span> {{dataItem | translate}}</span>
+              </ng-template>
+              <ng-template kendoDropDownListItemTemplate let-dataItem>
+                <span> {{dataItem | translate}}</span>
+              </ng-template>
+
+            </kendo-dropdownlist>
+            <kendo-combobox id="opportunities_dropdown" *ngIf="chosenFilterNumber=== actionsFilter.ACTION_ASSIGNED_TO"
+                            [data]="opportunitiesList"
+                            (selectionChange)="filterActionsByOpportunity($event)"
+                            valueField="id" textField="title" style="float: left;width: 100%;">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+            <kendo-combobox id="contacts_dropdown" *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_CONTACT"
+                            [data]="contactsList"
+                            (selectionChange)="filterActionsByContact($event)"
+                            valueField="id" textField="name" style="float: left;width: 100%;">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+
+            </kendo-combobox>
+            <kendo-combobox id="organization_dropdown"
+                            *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_ORGANIZATION"
+                            [data]="organizationsList"
+                            (selectionChange)="filterActionsByOrganization($event)"
+                            valueField="id" textField="name" style="float: left;width: 100%;">
+                            <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+            <kendo-dropdownlist id="states_dropdown" *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_STATE"
+                                [data]="actionsStates" [defaultItem]="ALL_STATES"
+                                (selectionChange)="filterActionsByState($event)"
+                                valueField="id" textField="title" style="float: left;width: 100%;">
+              <ng-template kendoDropDownListValueTemplate let-dataItem>
+                <span> {{dataItem | translate}}</span>
+              </ng-template>
+              <ng-template kendoDropDownListItemTemplate let-dataItem>
+                <span> {{dataItem | translate}}</span>
+              </ng-template>
+            </kendo-dropdownlist>
+            <kendo-dropdownlist id="priority_dropdown" *ngIf="chosenFilterNumber=== actionsFilter.ACTION_BY_PRIORITY"
+                                [data]="actionsPriorities" [defaultItem]="ALL_PRIORITIES"
+                                (selectionChange)="filterActionsByPriority($event)"
+                                valueField="id" textField="title" style="float: left;width: 100%;">
+              <ng-template kendoDropDownListValueTemplate let-dataItem>
+                <span> {{dataItem | translate}}</span>
+              </ng-template>
+              <ng-template kendoDropDownListItemTemplate let-dataItem>
+                <span> {{dataItem | translate}}</span>
+              </ng-template>
+            </kendo-dropdownlist>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="row mt-2">
+  <div class="has-search col-auto">
+    <div class="form-group has-search">
+      <span class="fa fa-search form-control-feedback"></span>
+      <input type="text" class="form-control input-text" placeholder="{{'SEARCH_ACTION'|translate}}"
+             (afterValueChanged)="finalSearchAndFilter()"
+             [(ngModel)]='searchValue'>
+    </div>
+  </div>
+</div>

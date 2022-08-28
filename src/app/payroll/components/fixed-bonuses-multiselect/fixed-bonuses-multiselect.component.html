@@ -1,0 +1,23 @@
+<div [formGroup]="group">
+  <label class="col-lg-12 col-md-12 col-sm-12">Bonus</label>
+  <kendo-multiselect (filterChange)="handleFilter($event)"
+                     [(ngModel)]="selectedValues"
+                     [data]="bonusFiltredDataSource"
+                     [filterable]="true"
+                     [ngClass]="{ 'has-error': (ContractBonus.touched || ContractBonus.dirty) && !ContractBonus.valid }"
+                     [textField]="'Name'"
+                     [valueField]="'Id'"
+                     [valuePrimitive]="true"
+                     class="form-control"
+                     formControlName="ContractBonus">
+  </kendo-multiselect>
+  <ng-template kendoDropDownListValueTemplate let-dataItem>
+    <span class="template">{{ dataItem?.Code }}</span>&nbsp;{{ dataItem?.Name }}
+  </ng-template>
+  <!--footer template-->
+  <ng-template kendoDropDownListFooterTemplate>
+    <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+  </ng-template>
+  <!--end footer template-->
+  <span *ngIf="(ContractBonus.touched || ContractBonus.dirty) && ContractBonus.errors" class="help-block"></span>
+</div>

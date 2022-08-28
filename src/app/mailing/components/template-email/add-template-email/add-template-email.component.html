@@ -1,0 +1,94 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <div class="card">
+        <form class="form-horizontal" [formGroup]="addFormGroup">
+          <div _ngcontent-c32="" class="card-header" style="height: 75px;">
+            <div class="row">
+              <div class="col-1 primaryColor mt-1">
+                <i class="fas fa-file-spreadsheet fa-3x"></i>
+              </div>
+              <div class="col-lg-10 mt-2 TitleSize" style="display:inline-flex">
+                <h2 _ngcontent-c32="" class="card-title mb-0,00">
+                  <i class="fa fa-file-text-o"></i>  {{'ADD_TEMPLATE'| translate}} </h2>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TEMPLATE_EMAIL_NAME'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="text" formControlName="name"
+                           [ngClass]="{ 'has-error': (addFormGroup.controls.name.touched ||
+                               addFormGroup.controls.name.dirty) && !addFormGroup.controls.name.valid }">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="addFormGroup.controls.name"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+            <div class="row form-group">
+              <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TEMPLATE_EMAIL_SUBJECT'|translate}}<span
+                  class="required">*</span></label>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="row">
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 input-group">
+                    <input class="form-control" type="text" formControlName="subject"
+                           [ngClass]="{ 'has-error': (addFormGroup.controls.subject.touched ||
+                               addFormGroup.controls.subject.dirty) && !addFormGroup.controls.subject.valid }">
+                  </div>
+                  <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                    <app-control-messages [control]="addFormGroup.controls.subject"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br>
+        <div style="margin-right: 30px; margin-left: 30px;">
+          <div  class="mycloseButton">
+            <button type="button" (click)="editorContent=null"  title="{{'CLEAR' |translate}}">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <p-editor [(ngModel)]="editorContent" [style]="{'height':'320px'} "></p-editor>
+        </div>
+        <br>
+        <div class="card-footer" style="float: right;margin-right: 1%">
+          <div class="row">
+            <div class="col-sm-10">
+              <a routerLink="/main/settings/mailing/templateEmail">
+                <span class="btn btn-sm btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button class="btn btn-sm btn-danger" (click)="save(true)">
+                <i class="fa fa-floppy-o"></i> {{'SAVE_AND_NEW'|translate}}
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="save(false)">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

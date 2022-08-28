@@ -1,0 +1,47 @@
+<div *ngIf="ClaimInteractionStorage">
+  <div class="col-lg-12 col-sm-12 col-md-12 ">
+    <div class="form-group row" [formGroup]="ClaimInteractionStorage">
+      <div class="col-sm-12 col-md-6 col-lg-4">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'CLAIM_INTERACTION_DATE'|translate}}<span
+          class="required">*</span></label>
+        <kendo-datepicker class="form-control" formControlName="InteractionDate">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                     toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+
+        <app-control-messages [control]="ClaimInteractionStorage.controls.InteractionDate"
+                              class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+      <div class="col-sm-12 col-md-6 col-lg-4">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'INTERACTION_TYPE'|translate}}<span
+          class="required">*</span></label>
+        <kendo-combobox #type class="form-control w-100" [data]="listInteractionItems" (open)="openCombobox()"
+                        formControlName="IdInteractionType">
+          <!--No data template-->
+          <ng-template kendoDropDownListNoDataTemplate>
+            <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+          </ng-template>
+          <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+          <!--end No data template-->
+        </kendo-combobox>
+        <app-control-messages [control]="ClaimInteractionStorage.controls.IdInteractionType"
+                              class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+
+      <div class="col-sm-12 col-md-6 col-lg-4">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}<span
+          class="required">*</span></label>
+        <textarea class="form-control" type="text"
+                  [ngClass]="{ 'has-error': (ClaimInteractionStorage.controls.InteractionDescription.touched || ClaimInteractionStorage.controls.InteractionDescription.dirty) && !ClaimInteractionStorage.controls.InteractionDescription.valid }"
+                  formControlName="InteractionDescription">
+            </textarea>
+        <app-control-messages [control]="ClaimInteractionStorage.controls.InteractionDescription"
+                              class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+    </div>
+  </div>
+</div>

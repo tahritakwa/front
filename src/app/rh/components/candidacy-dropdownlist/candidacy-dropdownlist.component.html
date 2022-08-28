@@ -1,0 +1,22 @@
+<div [formGroup]="group">
+  <kendo-dropdownlist [data]="candidacyFiltredDataSource"
+                      [disabled]="disabled"
+                      [ngClass]="{ 'has-error': (IdCandidacy.touched || IdCandidacy.dirty) && !IdCandidacy.valid }"
+                      [textField]="'Id'"
+                      [valueField]="'Id'"
+                      [valuePrimitive]="true"
+                      class="form-control"
+                      formControlName="IdCandidacy">
+
+    <!--content template-->
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      <span>{{dataItem ? dataItem.IdCandidateNavigation.FullName : ''}}</span>
+    </ng-template>
+    <!--end content template-->
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+  </kendo-dropdownlist>
+</div>

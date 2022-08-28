@@ -1,0 +1,154 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5;" *ngIf="!isModal">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_TAX' : 'ADD_TAX') | translate}}</h3>
+      </div>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+    <!--Begin form-->
+    <form class="form-horizontal" [formGroup]="taxFormGroup">
+      <div class="col-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span class="required">*</span></label>
+                <input class="form-control" [ngClass]="{ 'has-error': (taxFormGroup.controls.CodeTaxe.touched ||
+                     taxFormGroup.controls.CodeTaxe.dirty) && !taxFormGroup.controls.CodeTaxe.valid }"
+                       formControlName="CodeTaxe" type="text" name="CodeTaxe">
+                <app-control-messages [control]="taxFormGroup.controls.CodeTaxe"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span
+                  class="required">*</span></label>
+                <input class="form-control" formControlName="Label" type="text" name="Label"
+                       [ngClass]="{ 'has-error': (taxFormGroup.controls.Label.touched || taxFormGroup.controls.Label.dirty) && !taxFormGroup.controls.Label.valid }">
+                <app-control-messages [control]="taxFormGroup.controls.Label"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-4 col-md-6 col-sm-12 d-flex mb-2" style="margin-top: 35px;">
+                <label class="ml-2 pr-3 cursor-pointer" for="checkIsCalculable">{{"AMOUNT"|translate}}</label>
+                <label class="switch switch-pill switch-primary switch-sm">
+                  <input (change)="changeTaxeNature()" class="switch-input" type="checkbox" id="checkIsCalculable" [checked]="isCalculable == true ? 'checked': null"><span
+                    class="switch-slider"></span></label>
+                <label class="ml-2 pl-2 cursor-pointer" for="checkIsCalculable">{{"CALCULABLE"|translate}} (%)</label>
+                </div>
+            </div>
+
+            <div class="form-group row">
+
+            </div>
+            <form class="form-horizontal" [formGroup]="taxFormGroup">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'TAXE_VALUE_TITLE'|translate}}<span
+                    class="required" *ngIf="isCalculable">*</span></label>
+                  <input class="form-control" [ngClass]="{ 'has-error': (taxFormGroup.controls.TaxeValue.touched
+                         || taxFormGroup.controls.TaxeValue.dirty) && !taxFormGroup.controls.TaxeValue.valid }"
+                         formControlName="TaxeValue" type="text" name="TaxeValue">
+                  <app-control-messages [control]="taxFormGroup.controls.TaxeValue"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'TYPE_TAXE'|translate}}<span
+                    class="required">*</span></label>
+                  <app-taxe-type [form]="taxFormGroup" [taxFormGroupAccounting]="taxFormGroupAccounting"></app-taxe-type>
+                  <app-control-messages [control]="taxFormGroup.controls.TaxeType"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+
+              </div>
+              <p-accordion [multiple]="true" class="w-100" *ngIf="accountingForm && isRole">
+
+                <!-- Comptes de paiements -->
+                <p-accordionTab header="{{'PAYMENT_ACCOUNTS'| translate}}"
+                                (selectedChange)="openPaymentAccountsCollapse = !openPaymentAccountsCollapse"
+                                [selected]="openPaymentAccountsCollapse" (click)="openAddressDetailCollapse()">
+                  <div class="form-group row" *ngIf="isRole && accountingForm">
+                    <div class="col-sm-12 col-md-6 col-lg-4" *ngIf="isRole && accountingForm">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'SALES_ACCOUNT_WITHOUT_TAX'|translate}}</label>
+                      <app-accounts-dropdown-component [fieldName]="'htaxSalesAccount'" [group]="taxFormGroupAccounting"
+                                                       [taxType]="'htaxSalesAccounts'" (Selected)="receiveAccounts($event)">
+                      </app-accounts-dropdown-component>
+                    </div>
+
+
+                    <div class="col-lg-4 col-md-6 col-sm-12" *ngIf="isRole && accountingForm">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'SALES_ACCOUNT_WITH_TAX'|translate}}</label>
+                      <app-accounts-dropdown-component [fieldName]="'taxSalesAccount'" [group]="taxFormGroupAccounting"
+                                                       [taxType]="'taxSalesAccounts'" (Selected)="receiveAccounts($event)">
+                      </app-accounts-dropdown-component>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'FODEC_SALES_ACCOUNTS'|translate}}</label>
+                      <app-accounts-dropdown-component [fieldName]="'fodecSalesAccount'" [group]="taxFormGroupAccounting"
+                                                       [taxType]="'fodecSalesAccounts'" (Selected)="receiveAccounts($event)">
+                      </app-accounts-dropdown-component>
+                    </div>
+                  </div>
+                  <div class="form-group row" *ngIf="isRole && accountingForm">
+                    <div class="col-sm-12 col-md-6 col-lg-4">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'PURCHASE_ACCOUNT_WITHOUT_TAX'|translate}}</label>
+                      <app-accounts-dropdown-component [fieldName]="'htaxPurchasesAccount'" [group]="taxFormGroupAccounting"
+                                                      [taxType]="'hTaxPurchasesAccounts'"
+                                                      (Selected)="receiveAccounts($event)">
+                      </app-accounts-dropdown-component>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'PURCHASE_ACCOUNT_WITH_TAX'|translate}}</label>
+                      <app-accounts-dropdown-component [fieldName]="'taxPurchasesAccount'" [group]="taxFormGroupAccounting"
+                                                       [taxType]="'taxPurchasesAccounts'" (Selected)="receiveAccounts($event)">
+                      </app-accounts-dropdown-component>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'FODEC_PURCHASE_ACCOUNTS'|translate}}</label>
+                      <app-accounts-dropdown-component [fieldName]="'fodecPurchasesAccount'" [group]="taxFormGroupAccounting"
+                                                      [taxType]="'fodecPurchasesAccounts'" (Selected)="receiveAccounts($event)">
+                      </app-accounts-dropdown-component>
+                    </div>
+
+                  </div>
+                </p-accordionTab>
+              </p-accordion>
+            </form>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!--End add form-->
+  </div>
+  <!--End Card body-->
+  <div class="fixed-card-footer" *ngIf="!isModal">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="listUrl">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button class="btn btn-sm btn-save mx-1" type="submit" (click)="onAddTaxClick()" *ngIf="hasUpdateTaxePermission && isUpdateMode || hasAddTaxePermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <div class="isShowedModalSideBar" *ngIf="isModal">
+      <footer class="app-footer mx-0 footerModal">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button class="btn btn-sm btn-save mx-1" type="submit" (click)="onAddTaxClick()" *ngIf="hasAddTaxePermission">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+</div>

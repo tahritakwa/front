@@ -1,0 +1,91 @@
+<div class="card">
+  <div class="card-header" style="background-color: white; border:none">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'STATUS_OBJECTIFS'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-content">
+    <div class="card-body ">
+      <div class="row form-group">
+        <div class="col-12">
+          <div class="d-flex flex-row mt-2">
+            <div class="flex-grow-1 float-right">
+              <div>
+                <app-btn-grid [advencedAdd]='true' [add]='false' [export]='false' [addLink]='"AdvancedAdd"'  *ngIf="this.authService.hasAuthorities([CRMPermissions.ADD_STATUS])"></app-btn-grid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 m-1">
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                      [skip]="gridSettings.state.skip" [sortable]="true" [pageable]="true" [filterable]="false"
+                      (pageChange)="onPageChange($event)"
+                      (dataStateChange)="dataStateChange($event)"
+                      [reorderable]="false" [columnMenu]="false"
+                      (remove)="removeHandler($event)"
+                      [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter" [navigable]="true">
+            <!--Name-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                               [title]="gridSettings.columnsConfig[1].title | translate" [width]="100"
+                               [filter]="gridSettings.columnsConfig[1].filter"
+                               [filterable]="gridSettings.columnsConfig[1].filterable"
+                               [format]="gridSettings.columnsConfig[1].format">
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="formGroup" controlName="title"
+                                              (valueIsChanged)="valueIsChanged($event)"
+                                              inputType="text">
+                </app-grid-cell-input-template>
+                <i #element></i>
+                <kendo-popup [anchor]="element"
+                             *ngIf="(formGroup.controls.title.touched
+                                    || formGroup.controls.title.dirty) && titleAlreadyExists"
+                             popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg"
+                             style="position:center; color: red">
+                  <div *ngIf="titleAlreadyExists" class="error-message" style="color: red;">
+                    {{'TITLE_ALREADY_EXISTS' | translate}}
+                  </div>
+                </kendo-popup>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--color-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                               [title]="gridSettings.columnsConfig[2].title | translate" [width]="100">
+              <ng-template kendoGridEditTemplate let-dataItem let-rowIndex="rowIndex">
+                <div>
+                  <div class="indicate-color"
+                       [ngStyle]="{'background-color': getUpdateColor(rowIndex)}"></div>
+                </div>
+                <i #element></i>
+                <kendo-popup [anchor]="element"
+                             *ngIf="(colorAlreadyExists)"
+                             popupClass="k-widget k-tooltip k-tooltip-validation k-invalid-msg" style="position:center">
+                  <div *ngIf="colorAlreadyExists" class="error-message" style="color: red;">
+                    {{'COLOR_ALREADY_EXISTS' | translate}}
+                  </div>
+                </kendo-popup>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                <div class="indicate-color" [ngStyle]="{'background-color': getColor(rowIndex)}"></div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!-- Command-->
+            <kendo-grid-command-column [width]="100"
+                                       [title]="'ACTIONS' | translate">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <!-- edit command directive-->
+                <i class="las la-pen cursor-pointer edit-pencil la-lg" (click)="goToAdvancedEdit(dataItem)" *ngIf="authService.hasAuthorities([CRMPermissions.EDIT_STATUS])"></i>
+                <!-- remove command directive -->
+                <i class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+                   (click)="removeHandler(dataItem)"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+          </kendo-grid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

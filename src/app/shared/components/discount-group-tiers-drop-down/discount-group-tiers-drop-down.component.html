@@ -1,0 +1,18 @@
+<div [formGroup]="group">
+  <kendo-combobox [data]="discountGroupTiersFiltredDataSource" class="form-control" name="IdCurrency"
+    formControlName="IdDiscountGroupTiers" [textField]="'Code'" [valueField]="'Id'" [disabled]="isDesabeld"
+    [allowCustom]="allowCustom" [valuePrimitive]="true" [filterable]="true" (valueChange)="setGroupTiersValue()"
+    (filterChange)="handleFilter($event)" style="border: 1px solid #e4e7ea !important;     border-radius: 5px;">
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

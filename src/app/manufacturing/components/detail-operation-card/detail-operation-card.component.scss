@@ -1,0 +1,71 @@
+// variables
+$nodeHeight: 50px;
+$colorWhite: #FFFFFF;
+$colorBlue: #4c9aae;
+$textAlignCenter: center;
+$textAlignLeft: left;
+$textAlignRight: right;
+$textBold: bold;
+$font-family: Lucida Grande;
+$font-weight: bold;
+
+:host {
+
+  width: 50%;
+  margin:-10px 0 0 -10px;
+
+}
+
+.row {
+  display: inline-block;
+  margin: 10px 0 0 10px;
+  flex-grow: 1;
+  width: calc(100% * (1 / 3) - 10px - 1px)
+
+}
+
+.card-status {
+  text-align: $textAlignRight;
+  color: $colorWhite;
+  font-family: $font-family;
+  font-weight: $font-weight;
+
+
+}
+
+.card-responsable {
+  text-align: $textAlignLeft;
+  color: $colorWhite;
+  font-family: $font-family;
+  font-weight: $font-weight;
+}
+
+.card-operation {
+  text-align: $textAlignLeft;
+  font-family: $font-family;
+  font-weight: $font-weight;
+  color: $colorBlue;
+
+}
+
+.card-machine {
+  text-align: $textAlignCenter;
+  font-family: $font-family;
+  font-weight: $font-weight;
+
+}
+
+.card-duration {
+  text-align: $textAlignCenter;
+  font-family: $font-family;
+  font-weight: $font-weight;
+
+}
+
+.card-action {
+  text-align: $textAlignRight;
+}
+
+
+
+

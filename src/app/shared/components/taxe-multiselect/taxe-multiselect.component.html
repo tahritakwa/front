@@ -1,0 +1,29 @@
+<div [formGroup]="itemForm">
+
+    <kendo-multiselect Id="TaxeItem" class="form-control"
+                       [data]="taxeFiltredDataSource"
+                       [textField]="'CodeTaxe'"
+                       [valueField]="'Id'"
+                       placeholder="Taxe"
+                       formControlName="TaxeItem"
+                       [(ngModel)]="selectedValues"
+                       [valuePrimitive]="true"
+                       [ngClass]="{ 'has-error': (TaxeItem.touched || TaxeItem.dirty) && !TaxeItem.valid }"
+                       [filterable]="true" [readonly]="readonly"
+                       (filterChange)="handleFilter($event)">
+                       <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-multiselect-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-multiselect-messages>
+    </kendo-multiselect>
+    <ng-template kendoMultiSelectCustomItemTemplate let-dataItem>
+      <span class="template">{{ dataItem?.CodeTaxe }}</span>&nbsp;{{ dataItem?.Label }}
+    </ng-template>
+    <!--footer template-->
+    <ng-template kendoMultiSelectFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+
+</div>

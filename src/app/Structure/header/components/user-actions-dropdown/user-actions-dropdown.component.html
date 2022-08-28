@@ -1,0 +1,30 @@
+<li class="nav-item dropdown ">
+  <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+    <div *ngIf="user && user.Picture" class="border border-secondary customer-photo d-flex justify-content-center">
+      <img id="ThumbnailSupplier" class="imgSize" [src]="user.Picture" />
+    </div>
+    <div *ngIf="user && !user.Picture" class="border border-secondary rounded-circle">
+      <h1 style="font-size: 15px; font-family: sans-serif; margin-top: 10px;">{{user.FirstName.charAt(0).toUpperCase()}}{{user.LastName.charAt(0).toUpperCase()}}</h1>
+
+    </div>
+  </a>
+  <div class="dropdown-menu dropdown-menu-right " *ngIf="user">
+
+    <div class="dropdown-header text-center" style="font-size: 15px;">
+      <strong>{{user.FirstName}} {{user.LastName}}</strong>
+    </div>
+    <button class="dropdown-item" (click)='onClickProfile()'>
+      <i class="fa fa-user"></i> {{'PROFIL' | translate}}
+    </button>
+    <button type="button" class="dropdown-item" (click)='onClickChangePWD($event)'>
+      <i class="fa fa-wrench"></i> {{'CHANGE_PWD' | translate}}
+    </button>
+    <button [routerLink]="['/main/settings']" type="button" class="dropdown-item" *ngIf="  showSettingsMenu || showpayrollSettingsMenu || showpRHSettingsMenu ||
+      showUserSettings || showStockSettingsMenu   || showSalesSettingsMenu  || showPurchaseSettingsMenu   || showTreasurySettingsMenu || showGarageSettingsMenu || showManufactoringSettingsMenu || showCrmSettingsMenu || showAccountingSettingMenu">
+      <i class="fa fa-cog"></i> {{'SETTINGS' | translate}}
+    </button>
+    <button type="button" class="dropdown-item" (click)='onClickLogout()'>
+      <i class="icon-logout"></i> {{'LOGOUT' | translate}}
+    </button>
+  </div>
+</li>

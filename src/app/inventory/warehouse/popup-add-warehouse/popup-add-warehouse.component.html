@@ -1,0 +1,106 @@
+<div class="card">
+  <div class="card-body">
+    <form class="form-horizontal" *ngIf="!isShelfAndStorage" [formGroup]="warehouseFormGroup">
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-12">
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="isUpdateMode">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}<span  class="required">*</span></label>
+              <input class="form-control" formControlName="WarehouseCode" type="text" name="WarehouseCode" disabled>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+              <input class="form-control" formControlName="WarehouseName" type="text" name="WarehouseName"
+                     [ngClass]="{ 'has-error': ((warehouseFormGroup.controls.WarehouseName.touched || warehouseFormGroup.controls.WarehouseName.dirty)
+                        && !warehouseFormGroup.controls.WarehouseName.valid) || nameAlreadyExists}"
+                     (change)="checkShelfAndStorageExistence()">
+              <app-control-messages [control]="warehouseFormGroup.controls.WarehouseName"
+                class="error-msg messages text-left text-danger"></app-control-messages>
+              <label *ngIf="nameAlreadyExists" class="error-msg messages text-left text-danger">{{'SHELF_AND_STORAGE_ALREADY_EXISTS'|translate}}</label>  
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12" *ngIf="!isUpdateMode">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{warehouseLabel}}<span *ngIf="!isCentralValue" class="required">*</span></label>
+              <app-depot-dropdown [parent]="warehouseFormGroup" [FromComponent]='true'
+                                  [WarehouseName]="'IdWarehouseParent'" [disabled]='disabledWarehouseParent'
+                                  [isShelfAndStorage]="isShelfAndStorage"
+                                  [isWarehouseDropdownTypeDepotAndCentral]="isWarehouseDropdownTypeDepotAndCentral"
+                                  [isWarehouseDropdownTypeZoneAndCentral]="isWarehouseDropdownTypeZoneAndCentral"
+                                  (Focused)="zoneFocused($event)"
+                                  (Selected)="handleSelectedWarehouse($event)"></app-depot-dropdown>
+              <app-control-messages [control]="warehouseFormGroup.controls.IdWarehouseParent"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'RESPONSIBLE'|translate}}</label>
+              <app-user-dropdown [form]="warehouseFormGroup" [disabled] = "(isUpdateMode && !isShelfAndStorage && !updatePermission)||(isUpdateMode && isShelfAndStorage && !hasUpdateShelfStoragePermission)" ></app-user-dropdown>
+              <!-- <app-employee-dropdown [showAddButton]="showAddButton" [form]="warehouseFormGroup"></app-employee-dropdown> -->
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'ADDRESS'|translate}}</label>
+              <textarea class="form-control" formControlName="WarehouseAdresse" name="WarehouseAdresse" type="text"
+                        [ngClass]="{ 'has-error': (warehouseFormGroup.controls.WarehouseAdresse.touched || warehouseFormGroup.controls.WarehouseAdresse.dirty) && !warehouseFormGroup.controls.WarehouseAdresse.valid }"></textarea>
+              <app-control-messages [control]="warehouseFormGroup.controls.WarehouseAdresse"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End principal menu  part -->
+      <div class="d-flex justify-content-end">
+        <button *ngIf = "addPermission || updatePermission" class="btn btn-sm btn-save" (click)="saveWarehouse()" type="button">
+          <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'ADD') |translate}}
+        </button>
+      </div>
+    </form>
+    <form class="form-horizontal" *ngIf="isShelfAndStorage" [formGroup]="shelfAndStorageFormGroup">
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-12">
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span class="required">*</span></label>
+              <input class="form-control" formControlName="Label" type="text" name="Label"
+                     [placeholder]="shelfAndStorageLabelPlaceHolder"
+                     [ngClass]="{ 'has-error': ((shelfAndStorageFormGroup.controls.Label.touched ||
+                     shelfAndStorageFormGroup.controls.Label.dirty) && !shelfAndStorageFormGroup.controls.Label.valid) || nameAlreadyExists }"
+                     (change)="checkShelfAndStorageExistence()">
+              <app-control-messages [control]="shelfAndStorageFormGroup.controls.Label"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+               <label *ngIf="nameAlreadyExists" class="error-msg messages text-left text-danger">{{'SHELF_AND_STORAGE_ALREADY_EXISTS'|translate}}</label>                     
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{warehouseLabel}}<span class="required">*</span></label>
+              <app-depot-dropdown [parent]="shelfAndStorageFormGroup" [FromComponent]='true'
+                                  [WarehouseName]="'IdWharehouse'" [disabled]='disabledWarehouseParent'
+                                  [isShelfAndStorage]="isShelfAndStorage"
+                                  [isWarehouseDropdownTypeDepotAndCentral]="isWarehouseDropdownTypeDepotAndCentral"
+                                  [isWarehouseDropdownTypeZoneAndCentral]="isWarehouseDropdownTypeZoneAndCentral"
+                                  (Focused)="zoneFocused($event)"
+                                  (Selected)="handleSelectedWarehouse($event,true)"></app-depot-dropdown>
+              <app-control-messages [control]="shelfAndStorageFormGroup.controls.IdWharehouse"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End principal menu  part -->
+      <div class="d-flex justify-content-end">
+        <button *ngIf = "hasAddShelfStoragePermission || hasUpdateShelfStoragePermission" class="btn btn-sm btn-save" (click)="saveShelfAndStorage()" type="button">
+          <i class="fa fa-floppy-o"></i> {{ (isUpdateMode ? 'UPDATE' : 'ADD') |translate}}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

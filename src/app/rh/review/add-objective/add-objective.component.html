@@ -1,0 +1,106 @@
+<div *ngIf="isPastObjective">
+  <table class="table table-responsive table-bordered">
+    <thead>
+    <tr>
+      <th rowspan="2" style="text-align: center; vertical-align: middle;">{{'OBJECTIF' | translate}}</th>
+      <th rowspan="2" style="text-align: center; vertical-align: middle; width: 40%;">{{'TITLE' | translate}}</th>
+      <th rowspan="2"
+          style="text-align: center; vertical-align: middle; width: 25%;">{{'REALISATION_DATE' | translate}}</th>
+      <th colspan="2" style="text-align: center;">{{'EVALUATION' | translate}}</th>
+    </tr>
+    <tr>
+      <th style="text-align: center;">{{'COLLABORATOR' | translate}}</th>
+      <th style="text-align: center;">{{'MANAGERS' | translate}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let objectiveFormGroup of PastObjective.controls; let i=index" [formGroup]="objectiveFormGroup">
+      <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+      <td>
+        <span class="objective-label">{{objectiveFormGroup.controls.Label.value}}</span>
+      </td>
+      <td style="text-align: center; vertical-align: middle; overflow-y: auto;">
+        <kendo-datepicker [format]="formatDate" class="form-control" formControlName="RealisationDate"
+                          style="margin-bottom: 1em;">
+          <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+          </kendo-datepicker-messages>
+        </kendo-datepicker>
+        <app-control-messages [control]="objectiveFormGroup.controls.RealisationDate"
+                              class="error-msg messages text-left text-danger"></app-control-messages>
+        <span>({{'EXPECTED_DATE_TITLE' | translate}}
+          : {{objectiveFormGroup.controls.ExpectedDate.value | date: formatDate}})</span>
+      </td>
+      <td style="vertical-align: left !important; line-height: 2.5em !important;">
+        <input class="k-radio" formControlName="ObjectiveCollaboratorStatus" id="reachedCode'{{i}}'" type="radio"
+               value='1'/>
+        <label class="k-radio-label" for="reachedCode'{{i}}'">{{'REACHED'|translate}}</label><br/>
+        <input class="k-radio" formControlName="ObjectiveCollaboratorStatus" id="partiallyReachedCode'{{i}}'"
+               type="radio" value='2'/>
+        <label class="k-radio-label" for="partiallyReachedCode'{{i}}'">{{'PARTIALLY_REACHED'|translate}}</label><br/>
+        <input class="k-radio" formControlName="ObjectiveCollaboratorStatus" id="notReachedCode'{{i}}'" type="radio"
+               value='3'/>
+        <label class="k-radio-label" for="notReachedCode'{{i}}'">{{'NOT_REACHED'|translate}}</label>
+        <app-control-messages [control]="objectiveFormGroup.controls.ObjectiveCollaboratorStatus"
+                              class="error-msg messages text-left text-danger"></app-control-messages>
+      </td>
+      <td style="vertical-align: left !important; line-height: 2.5em !important;">
+        <input class="k-radio" formControlName="ObjectiveManagerStatus" id="reachedManagerCode'{{i}}'" type="radio"
+               value='1'/>
+        <label class="k-radio-label" for="reachedManagerCode'{{i}}'">{{'REACHED'|translate}}</label><br/>
+        <input class="k-radio" formControlName="ObjectiveManagerStatus" id="partiallyReachedManagerCode'{{i}}'"
+               type="radio" value='2'/>
+        <label class="k-radio-label"
+               for="partiallyReachedManagerCode'{{i}}'">{{'PARTIALLY_REACHED'|translate}}</label><br/>
+        <input class="k-radio" formControlName="ObjectiveManagerStatus" id="notReachedManagerCode'{{i}}'" type="radio"
+               value='3'/>
+        <label class="k-radio-label" for="notReachedManagerCode'{{i}}'">{{'NOT_REACHED'|translate}}</label>
+        <app-control-messages [control]="objectiveFormGroup.controls.ObjectiveManagerStatus"
+                              class="error-msg messages text-left text-danger"></app-control-messages>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="!isPastObjective">
+  <table *ngIf="FutureObjective.controls.length > 0" class="table table-responsive table-bordered">
+    <thead>
+    <tr>
+      <th style="text-align: center; vertical-align: middle;">{{'OBJECTIF' | translate}}</th>
+      <th style="text-align: center; vertical-align: middle; width: 80%;">{{'TITLE' | translate}}</th>
+      <th style="text-align: center; vertical-align: middle; width: 100%;">{{'EXPECTED_DATE_TITLE' | translate}}</th>
+      <th style="text-align: center;">{{'ACTION' | translate}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let objective of FutureObjective.controls; let i=index" [formGroup]="objective">
+      <th scope="row" style="text-align: center; vertical-align: middle;">{{i + 1}}</th>
+      <td>
+          <textarea [ngClass]="{ 'textarea-has-error': (objective.controls.Label.touched || objective.controls.Label.dirty) && !objective.controls.Label.valid }" class="form-control text-area-style" cols="50" formControlName="Label"
+                    rows="3">
+          </textarea>
+        <app-control-messages [control]="objective.controls.Label"
+                              class="error-msg messages text-left text-danger"></app-control-messages>
+      </td>
+      <td style="vertical-align: middle;">
+        <kendo-datepicker [format]="formatDate" [ngClass]="{ 'has-error': (objective.controls.ExpectedDate.touched || objective.controls.ExpectedDate.dirty) && !objective.controls.ExpectedDate.valid }" class="form-control"
+                          formControlName="ExpectedDate">
+        </kendo-datepicker>
+        <app-control-messages [control]="objective.controls.ExpectedDate"
+                              class="error-msg messages text-left text-danger"></app-control-messages>
+      </td>
+      <td style="vertical-align: middle;">
+        <button (click)="deleteFutureObjective(objective.getRawValue(), i)"
+                *ngIf="FutureObjective.controls.length > 1" [ngClass]="{'delete-button-style': (FutureObjective.controls.length === i+1) }" class="noPadding btn-Add k-button"
+                style="border: none" type="button">
+          <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+        </button>
+        <button (click)="addFutureObjective()" *ngIf="FutureObjective.controls.length === i+1"
+                [ngClass]="{'add-button-style': (i > 0) }" class="noPadding btn-Add k-button" dir="ltr" style="border: none;"
+                type="button">
+          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

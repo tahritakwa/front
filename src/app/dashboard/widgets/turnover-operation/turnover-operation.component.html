@@ -1,0 +1,27 @@
+
+    <!-- Card Header - Dropdown -->
+    <div class="period-filter card-header" style="background-color: white;  border: none">
+      <div class="period-filter row justify-content-between pt-2">
+        <div class="col-sm-9">
+          <h4 class="card-title mb-0">{{'TURNOVER_PER_OPERATION'|translate}}</h4>
+          <div *ngIf="hasTurnoverPerOperationData" class="small text-muted">
+            {{'DU'|translate}} {{turnoverPerOperationByMonthStartDate|date: dateformat}}
+            {{'AU'|translate}} {{turnocerPerOperationByMonthEndDate|date: dateformat}}
+          </div>
+          <div *ngIf="!hasTurnoverPerOperationData" class="small text-muted" style="height: 16px;">
+          </div>
+        </div>
+        <div class="row period-filter mx-3">
+          <app-period-filter (newItemEvent)="ChangeTurnoverOperationChart($event)"></app-period-filter>
+        </div>
+      </div>
+    </div>
+    <!-- Card Body -->
+    <div class="card-body">
+      <div class="chartContainer" id="turnoverOperation" [hidden]="!hasTurnoverPerOperationData"
+        #turnoverOperation></div>
+      <div *ngIf="!turnoverPerOperationLoading && !hasTurnoverPerOperationData">
+        <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+        <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NODATAFOUND' | translate}} </h5>
+      </div>
+    </div>

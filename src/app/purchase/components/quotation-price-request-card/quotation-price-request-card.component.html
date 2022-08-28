@@ -1,0 +1,70 @@
+<div class="card">
+  <div class="card-header" style="background-color:    white!important;">
+    <div>
+      <button type="button" class="noPadding btn-Add k-button"
+              style=" background: no-repeat;border: none;  margin-top:5px;"
+              (click)="showDetails=!showDetails;">
+        <i [ngClass]="{'cui-chevron-bottom':!showDetails,'cui-chevron-top':showDetails}" aria-hidden="true"
+           style="color: #4c9aae"></i>
+      </button>
+      <span class="card-title mb-0" [ngClass]="{'bonus-success': supplier.Name === undefined,
+                                                              'bonus-error': supplier.Name !== undefined}"
+            style="font-style: italic; margin-left: 10px;"
+            *ngIf="!supplier.Name">{{'NO_SELECTED_SUPPLIER'| translate}}</span>
+
+
+      <span class="card-title mb-0" style="font-weight: bold; margin-left: 10px;" *ngIf="supplier.Name">
+        {{supplier.Name}} - {{formGroup.controls["Code"].value}}
+      </span>
+      <span *ngIf='formGroup.controls["IdDocumentStatus"].value === statusCode.Provisional' class="badge badge-warning"
+            style="color: white !important">{{'PROVISOIRE'|translate}}</span>
+
+      <span *ngIf='formGroup.controls["IdDocumentStatus"].value === statusCode.Valid'
+            class="badge badge-success">{{'VALID'|translate}}</span>
+
+
+      <button type="button" *ngIf='formGroup.controls["IdDocumentStatus"].value === statusCode.Provisional && showAndUpdate'
+              class="noPadding btn-Add k-button  pull-right" type="button" dir="ltr"
+              style="border: none; margin-top:5px"
+              (click)='deleteCard()'>
+        <i class="fa fa-close fa-lg AddIcon"></i>
+      </button>
+    </div>
+  </div>
+  <div class="card-body" [ngStyle]="{'display':showDetails === true ? 'block' : 'none' }" [formGroup]='formGroup'>
+    <div class="form-group ">
+      <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 row">
+          <label class="col-lg-4 col-md-12 col-sm-12">
+            {{'SELECT_SUPPLIER' | translate}} :
+          </label>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <app-supplier-dropdown [type]='2' (SelectedForPriceRequest)='selectedSupplier($event)'
+                                   [itemForm]='formGroup'
+                                   [isSwhoOnlySelected]='true' [listSupllier]='listSupllier'
+                                   [notWithNgModel]='true'></app-supplier-dropdown>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 row">
+          <label class="col-lg-4 col-md-12 col-sm-12">
+            {{'CURRENCY' | translate}} :
+          </label>
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <app-currency-dropdown class="error-msg messages text-left text-danger" [group]="formGroup">
+            </app-currency-dropdown>
+          </div>
+        </div>
+
+      </div>
+      <br>
+      <app-grid-purchase-invoice-assests-budget [itemForm]="formGroup" [documentType]="'B-PU'"
+                                                [addNewLineInDevis]='true'
+                                                (saveQuotationInPriceRequest)='saveDocumentAction($event)'
+                                                (loadGridQuotationAndPurchaseOrder)="loadDocumentLines()"
+                                                (reloadSignal)='ngOnInit()' [enableQty]='true'
+                                                [formatOption]="formatOption"
+                                                [documentsLine]="documentsLine" [showAndUpdate]="showAndUpdate" [fromPriceRequest]="true">
+      </app-grid-purchase-invoice-assests-budget>
+    </div>
+  </div>
+</div>

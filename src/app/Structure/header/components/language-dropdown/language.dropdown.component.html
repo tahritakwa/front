@@ -1,0 +1,18 @@
+<li class="nav-item dropdown d-sm-down-none">
+  <a class="nav-link nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+    <img *ngIf="currentLanguage == 'fr'" src="../../../../../assets/flags/french.png" alt="flag-fr" width="25px">
+    <img *ngIf="currentLanguage == 'en'" src="../../../../../assets/flags/eng.png" alt="flag-en" width="25px">
+  </a>
+  <div class="dropdown-menu dropdown-menu-right ">
+    <div class="dropdown-header text-center">
+      <strong>{{'LANGUAGE' | translate}}</strong>
+    </div>
+    <button type="button" *ngFor="let lang of languages" class="dropdown-item"
+      (click)='languageService.chooseLang(lang.value)'
+      [ngClass]="{'selected-language':currentLanguage==lang.value}">
+      <img *ngIf="lang.value == 'fr'" src="../../../../../assets/flags/french.png" alt="flag-fr" width="15%">
+      <img *ngIf="lang.value == 'en'" src="../../../../../assets/flags/eng.png" alt="flag-en" width="15%">
+      {{lang.name}}
+    </button>
+  </div>
+</li>

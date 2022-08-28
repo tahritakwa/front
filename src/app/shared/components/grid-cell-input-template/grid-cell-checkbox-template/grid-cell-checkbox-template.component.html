@@ -1,0 +1,13 @@
+<div [formGroup]="group" style="border: 1px solid #e4e7ea !important;">
+  <input class="form-control"
+         [formControlName]="controlName"
+         type="checkbox"
+         checked="checkValue"
+         [name]="controlName"
+         [ngClass]="{ 'has-error': (touched || dirty) && !valid }"
+    #input />
+  <app-control-message-grid-cell [group]="group" [anchor]="input" [controlName]="controlName">
+
+  </app-control-message-grid-cell>
+
+</div>

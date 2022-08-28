@@ -1,0 +1,56 @@
+<div class="card">
+  <div class="card-content">
+    <div class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_ROLE': 'ADD_ROLE') |translate}} Config</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <form class="form-horizontal" [formGroup]="roleFormGroup">
+        <!-- Begin principal form -->
+        <div class="card-body">
+          <div class='row'>
+            <div class="col-lg-4 col-md-12 col-sm-12">
+              <label>
+               {{'CODE'|translate}}<span class="required">*</span>  
+              </label>
+              <input class="form-control" formControlName="Code" name="Code">
+              <app-control-messages [control]="roleFormGroup.controls.Code"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 ">
+              <label>
+                {{'DESIGNATION'|translate}}<span class="required">*</span>
+              </label>
+              <input class="form-control" type="text" formControlName="RoleName" name="RoleName">
+              <app-control-messages [control]="roleFormGroup.controls.RoleName"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 ">
+              <label>
+               {{'CATEGORY'|translate}}<span class="required">*</span> 
+              </label>
+              <app-role-config-category-dropdown [form]="roleFormGroup" ></app-role-config-category-dropdown>
+              <app-control-messages [control]="roleFormGroup.controls.IdRoleConfigCategory"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <app-role-role-config-treeview [moduleData]="moduleData" 
+        [functionnalityData]="functionnalityData" 
+        [allFunctionnalityData]="allFunctionnalityData"
+        [allModulesData]="allModuleConfigData"></app-role-role-config-treeview>
+      </form>
+    </div>
+
+    <!-- End principal  part -->
+  </div>
+  <div class="card-footer">
+    <a class="btn btn-sm btn-primary" routerLink='/main/administration/roleConfig'>
+      <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+    </a>
+    <button class="btn btn-sm btn-danger" type="button" (click)="saveRoleConfig()">
+      <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+    </button>
+  </div>
+</div>

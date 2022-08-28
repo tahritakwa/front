@@ -1,0 +1,107 @@
+<div *ngIf="listInterview && listInterview.length > 0" class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="header_template">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'DETAILS_INTERVIEWS'|translate}}</h3>
+          </div>
+        </div>
+        <form style="margin-top: 10px;">
+          <div class="row">
+            <div class="col-12">
+              <!-- List interviews accordion -->
+
+              <p-accordion [multiple]="true">
+                <div *ngFor="let interview of listInterview" style="margin-bottom: 10px;">
+                  <p-accordionTab [selected]="interview.IsSelected"
+                                  header=" {{'INTERVIEW'|translate}} {{interview.InterviewDate | date:formatDate}}" style="color: #4c9aae;">
+
+                    <!--interview information-->
+                    <section class="buttom-space">
+                      <div class="row" style="margin-top: 15px;margin-left: 5px;">
+                        <div class="col-lg-2 col-md-6 col-sm-12" style="margin-bottom: 10px;min-width: 200px;">
+                          <b>{{'DATE'|translate}}: </b>{{interview.InterviewDate | date:formatDate}}
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12" style="margin-bottom: 10px;min-width: 200px;">
+                          <b>{{'HOUR'|translate}}: </b>
+                          {{interview.StartTime}}</div>
+                        <div class="col-lg-3 col-md-6 col-sm-12" style="margin-bottom: 10px;min-width: 360px;">
+                          <b>{{'STATUS'|translate}}: </b>
+                          <span *ngIf="interview.Status === inteviewEnumerator.InterviewRequestedToAllInterviewers"
+                                class="badge badge-danger">
+                            {{'WAITING_FOR_INTERVIEWERS_VALIDATION'|translate}}</span>
+                          <span *ngIf="interview.Status === inteviewEnumerator.AllInterviewersAvailabilityConfirmed && allRequiredConfirmed(interview)"
+                                class="badge badge-warning">
+                            {{'ALL_INTERVIEWERS_AVAILABILITY_CONFIRMED'|translate}}</span>
+                          <span *ngIf="interview.Status === inteviewEnumerator.InterviewRequestedToCandidate && allRequiredConfirmed(interview)"
+                                class="badge badge-primary">
+                            {{'WAITING_FOR_EMPLOYEE_VALIDATION'|translate}}</span>
+                          <span *ngIf="interview.Status === inteviewEnumerator.InterviewConfirmedByCandidate"
+                                class="badge badge-success">
+                            {{'INTERVIEW_CONFIRMED'|translate}}</span>
+                          <span *ngIf="interview.Status === inteviewEnumerator.InterviewDone"
+                                class="badge badge-secondary">
+                            {{'INTERVIEW_DONE'|translate}}</span>
+                          <span *ngIf="interview.Status === inteviewEnumerator.InterviewRefused"
+                                class="badge badge-dark">
+                            {{'INTERVIEW_REFUSED'|translate}}</span>
+                        </div>
+                        <div class="col-lg-2 col-md-6 col-sm-12" style="margin-bottom: 10px;min-width: 220px;">
+                          <b>{{'SUPERVISOR'|translate}}: </b>{{interview.IdSupervisorNavigation.FullName}}</div>
+                        <!-- postpone interview-->
+                        <div *ngIf="hasAllRights || (this.connectedEmployee && this.connectedEmployee.Id === interview.IdCreator)" class="col-lg-2 col-md-12 col-sm-12"
+                             style="margin-bottom: 10px;min-width: 200px;">
+                          <button (click)=" openChangeInterviewModal(interview)" *ngIf="hasUpdateInterviewPermission && interviewIsValidForUpdate(interview)"
+                                  class="noPadding btn-Add k-button"
+                                  style="border: none;">
+                            <i class=" fa fa-pencil fa-lg text-primary" style="color: #516670 !important;"
+                               tooltip="{{'UPDATE'|translate}}"></i>
+                          </button>
+                          <button (click)=" openDelayInterviewModal(interview)" *ngIf="hasDelayInterviewPermission && interviewIsValidForDelay(interview)"
+                                  class="noPadding btn-Add k-button"
+                                  style="border: none;">
+                            <i class=" fa fa-clock-o fa-lg AddIcon text-primary"
+                               tooltip="{{'DELAY_INTERVIEW'|translate}}"></i>
+                          </button>
+                          <button (click)="openPostponeInterviewDialog(interview)" *ngIf="hasCancelInterviewPermission && interviewIsValidForCanceling(interview)"
+                                  class=" noPadding btn-Add k-button"
+                                  style="border: none;">
+                            <i class=" fa fa-ban fa-lg AddIcon text-danger"
+                               tooltip="{{'CANCEL_INTERVIEW'|translate}}"></i>
+                          </button>
+                          <button (click)="getInterviewEmailHistoric(interview)" class="noPadding btn-Add k-button" *ngIf = "hasHistoryMailInterviewPermission"
+                                  style="border: none;"
+                          ><i class="fa fa-envelope text-primary" tooltip="{{'MAIL_HISTORY'|translate}}"></i>
+                          </button>
+                          <button (click)="deleteInterview(interview)" *ngIf="hasDeleteInterviewPermission && interviewIsValidForDelete(interview)"
+                                  class="noPadding btn-Add k-button" style="border: none;">
+                            <i class=" fa fa-trash-o fa-lg text-danger" style="color: #df0000fa !important;"
+                               tooltip="{{'DELETE'|translate}}"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </section>
+
+                    <!--interview Mark information-->
+
+                    <section>
+                      <div *ngIf="interview != undefined">
+                        <app-list-interview-mark (confirmation)="onConfirmation($event)" [interview]="interview"
+                                                 [review]="review">
+                        </app-list-interview-mark>
+                      </div>
+                    </section>
+
+                  </p-accordionTab>
+                </div>
+              </p-accordion>
+
+              <!-- List interviews accordion -->
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

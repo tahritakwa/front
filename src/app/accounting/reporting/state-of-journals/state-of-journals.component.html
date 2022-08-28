@@ -1,0 +1,126 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="header-current-fiscal-year">
+  <app-accounting-reporting-menu-journals [currentFiscalYearId]="currentFiscalYear.id">
+  </app-accounting-reporting-menu-journals>
+</div>
+<div class="card">
+  <div class="d-flex flex-row-reverse bd-highlight m-3">
+    <app-current-fiscal-year-dropdown [currentFiscalYearId]="currentFiscalYear.id"></app-current-fiscal-year-dropdown>
+  </div>
+  <form class="form-horizontal" [formGroup]="stateOfJournalsFilterFormGroup">
+    <div class="card-body">
+
+      <div class="form-group row">
+
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="form-group row">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group row mb-0">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'START_DATE'|translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-datepicker [format]="formatDate" formControlName="startDate" class="form-control"
+                                    [min]="startDate" [max]="endDate">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                               toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="stateOfJournalsFilterFormGroup.controls.startDate"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group row">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_DATE'|translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <kendo-datepicker [format]="formatDate" formControlName="endDate" class="form-control"
+                                    [min]="startDate" [max]="endDate">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                               toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                    </kendo-datepicker-messages>
+                  </kendo-datepicker>
+                  <app-control-messages [control]="stateOfJournalsFilterFormGroup.controls.endDate"
+                                        class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <div class="form-group row">
+                <label class="col-lg-12 col-md-12 col-sm-12 mt-4"></label>
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <input type="checkbox" id="prev-check-box" class="input-checkbox100"
+                         (click)='changeProvisionalEdition()'/>
+                  <label class="label-checkbox100" for="prev-check-box"> {{'PROVISIONAL_EDITION'|translate}}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12 d-flex justify-content-end">
+          <button class="btn btn-sm btn-search mr-2" type="button" aria-hidden="true" (click)="onSearch()" 
+            *ngIf="this.authService.hasAuthority(AccountingPermissions.VIEW_JOURNALS_REPORTS)">
+            <i class="fa fa-search fa"></i> <span>{{'SEARCH'|translate}}</span>
+          </button>
+          <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                  *ngIf="this.authService.hasAuthority(AccountingPermissions.PRINT_JOURNALS_REPORTS)">
+            <i class="fa fa-print"></i>
+          </button>
+          <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <a class="dropdown-item" (click)="onClickPrintByJasper()">PDF</a>
+            <a class="dropdown-item" (click)="onClickPrintExcel()">Excel</a>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="this.authService.hasAuthority(AccountingPermissions.VIEW_JOURNALS_REPORTS)">
+      <kendo-grid [data]="stateOfJournalsView | async" [pageSize]="gridSettings.state.take"
+                  [skip]="gridSettings.state.skip" [sortable]="true" [pageable]="pagerSettings" [navigable]="true"
+                  (dataStateChange)="dataStateChange($event)" [columnMenu]="true" (pageChange)="onPageChange()"
+                  class="bulk-table">
+
+        <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="codeJournal" [columnMenu]="false"
+                           [headerStyle]="{'padding' : '0.75rem 0'}" [width]="150" [title]="'CODE_JOURNAL'|translate">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'CODE_JOURNAL'|translate}}" theme="light">{{'CODE_JOURNAL'|translate}}</span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [footerStyle]="{'font-weight': 'bolder'}" field="journal" width="770" [columnMenu]="false"
+                           [headerStyle]="{'padding' : '0.75rem 0'}" [title]="'LABEL'|translate">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'LABEL'|translate}}" theme="light">{{'LABEL'|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <div class="total-class"> {{'TOTAL_STATE_OF_JOURNALS'|translate}}</div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-column [footerStyle]="{'font-weight': 'bolder','text-align': 'right'}" field="totalAmount"
+                           width="165" [title]="'AMOUNT'|translate" [format]="formatNumberOptions"
+                           [style]="{'text-align': 'right', 'padding-right':'3rem !important'}"
+                           [headerStyle]="{'padding' : '0.75rem 0'}" [columnMenu]="true">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{'AMOUNT'|translate}}"
+                  theme="light">{{'AMOUNT'|translate}}</span>
+          </ng-template>
+          <ng-template kendoGridFooterTemplate>
+            <kendo-numerictextbox [readonly]="true" [format]="formatNumberOptions" [value]="totalAmount"
+                                  style="text-align: right; padding-right:1rem">
+            </kendo-numerictextbox>
+          </ng-template>
+        </kendo-grid-column>
+
+        <div *kendoGridDetailTemplate="let dataItem">
+          <app-state-of-journals-journal-details [journal]="dataItem">
+          </app-state-of-journals-journal-details>
+        </div>
+        <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                             pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}} - {{currencyCode}}">
+        </kendo-grid-messages>
+      </kendo-grid>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,160 @@
+<div>
+  <div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <!--Begin add form-->
+
+      <form class="form-horizontal" [formGroup]="addCashRegisterFormGroup">
+        <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+
+          <!-- Name -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'NAME'|translate}} <span class="required">*</span> </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <input type="text" class="form-control" formControlName="Name"/>
+                <app-control-messages [control]="addCashRegisterFormGroup.controls.Name"
+                    class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Name -->
+          <!-- Type -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'TYPE'|translate}} <span class="required">*</span>
+              </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <app-cash-register-type-dropdown [group]="addCashRegisterFormGroup" (Selected)="selectCashType($event)" [notForPurchase]="true"></app-cash-register-type-dropdown>
+                <app-control-messages [control]="addCashRegisterFormGroup.controls.Type"
+                    class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Type -->
+        </div>
+        <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+          <!-- Cash Parent Start -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'PARENT_CRATE'|translate}} <span class="required" *ngIf="addCashRegisterFormGroup.controls.Type.value !== cashRegisterType.Central">*</span> </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <app-cash-register-dropdown [group]="addCashRegisterFormGroup" (selected)= "selectParentCash($event)"></app-cash-register-dropdown>
+                <app-control-messages [control]="addCashRegisterFormGroup.controls.IdParentCash"
+                    class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!--  End Cash Parent -->
+          <!-- Country -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'COUNTRY'|translate}} <span class="required">*</span>
+              </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <app-country-dropdown [group]="addCashRegisterFormGroup" (itemSelected)="receiveCountryStatus($event)"></app-country-dropdown>
+                <app-control-messages [control]="addCashRegisterFormGroup.controls.IdCountry"
+                    class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End Country -->
+        </div>
+        <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+          <!-- City -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'CITY'|translate}} <span class="required" *ngIf="addCashRegisterFormGroup.controls.Type.value == cashRegisterType.Principal">*</span>
+              </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <app-city-dropdown [group]="addCashRegisterFormGroup"></app-city-dropdown>
+                <app-control-messages [control]="addCashRegisterFormGroup.controls.IdCity"
+                    class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+          <!-- End City -->
+          <!-- Adress -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'ADRESS'|translate}}  </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <input type="text" class="form-control" formControlName="Address" />
+              </div>
+            </div>
+          </div>
+          <!--  End Adress -->
+        </div>
+        <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+          <!-- User -->
+          <div class="col-lg-6 col-md-6 col-sm-12">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'RESPONSIBLE'|translate}}<span class="required">*</span>
+              </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <app-user-dropdown [form]="addCashRegisterFormGroup" [idUserColName]= "'IdResponsible'" ></app-user-dropdown>
+              </div>
+            </div>
+          </div>
+          <!-- End User -->
+          <!-- Start Warehouse -->
+          <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="currentCompanyActivityArea != activitySectorEnum.PAYMENT_INSTITUTION">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'WAREHOUSE'|translate}}<span class="required">*</span>
+              </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <app-depot-dropdown [parent]="addCashRegisterFormGroup" [WarehouseName]="'IdWarehouse'"
+                                    [FromComponent]="true"  [onlyWarehouse]= "true" [placeholder]="' '">
+                </app-depot-dropdown>
+              </div>
+            </div>
+          </div>
+          <!-- End Warehouse -->
+          <!-- Start Agent -->
+          <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="currentCompanyActivityArea == activitySectorEnum.PAYMENT_INSTITUTION">
+            <div class="row">
+              <label class="col-lg-4 col-md-12 col-sm-12">{{'AGENT_PROP'|translate}}<span class="required">*</span>
+              </label>
+              <div class="col-lg-8 col-md-12 col-sm-12">
+                <kendo-combobox class="form-control" [data]="agentCodeData" formControlName="AgentCode"
+                              [valueField]="'code'" [textField]="'text'" [valuePrimitive]="true" [filterable]="true"
+                              (filterChange)="handleFiltreAgentCode($event )">
+              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                            </kendo-combobox>
+              <app-control-messages [control]="addCashRegisterFormGroup.controls.AgentCode"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+
+              </div>
+            </div>
+          </div>
+          <!-- End Agent -->
+        </div>
+      </form>
+    </div>
+    <div>
+      <div class="isShowedModalSideBar">
+      <footer class="app-footer mx-0 footerModal">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <button class="btn btn-sm btn-back-to-list btn-primary" (click)="cancel()">
+              <i class="fa fa-ban"></i> {{'CANCEL'|translate}}
+            </button>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+    </div>
+  </div>
+</div>

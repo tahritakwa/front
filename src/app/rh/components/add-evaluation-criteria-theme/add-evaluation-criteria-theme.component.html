@@ -1,0 +1,110 @@
+<div class="card" style="border-radius: 10px;border-bottom: 1px solid #c8ced3 !important;">
+  <!-- Begin form -->
+  <form [formGroup]="evaluationCriteriaThemeFormGroup" class="form-horizontal">
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          {{'EVALUTION_THEME' | translate}}
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          <!--Label -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span class="required">*</span></label>
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <input [ngClass]="{ 'has-error': (Label.touched || Label.dirty) && !Label.valid }" class="form-control"
+                       formControlName="Label"
+                       type="text"
+                >
+              </div>
+            </div>
+          </div>
+          <!-- End Label -->
+          <!-- Description -->
+          <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+              <div class="col-lg-12 col-md-12 col-sm-12">
+                <textarea [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid }" class="form-control" formControlName="Description"
+                          rows="1"></textarea>
+              </div>
+            </div>
+          </div>
+          <!-- End Description -->
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+        <div class="form-group row">
+          {{'EVALUATION_CRITERIA' | translate}}
+        </div>
+      </div>
+      <!-- EvaluationCriteria-->
+      <div class="tab-pane" role="tabpanel">
+        <div class="col-lg-12 col-md-12 col-sm-12" style="border-style: dashed;border-color:#F0F0F0; padding: 20px">
+          <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="row">
+              <button (click)="addEvaluationCriteria()" class="noPadding btn-Add k-button" dir="ltr" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode"
+                      style="border: none; margin-bottom: 20px" type="button">
+                <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                <span>&nbsp;{{'ADD'|translate}}</span>
+              </button>
+            </div>
+          </div>
+          <div *ngFor="let evaluationCriteriaFormGroup of EvaluationCriteria.controls; let i=index"
+               [formGroup]="evaluationCriteriaFormGroup">
+            <div *ngIf="isEvaluationCriteriaRowVisible(i)" class="col-lg-12 col-md-12 col-sm-12"
+                 style="margin-top: 5px;">
+              <div class="form-group row">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'LABEL'|translate}}<span
+                      class="required">*</span></label>
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <input [ngClass]="{ 'has-error': (evaluationCriteriaFormGroup.controls.Label.touched || evaluationCriteriaFormGroup.controls.Label.dirty) &&
+                        !evaluationCriteriaFormGroup.controls.Label.valid }" class="form-control"
+                             formControlName="Label"
+                             type="text">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}</label>
+                    <div class="col-lg-11 col-md-12 col-sm-12">
+                      <textarea [ngClass]="{ 'has-error': (evaluationCriteriaFormGroup.controls.Description.touched || evaluationCriteriaFormGroup.controls.Description.dirty) &&
+                          !evaluationCriteriaFormGroup.controls.Description.valid }" class="form-control" formControlName="Description"
+                                rows="1">
+                      </textarea>
+                    </div>
+                    <button (click)="deleteEvaluationCriteria(i)" *ngIf="i !== 0"
+                            class="col-lg-1 col-md-12 col-sm-12 noPadding btn-Add k-button" style="border: none"
+                            type="button">
+                      <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End EvaluationCriteria-->
+      <!-- Save  -->
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button (click)="save()" class="btn btn-sm btn-success" style="margin-top: 10px;" type="submit" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End Save  -->
+    </div>
+  </form>
+  <!-- End form -->
+</div>

@@ -1,0 +1,72 @@
+<div class="card">
+  <div class="card-content">
+    <div *ngIf="!isModal" class="card-header">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0">{{'TEAM_TYPE_LIST'|translate}}</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <kendo-grid (add)="addHandler($event)" (cancel)="cancelHandler($event)" (dataStateChange)="dataStateChange($event)"
+                  (edit)="editHandler($event)" (remove)="removeHandler($event)" (save)="saveHandler($event)" [columnMenu]="true"
+                  [data]="gridSettings.gridData"
+                  [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take"
+                  [pageable]="pagerSettings" [reorderable]="true" [skip]="gridSettings.state.skip"
+                  [sort]="gridSettings.state.sort" [sortable]="true" filterable="menu">
+        <!-- Head Start-->
+        <ng-template kendoGridToolbarTemplate>
+          <div class="row" style="float :right; margin-right: 40px;">
+            <app-btn-grid [addLink]='"AdvancedAdd"' [add]='true' [advencedAdd]='false' [export]='true'
+                          style="margin-top: -5%; display: inline-flex;"></app-btn-grid>
+          </div>
+        </ng-template>
+        <!-- Head end-->
+        <!--Name-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                           [filter]="gridSettings.columnsConfig[0].filter"
+                           [filterable]="gridSettings.columnsConfig[0].filterable"
+                           [format]="gridSettings.columnsConfig[0].format"
+                           [title]="gridSettings.columnsConfig[0].title | translate"
+                           [width]="gridSettings.columnsConfig[0]._width">
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="formGroup" controlName="Label" inputType="text">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Description-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                           [filter]="gridSettings.columnsConfig[1].filter"
+                           [filterable]="gridSettings.columnsConfig[1].filterable"
+                           [format]="gridSettings.columnsConfig[1].format"
+                           [title]="gridSettings.columnsConfig[1].title | translate"
+                           [width]="gridSettings.columnsConfig[1]._width">
+          <ng-template kendoGridEditTemplate>
+            <app-grid-cell-input-template [group]="formGroup" controlName="Description" inputType="text">
+            </app-grid-cell-input-template>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- Command-->
+        <kendo-grid-command-column [width]="130">
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+            <!-- edit command directive, will be visible when not in edit mode -->
+            <button [primary]="true" class="btnKendoGrid" kendoGridEditCommand>
+              <i class="fa fa-pencil-square-o"></i>
+            </button>
+            <!-- save command directive, will be visible when in edit mode -->
+            <button class="btnKendoGrid" kendoGridSaveCommand><span class="fa fa-save"></span></button>
+            <!-- cancel command directive, will be visible when in edit mode -->
+            <button class="btnKendoGrid" kendoGridCancelCommand><span class="fa fa-close"></span></button>
+            <!-- remove command directive, will be visible when not in edit mode -->
+            <button class="btnKendoGrid" kendoGridRemoveCommand>
+              <i class="fa fa-trash-o"></i>
+            </button>
+          </ng-template>
+        </kendo-grid-command-column>
+        <!--grid pdf & excel-->
+        <app-grid-export [gridSettings]="gridSettings" [service]="teamTypeService" excel="true" fileName="{{'LIST_GRADE'|translate}}"
+                         pdf="true">
+        </app-grid-export>
+        <!--end grid pdf & excel-->
+      </kendo-grid>
+    </div>
+  </div>
+</div>

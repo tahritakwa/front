@@ -1,0 +1,88 @@
+
+  <div>
+    <div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+      <!--Begin Card body-->
+      <div class="card-body">
+        <!--Begin add form-->
+        <form class="form-horizontal" [formGroup]="sessionCashFormGroup" (keydown.enter)="onAddSessionCashClick()">
+          <div class="col-lg-12 col-sm-12 col-md-12">
+            <div class="form-group row">
+              <div class="col-lg-12 col-sm-12 col-md-12">
+                <div class="row">
+
+                  <!-- Principale Cash Start -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'PRINCIPALE_CASH_REGISTER'|translate}} <span class="required">*</span> </label>
+                    <app-cash-register-dropdown [group]="sessionCashFormGroup" [idCashColName]="'IdPrincipaleCashRegister'" [isForPrincipal]="true"
+                    (selected)="principaleCashRegisterChange($event)"></app-cash-register-dropdown>
+                    <app-control-messages [control]="sessionCashFormGroup.controls.IdPrincipaleCashRegister"
+                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                <!-- Principale Cash End -->
+
+                  <!-- Cash Start -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{'CASH_REGISTER'|translate}} <span class="required">*</span> </label>
+                      <app-cash-register-dropdown [group]="sessionCashFormGroup" [idCashColName]="'IdCashRegister'"
+                      [isFromOpenSession]="true"  #cashRegisterChild></app-cash-register-dropdown>
+                      <app-control-messages [control]="sessionCashFormGroup.controls.IdCashRegister"
+                            class="error-msg messages text-left text-danger">
+                      </app-control-messages>
+                    </div>
+                  <!--  Cash End -->
+                  <!-- Seller Start -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'CASH_SELLER'|translate}}<span class="required">*</span></label>
+                    <app-user-dropdown [form]="sessionCashFormGroup" [idUserColName]= "'IdSeller'" ></app-user-dropdown>
+                    <app-control-messages [control]="sessionCashFormGroup.controls.IdSeller"
+                            class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                  <!-- Seller end -->
+                  <!-- Opening date start -->
+                  <div class="col-lg-6 col-md-6 col-sm-12 margin">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'OPENING_DATE'|translate}}</label>
+                    <kendo-datepicker formControlName="OpeningDate" class="form-control">
+                    <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                          toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                    </kendo-datepicker-messages>
+                    </kendo-datepicker>
+                  </div>
+                  <!-- Opening date end -->
+                  <!-- Opening amount start -->
+                  <div class="col-lg-6 col-md-6 col-sm-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'OPENING_AMOUNT'|translate}}<span class="required">*</span></label>
+                    <kendo-numerictextbox class="form-control" formControlName="OpeningAmount" [autoCorrect]=true
+                                    [format]="formatNumberOptions" [decimals]=precision [min]="0">
+                    </kendo-numerictextbox>
+                    <app-control-messages [control]="sessionCashFormGroup.controls.OpeningAmount"
+                                          class="error-msg messages text-left text-danger"></app-control-messages>
+                  </div>
+                  <!-- Opening amount end -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!--End Card body-->
+      <!--Begin Card footer-->
+      <div>
+        <div class="isShowedModalSideBar">
+        <footer class="app-footer mx-0 footerModal">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <button class="btn btn-sm btn-back-to-list btn-primary" (click)="cancel()">
+                <i class="fa fa-ban"></i> {{'CANCEL'|translate}}
+              </button>
+              <button (click)="onAddSessionCashClick()" class="btn btn-sm btn-save mx-1" type="button">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+      </div>
+  </div>
+</div>

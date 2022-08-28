@@ -1,0 +1,213 @@
+<div class="card">
+  <div class="card-body">
+    <div id="id1_1">
+      <p class="p0 ft0">{{'PAYSLIP' | translate}}</p>
+      <table cellpadding=0 cellspacing=0 class="t0">
+        <tr>
+          <td class="tr0 td0" rowspan=2><p class="p1 ft1">{{previewData?.CompanyName}}</p></td>
+          <td class="tr1 td1"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr1 td2"><p class="p2 ft3">{{'SALARY_OF_MONTH' | translate}} : {{previewData?.SalaryOfMonth}} </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="tr2 td1"><p class="p2 ft4">&nbsp;</p></td>
+          <td class="tr2 td2"><p class="p2 ft4">&nbsp;</p></td>
+        </tr>
+        <tr>
+          <td class="tr3 td0"><p class="p1 ft5">{{'ADDRESS' | translate}} : {{previewData?.CompanyAdress}}</p></td>
+          <td class="tr3 td1"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr3 td2"><p class="p2 ft2">&nbsp;</p></td>
+        </tr>
+        <tr>
+          <td class="tr3 td0"><p class="p1 ft5">{{'TAX_REGISTRATION_NUMBER' | translate}}
+            : {{previewData?.CompanyMatriculeFisc}}</p></td>
+          <td class="tr3 td1"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr3 td2"><p class="p2 ft2">&nbsp;</p></td>
+        </tr>
+        <tr>
+          <td class="tr3 td0"><p class="p1 ft5">{{'CNSSAFFILIATION' | translate}}
+            : {{previewData?.CompanyCnssAffiliation}}</p></td>
+          <td class="tr3 td1"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr3 td2"><p class="p2 ft2">&nbsp;</p></td>
+        </tr>
+        <tr>
+          <td class="tr4 td3"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr4 td4"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr4 td5"><p class="p2 ft2">&nbsp;</p></td>
+        </tr>
+        <tr>
+          <td class="tr1 td6"><p class="p3 ft5">{{'LAST_NAME' | translate}} {{'FIRST_NAME' | translate}}
+            : {{previewData?.EmployeeFullName}}</p></td>
+          <td class="tr1 td1"><p class="p2 ft5">{{'REGISTRATION_NUMBER' | translate}}
+            : {{previewData?.EmployeeRegistrationNumber}}</p></td>
+          <td class="tr1 td7"><p class="p1 ft5">{{'NUM_CNSS' | translate}} : {{previewData?.EmployeeCnss}}</p></td>
+        </tr>
+        <tr>
+          <td class="tr5 td6"><p class="p3 ft5">{{'ADDRESS' | translate}} : {{previewData?.EmployeeAdress}}</p></td>
+          <td class="tr5 td1"><p class="p2 ft5">{{'CONTRACT_TYPE' | translate}}
+            : {{previewData?.EmployeeContractType}}</p></td>
+          <td class="tr5 td7"><p class="p1 ft5">{{'HIRING_DATE' | translate}} : {{previewData?.EmployeeHiringDate}}</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="tr5 td6"><p class="p3 ft5">{{'CIN_PASSEPORT' | translate}}
+            : {{previewData?.EmployeeIdentityPiece}}</p></td>
+          <td class="tr5 td1"><p class="p2 ft5">{{'GRADE' | translate}} : {{previewData?.EmployeeGrade}}</p></td>
+          <td class="tr5 td7"><p class="p1 ft5">{{'BASE_SALARY' | translate}} : {{previewData?.EmployeeBaseSalary}}</p>
+          </td>
+        </tr>
+        <tr>
+          <div *ngIf="previewData?.EmployeeFamilyLeader; then thenFamilyLeaderBlock else elseFamilyLeaderBlock"></div>
+          <ng-template #thenFamilyLeaderBlock>
+            <td class="tr6 td6"><p class="p3 ft5">{{'FAMILY_LEADER' | translate}} : {{'YES' | translate}}</p></td>
+          </ng-template>
+          <ng-template #elseFamilyLeaderBlock>
+            <td class="tr6 td6"><p class="p3 ft5">{{'FAMILY_LEADER' | translate}} : {{'NO' | translate}}</p></td>
+          </ng-template>
+          <td class="tr6 td1"><p class="p2 ft5">{{'ECHELON' | translate}} : {{previewData?.EmployeeEchellon}}</p></td>
+          <td class="tr6 td7"><p class="p1 ft5">{{'NUMBER_DAYS_PAID_LEAVE_TOOLTIP' | translate}}
+            : {{previewData?.EmployeePaidLeave}} </p></td>
+        </tr>
+        <tr>
+          <td class="tr7 td6"><p class="p3 ft5">{{'NUMBER_OF_CHILDREEN' | translate}}
+            : {{previewData?.EmployeeChildreenNumber}}</p></td>
+          <td class="tr7 td1"><p class="p2 ft5">{{'CATEGORY' | translate}} : {{previewData?.EmployeeCategory}}</p></td>
+          <td class="tr7 td7"><p class="p1 ft5">{{'NUMBER_DAYS_WORKED_TOOLTIP' | translate}}
+            : {{previewData?.NumberOfDaysWorked}}</p></td>
+        </tr>
+        <tr>
+          <td class="tr8 td8"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr8 td4"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr8 td9"><p class="p2 ft2">&nbsp;</p></td>
+        </tr>
+      </table>
+      <table cellpadding=0 cellspacing=0 class="t1">
+        <tr>
+          <td class="tr9 td10"><p class="p4 ft6">{{'LABEL' | translate}}</p></td>
+          <td class="tr9 td11"><p class="p5 ft6">{{'NUMBAR_OF_DAYS' | translate}}</p></td>
+          <td class="tr9 td12"><p class="p6 ft6">{{'GAINS' | translate}}</p></td>
+          <td class="tr9 td13"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr9 td14"><p class="p7 ft6">{{'DEDUCTIONS' | translate}}</p></td>
+        </tr>
+        <tr *ngFor="let item of previewData?.PayslipReportLinesViewModels">
+          <td class="tr4 td15"><p class="p8 ft5">{{item.Label}}</p></td>
+          <td *ngIf="item.NumberOfDays==0" class="tr4 td16"><p class="p9 ft5">&nbsp;</p></td>
+          <td *ngIf="item.NumberOfDays!=0" class="tr4 td16"><p class="p9 ft5">{{item.NumberOfDays}}</p></td>
+          <td class="tr4 td17"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr4 td18"><p class="p10 ft5">{{item.Gain}}</p></td>
+          <td class="tr4 td18"><p class="p11 ft5">{{item.Deduction}}</p></td>
+        </tr>
+        <tr>
+          <td class="tr10 td30"><p class="p2 ft7">&nbsp;</p></td>
+          <td class="tr10 td31"><p class="p2 ft7">&nbsp;</p></td>
+          <td class="tr10 td32"><p class="p2 ft7">&nbsp;</p></td>
+          <td class="tr10 td33"><p class="p2 ft7">&nbsp;</p></td>
+          <td class="tr10 td34"><p class="p2 ft7">&nbsp;</p></td>
+        </tr>
+      </table>
+      <table cellpadding=0 cellspacing=0 class="t2">
+        <tr>
+          <td class="tr11 td35"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr11 td36"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr11 td37"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr1 td38"><p class="p12 ft6">{{'NET_TO_PAY' | translate}}</p></td>
+        </tr>
+        <tr>
+          <td class="tr12 td35"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr12 td36"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr12 td37"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr12 td39"><p class="p13 ft8">{{previewData?.NetToPay}} {{previewData?.CompanyCurrency}}</p></td>
+        </tr>
+        <tr>
+          <td class="tr13 td35"><p class="p2 ft9">&nbsp;</p></td>
+          <td class="tr13 td36"><p class="p2 ft9">&nbsp;</p></td>
+          <td class="tr13 td37"><p class="p2 ft9">&nbsp;</p></td>
+          <td class="tr14 td40"><p class="p2 ft10">&nbsp;</p></td>
+        </tr>
+        <tr>
+          <td class="tr15 td41" colspan=2><p class="p1 ft5">{{'EMPLOYER_SIGNATURE_AND_STAMP' | translate}}</p></td>
+          <td class="tr15 td42" colspan=2><p class="p14 ft5">{{'EMPLOYEE_SIGNATURE' | translate}}</p></td>
+        </tr>
+        <tr>
+          <td class="tr16 td43"><p class="p2 ft11">&nbsp;</p></td>
+          <td class="tr17 td36"><p class="p2 ft12">&nbsp;</p></td>
+          <td class="tr16 td44"><p class="p2 ft11">&nbsp;</p></td>
+          <td class="tr16 td45"><p class="p2 ft11">&nbsp;</p></td>
+        </tr>
+        <tr>
+          <td class="tr18 td46"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr19 td47"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr18 td44"><p class="p2 ft2">&nbsp;</p></td>
+          <td class="tr18 td40"><p class="p2 ft2">&nbsp;</p></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <form [formGroup]="previewFormGroup" class="form-group row">
+        <div class="col-sm-6 col-md-4 col-lg-4">
+          <label class="col-lg-12 col-md-12 col-sm-12" style="font-size: 12px">
+            <span>{{'CONTRACT'|translate}}</span>
+            <span class="required">*</span>
+            <div
+              *ngIf="currentContractHasEndate; then hasEndDate else hasNotEndDate">
+            </div>
+            <ng-template #hasEndDate>
+              <i class="fa fa-info-circle fa-lg"
+                 style="text-align: center;padding: 0; color: #4c9aae;cursor: pointer;margin-right: 15px;"
+                 tooltip="{{'START_DATE'|translate}} : {{ currentContractStartDate | date: dateFormat}} - {{'END_DATE'|translate}} : {{ currentContractEndDate | date: dateFormat}}"></i>
+            </ng-template>
+            <ng-template #hasNotEndDate>
+              <i class="fa fa-info-circle fa-lg"
+                 style="text-align: center;padding: 0; color: #4c9aae;cursor: pointer;margin-right: 15px;"
+                 tooltip="{{'START_DATE'|translate}} : {{ currentContractStartDate | date: dateFormat}}"></i>
+            </ng-template>
+          </label>
+          <kendo-combobox (valueChange)="changeContract()"
+                          [data]="contracts"
+                          [ngClass]="{'has-error': (IdContract.touched || IdContract.dirty) && !IdContract.valid }"
+                          [valuePrimitive]="true"
+                          class="form-control HistoryCommandMargin"
+                          formControlName="IdContract"
+                          name="IdContract"
+                          textField="ContractReference"
+                          valueField="Id">
+          </kendo-combobox>
+          <app-control-messages [control]="IdContract"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-4">
+          <label class="col-lg-12 col-md-12 col-sm-12">
+            <span style="font-size: 12px">{{'MONTH' | translate}}</span>
+            <span class="required">*</span>
+          </label>
+          <kendo-datepicker (valueChange)="changeDate()" [bottomView]="'year'" [format]="'MMMM yyyy'"
+                            [max]="currentContractEndDate"
+                            [min]="currentContractStartDate" [topView]="'decade'" class="form-control"
+                            formControlName="Month" onkeydown="return false;">
+            <kendo-datepicker-messages today="{{'TODAY' | translate}}" toggle="Cambiar calendario">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+          <app-control-messages [control]="Month"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+        <div class="col-sm-6 col-md-3 col-lg-3">
+          <label class="col-lg-12 col-md-12 col-sm-12">
+            <span style="font-size: 12px">{{'NUMBER_DAYS_WORKED_ABREVIATE' | translate}}</span>
+            <span class="required">*</span>
+          </label>
+          <input (change)="reload()" [ngClass]="{ 'has-error': (NumberDaysWorked.touched || NumberDaysWorked.dirty) && !NumberDaysWorked.valid }" autocomplete="off" class="form-control"
+                 formControlName="NumberDaysWorked" name="NumberDaysWorked"
+                 type="number">
+          <app-control-messages [control]="NumberDaysWorked"
+                                class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+        <div class="col-sm-6 col-md-1 col-lg-1">
+          <i (click)="reload()" class="fa fa-refresh fa-lg mt-4"
+             style="padding-top: 14px; cursor: pointer; float: center;"></i>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

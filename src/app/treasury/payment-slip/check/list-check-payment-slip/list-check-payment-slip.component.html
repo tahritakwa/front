@@ -1,0 +1,7 @@
+<app-list-payment-slip [paymentMethod]="paymentEnum.BankCheck"
+                       (totalSettlementNumberToAddEmitter)="getSettlementNumber($event)"
+                       [predicateAdvancedSearch]="predicateAdvancedSearch"
+                       [isClickedSearch]="isClickedSearch"
+                       [isClickedReset]="isClickedReset"
+                       [isActiveTab] = "isActiveTab"
+></app-list-payment-slip>

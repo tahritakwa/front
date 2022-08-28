@@ -1,0 +1,7 @@
+<div [formGroup]="form" >
+  <kendo-combobox  class="form-control" [data]="journalFiltredList" [(ngModel)]="selectedJournalInFilter"
+                   (filterChange)="handleFilterJournal($event)" [textField]="'label'" [valueField]="'id'"
+                   [filterable]="true" (valueChange)="journalValueChange($event)"
+                   [ngModelOptions]="{standalone: true}">
+  </kendo-combobox>
+</div>

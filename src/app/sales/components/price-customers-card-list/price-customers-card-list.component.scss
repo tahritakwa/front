@@ -1,0 +1,43 @@
+.card-item {
+  width: 100% !important;
+  border: 1px solid;
+  border-color: #4c9aae;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border-radius: 0.25rem;
+  margin-bottom: 5px;
+}
+.imgSize {
+  border: 3px groove #b4d78a4d;
+  padding: 3px;
+  height: 200px;
+}
+.editBtn {
+  background: #516670 !important;
+  color: white !important;
+}
+.delete-btn {
+  background: #df0000fa !important;
+  color: white !important;
+}
+.card .tiers-title {
+  color: #4c9aae;
+  font-size: 16px;
+  font-weight: bold;
+}
+.field-title {
+  color: #73818f !important;
+  font-weight: bold;
+}
+.icon-from-label {
+  width: 23px;
+  text-align: center;
+  color: #4c9aae;
+}
+.card-avatar {
+  width: 50px;
+  height: 50px;
+}

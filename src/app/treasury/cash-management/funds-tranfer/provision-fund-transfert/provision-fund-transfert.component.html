@@ -1,0 +1,82 @@
+<fieldset class="col-lg-12 col-md-12" style="margin-top: 2em;">
+  <legend>{{'CHECK'|translate}}</legend>
+  <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+    <!-- Label -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'LABEL'|translate}} :
+        </label>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+    </div>
+    <!-- Currency -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'CURRENCY'|translate}} : </label>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+          <app-currency-dropdown [group]="fundTransfertAddFormGroup"></app-currency-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+    <!-- Holder -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'HOLDER'|translate}} :
+        </label>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+    </div>
+    <!--  Issuing bank -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'ISSUING_BANK'|translate}} :
+        </label>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+          <input type="text" class="form-control" />
+        </div>
+      </div>
+    </div>
+    <!-- End transfert type-->
+  </div>
+  <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+    <!-- External reference -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'EXTERNAL_REFERENCE'|translate}} :
+        </label>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+          <input type="text" class="form-control">
+        </div>
+      </div>
+    </div>
+    <!-- Beneficiary -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'BENEFICIARY'|translate}} :
+        </label>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+          <input type="text" class="form-control">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row col-lg-12 col-md-12 col-sm-12" style="margin-top: 1.5em;">
+    <!-- Check -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'CHECK'|translate}} :
+        </label>
+        <div class="col-lg-8 col-md-12 col-sm-12">
+          <app-upload-file [showLabel]="false" [fileToUpload]="filesInfos">
+          </app-upload-file>
+        </div>
+      </div>
+    </div>
+  </div>
+</fieldset>

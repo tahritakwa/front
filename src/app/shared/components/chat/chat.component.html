@@ -1,0 +1,446 @@
+<div class="row">
+  <div class="wrapper">
+    <!-- Start Box Chat-->
+    <div class="box-chat" id="box-chat">
+      <!-- Start Box Head-->
+      <div class="form-head">
+        <div class="header-btn">
+          <a id="top-btn-minus" class="top-btn" (click)="closeBoxChat()"><i class="fa fa-minus"></i></a>
+        </div>
+      </div>
+      <!-- End Box Head-->
+
+      <h1>{{'CHATBOX'|translate}}</h1>
+      <!--Start Chat Box Body-->
+      <div class="chat-body" id="chat-body">
+        <!-- Start Chat List Items-->
+        <div class="row  chat-list-items ">
+          <!--Start Section recent discussion -->
+          <div id="section-chat-recent">
+            <!--Start title section-->
+            <p class="section-chat-list-title" *ngIf="myDiscussions?.length > 0"> {{ 'RECENT' | translate }} </p>
+            <hr class="section-chat-list-hr">
+            <!--End title section-->
+            <!--Start Chat list item-->
+            <div class="row chat-list-item" (click)="openDiscussion(discussion)"
+                 [ngClass]="{'grayBackground': discussion.HasNotif == true}" *ngFor="let discussion of myDiscussions">
+              <!--Start Chat list item avatar-->
+              <div class="col-xs-3 chat-list-item-avatar">
+                <div class="avatar-icon">
+                  <img src="../../../../assets/image/chat-user.jpg" />
+                  <!-- Start Avatar Status-->
+                  <i *ngFor="let userDiscussion of discussion.UserDiscussionChat">
+                    <i *ngIf="userDiscussion.IdUser != idCurrentUser">
+                      <span class="avatar-status " *ngIf="userDiscussion.IdUserNavigation.IsUserOnline"> </span>
+                      <span class="avatar-status offline "
+                            *ngIf="!userDiscussion.IdUserNavigation.IsUserOnline"></span>
+                    </i>
+                  </i>
+                  <!-- End Avatar Status-->
+
+                </div>
+
+              </div>
+              <!--End Chat list item avatar-->
+              <!--Start Chat list item main-->
+              <div *ngFor="let userDiscussion of discussion.UserDiscussionChat">
+                <div class="col-xs-9 chat-list-item-main" *ngIf="userDiscussion.IdUser != idCurrentUser">
+                  <div class="row">
+                    <div class="col-xs-8 chat-list-item-name">
+                      <span class="name-meta"
+                            [ngClass]="{'gras': discussion.HasNotif == true}">{{ userDiscussion.IdUserNavigation.FirstName}}</span>
+                      <br>
+                      <span class="last-message-meta"
+                            [ngClass]="{'gras': discussion.HasNotif == true}">
+                        <div *ngFor="let user of discussion.UserDiscussionChat">
+                          <div *ngIf="user.Id == discussion.LastMsg.IdUserDiscussion && user.IdUser != idCurrentUser">
+                            {{discussion.LastMsg.Text}}
+                          </div>
+                          <div *ngIf="user.Id == discussion.LastMsg.IdUserDiscussion && user.IdUser == idCurrentUser">
+                            {{ 'YOU' | translate }} : {{discussion.LastMsg.Text}}
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+                    <!--Start Dot meta  chat list item-->
+                    <div class="col-xs-4  chat-list-item-time">
+                      <span class="time-meta ">
+                        <span class="dot" [ngClass]="{'offline': discussion.HasNotif == true}"></span>
+                      </span>
+                    </div>
+                    <!--End Dot meta in chat list item-->
+                  </div>
+                </div>
+              </div>
+              <!--End Chat list item main-->
+            </div>
+            <!--End Chat list item-->
+            <!--End Section recent discussion -->
+            <!--Start Section Group discussion -->
+            <!--Start title section-->
+            <p class="section-chat-list-title" *ngIf="myGroupDiscussions?.length > 0">
+              {{ 'GROUP_DISCUSSION' | translate }}
+            </p>
+            <hr class="section-chat-list-hr">
+            <!--End title section-->
+            <!--Start Chat list item-->
+            <div class="row chat-list-item" (click)="openDiscussion(discussion)"
+                 [ngClass]="{'grayBackground': discussion.HasNotif == true}" *ngFor="let discussion of myGroupDiscussions">
+              <!--Start Chat list item avatar-->
+              <div class="col-xs-3 chat-list-item-avatar">
+                <div class="avatar-icon">
+                  <img src="../../../../assets/image/chat-user-group.png" />
+                </div>
+              </div>
+              <!--End Chat list item avatar-->
+              <!--Start Chat list item main-->
+              <div *ngFor="let userDiscussion of discussion.UserDiscussionChat; let index = index">
+                <div class="col-xs-9 chat-list-item-main" *ngIf="index < 1">
+                  <div class="row">
+                    <div class="col-xs-8 chat-list-item-name">
+                      <span class="name-meta"
+                            [ngClass]="{'gras': discussion.HasNotif == true}">{{ discussion.Name }}</span>
+                      <br>
+                      <span class="last-message-meta" *ngIf="discussion.LastMsg"
+                            [ngClass]="{'gras': discussion.HasNotif == true}">
+                        <div *ngFor="let user of discussion.UserDiscussionChat">
+                          <div *ngIf="user.Id == discussion.LastMsg.IdUserDiscussion && user.IdUser != idCurrentUser">
+                            {{user.IdUserNavigation.FirstName}} : {{discussion.LastMsg.Text}}
+                          </div>
+                          <div *ngIf="user.Id == discussion.LastMsg.IdUserDiscussion && user.IdUser == idCurrentUser">
+                            {{ 'YOU' | translate }} : {{discussion.LastMsg.Text}}
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+                    <!--Start Dot meta  chat list item-->
+                    <div class="col-xs-4  chat-list-item-time">
+                      <span class="time-meta ">
+                        <span class="dot" [ngClass]="{'offline': discussion.HasNotif == true}"></span>
+                      </span>
+                    </div>
+                    <!--End Dot meta in chat list item-->
+                  </div>
+                </div>
+              </div>
+              <!--End Chat list item main-->
+            </div>
+            <!--End Chat list item-->
+          </div>
+          <!--End Section Group discussion -->
+          <!--Start Section Group discussion search -->
+          <div id="section-chat-groupe-search">
+            <!--Start title section-->
+            <p class="section-chat-list-title" *ngIf="myGroupDiscussionsSearch?.length > 0">
+              {{ 'GROUP_DISCUSSION' | translate }}
+            </p>
+            <hr class="section-chat-list-hr">
+            <!--End title section-->
+            <!--Start Chat list item-->
+            <div class="row chat-list-item" (click)="openDiscussion(discussion)"
+                 [ngClass]="{'grayBackground': discussion.HasNotif == true}"
+                 *ngFor="let discussion of myGroupDiscussionsSearch">
+              <!--Start Chat list item avatar-->
+              <div class="col-xs-3 chat-list-item-avatar">
+                <div class="avatar-icon">
+                  <img src="../../../../assets/image/chat-user-group.png" />
+                </div>
+              </div>
+              <!--End Chat list item avatar-->
+              <!--Start Chat list item main-->
+              <div *ngFor="let userDiscussion of discussion.UserDiscussionChat; let index = index">
+                <div class="col-xs-9 chat-list-item-main" *ngIf="index < 1">
+                  <div class="row">
+                    <div class="col-xs-8 chat-list-item-name">
+                      <span class="name-meta"
+                            [ngClass]="{'gras': discussion.HasNotif == true}">{{ discussion.Name }}</span>
+                      <br>
+                      <span class="last-message-meta" *ngIf="discussion.LastMsg"
+                            [ngClass]="{'gras': discussion.HasNotif == true}">
+                        <div *ngFor="let user of discussion.UserDiscussionChat">
+                          <div *ngIf="user.Id == discussion.LastMsg.IdUserDiscussion && user.IdUser != idCurrentUser">
+                            {{user.IdUserNavigation.FirstName}} : {{discussion.LastMsg.Text}}
+                          </div>
+                          <div *ngIf="user.Id == discussion.LastMsg.IdUserDiscussion && user.IdUser == idCurrentUser">
+                            {{ 'YOU' | translate }} : {{discussion.LastMsg.Text}}
+                          </div>
+                        </div>
+                      </span>
+                    </div>
+                    <!--Start Dot meta  chat list item-->
+                    <div class="col-xs-4  chat-list-item-time">
+                      <span class="time-meta ">
+                        <span class="dot" [ngClass]="{'offline': discussion.HasNotif == true}"></span>
+                      </span>
+                    </div>
+                    <!--End Dot meta in chat list item-->
+                  </div>
+                </div>
+              </div>
+              <!--End Chat list item main-->
+            </div>
+            <!--End Chat list item-->
+          </div>
+          <!--End Section Group discussion search -->
+          <!--Start Section all user Online -->
+          <p class="section-chat-list-title">{{ 'ALL_CONTACTS' | translate }} </p>
+          <hr class="section-chat-list-hr">
+          <!--Start Chat list item-->
+
+          <div class="row chat-list-item " (click)="openChat(user)" *ngFor="let user of usersConnectedList">
+            <!-- Start Avatar Item-->
+
+            <div class="col-xs-3 chat-list-item-avatar">
+
+              <div class="avatar-icon">
+
+                <img src="../../../../assets/image/chat-user.jpg" />
+                <span class="avatar-status"></span>
+
+              </div>
+
+            </div>
+            <!-- End Avatar Item-->
+            <!--Start Chat list item main-->
+
+            <div class="col-xs-9 chat-list-item-main">
+              <div class="row">
+                <div class="col-xs-8 chat-list-item-name">
+
+                  <span class="name-meta">
+                    {{user.FullName}}
+                  </span>
+                  <br>
+                  <span class="status-meta ">
+                    {{'Online'|translate}}
+
+                  </span>
+
+                </div>
+                <div class="col-xs-4  chat-list-item-time">
+                  <span class="time-meta ">
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!--End Chat list item main-->
+
+          </div>
+          <!--End Chat list item-->
+          <!--Start Section all user Offline -->
+
+          <div class="row chat-list-item " (click)="openChat(user)" *ngFor="let user of usersUnConnectedList">
+            <!-- Start Avatar Item-->
+
+            <div class="col-xs-3 chat-list-item-avatar">
+              <div class="avatar-icon">
+
+                <img src="../../../../assets/image/chat-user.jpg" />
+                <span class="avatar-status offline"></span>
+              </div>
+            </div>
+            <!-- End Avatar Item-->
+            <!--Start Chat list item main-->
+            <div class="col-xs-9 chat-list-item-main">
+              <div class="row">
+                <div class="col-xs-8 chat-list-item-name">
+
+                  <span class="name-meta">
+                    {{user.FullName}}
+                  </span>
+                  <br>
+                  <span class="status-meta ">
+                    {{'Offline'|translate}}
+
+                  </span>
+
+                </div>
+                <div class="col-xs-4  chat-list-item-time">
+                  <span class="time-meta ">
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--End Chat list item main-->
+        </div>
+        <!-- End chat list items-->
+        <!-- End chat list items-->
+        <!-- Start Side Two Message Box-->
+        <div id="message-box" class="message-box" #sideTwo>
+          <!--Start Message Box Head-->
+          <div class="row message-box-heading">
+            <div class="row message-box-main">
+              <div style="  width: 66.66666%;">
+                <div class="col-xs-10">
+                  <div class="row">
+                    <div class="col-xs-2 message-box-back" (click)="closeChat()">
+                      <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    </div>
+                    <div *ngIf="!isGroupOfDiscussion" class="col-xs-8 message-box-title">
+                      {{receiverName}}
+                    </div>
+                    <div *ngIf="isGroupOfDiscussion" class="col-xs-8 message-box-title">
+                      <input #editDiscussionName type="text"
+                             [ngClass]="{'editing-discussion-name': isDiscussionNameChanged}" class="discussion-name"
+                             [placeholder]="discussion.Name" [disabled]="!isDiscussionNameChanged" [(ngModel)]="receiverName"
+                             (focusout)="updateDiscussionName()" autocomplete="off">
+                    </div>
+                    <div *ngIf="isGroupOfDiscussion" class="col-xs-2 message-box-title edit-discussion-name"
+                         (click)="updateDiscussionName()">
+                      <i class="fa fa-edit"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="discussion" class="col-xs-2 message-box-add-member">
+                <i class="fa fa-user-plus fa-2x" (click)="addMember()"></i>
+                <span *ngIf="isGroupOfDiscussion" class="time-meta " [tooltip]="groupMembersName" placement="bottom">
+                  <i class="fa fa-info-circle fa-2x"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+          <!--End Message Box Head-->
+          <!--Start Message Box Body-->
+          <div class="row message-box-body">
+            <!-- Start Conversation-->
+            <div class="row conversation" id="conversation" #Conversation [scrollTop]="Conversation.scrollHeight">
+              <div class="row message-body" *ngFor="let message of messages">
+                <!-- Start receive message-->
+                <div class="avatar-icon" *ngIf="message.IdUserDiscussion != currentUserDiscussion.Id">
+                  <img src="../../../../assets/image/chat-user.jpg">
+
+                </div>
+                <div class="col-sm-9 message-main-receiver"
+                     *ngIf="message.IdUserDiscussion != currentUserDiscussion.Id">
+                  <div *ngIf="discussion && discussion.NumberOfDiscussionMember > 2">
+                    <div *ngFor="let user of discussion.UserDiscussionChat">
+                      <div class="receiver-name" *ngIf="user.Id == message.IdUserDiscussion">
+                        {{user.IdUserNavigation.FirstName}}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="receiver">
+                    <div class="message-text">
+
+                      {{message.Text}}
+
+                    </div>
+                    <span class="message-time pull-right">
+                      {{ message.Date | date:'d LLL. yyyy HH:mm' }}
+                    </span>
+                  </div>
+                </div>
+                <!-- End receive message-->
+                <!-- Start Send Message-->
+                <div class="col-sm-12 message-main-sender" *ngIf="message.IdUserDiscussion == currentUserDiscussion.Id">
+                  <div class="sender">
+                    <div class="message-text">
+                      {{message.Text}}
+
+                    </div>
+                    <span class="message-time pull-right">
+                      {{ message.Date | date:'d LLL. yyyy HH:mm' }}
+
+                    </span>
+                  </div>
+                </div>
+                <!-- End Send Message-->
+              </div>
+              <div class="seen-by" *ngIf="seenBy && seenBy.length > 0">
+                {{'SEEN_BY'|translate}} :
+                <div *ngFor="let u of seenBy; let index = index">
+                  {{u.IdUserNavigation.FirstName}}
+                  <div style="display: inline-table" *ngIf="index < (seenBy.length-1)">
+                    ,
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        <!--End Side Two message Box-->
+      </div>
+      <!--End Chat Box Body-->
+      <!-- Footer Side One-->
+      <div class="row heading-chat-list-items" id="heading-chat-list-items">
+        <div class="row support-technique">
+          <div class="col-xs-3 chat-list-item-avatar">
+            <div class="avatar-icon">
+              <img style="width: 40px !important;
+              height: 40px !important;
+              margin-left: 12px;" src="../../../../assets/image/log_s.png">
+            </div>
+            <div style="margin-left:2.8em !important" class="avatar-status"></div>
+          </div>
+          <div class="col-xs-9 chat-list-item-main">
+            <div class="row">
+              <div class="col-xs-12 chat-list-item-name">
+                <span class="name-meta" style="color: #4c9aae;margin-left: 1em;">
+                  {{'Technical support'|translate}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Start Search Box-->
+        <div class="row searchBox">
+          <div class="col-10 searchBox-inner">
+            <div class="form-group has-feedback">
+              <input id="searchText" type="text" class="form-control search-chat-button" autocomplete="off"
+                     placeholder="{{ 'SEARCH' | translate }}" (keyup)="searchUser($event.target.value)">
+              <span class="glyphicon glyphicon-search form-control-feedback"></span>
+            </div>
+          </div>
+          <div class="col-2 chat-group">
+            <a>
+              <i class="fa fa-users fa-3x" style="color: #4c9aae;" title="{{ 'CREATE_CHAT_GROUP' | translate }}"
+                 (click)="createGroup(null)" [ngStyle]="{'border-radius': '10px'}"></i>
+            </a>
+          </div>
+        </div>
+        <!-- End Search Box-->
+      </div>
+      <!--End Footer Side One-->
+      <!-- Start Footer side two-->
+      <div class="row heading-message-box" id="heading-message-box">
+        <div class="row messageInputBox" id="messageInputBox">
+          <div class="col-sm-12 messageInputBox-inner">
+            <form [formGroup]="messageFormGroup">
+              <div class="form-group send-message">
+                <input formControlName="Text" name="Text" id="messageText" type="text" class="form-control"
+                       placeholder="{{ 'WRITE_MESSAGE' | translate }}" autocomplete="off"
+                       (click)="!isEmptyPairDiscussion? markUserDiscussionAsViewed():null"
+                       (focusout)="!isEmptyPairDiscussion? markUserDiscussionAsViewed():null" />
+                <input (click)='save()' type="submit" value="" class="send-msg-button" />
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+      <!-- End footer side two-->
+    </div>
+
+    <!-- End Box Chat-->
+
+
+  </div>
+  <!-- Start Bottom Btn Chat-->
+  <!-- End Bottom Btn Chat-->
+
+
+</div>
+
+<div class="main">
+
+  <a style="color:aliceblue" (click)="openBoxChat()" id="openContactFormButton" class="bottom-chat-btn draggable">
+    <img src="../../../../assets/image/chatButton.png" width="50px" height="50px" />
+    <div *ngIf="numberOfNotif > 0" class=" avatar-status red"> {{ numberOfNotif }}</div>
+    <div *ngIf="numberOfNotif == 0" class=" avatar-status"> </div>
+  </a>
+
+</div>

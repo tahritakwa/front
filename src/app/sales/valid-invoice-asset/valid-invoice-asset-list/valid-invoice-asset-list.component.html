@@ -1,0 +1,198 @@
+<div class="modal-body search-item-add" #container *ngIf="hasInvoiceAssetListPermission">
+
+  <div [formGroup]="invoiceAssetFormGroup">
+
+    <div class="row justify-content-around" style="margin-left: -4%; margin-right: -2%;">
+      <div class="row col-lg-5">
+        <!-- begin start date -->
+        <div class="col-lg-4 col-md-6 col-sm-12 px-lg-1 mb-3" style="margin-right: 25px;">
+          <div class="row align-items-end">
+            <label class="col-12">
+              {{'STARTDATE'|translate}}
+            </label>
+            <div class="col-12 pr-lg-0 pr-md-0">
+              <kendo-datepicker formatPlaceholder="narrow" formControlName="StartDate" class="form-control"
+                (valueChange)="changeStartDate()" [max]="maxStartDate" [popupSettings]="{ appendTo: containerRef }">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                  toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="invoiceAssetFormGroup.controls.StartDate"
+                class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <!-- end start date -->
+        <!-- begin end-date -->
+        <div class="col-lg-4 col-md-6 col-sm-12 px-lg-1 mb-3" style="margin-right: 25px;">
+          <div class="row align-items-end">
+            <label class="col-12">
+              {{'ENDDATE'|translate}}
+            </label>
+            <div class="col-12 pr-lg-0">
+              <kendo-datepicker formatPlaceholder="narrow" formControlName="EndDate" class="form-control"
+                (valueChange)="changeEndDate()" [min]="minEndDate" [popupSettings]="{ appendTo: containerRef }">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                  toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="invoiceAssetFormGroup.controls.EndDate"
+                class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <!-- end end-date -->
+        <!-- begin button -->
+        <div class="col-lg-4 col-md-12 px-lg-0 col-sm-12 mb-3 d-flex align-items-end" style="margin-right: -15%;">
+          <div class="row w-100 m-0">
+            <div class="col-6 px-lg-2 px-md-0">
+              <button class="btn btn-secondary btn-block" style="margin-bottom: 4px;" type="button" id="button-addon2"
+                (click)="clickSearch()">
+                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- end button -->
+      </div>
+    </div>
+
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridState.take" [skip]="gridState.skip"
+      (dataStateChange)="dataStateChange($event)" [filter]="gridSettings.state.filter"
+      [pageable]="pagerSettings" [filterable]="true" [columnMenu]="false"
+      (pageChange)="pageChange($event)">
+
+
+      <!-- Code -->
+      <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate">
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{columnsConfig[0].title|translate}}" theme="light">{{columnsConfig[0].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <div class="container">
+            <div class="row grid-cell font-weight-bold">
+              <span class="cursor-pointer doc-code" (click)="openDocument(dataItem)">{{dataItem.Code}}</span>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- Date -->
+      <kendo-grid-column [filterable]="false" [field]="columnsConfig[1].field"
+        [title]="columnsConfig[1].title | translate" [style]='{"text-align":"right",
+            "padding-right": "7%"}'>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{columnsConfig[1].title|translate}}" theme="light">{{columnsConfig[1].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.DocumentDate|date: columnsConfig[1].format}}
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- Status -->
+      <kendo-grid-column [filterable]="false" [field]="columnsConfig[2].field"
+        [title]="columnsConfig[2].title | translate">
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{columnsConfig[2].title|translate}}" theme="light">{{columnsConfig[2].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+          <div>
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional">
+              <span class="badge badge-warning">{{'PROVISOIRE'|translate}}</span>
+            </div>
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.Printed">
+              <span class="badge"
+                [ngStyle]="{'color': '#ffffff', 'background-color': '#4608a0'}">{{'PRINTED'|translate}}</span>
+            </div>
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.Valid">
+              <span class="badge badge-success">{{'VALID'|translate}}</span>
+            </div>
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.Balanced">
+              <span class="badge" style="color: #ffffff; background-color: #816fa5;" *ngIf='documentType === documentEnumerator.SalesOrder
+              || documentType == documentEnumerator.PurchaseFinalOrder'>
+                {{'TOTALLY_DELIVERED'|translate}}
+              </span>
+
+              <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                *ngIf='documentType == documentEnumerator.PurchaseOrder'>
+                {{'TOTALLY_ORDRED'|translate}}
+              </span>
+
+              <span class="badge" style="color: #ffffff; background-color: #816fa5;" *ngIf='documentType === documentEnumerator.PurchaseDelivery
+              ||documentType == documentEnumerator.SalesDelivery'>
+                {{'CHARGED'|translate}}
+              </span>
+              <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                *ngIf='documentType == documentEnumerator.SalesQuotations'>
+                {{'ODREDER'|translate}}
+              </span>
+
+              <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                *ngIf='documentType == documentEnumerator.PurchaseInvoices || documentType == documentEnumerator.SalesInvoices'>
+                {{'STATUS_INVOICE_FROM_ASSET'|translate}}
+              </span>
+
+
+            </div>
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.TotallySatisfied">
+              <span class="badge" style="color: #ffffff; background-color: #816fa5;">{{'TOTALLY_PAID'|translate}}</span>
+            </div>
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.Accounted">
+              <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'ACCOUNTED'|translate}}</span>
+            </div>
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.PartiallySatisfied">
+              <span class="badge badge-primary" style="color: #ffffff;">
+
+
+                {{ (documentType === documentEnumerator.PurchaseFinalOrder ? 'PARTIALLY_DELIVERED': (documentType === documentEnumerator.PurchaseOrder ? 'PARTIALLY_ORDRED' :'PARTIALLY_PAID'   ))
+                    |translate
+                }}
+              </span>
+            </div>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+
+      <!-- TTC Amount -->
+      <kendo-grid-column [field]="columnsConfig[3].field" [title]="columnsConfig[3].title | translate" [style]='{"text-align":"right",
+          "padding-right": "7%"}'>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{columnsConfig[3].title|translate}}" theme="light">{{columnsConfig[3].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+          <kendo-numerictextbox
+          [spinners]="false"
+          [format]="dataItem.FormatOption"
+     [step]="1" style="border: none !important;"
+     class="form-control inputEnabled as-label"
+     [value]="dataItem.DocumentTtcpriceWithCurrency"
+     [disabled]="true">
+   </kendo-numerictextbox>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Remaining Amount -->
+      <kendo-grid-column [field]="columnsConfig[4].field" [title]="columnsConfig[4].title | translate" [style]='{"text-align":"right",
+          "padding-right": "7%"}'>
+        <!--tooltip-->
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{columnsConfig[4].title|translate}}" theme="light">{{columnsConfig[4].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+          <kendo-numerictextbox
+          [spinners]="false"
+          [format]="dataItem.FormatOption"
+     [step]="1" style="border: none !important;"
+     class="form-control inputEnabled as-label"
+     [value]="dataItem.DocumentRemainingAmountWithCurrency"
+     [disabled]="true">
+   </kendo-numerictextbox>
+        </ng-template>
+      </kendo-grid-column>
+
+    </kendo-grid>
+  </div>
+</div>

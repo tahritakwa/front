@@ -1,0 +1,71 @@
+<div class="card">
+  <!--Begin Card eader-->
+  <div *ngIf="!isModal" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_TRAINING' : 'ADD_TRAINING') |translate}}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <form (ngSubmit)="onClickAddTraining()" [formGroup]="trainingFormGroup" class="form-horizontal">
+    <!--Begin Card body-->
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-8 col-sm-12 col-md-12">
+            <div class="row">
+              <div class="col-lg-8 col-md-8 col-sm-12" style="margin-bottom:15px">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}<span
+                  class="required">*</span></label>
+                <input [ngClass]="{ 'has-error': (trainingFormGroup.controls.Name.touched
+                        || trainingFormGroup.controls.Name.dirty) && !trainingFormGroup.controls.Name.valid }" class="form-control" formControlName="Name" name="name"
+                       type="text">
+                <app-control-messages [control]="trainingFormGroup.controls.Name"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom:15px">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'DESCRIPTION'|translate}}<span class="required">*</span></label>
+                <textarea [ngClass]="{ 'has-error': (trainingFormGroup.controls.Description.touched
+                        || trainingFormGroup.controls.Description.dirty) && !trainingFormGroup.controls.Description.valid }" class="form-control" formControlName="Description" name="Description"
+                          rows="3"></textarea>
+                <app-control-messages [control]="trainingFormGroup.controls.Description"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-12" style="margin-bottom:15px">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'EXPECTED_SKILLS'|translate}}</label>
+                <app-skills-multiselect (selected)="selectExpectedSkills($event)"  [form]="trainingFormGroup"
+                                        [selectedValue]="selectedExpectedSkills"></app-skills-multiselect>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 col-sm-12 col-md-12  image-area">
+            <input #fileInput (change)="uploadPictureFile($event)" accept="image/x-png,image/gif,image/jpeg"
+                   type='file'/>
+            <span (click)="deleteTrainingPicture()" *ngIf="posterTrainingSrc && (hasUpdateTrainingPermission && isUpdateMode || hasAddTrainingPermission && !isUpdateMode)" class="close"
+                  title="{{'DELETE' | translate}}">&times;</span>
+            <img (click)="fileInput.click()" [src]="posterTrainingSrc || '../../../../assets/image/training-icon.png'" border="0"
+                 class="imgSize" id="blah"/>
+          </div>
+        </div>
+      </div>
+      <!--End add form-->
+    </div>
+    <!--End Card body-->
+    <!--Begin Card footer-->
+    <div [ngClass]="{'card-footer':!isModal}">
+      <a *ngIf="!isModal">
+          <span class="btn btn-sm btn-primary">
+            <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+          </span>
+      </a>
+      <button *ngIf="hasUpdateTrainingPermission && isUpdateMode || hasAddTrainingPermission && !isUpdateMode" [ngStyle]="{'margin-left': isModal ? '20px' : '0px' ,
+                    'margin-bottom': isModal ? '20px' : '0px'}" class="btn btn-sm btn-danger"
+              type="submit">
+        <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+      </button>
+    </div>
+  </form>
+  <!--End Card footer-->
+</div>

@@ -1,0 +1,198 @@
+<div class="card">
+  <!--Begin Card header-->
+  <div class="card-header">
+    <div class="row">
+      <div class="col-lg-8 col-md-8 col-sm-12">
+        <h3 class="card-title mb-0">{{'LOAN_REQUEST' |translate }}</h3>
+      </div>
+      <div class="col-lg-4 col-md-4 col-sm-12" style="text-align:right">
+        <h4 *ngIf="loanRequestToUpdate &&loanRequestToUpdate.State === statusCode.Waiting " class="statusAlignment">
+          <span class="badge badge-warning">{{"WAITING" | translate }}</span>
+        </h4>
+        <h4 *ngIf="loanRequestToUpdate && loanRequestToUpdate.State === statusCode.Refused" class="statusAlignment">
+          <span class="badge badge-danger">{{"REFUSED" | translate }}</span>
+        </h4>
+        <h4 *ngIf=" loanRequestToUpdate && loanRequestToUpdate.State === statusCode.Accepted" class="statusAlignment">
+          <span class="badge badge-success">{{ "ACCEPTED" | translate }}</span>
+        </h4>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+
+  <!--Begin Card body-->
+  <div class="card-body">
+    <form [formGroup]="loanAddFormGroup" class="form-horizontal">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <!--Employee-->
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'EMPLOYEE'|translate}}<span class="required">*</span></label>
+            <app-employee-dropdown (Selected)="changeEmployeeDropdownValue($event)" [disabled]="isUpdateMode"
+                                   [form]="loanAddFormGroup"></app-employee-dropdown>
+            <app-control-messages [control]="IdEmployee" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+            <label *ngIf="netToPay === -1"
+                   class="error-msg messages text-left text-danger">{{'SELECTED_EMPLOYEE_CANNOT_HAVE_ADVANCE'|translate}}</label>
+          </div>
+          <!--Credit Type-->
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CREDIT_TYPE'|translate}}<span
+              class="required">*</span></label>
+            <app-credit-type-dropdown (Selected)="controlNumberOfMonths($event)" [disabled]="isUpdateMode && !hasUpdatePermission || (loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+              loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Refused)"
+                                      [group]="loanAddFormGroup">
+            </app-credit-type-dropdown>
+            <app-control-messages [control]="CreditType" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!--Amount-->
+          <div class="col-lg-4 col-md-4 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12" kendoTooltip> {{'AMOUNT'|translate}}<span class="required">*
+                <i *ngIf="verifyNetTpPay" aria-hidden="true" class="fa fa-exclamation-triangle" style="color: #FFC133;"
+                   tooltip="{{ 'NET_SALARY_OVERTAKING' | translate }}">
+                </i>
+              </span>
+            </label>
+            <input [attr.disabled]="isUpdateMode && !hasUpdatePermission || (loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+              loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Refused ? '' : null)" [ngClass]="{ 'has-error': (Amount.touched || Amount.dirty) && (!Amount.valid && !Amount.pending) }" class="form-control" formControlName="Amount"
+                   min="1"
+                   onkeydown="return (event.keyCode!=109 && event.keyCode!=107);"
+                   type="number">
+            <app-control-messages [control]="Amount" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+            <label *ngIf="netToPay > 0"
+                   class="error-msg messages text-left text-danger">{{'MAXIMUM_AMOUNT'|translate}} {{netToPay}}</label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <!--Obtaining date-->
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'OBTAINING_DATE'|translate}}<span
+              class="required">*</span></label>
+            <kendo-datepicker (valueChange)="obtainingDateChange()" [disabled]="isUpdateMode && !hasUpdatePermission || (loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+                loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Refused)" [format]="formatDate"
+                              [ngClass]="{ 'has-error': (ObtainingDate.touched || ObtainingDate.dirty) && !ObtainingDate.valid }" class="form-control"
+                              formControlName="ObtainingDate"
+                              formatPlaceholder="formatDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="ObtainingDate" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!--Disbursement date-->
+          <div *ngIf="(hasUpdatePermission || hasShowPermission ) && isUpdateMode" class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DISBURSEMENT_DATE'|translate}}<span
+              class="required">*</span></label>
+            <kendo-datepicker (valueChange)="disbursementDateChange($event)" [disabled]="isUpdateMode && !hasUpdatePermission || (loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+                loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Refused)" [format]="formatDate"
+                              [ngClass]="{ 'has-error': (DisbursementDate.touched || DisbursementDate.dirty) && !DisbursementDate.valid }" class="form-control"
+                              formControlName="DisbursementDate"
+                              formatPlaceholder="formatDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="DisbursementDate" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!--RefundStartDate date-->
+          <div *ngIf="(hasUpdatePermission || hasShowPermission ) && isUpdateMode" class="col-lg-4 col-md-6 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REFUND_START_MONTH'|translate}}<span
+              class="required">*</span></label>
+            <kendo-datepicker (valueChange)="refundStartDate($event)" [bottomView]="'year'" [disabled]="isUpdateMode && !hasUpdatePermission || (loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+                loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Refused)" [format]="'MMMM yyyy'"
+                              [ngClass]="{ 'has-error': (RefundStartDate.touched || RefundStartDate.dirty) && !RefundStartDate.valid }" [topView]="'decade'"
+                              class="form-control"
+                              formControlName="RefundStartDate">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="RefundStartDate" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <!--MonthsNumber-->
+          <div *ngIf="(hasUpdatePermission || hasShowPermission ) && isUpdateMode" class="col-lg-4 col-md-4 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'MONTHS_NUMBER'|translate}}<span
+              class="required">*</span></label>
+            <input [attr.disabled]="isUpdateMode && !hasUpdatePermission || (loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+                loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Refused ? '' : null)" [ngClass]="{ 'has-error': (MonthsNumber.touched || MonthsNumber.dirty) && !MonthsNumber.valid }" class="form-control" formControlName="MonthsNumber"
+                   min="0"
+                   type="number">
+            <app-control-messages [control]="MonthsNumber"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!--file-->
+          <div class="col-lg-4 col-md-6 col-sm-12">
+            <label *ngIf="!(loanRequestToUpdate
+              && (loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+              loanRequestToUpdate.State ===  this.statusCode.Refused) && loanRequestToUpdate.LoanFileInfo.length === 0)" class="col-lg-12 col-md-12 col-sm-12">
+              {{ 'VOUCHERS' | translate }}</label>
+            <app-upload-file (selectedFiles)="uploadFile($event)" [canUpdateFile]="(hasAddPermission && !isUpdateMode || hasUpdatePermission && isUpdateMode) &&
+            loanRequestToUpdate && loanRequestToUpdate.State > statusCode.Waiting"
+                             [fileToUpload]="loanAttachementFileInfo"
+                             [service]="loanService"></app-upload-file>
+          </div>
+        </div>
+      </div>
+      <!--PURPOSE-->
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'REASON_OF_CREDIT'|translate}}<span
+          class="required">*</span></label>
+        <textarea [attr.disabled]="isUpdateMode && !hasUpdatePermission || (loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Accepted ||
+            loanRequestToUpdate && loanRequestToUpdate.State ===  this.statusCode.Refused ? '' : null)" [ngClass]="{ 'has-error': (Reason.touched || Reason.dirty) && !Reason.valid }" class="col-lg-12 col-md-12 col-sm-12 form-control"
+                  formControlName="Reason"
+                  rows="5">
+        </textarea>
+        <app-control-messages [control]="Reason" class="error-msg messages text-left text-danger">
+        </app-control-messages>
+      </div>
+      <!--Loan Installments-->
+      <span *ngIf="loanRequestToUpdate && loanRequestToUpdate.State == statusCode.Accepted">
+        <h3 class="card-title mb-0" style="margin-left:15px; margin-top: 30px;">
+          <b>{{'PAYMENT_DEADLINES'|translate}}</b>
+        </h3>
+        <app-list-loan-installment (isTouched)="isLoanInstallmentFormChanged($event)"
+                                   [idLoan]="id"></app-list-loan-installment>
+      </span>
+    </form>
+  </div>
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer ml-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="/main/payroll/loan">
+              <span class="btn btn-sm btn-primary btn-back-to-list" #BackToList>
+                <i class="fa fa-chevron-circle-left"></i> {{ "BACK_TO_LIST" | translate }}
+              </span>
+            </a>
+            <button (click)="save()" *ngIf="hasAddPermission && !isUpdateMode" class="btn btn-sm btn-success mx-1">
+              <i class="fa fa-floppy-o"></i> {{ 'ADD' |translate}}
+            </button>
+            <button (click)="save()"
+              *ngIf="hasUpdatePermission && isUpdateMode && loanRequestToUpdate && loanRequestToUpdate.State == statusCode.Waiting" class="btn btn-sm btn-danger mx-1">
+              <i class="fa fa-floppy-o"></i> {{ 'UPDATE' |translate}}
+            </button>
+            <button
+               (click)="setRequestState(statusCode.Accepted)"
+               *ngIf="hasValidatePermission &&  loanRequestToUpdate && loanRequestToUpdate.State == statusCode.Waiting"
+               class="btn btn-sm btn-success mx-1">
+               <i class="fa fa-check-square-o"></i> {{'VALIDATE'|translate }}
+            </button>
+            <button
+              (click)="setRequestState(statusCode.Refused)"
+              *ngIf="hasRefusePermission && loanRequestToUpdate && loanRequestToUpdate.State == statusCode.Waiting" class="btn btn-sm mx-1"
+              style="color: #fff; background-color: #73818f;">
+              <i class="fa fa-times"></i> {{'REFUSE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

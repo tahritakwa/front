@@ -1,0 +1,54 @@
+export class Customer {
+
+
+  Adress;
+  AuthorizedAmountDelivery;
+  AuthorizedAmountInvoice;
+  AuthorizedAmountOrder;
+  AuthorizedSettlement;
+  CIN;
+  CanDelete;
+  CanEdit;
+  CanPrint;
+  CanShow;
+  CanValidate;
+  CodeTiers;
+  CommercialRegister;
+  Contact;
+  CounterPartyAccount;
+  Cp;
+  DeleveryDelay;
+  DeliveryAmount;
+  Discount;
+  Document;
+  Id;
+  IdAccountingAccountTiers;
+  IdCity;
+  IdCountry;
+  IdCurrency;
+  IdCurrencyNavigation;
+  IdDiscountGroupTiers;
+  IdDiscountGroupTiersNavigation;
+  IdLegalForme;
+  IdPaymentCondition;
+  IdPaymentMethod;
+  IdTaxeGroupTiers;
+  IdTaxeGroupTiersNavigation;
+  IdTypeTiers;
+  IdTypeTiersNavigation;
+  InvoiceAmount;
+  IsDeleted;
+  Logo;
+  MatriculeFiscale;
+  Name;
+  OrderAmount;
+  Regio;
+  n;
+  Rib;
+  Status;
+  TransactionUserId;
+  UnicityMessage;
+  IdTierCategory;
+  IdTierCategoryNavigation;
+
+}

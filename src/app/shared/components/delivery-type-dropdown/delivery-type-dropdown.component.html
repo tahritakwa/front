@@ -1,0 +1,10 @@
+<div [formGroup]="itemForm">
+  <kendo-dropdownlist [data]="deliveryTypeDataSource" name="IdDeliveryType" formControlName="IdDeliveryType"
+    textField="Label" class="form-control" valueField="Id" [valuePrimitive]="true" 
+    [popupSettings]="{width: 200}" (valueChange)="onSelectDeliveryType($event)"
+    [disabled]="disabled">
+    <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+      <div>{{ dataItem?.Label }}</div>
+    </ng-template>
+  </kendo-dropdownlist>
+</div>

@@ -1,0 +1,278 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card border-0">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div *ngIf='!accountingImmobilization' class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'ACTIVE_LIST'|translate}}</h3>
+          </div>
+        </div>
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body">
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+            (edit)="editHandler($event)" (cancel)="cancelHandler($event)" (save)="saveHandler($event)"
+            (remove)="removeHandler($event)" (add)="addHandler($event)" (dataStateChange)="dataStateChange($event)"
+            [sortable]="true" [pageable]="pagerSettings" [groupable]='false' [reorderable]="true"
+            (sortChange)="sortChange($event)" [columnMenu]="false" style="width: 100%">
+            <ng-template kendoGridToolbarTemplate>
+              <app-btn-grid class="d-inline-flex float-right"
+                [advencedAdd]='!accountingImmobilization && haveAddPermission || (accountingImmobilization && this.authService.hasAuthority(this.AccountingPermissions.PRINT_AMORTIZATION_TABLE))'
+                [addLink]='"AdvancedAdd"' [tooltip]="addNew" content-type="template"></app-btn-grid>
+              <ng-template #addNew>
+                <strong>{{'ADD_ACTIVE'|translate}}</strong>
+              </ng-template>
+            </ng-template>
+            <!--Code-->
+            <kendo-grid-column *ngIf="!accountingImmobilization" [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[0].title | translate" [width]="200"
+              [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+              [format]="gridSettings.columnsConfig[0].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'CODE'|translate}}" theme="light">{{'CODE'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.Code}}
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="activeFormGroup" controlName="Code" inputType="text">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+            <!--Label-->
+            <kendo-grid-column *ngIf="!accountingImmobilization" [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="200"
+              [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+              [format]="gridSettings.columnsConfig[1].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'LABEL'|translate}}" theme="light">{{'LABEL'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="activeFormGroup" controlName="Label" inputType="text">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+            <!--merge code , label -->
+            <kendo-grid-column *ngIf="accountingImmobilization" [field]="gridSettings.columnsConfig[0].field"
+              [title]="gridSettings.columnsConfig[1].title  | translate" [width]="200"
+              [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+              [format]="gridSettings.columnsConfig[0].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'LABEL'|translate}}" theme="light">{{'LABEL'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.Code}} {{dataItem.Label}}
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="activeFormGroup" controlName="Label" inputType="text">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--Buying price-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+              [title]="gridSettings.columnsConfig[2].title | translate" [width]="150"
+              [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+              [format]="gridSettings.columnsConfig[2].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'BUYING_PRICE'|translate}}" theme="light">{{'BUYING_PRICE'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <kendo-numerictextbox style="padding-right:3rem !important" class="text-right" [readonly]="true"
+                  [format]="formatNumberOptions" value="{{dataItem.Value}}">
+                </kendo-numerictextbox>
+              </ng-template>
+              <ng-template kendoGridEditTemplate>
+                <app-grid-cell-input-template [group]="activeFormGroup" controlName="Value" inputType="number">
+                </app-grid-cell-input-template>
+              </ng-template>
+            </kendo-grid-column>
+            <!--Status-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+              [title]="gridSettings.columnsConfig[3].title | translate" [width]="100"
+              [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+              [format]="gridSettings.columnsConfig[3].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'STATUS'|translate}}" theme="light">{{'STATUS'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                <div *ngIf="dataItem.Status == 1">{{'LIVING'|translate}}</div>
+                <div *ngIf="dataItem.Status == 2">{{'BROKEN'|translate}}</div>
+                <div *ngIf="dataItem.Status == 3">{{'STOCK'|translate}}</div>
+              </ng-template>
+
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <app-status-combobox [form]="activeFormGroup" id="status-combobox">
+                </app-status-combobox>
+                <i #anchor></i>
+                <app-control-message-grid-cell [group]="activeFormGroup" [anchor]="anchor" controlName="Status">
+
+                </app-control-message-grid-cell>
+              </ng-template>
+            </kendo-grid-column>
+            <!--Acquisition date-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+              [title]="gridSettings.columnsConfig[4].title | translate" [width]="150"
+              [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'ACQUISATION_DATE'|translate}}" theme="light">{{'ACQUISATION_DATE'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.AcquisationDate|date: gridSettings.columnsConfig[4].format}}
+              </ng-template>
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <app-acquisation-date-datepicker [form]="activeFormGroup" [DateName]="'AcquisationDate'">
+                </app-acquisation-date-datepicker>
+                <i #anchor></i>
+                <app-control-message-grid-cell [group]="activeFormGroup" [anchor]="anchor"
+                  controlName="AcquisationDate">
+
+                </app-control-message-grid-cell>
+              </ng-template>
+            </kendo-grid-column>
+            <!--Comissioning date-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+              [title]="gridSettings.columnsConfig[5].title | translate" [width]="150"
+              [filter]="gridSettings.columnsConfig[5].filter" [filterable]="gridSettings.columnsConfig[5].filterable">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'SERVICE_DATE'|translate}}" theme="light">{{'SERVICE_DATE'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                <span *ngIf="dataItem.ServiceDate">
+                  {{dataItem.ServiceDate|date: gridSettings.columnsConfig[5].format}}
+                </span>
+                <span *ngIf="!dataItem.ServiceDate">
+                  ---
+                </span>
+              </ng-template>
+            </kendo-grid-column>
+            <!--Category-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+              [title]="gridSettings.columnsConfig[6].title | translate" [width]="150"
+              [filter]="gridSettings.columnsConfig[6].filter" [filterable]="gridSettings.columnsConfig[6].filterable"
+              [format]="gridSettings.columnsConfig[6].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'CATEGORY'|translate}}" theme="light">{{'CATEGORY'|translate}}</span>
+              </ng-template>
+              <ng-template *ngIf='accountingImmobilization' kendoGridCellTemplate let-dataItem='dataItem'>
+                <span *ngIf="!checkIfCategorySet(dataItem.IdCategory)" tooltip="{{'CATEGORY_NOT_SET'|translate}}"
+                  style="color: #b34545;">
+                  <a style="padding: 0rem;" class="btn" [routerLink]="['/main/accounting/amortizationConfiguration']"
+                    target="_blank">
+                    {{dataItem.IdCategoryNavigation.Label}} <i class="fa fa-exclamation-triangle fa-sm"
+                      aria-hidden="true"></i>
+                  </a>
+                </span>
+                <span *ngIf="checkIfCategorySet(dataItem.IdCategory)">
+                  {{dataItem.IdCategoryNavigation.Label}}
+                </span>
+              </ng-template>
+              <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+                <app-category-dropdown [form]="activeFormGroup" id="category-dropdown" [isAdvancedAdd]="false">
+                </app-category-dropdown>
+                <i #anchor></i>
+                <app-control-message-grid-cell [group]="activeFormGroup" [anchor]="anchor" controlName="IdCategory">
+
+                </app-control-message-grid-cell>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column *ngIf='accountingImmobilization' [field]="gridSettings.columnsConfig[7].field"
+              [title]="gridSettings.columnsConfig[7].title | translate" [width]="200"
+              [filter]="gridSettings.columnsConfig[7].filter" [filterable]="gridSettings.columnsConfig[7].filterable"
+              [format]="gridSettings.columnsConfig[7].format">
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{'DEPRECIATION_ACCOUNT'|translate}}"
+                  theme="light">{{'DEPRECIATION_ACCOUNT'|translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                {{this.setImmobilisationAccount(dataItem.Id)}}
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-command-column [width]="100">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem" let-rowIndex="rowIndex">
+                <i class="las la-pen cursor-pointer edit-pencil la-lg ml-3"
+                  *ngIf="btnEditVisible &&((!accountingImmobilization && haveUpdatePermission) || accountingImmobilization || haveShowPermission)"
+                  (click)="goToAdvancedEdit(dataItem)" [tooltip]="details" content-type="template"></i>
+                <ng-template #details>
+                  <strong>{{'DETAILS'|translate}}</strong>
+                </ng-template>
+                <!-- remove command directive, will be visible when not in edit mode -->
+                <button kendoGridRemoveCommand
+                  *ngIf="!accountingImmobilization && haveDeletePermission  && checkstatusUpdateActivesList(rowIndex)" class="
+                  btnKendoGrid" [tooltip]="trash" content-type="template">
+                  <i class="fa fa-trash-o"></i>
+                </button>
+                <ng-template #trash>
+                  <strong>{{'DELETE'|translate}}</strong>
+                </ng-template>
+                <!-- save command directive, will be visible when in edit mode -->
+                <button kendoGridSaveCommand class="btnKendoGrid"><span class="fa fa-save"></span></button>
+                <!-- cancel command directive, will be visible when in edit mode -->
+                <button kendoGridCancelCommand class="btnKendoGrid"><span class="fa fa-close"></span></button>
+
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--grid pdf & excel-->
+            <app-grid-export [gridSettings]="gridSettings" fileName="{{'ACTIVE_LIST'|translate}}" pdf="true"
+              excel="true" [service]="activeService" [predicate]="predicate">
+            </app-grid-export>
+            <!--end grid pdf & excel-->
+            <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+              pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+            </kendo-grid-messages>
+          </kendo-grid>
+        </div>
+        <!--End card body-->
+      </div>
+      <div class="d-flex justify-content-between m-3">
+        <div *ngIf="accountingImmobilization">
+          <input type="checkbox" id="amount-check-box" class="input-checkbox100 mr-2"
+            (click)='changeProvisionalEdition()' />
+          <label class="label-checkbox100" for="amount-check-box">{{'PROVISIONAL_EDITION'|translate}}</label>
+        </div>
+        <div>
+          <button *ngIf="accountingImmobilization" [tooltip]="print" content-type="template"
+            class="btn btn-primary dropdown-toggle mr-2" type="button" style="color: white;" data-toggle="dropdown"
+            aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-print"></i> {{'PRINT_AMORTIZATION'|translate}}
+          </button>
+          <ng-template #print>
+            <span style="white-space: normal;">{{'AMORTIZATION_TABLE_PRINT'|translate}}</span>
+          </ng-template>
+          <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+            <a class="dropdown-item" style="width: 270px!important;" (click)="onClickPrintByJasper()">PDF</a>
+            <a class="dropdown-item" style="width: 270px!important;" (click)="onClickPrintExcel()">Excel</a>
+          </div>
+
+
+          <div class="btn-group mr-2">
+            <button
+              *ngIf="this.authService.hasAuthority(this.AccountingPermissions.GENERATE_DOCUMENT_FROM_ACTIVES) && accountingImmobilization"
+              [tooltip]="generate" content-type="template" class="btn btn-primary dropdown-toggle" type="button"
+              style="color: white;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fa fa-print"></i> {{'GENERATE_DOCUMENT_ACCOUNT'|translate}}
+            </button>
+            <ng-template #generate>
+              <span style="white-space: normal;">{{'GENERATE_DOCUMENT_ACCOUNT'|translate}}</span>
+            </ng-template>
+            <div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+              <a class="dropdown-item" style="width: 270px!important;"
+                (click)="openModalToGenerateDetailedDocumentAccountOfAmortization()">{{'WITH_DETAILS'|translate}}</a>
+              <a class="dropdown-item" style="width: 270px!important;"
+                (click)="openModalToGenerateWithoutDetailDocumentAccountOfAmortization()">{{'WITHOUT_DETAILS'|translate}}</a>
+            </div>
+          </div>
+        </div>
+
+
+
+
+      </div>
+    </div>
+  </div>
+</div>

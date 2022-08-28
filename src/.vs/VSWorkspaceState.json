@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app\\sales",
+    "\\app\\sales\\services",
+    "\\app\\sales\\services\\document",
+    "\\app\\shared",
+    "\\app\\shared\\components",
+    "\\app\\shared\\components\\document",
+    "\\app\\shared\\components\\document\\document-generic-method"
+  ],
+  "SelectedNode": "\\app",
+  "PreviewInSolutionExplorer": false
+}

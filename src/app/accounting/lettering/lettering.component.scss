@@ -1,0 +1,34 @@
+label {
+  white-space: nowrap;
+  padding-bottom: 0.25rem;
+  padding-top: 0.25rem;
+  margin-top: 0.25rem;
+}
+
+@media screen and (max-width: 990px) {
+  .search {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .change-account-btn {
+    margin-left: 1rem;
+  }
+}
+
+
+:host ::ng-deep .k-grid-filter{
+  padding:0 !important;
+  width:1px !important;
+}
+.k-numerictextbox{
+  width:auto !important;
+  transform: translateX(2rem);
+}
+
+.disabled-arrow {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: grey;
+}

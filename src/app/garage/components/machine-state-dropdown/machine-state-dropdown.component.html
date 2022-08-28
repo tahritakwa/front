@@ -1,0 +1,5 @@
+<div [formGroup]="form">
+  <kendo-combobox [data]="stateDataSource" class="form-control" name="State" formControlName="State"
+    (valueChange)="onSelect($event)" [textField]="'name'" [valueField]="'value'" [valuePrimitive]="true">
+  </kendo-combobox>
+</div>

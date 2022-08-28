@@ -1,0 +1,137 @@
+<div [formGroup]="reviewSkillsFormGroup">
+  <!-- Past reviewSKills -->
+  <div *ngIf="isOldReviewSkills" class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <div class="row form-group">
+        <!-- Skills -->
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'SKILLS'|translate}} <span class="required">*</span></label>
+            <div class="col-lg-8 col-md-12 col-sm-12" style="margin-top: 12px;">
+              <app-skills-dropdown *ngIf="currentReviewSkills && skillsToIgnore"
+                                   [currentSkillId]="currentReviewSkills.IdSkills"
+                                   [skillsForm]="reviewSkillsFormGroup"></app-skills-dropdown>
+            </div>
+            <app-control-messages [control]="reviewSkillsFormGroup.controls.IdSkills"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <!-- End Skills -->
+        <!-- Old Rate -->
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'OLD_RATE'|translate}}<span
+              class="required">*</span></label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="OldRate">
+              </bar-rating>
+              <app-control-messages [control]="reviewSkillsFormGroup.controls.OldRate"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <!-- End Old Rate -->
+        <!-- Collaborator Rate -->
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMPLOYEE_SKILLS_RATE'|translate}}</label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="CollaboratorMark">
+              </bar-rating>
+              <app-control-messages [control]="reviewSkillsFormGroup.controls.CollaboratorMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <!-- End Collaborator -->
+        <!-- Manager Rate -->
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'MANAGER_SKILLS_RATE'|translate}}</label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="ManagerMark">
+              </bar-rating>
+              <app-control-messages [control]="reviewSkillsFormGroup.controls.ManagerMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <!-- End Manager -->
+      </div>
+    </div>
+  </div>
+  <!-- End Past reviewSKills -->
+
+  <!-- Future reviewSKills -->
+  <div *ngIf="!isOldReviewSkills">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <div class="row form-group">
+        <!-- Skills -->
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'SKILLS'|translate}} <span class="required">*</span></label>
+            <div class="col-lg-8 col-md-12 col-sm-12" style="margin-top: 12px;">
+              <app-skills-dropdown *ngIf="currentReviewSkills && skillsToIgnore"
+                                   [currentSkillId]="currentReviewSkills.IdSkills" [skillsForm]="reviewSkillsFormGroup"
+                                   [skillsToIgnore]="skillsToIgnore"></app-skills-dropdown>
+            </div>
+            <app-control-messages [control]="reviewSkillsFormGroup.controls.IdSkills"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <!-- End Skills -->
+        <!-- Old Rate -->
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'OLD_RATE'|translate}} <span
+              class="required">*</span></label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <bar-rating *ngIf="currentReviewSkills.IsOld" [max]="6" [theme]="'default'" formControlName="OldRate"
+                          style="margin-top: 12px;">
+              </bar-rating>
+              <span *ngIf="!currentReviewSkills.IsOld" style="margin-top: 20px;">
+                  {{'N/A' | translate}}
+                </span>
+            </div>
+          </div>
+        </div>
+        <!-- End Old Rate -->
+        <!-- Collaborator Rate -->
+        <div class="col-lg-3 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'EMPLOYEE_SKILLS_RATE'|translate}} <span
+              class="required">*</span></label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="CollaboratorMark">
+              </bar-rating>
+              <app-control-messages [control]="reviewSkillsFormGroup.controls.CollaboratorMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <!-- End Collaborator -->
+        <!-- Manager Rate -->
+        <div class="col-lg-2 col-md-12 col-sm-12">
+          <div class="row form-group">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'MANAGER_SKILLS_RATE'|translate}} <span
+              class="required">*</span></label>
+            <div class="col-lg-8 col-md-12 col-sm-12">
+              <bar-rating [max]="6" [theme]="'default'" formControlName="ManagerMark">
+              </bar-rating>
+              <app-control-messages [control]="reviewSkillsFormGroup.controls.ManagerMark"
+                                    class="error-msg messages text-left text-danger"></app-control-messages>
+            </div>
+          </div>
+        </div>
+        <!-- End Manager -->
+        <!-- Delete button -->
+        <button (click)="deleteFutureReviewSkills(currentReviewSkills)" *ngIf="!currentReviewSkills.IsOld" class="noPadding btn-Add k-button"
+                style="border: none" type="button">
+          <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+        </button>
+        <!-- End Delete button -->
+      </div>
+    </div>
+  </div>
+  <!-- End Future reviewSKills -->
+</div>

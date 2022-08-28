@@ -1,0 +1,90 @@
+<div class="card full-screen-card mb-5">
+
+<kendo-grid #grid [data]="gridSettings.gridData">
+
+  <kendo-grid-column-group [locked]="false" [columnMenu]="false">
+    <kendo-grid-column [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}"
+                       [field]="gridSettings.columnsConfig[0].field" [editable]="false"
+                       [title]="gridSettings.columnsConfig[0].title | translate"
+                       [width]="gridSettings.columnsConfig[0].width"
+                       [columnMenu]="false">
+      <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [editable]="false"
+                       [title]="gridSettings.columnsConfig[1].title | translate"
+                       [width]="gridSettings.columnsConfig[1].width"
+                       [columnMenu]="false">
+      <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                       [title]="gridSettings.columnsConfig[2].title | translate"
+                       [width]="gridSettings.columnsConfig[2].width"
+                       [columnMenu]="false">
+      <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem>
+        {{dataItem.formula !== '0' ? dataItem.formula : ''}}
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                       [title]="gridSettings.columnsConfig[3].title | translate"
+                       [width]="gridSettings.columnsConfig[3].width"
+                       [columnMenu]="false">
+      <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                       [title]="gridSettings.columnsConfig[4].title | translate"
+                       [width]="gridSettings.columnsConfig[4].width"
+                       [columnMenu]="false">
+      <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                  theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+      </ng-template>
+    </kendo-grid-column>
+  </kendo-grid-column-group>
+  <kendo-grid-column-group [headerStyle]="{'text-align': 'center'}" [width]="240"
+                           [title]="'FISCAL_YEAR' | translate" [locked]="false">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{'FISCAL_YEAR' | translate}}" theme="light">{{'FISCAL_YEAR' | translate}}</span>
+    </ng-template>
+
+    <kendo-grid-column [headerStyle]="{'text-align': 'right'}" class="k-text-right"
+                       [field]="gridSettings.columnsConfig[5].field" [editable]="false" [title]="currentFiscalYearLabel"
+                       [width]="gridSettings.columnsConfig[5].width" [locked]="false" [columnMenu]="false"
+                       [format]="formatNumberOptions">
+    </kendo-grid-column>
+    <kendo-grid-column [headerStyle]="{'text-align': 'right'}" class="k-text-right"
+                       [field]="gridSettings.columnsConfig[6].field" [editable]="false"
+                       [title]="previousFiscalYearLabel"
+                       [width]="gridSettings.columnsConfig[6].width" [locked]="false" [columnMenu]="false"
+                       [format]="formatNumberOptions">
+    </kendo-grid-column>
+  </kendo-grid-column-group>
+
+  <ng-template kendoGridDetailTemplate let-dataItem="dataItem">
+    <app-historic-reporting-details [entityId]="dataItem.id"></app-historic-reporting-details>
+  </ng-template>
+</kendo-grid>
+  <!--Begin Card footer-->
+          <div class="card-footer d-flex justify-content-end p-3 footer-content">
+            <button type="button" class="btn btn-sm btn-back-to-list mr-2" [tooltip]="returnList"
+                    content-type="template" (click)="goToList()">
+              <i class="fa fa-reply"></i> {{'BACK_TO_LIST'|translate}}
+            </button>
+            <ng-template #returnList>
+              <span>{{ 'BACK_TO_LIST'|translate}}</span>
+            </ng-template>
+          </div>
+  <!--End Card footer-->
+</div>

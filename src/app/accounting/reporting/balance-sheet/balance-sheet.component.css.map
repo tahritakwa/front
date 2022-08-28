@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAAA,qCAAsC;EACpC,gBAAgB,EAAE,kBAAkB;EACpC,WAAW,EAAC,IAAI",
+"sources": ["balance-sheet.component.scss"],
+"names": [],
+"file": "balance-sheet.component.css"
+}

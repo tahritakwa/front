@@ -1,0 +1,75 @@
+<kendo-grid (cancel)="cancelHandler($event)" (dataStateChange)="dataStateChange($event)" (edit)="editHandler($event)"
+            (remove)="removeHandler($event)" (save)="saveHandler($event)" [columnMenu]="true" [data]="gridSettings.gridData"
+            [filter]="gridSettings.state.filter"
+            [pageSize]="gridSettings.state.take" [pageable]="pagerSettings" [reorderable]="true"
+            [selectable]="true" [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+            [sortable]="true" filterable="menu" style="margin-top: 30px;">
+  <!--Date-->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                     [filter]="gridSettings.columnsConfig[0].filter"
+                     [filterable]="gridSettings.columnsConfig[0].filterable"
+                     [format]="gridSettings.columnsConfig[0].format"
+                     [title]="gridSettings.columnsConfig[0].title | translate"
+                     [width]="gridSettings.columnsConfig[0]._width">
+    <ng-template kendoGridCellTemplate let-column="column" let-columnIndex="columnIndex" let-dataItem
+                 let-rowIndex="rowIndex">
+      {{dataItem.Month | date:'MMMM' | uppercase | translate }} {{dataItem.Month | date: 'yyyy'}}
+    </ng-template>
+    <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+      <div [formGroup]="formGroup" style="width: 300px;">
+        <kendo-datepicker [bottomView]="'year'" [format]="'MMMM yyyy'" [topView]="'decade'" class="form-control"
+                          formControlName="Month" style="width: 300px;">
+        </kendo-datepicker>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <!--Amount-->
+  <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                     [filter]="gridSettings.columnsConfig[1].filter"
+                     [filterable]="gridSettings.columnsConfig[1].filterable"
+                     [format]="gridSettings.columnsConfig[1].format"
+                     [title]="gridSettings.columnsConfig[1].title | translate"
+                     [width]="gridSettings.columnsConfig[1]._width">
+  </kendo-grid-column>
+  <!--State-->
+  <kendo-grid-column [editable]="false" [field]="gridSettings.columnsConfig[2].field"
+                     [filter]="gridSettings.columnsConfig[2].filter"
+                     [filterable]="gridSettings.columnsConfig[2].filterable"
+                     [format]="gridSettings.columnsConfig[2].format"
+                     [title]="gridSettings.columnsConfig[2].title | translate"
+                     [width]="gridSettings.columnsConfig[2]._width">
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+      <div *ngIf="dataItem.State == statusCode.Paid">
+        <span class="badge badge-success">{{"PAID" | translate}}</span>
+      </div>
+      <div *ngIf="dataItem.State == statusCode.PartiallyPaid">
+        <span class="badge" style="background: #ecb50e; color: white;">{{"PARTIALLY_PAID" | translate}}</span>
+      </div>
+      <div *ngIf="dataItem.State == statusCode.Unpaid">
+        <span class="badge badge-danger">{{"UNPAID" | translate}}</span>
+      </div>
+    </ng-template>
+  </kendo-grid-column>
+  <!-- Command-->
+  <kendo-grid-command-column [width]="130">
+    <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+      <!-- edit command directive, will be visible when not in edit mode -->
+      <button *ngIf="hasUpdateLoanInstallmentPermission && dataItem.IdLoanNavigation.CreditType == creditTypeEnum.Loan && dataItem.State == statusCode.Unpaid"
+              [primary]="true" class="btnKendoGrid" kendoGridEditCommand
+              type="button">
+        <i class="fa fa-pencil-square-o"></i>
+      </button>
+      <!-- save command directive, will be visible when in edit mode -->
+      <button *ngIf="dataItem.State == statusCode.Unpaid" class="btnKendoGrid" kendoGridSaveCommand type="button"><span
+        class="fa fa-save"></span></button>
+      <!-- cancel command directive, will be visible when in edit mode -->
+      <button *ngIf="dataItem.State == statusCode.Unpaid" class="btnKendoGrid" kendoGridCancelCommand
+              type="button"><span class="fa fa-close"></span></button>
+      <!-- remove command directive, will be visible when not in edit mode -->
+      <button *ngIf="dataItem.State === statusCode.Unpaid && dataItem.Amount === 0" class="btnKendoGrid"
+              kendoGridRemoveCommand type="button">
+        <i class="fa fa-trash-o"></i>
+      </button>
+    </ng-template>
+  </kendo-grid-command-column>
+</kendo-grid>

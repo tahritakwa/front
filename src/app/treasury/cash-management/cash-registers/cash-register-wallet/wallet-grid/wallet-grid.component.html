@@ -1,0 +1,59 @@
+<div class="col-lg-12">
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+      [sort]="gridSettings.state.sort" [sortable]="true" [pageable]="pagerSettings"
+      [reorderable]="true" (dataStateChange)="dataStateChange($event)">
+      <!-- Code Settlement-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+        [title]="gridSettings.columnsConfig[0].title |translate" [width]="150"
+        [filterable]="gridSettings.columnsConfig[0].filterable">
+      </kendo-grid-column>
+      <!--End Code Settlement -->
+      <!--  Tiers -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+        [title]="gridSettings.columnsConfig[1].title |translate" [width]="150"
+        [filterable]="gridSettings.columnsConfig[1].filterable">
+      </kendo-grid-column>
+      <!--End Tiers -->
+      <!-- SettlementDate -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+        [title]="gridSettings.columnsConfig[2].title |translate" [width]="160"
+        [filterable]="gridSettings.columnsConfig[2].filterable">
+      </kendo-grid-column>
+      <!--End SettlementDate -->
+      <!-- CommitmentDate-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+        [title]="gridSettings.columnsConfig[3].title |translate" [width]="150"
+        [filterable]="gridSettings.columnsConfig[3].filterable">
+      </kendo-grid-column>
+      <!--End CommitmentDate -->
+      <!-- Amount -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+        [title]="gridSettings.columnsConfig[4].title |translate" [width]="160"
+        [filterable]="gridSettings.columnsConfig[4].filterable"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"right","padding-right": "6%"}'>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="userCurrency">
+          {{dataItem.AmountWithCurrency.toLocaleString(language,{minimumFractionDigits: userCurrency.Precision,
+                style: 'currency', currency: userCurrency.Code, currencyDisplay:'code'})}}
+        </ng-template>
+      </kendo-grid-column>
+      <!-- End Amount -->
+      <!-- Status -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+        [title]="gridSettings.columnsConfig[5].title |translate" [width]="90"
+        [filterable]="gridSettings.columnsConfig[5].filterable">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.Cashed">
+            <span class="badge badge-success">
+              {{ 'CASHED' | translate }}
+            </span>
+          </span>
+          <span *ngIf="dataItem.IdPaymentStatus === paymentStatus.Unpaid">
+            <span class="badge badge-danger">
+              {{ 'UN_PAID' | translate }}
+            </span>
+          </span>
+        </ng-template>
+      </kendo-grid-column>
+      <!--End Status -->
+    </kendo-grid>
+  </div>

@@ -1,0 +1,44 @@
+
+:host ::ng-deep .k-multiselect-wrap:after {
+  content: "\25BC";
+  position: absolute;
+  margin-right: -44px;
+  padding: 8px;
+  right: 44px;
+  font-size: 12px;
+  cursor: pointer;
+  pointer-events: auto;
+  background-color: #c8ced3;
+  border-radius: 0 4px 4px 0;
+  }
+
+  :host ::ng-deep .k-multiselect-wrap.k-floatwrap {
+  z-index: 1;
+  background-color: transparent;
+}
+
+:host ::ng-deep .k-multiselect-wrap .k-button {
+  font-size: small;
+  margin: 0.1rem 0.1rem 0.1rem 0.1rem;
+}
+
+label{
+  white-space: unset;
+}
+
+.spinner {
+  padding-top: 20%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #00000052;
+  z-index: 9999;
+}
+
+
+:host ::ng-deep .k-grid-filter{
+  padding:0 !important;
+  width:1px !important;
+}

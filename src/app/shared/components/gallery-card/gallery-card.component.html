@@ -1,0 +1,31 @@
+ <div class="container fixed-height">
+  <div class="row">
+    <div class="d-flex align-items-center col-lg-4 d-flex justify-content-center add-pic mt-2" *ngIf="!cannotUpdateFile">
+      <label for="file-input-gallery" #fileInputGallery>
+        <i class="cursor-pointer fa fa-plus-circle fa-5x"></i>
+      </label>
+      <input id="file-input-gallery" multiple type='file' (change)="onSelectFiles($event)" accept="image/*,video/*">
+    </div>
+
+    <div class="col-lg-4 k-text-center pic mt-2" *ngFor="let media of mediaInfos ;let i=index;">
+      <i class="cursor-pointer text-danger fa fa-close fa-xs float-right removePicture" (click)="removeMedia($event,i)"
+        *ngIf="!cannotUpdateFile"></i>
+        <button *ngIf="!isVideoFile(i) && !isEmptyExtension(i) && !media.embededIframe"  class ="border-0"(click)="openImage(media)" >
+          <img class="gallery-card" [src]="media.src">
+        </button>
+      <video *ngIf="isVideoFile(i) && !isEmptyExtension(i)" poster="{{placeholderVideo}}" class="gallery-card" controls
+        (click)="toggleVideo()" #videoPlayer>
+        <source [src]="media.src" type="video/mp4" />
+        {{'NOT_SUPPORT_BROWSER' |translate}}
+      </video>
+
+      <div *ngIf="media && media.embededIframe" class="gallery-card" [innerHtml]="media.embededIframe"></div>
+    </div>
+  </div>
+</div>
+<div hidden>
+  <div #alertRead>
+    <i class="fa fa-exclamation-triangle edit-pencil fa-3x mt-4"></i>
+    <div class="d-flex flex-column">{{'READ_FILE_PROBLEM' | translate}}</div>
+  </div>
+</div>

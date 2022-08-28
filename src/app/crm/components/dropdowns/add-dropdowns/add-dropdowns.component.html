@@ -1,0 +1,176 @@
+<div class="card full-screen-card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 *ngIf="isUpdateMode"
+          class="card-title mb-0">{{ 'UPDATE_DROPDOWNS'|translate }}</h3>
+        <h3 *ngIf="!isUpdateMode"
+            class="card-title mb-0">{{ 'ADD_DROPDOWNS'|translate }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="form-group row">
+          <form class="col-12" [formGroup]="dropdownFormGroup">
+            <div class=" col-lg-6 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'NAME'|translate}}<span
+                class="required">*</span></label>
+              <input #name class="form-control" type="text" formControlName="name" (mouseout)="onMouseOut()" [readOnly]="true"
+                     [ngClass]="{ 'has-error': (dropdownFormGroup.controls.name.touched
+                               || dropdownFormGroup.controls.name.dirty) && !dropdownFormGroup.controls.name.valid }">
+              <app-control-messages [control]="dropdownFormGroup.controls.name"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class=" col-lg-6 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CONCERNED_MODULE'|translate}}</label>
+
+
+              <kendo-combobox formControlName="dropdownType" [data]="dropdownTypes"  [disabled]="isUpdateMode"
+                              [valueField]="'enumValue'" [textField]="'enumText'" [valuePrimitive]="true"
+                              [filterable]="true"
+                              style="width: 100%;">
+              </kendo-combobox>
+
+
+              <app-control-messages [control]="dropdownFormGroup.controls.dropdownType"
+                                    class="error-msg messages text-danger">
+              </app-control-messages>
+
+            </div>
+          </form>
+          <div class="form-group row">
+            <div class="col-12">
+              <div [ngStyle]="{'padding': '20px', 'overflow-y': 'auto'}">
+                <label class="col-lg-12 col-md-12 col-sm-12 col-12"
+                       [ngStyle]="{'color': '#4c9aae', 'margin-bottom': '0px;'}">
+                </label>
+                <div class="col-lg-12 col-md-6 col-sm-6 col-12"
+                     [ngStyle]="{'text-align': 'center'}" [formGroup]="filtresFormGroup">
+                  <kendo-grid
+                    [data]="dropdownFiltresGridData"
+                    [pageable]="false"
+                    [rowClass]="rowCallback"
+                    (add)="addStepRow($event,1)"
+                    (save)="saveStates($event)"
+                    (edit)="editHandler($event)"
+                    (remove)="deleteFromIntermediateSteps($event)"
+                    (cancel)="cancelHandler($event, 1)"
+                    [style.cursor]="getCursorStyle()">
+
+                    <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                                       [title]="gridSettings.columnsConfig[0].title | translate"
+                                       [width]="gridSettings.columnsConfig[0]._width"
+                                       [filter]="gridSettings.columnsConfig[0].filter"
+                                       [filterable]="gridSettings.columnsConfig[0].filterable"
+                                       [format]="gridSettings.columnsConfig[0].format">
+                      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                        <div *ngIf="dataItem">{{getStatusOrder(dataItem)}}</div>
+                      </ng-template>
+                      <ng-template kendoGridEditTemplate>
+                        <app-grid-cell-input-template [group]="filtresFormGroup" [controlName]="'order'"
+                                                      [readOnly]="true"
+                                                      inputType="number">
+                        </app-grid-cell-input-template>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                                       [title]="gridSettings.columnsConfig[1].title | translate"
+                                       [width]="gridSettings.columnsConfig[1]._width"
+                                       [filter]="gridSettings.columnsConfig[1].filter"
+                                       [filterable]="gridSettings.columnsConfig[1].filterable"
+                                       [format]="gridSettings.columnsConfig[1].format">
+                      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                        <div *ngIf="dataItem">{{getStatusName(dataItem)}}</div>
+                      </ng-template>
+                      <ng-template kendoGridEditTemplate>
+                        <app-grid-cell-input-template [group]="filtresFormGroup" [controlName]="'name'"
+                                                      inputType="text">
+                        </app-grid-cell-input-template>
+                        <app-control-message-grid-cell [group]="filtresFormGroup"
+                                                       [controlName]="'name'">
+                        </app-control-message-grid-cell>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" *ngIf="requireLocation"
+                                       [title]="gridSettings.columnsConfig[2].title | translate"
+                                       [width]="gridSettings.columnsConfig[2]._width"
+                                       [filter]="gridSettings.columnsConfig[2].filter"
+                                       [filterable]="gridSettings.columnsConfig[2].filterable"
+                                       [format]="gridSettings.columnsConfig[2].format">
+                      <ng-template kendoGridCellTemplate let-dataItem let-rowIndex="rowIndex">
+                        <div *ngIf="dataItem">{{getLocation(dataItem)}}</div>
+                      </ng-template>
+                      <ng-template kendoGridEditTemplate>
+                        <kendo-switch
+                          formControlName="location"
+                        ></kendo-switch>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <kendo-grid-command-column [width]="50">
+
+                      <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                        <!-- save command directive, will be visible when in edit mode -->
+                        <button kendoGridSaveCommand class="btnKendoGrid"><span
+                          class="fa fa-save"></span></button>
+                        <!-- cancel command directive, will be visible when in edit mode -->
+                        <button kendoGridCancelCommand class="btnKendoGrid"><span
+                          class="fa fa-close"></span></button>
+                        <!-- edit command directive-->
+                        <button kendoGridEditCommand class="grid-buttons">
+                          <i class="las la-pen cursor-pointer edit-pencil la-lg"
+                             tooltip="{{'UPDATE' | translate}}"></i>
+                        </button>
+                        <!-- remove command directive -->
+                        <button kendoGridRemoveCommand class="grid-buttons">
+                          <i class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+                             tooltip="{{'DELETE' | translate}}"></i>
+                        </button>
+                      </ng-template>
+                    </kendo-grid-command-column>
+
+                    <ng-template kendoGridToolbarTemplate [position]="'bottom'" id="addButton" >
+                      <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end"id="addButton1" >
+                        <a kendoGridAddCommand  id="addButton2" class="btn-Add k-button btn btn-add" style=" border: 2px double #4c9aae!important;"
+                                [disabled]="rowIsOpened">
+                          <i class="fa fa-plus fa AddIcon"></i>
+                          <span>&nbsp; {{'ADD'|translate}}</span>
+                        </a>
+                      </div>
+                    </ng-template>
+                  </kendo-grid>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer" style="margin-left: 0;">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a (click)="backToList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST' |translate}}
+              </span>
+              </a>
+              <button (click)="saveOrUpdate()" class="btn btn-sm btn-save mx-1" type="button">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>

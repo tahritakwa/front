@@ -1,0 +1,125 @@
+<div class="card full-screen-card">
+  <div class="card-header">
+    <h4 class="mb-0">
+      {{'TERM_BILLING' | translate}}
+    </h4>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="row col-12">
+        <div class="col-auto">
+          <div class="row mb-2">
+            <div class="col-auto pt-2">{{'MONTH' | translate}}</div>
+            <div class="col-auto">
+              <kendo-datepicker [(value)]="month" [format]="'MMMM yyyy'" [bottomView]="'year'"
+                                [placeholder]="'SEARCH_PER_MONTH' | translate"
+                                (keypress)="pressKeybordEnterToSearch($event)">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                           toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-auto pt-2">{{'BILLING_METHOD' | translate}}</div>
+        <div class="col-2">
+          <app-tier-category-dropdown [group]="formGroup" ></app-tier-category-dropdown>
+        </div>
+
+        <div class="col-0 p-1">
+          <button class="btn btn-secondary" style="margin-top:-5px;" type="button" (click)="searchbillinglist(month)">
+            <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+          </button>
+        </div>
+
+        <div class="col-auto pt-2">{{'INVOICING_DATE' | translate}}<span class="required">*</span></div>
+        <div class="col-auto" [formGroup]="formGroup">
+          <kendo-datepicker [format]="formatDate" formatPlaceholder="narrow" class="form-control"
+                            formControlName="DocumentDate" [ngClass]="{ 'has-error': (formGroup.controls.DocumentDate.touched || formGroup.controls.DocumentDate.dirty)
+  && !formGroup.controls.DocumentDate.valid }">
+            <app-control-messages [control]="formGroup.controls.DocumentDate"
+                                  class="error-msg messages text-left text-danger"></app-control-messages>
+            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                       toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+            </kendo-datepicker-messages>
+          </kendo-datepicker>
+        </div>
+        <button data-toggle="tooltip" title="{{'GENERATE' | translate}}"
+                              class="k-button btn-secondary mr-2 generate-button" type="button" tabindex="0"
+                              (click)="GenerateTermInvoice()" [disabled]='isGenerateBtnDisabled()'
+                              *ngIf="hasGeneratePermission && !isInvoicesGenerated">
+                        <i class="fa fa-cogs fa-lg AddIcon"></i>
+                        <span>&nbsp;{{'GENERATE' | translate}}</span>
+                      </button>
+                      &nbsp;
+          <div  *ngIf="isInvoicesGenerated">
+            <kendo-dropdownbutton *ngIf="hasPrintPermission" [data]="printReportType" (itemClick)="PrintTermInvoiceJasper($event)"
+              [primary]="true" class="print-button">
+              <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}}
+              <ng-template kendoDropDownButtonItemTemplate let-dataItem>
+                <span>{{ dataItem.TemplateCode }}</span>
+              </ng-template>
+            </kendo-dropdownbutton>
+            &nbsp;
+            <button data-toggle="tooltip" title="{{'REFRESH' | translate}}" (click)='refreshData()' class="k-button noPadding btn-Add k-button" dir="ltr"
+                    style="border: none; float: right" type="button">
+              <i class="fa fa-refresh fa-lg" aria-hidden="true" style="color: cornflowerblue"></i>
+              <span>&nbsp; {{'REFRESH'|translate}}</span>
+            </button>
+
+                
+                </div>
+
+      </div>
+    </div>
+    <!--Tabs-->
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <ul class="nav nav-tabs nav-tabs-new" role="tablist">
+          <li class="nav-item" (click)='showbl=true; showIa=false' *ngIf='isBl'>
+            <a data-toggle="tab" href="#bl" role="tab" class="nav-link nav-link-new"
+               [ngClass]="isBl && showbl ? 'active' : ''"
+               aria-controls="bl" aria-selected="true">
+              {{'DELIVERY_FORM'|translate}}
+            </a>
+          </li>
+          <li class="nav-item" (click)='showbl=false;showIa=true' *ngIf='isAsset'>
+            <a data-toggle="tab" href="#assets" role="tab" aria-controls="assest"
+               aria-selected="false" class="nav-link nav-link-new" [ngClass]="isAsset && showIa ? 'active' : ''">
+              &nbsp;{{'ASSET'|translate}}
+            </a>
+          </li>
+        </ul>
+        <!--Tab content -->
+        <div class="tab-content tab-content-new">
+          <div class="tab-pane fade px-0" [ngClass]="isBl && showbl ? 'show active' : ''"
+               id="bl" role="tabpanel" aria-labelledby="bl-tab">
+            <div class="card" *ngIf='showbl'>
+              <div class="card-content">
+                <div class="card-body p-3" style="min-height: fit-content;">
+                  <app-term-billing-grid [forBl]='true' #bl (isInvoicesGenerated)='setIsInvoicesGenerated($event)'
+                                         [month]='month'>
+                  </app-term-billing-grid>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade px-0" [ngClass]="isAsset && showIa ? 'show active' : ''" id="assets" role="tabpanel" aria-labelledby="assets-tab">
+            <div class="card" *ngIf='showIa'>
+              <div class="card-content">
+                <div class="card-body p-3" style="min-height: fit-content;">
+                  <app-term-billing-grid [forBl]='false' #ia (isInvoicesGenerated)='setIsInvoicesGenerated($event)'
+                                         [month]='month'>
+                  </app-term-billing-grid>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--End Tab content-->
+      </div>
+    </div>
+    <!-- End Tabs-->
+  </div>
+</div>

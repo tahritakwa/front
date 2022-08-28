@@ -1,0 +1,174 @@
+<form class="form-horizontal">
+  <kendo-grid (add)="addHandler()" (dataStateChange)="dataStateChange($event)" (remove)="removeHandler($event)"
+    [data]="gridSettings.gridData" [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+    [reorderable]="true" [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+    [sortable]="true">
+    <!-- Head Start-->
+    <ng-template *ngIf="recruitmentState !== states.Closed" kendoGridToolbarTemplate>
+      <div class="row" style="float :right; margin-right: 40px;">
+        <app-btn-grid [add]='hasAddInterviewPermission' [advencedAdd]='false'
+                      [export]='true'
+                      style="margin-top: -5%;    display: inline-flex;"></app-btn-grid>
+      </div>
+    </ng-template>
+    <!-- Head end-->
+    <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+                       [filter]="col.filter" [filterable]="col.filterable" [format]="col.format"
+                       [title]="col.title | translate"
+                       [width]="col._width">
+      <ng-template kendoGridHeaderTemplate>
+        <span theme="light"
+              tooltip="{{col.title|translate}}">{{col.title|translate}}</span>
+      </ng-template>
+      <ng-template *ngIf="col.field == 'IdCandidacyNavigation.IdCandidateNavigation.FirstName'" kendoGridCellTemplate
+                   let-dataItem="dataItem">
+        <a [routerLink]="['/main/rh/candidate/edit/', dataItem.IdCandidacyNavigation.IdCandidateNavigation.Id]"
+           class="candidate-link"
+           target="_blank">
+          {{dataItem.IdCandidacyNavigation.IdCandidateNavigation.FullName}}
+        </a>
+      </ng-template>
+
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" *ngIf="col.field == 'InterviewDate'">
+        {{dataItem.InterviewDate | date:formatDate}}
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column [field]="'Status'" [filter]="'numeric'" [title]="'STATUS' | translate" [width]="350">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+
+        <div *ngIf="!allRequiredConfirmed(dataItem.InterviewMark)">
+          <span class="badge badge-danger">{{'WAITING_FOR_INTERVIEWERS_VALIDATION'|translate}}</span>
+        </div>
+
+        <div
+          *ngIf="dataItem.Status === inteviewEnumerator.AllInterviewersAvailabilityConfirmed && allRequiredConfirmed(dataItem.InterviewMark)">
+          <span class="badge badge-warning">{{'ALL_INTERVIEWERS_AVAILABILITY_CONFIRMED'|translate}}</span>
+        </div>
+
+        <div
+          *ngIf="dataItem.Status === inteviewEnumerator.InterviewRequestedToCandidate && allRequiredConfirmed(dataItem.InterviewMark)">
+          <span class="badge badge-primary">{{'WAITING_FOR_CANDIDATE_VALIDATION'|translate}}</span>
+        </div>
+
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewConfirmedByCandidate">
+          <span class="badge badge-success">{{'INTERVIEW_CONFIRMED'|translate}}</span>
+        </div>
+
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewDone">
+          <span class="badge badge-secondary">{{'INTERVIEW_DONE'|translate}}</span>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <kendo-grid-column [title]="'MAIL_HISTORY' | translate" [width]="180" *ngIf = "hasHistoryMailInterviewPermission">
+      <ng-template kendoGridHeaderTemplate>
+        <span theme="light"
+              tooltip="{{'MAIL_HISTORY'|translate}}">{{'MAIL_HISTORY'|translate}}</span>
+      </ng-template>
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <button (click)="getInterviewEmailHistoric(dataItem)" class="noPadding btn-Add k-button"
+        ><i aria-hidden="true" class="fa fa-envelope text-primary"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-column>
+    <ng-template kendoGridDetailTemplate let-dataItem>
+      <section *ngIf="dataItem.InterviewMark">
+        <div *ngIf="haveRequired(dataItem.InterviewMark)">
+          <span>
+            <b>
+              {{'REQUIRED_INTERVIEWERS' | translate}}
+            </b>
+          </span>
+          <div class="row">
+            <div *ngFor="let interviewMark of dataItem.InterviewMark;" class="col-lg-6 col-md-8 col-sm-12"
+                 style="margin-left:20px!important">
+              <div *ngIf="interviewMark.IsRequired" class="col-lg-9 col-md-10 col-sm-12"
+                   style="margin-top:5px!important">
+                <span style="font-size:smaller!important">{{interviewMark.IdEmployeeNavigation.FirstName}} {{interviewMark.IdEmployeeNavigation.LastName}}</span>
+                <button (click)="confirmAvailability(interviewMark)" *ngIf="(hasConfirmDisponibilityPermission || (connectedEmployee && interviewMark.IdEmployee === connectedEmployee.Id))
+                && isInterviewMarkRequestedToInterviewer(interviewMark.Status) && !isCurrentRecruitmentCompleted()"
+                        class="noPadding k-button btn-Add"
+                        style="float:right!important">
+                  <i aria-hidden="true" class="fa fa-check text-primary"> {{'CONFIRM_AVAILABILITY' | translate}}</i>
+                </button>
+                <i *ngIf="!isInterviewMarkRequestedToInterviewer(interviewMark.Status)" aria-hidden="true"
+                   class="fa fa-check text-success"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="haveOptional(dataItem.InterviewMark)" style="margin-top:10px!important">
+          <span>
+            <b>
+              {{'OPTIONAL_INTERVIEWERS' | translate}}
+            </b>
+          </span>
+          <div class="row">
+            <div *ngFor="let interviewMark of dataItem.InterviewMark;" class="col-lg-6 col-md-8 col-sm-12"
+                 style="margin-left:20px!important">
+              <div *ngIf="!interviewMark.IsRequired" class="col-lg-9 col-md-10 col-sm-12"
+                   style="margin-top:5px!important">
+                <span style="font-size:smaller!important">{{interviewMark.IdEmployeeNavigation.FirstName}} {{interviewMark.IdEmployeeNavigation.LastName}}</span>
+                <button *ngIf="(hasConfirmDisponibilityPermission || (connectedEmployee && interviewMark.IdEmployee === connectedEmployee.Id))
+                    && isInterviewMarkRequestedToInterviewer(interviewMark.Status) && !isCurrentRecruitmentCompleted()" (click)="confirmAvailability(interviewMark)" 
+                  class="noPadding k-button btn-Add" style="float:right!important">
+                  <i aria-hidden="true" class="fa fa-check text-primary"> {{'CONFIRM_AVAILABILITY' | translate}}</i>
+                </button>
+                <i *ngIf="!isInterviewMarkRequestedToInterviewer(interviewMark.Status)" aria-hidden="true"
+                   class="fa fa-check text-success"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="hasInviteEmployeePermission && dataItem.Status === inteviewEnumerator.AllInterviewersAvailabilityConfirmed && allRequiredConfirmed(dataItem.InterviewMark)
+              && !isCurrentRecruitmentCompleted()" class="col-lg-12 col-md-12 col-sm-12" style="float:right!important">
+          <span [ngStyle]="{'float': 'right'}">
+            <!--print-->
+            <kendo-dropdownbutton (itemClick)="prepareEmailHandler(dataItem, $event)" [data]="langList"
+                                  [primary]="true" style="background-color: transparent;">
+              <i aria-hidden="true" class="fa fa-envelope"> {{'INVITE_THE_CANDIDATE' | translate}}</i>
+            </kendo-dropdownbutton>
+            <!--end print-->
+          </span>
+        </div>
+
+        <div *ngIf="dataItem.Status === inteviewEnumerator.InterviewRequestedToCandidate && allRequiredConfirmed(dataItem.InterviewMark)
+                   && !isCurrentRecruitmentCompleted()" class="col-lg-12 col-md-12 col-sm-12" style="float:right!important">
+
+          <button (click)="confirmCandidateDisponibility(dataItem)" class="btn btn-sm btn-success" *ngIf = "hasConfirmDisponibilityPermission"
+                  style="float:right!important">
+            <i aria-hidden="true" class="fa fa-check"> {{'CONFIRM_THE_PRESENCE_OF_CANDIDATE' | translate}}</i>
+          </button>
+          <!--print-->
+          <kendo-dropdownbutton *ngIf = "hasInviteEmployeePermission" (itemClick)="prepareEmailHandler(dataItem, $event)"
+                                [data]="langList" [primary]="true" style="float:right!important; margin-right:10px!important; margin-left:10px!important; background-color: transparent; ">
+            <i aria-hidden="true" class="fa fa-envelope"> {{'INVITE_THE_CANDIDATE_AGAIN' | translate}}</i>
+          </kendo-dropdownbutton>
+          <!--end print-->
+        </div>
+      </section>
+    </ng-template>
+    <!-- Command-->
+    <kendo-grid-command-column [width]="170">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem" let-isNew="isNew">
+        <!-- edit command directive-->
+        <button (click)="openEditInterviewModal(dataItem)" *ngIf="hasUpdateInterviewPermission && dataItem.Status < inteviewEnumerator.InterviewRequestedToCandidate
+                   && !isCurrentRecruitmentCompleted()" class="noPadding btn-Add k-button" kendoGridEditCommand
+                tooltip="{{'UPDATE'|translate}}">
+          <i aria-hidden="true" class="fa fa-pencil text-primary"></i>
+        </button>
+        <!--Delay mode -->
+        <button (click)="openDelayMeetingModal(dataItem)" *ngIf="hasDelayInterviewPermission && dataItem.Status < inteviewEnumerator.InterviewRequestedToCandidate
+          && !isCurrentRecruitmentCompleted()" class="noPadding btn-Add k-button refuse_button"
+                tooltip="{{'DELAY_INTERVIEW'|translate}}">
+          <i class=" fa fa-clock-o fa-lg AddIcon text-primary"></i>
+        </button>
+        <!-- remove command directive-->
+        <button *ngIf="hasDeleteInterviewPermission && dataItem.Status < inteviewEnumerator.InterviewRequestedToCandidate
+                   && !isCurrentRecruitmentCompleted()" class="noPadding btn-Add k-button" kendoGridRemoveCommand style="margin-left:-4px!important">
+          <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-command-column>
+  </kendo-grid>
+</form>

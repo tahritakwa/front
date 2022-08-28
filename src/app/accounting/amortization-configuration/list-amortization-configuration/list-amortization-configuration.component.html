@@ -1,0 +1,156 @@
+<app-spinner *ngIf="spinner" class="spinner"></app-spinner>
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 class="card-title mb-0">{{'ACCOUNTING_IMMOBILIZATION'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="col-lg-12 col-md-12 col-sm-12 mr-5">
+      <div class="row">
+        <!--Begin card body-->
+        <kendo-grid #grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+          [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+          (cancel)="cancelHandler($event)" (save)="saveHandler($event)" (dataStateChange)="dataStateChange($event)"
+          [sortable]="true" [pageable]="true" filterable="menu" [groupable]='false' [reorderable]="true"
+          [columnMenu]="true" [selectable]="true" (cellClick)="lineClickHandler($event)" [kendoGridSelectBy]="'Id'"
+          [selectedKeys]="selectedRows" (keypress)="keyEnterAction(grid,this.categoryFormGroup,$event)"
+          style="width: 100%">
+          <kendo-grid-command-column [footerStyle]="{'background-color':'#fff'}" width="125">
+            <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+              <button kendoGridSaveCommand *ngIf="editMode" class='noPadding btn-Add'>
+                <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+              </button>
+
+              <button kendoGridCancelCommand *ngIf="editMode" class="noPadding btn-Add k-button">
+                <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+              </button>
+
+            </ng-template>
+          </kendo-grid-command-column>
+          <!--Code-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+            [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+            [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+            [format]="gridSettings.columnsConfig[0].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridEditTemplate>
+              <app-grid-cell-input-template [group]="categoryFormGroup" controlName="Code" inputType="text">
+              </app-grid-cell-input-template>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Label-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+            [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+            [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+            [format]="gridSettings.columnsConfig[1].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridEditTemplate>
+              <app-grid-cell-input-template [group]="categoryFormGroup" controlName="Label" inputType="text">
+              </app-grid-cell-input-template>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Immobilization type-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+            [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+            [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable"
+            [format]="gridSettings.columnsConfig[2].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+              <app-immobilization-type-combobox [form]="categoryFormGroup"
+                [styleDeprectionPeriod]="styleDeprectionPeriod" [isFromActif]="false">
+              </app-immobilization-type-combobox>
+              <i #anchor></i>
+              <app-control-message-grid-cell [group]="categoryFormGroup" [anchor]="anchor"
+                controlName="ImmobilisationType">
+
+              </app-control-message-grid-cell>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Depreciation Peroid-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+            [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+            [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable"
+            [format]="gridSettings.columnsConfig[3].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+              <app-grid-cell-input-template [group]="categoryFormGroup" [min]="min" controlName="DepreciationPeriod"
+                inputType="number">
+              </app-grid-cell-input-template>
+              <i #anchor></i>
+              <app-control-message-grid-cell [group]="categoryFormGroup" [anchor]="anchor"
+                controlName="DepreciationPeriod">
+
+              </app-control-message-grid-cell>
+            </ng-template>
+          </kendo-grid-column>
+          <!--Immobilization Account-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+            [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+            [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+            [format]="gridSettings.columnsConfig[4].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+              <app-accounts-dropdown-component [fieldName]="'ImmobilizationAccount'" [group]="categoryFormGroup"
+                [selectedValue]=dataItem.ImmobilizationAccount [listAccount]='immobilizationAccountList'>
+              </app-accounts-dropdown-component>
+              <i #anchor></i>
+              <app-control-message-grid-cell [group]="categoryFormGroup" [anchor]="anchor"
+                controlName="ImmobilizationAccount">
+
+              </app-control-message-grid-cell>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.ImmobilizationAccount?.label}}
+            </ng-template>
+
+          </kendo-grid-column>
+          <!--Amortization Account-->
+          <kendo-grid-column [field]="gridSettings.columnsConfig[5].field"
+            [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+            [filter]="gridSettings.columnsConfig[5].filter" [filterable]="gridSettings.columnsConfig[5].filterable"
+            [format]="gridSettings.columnsConfig[5].format">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{gridSettings.columnsConfig[5].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[5].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+              <app-accounts-dropdown-component [fieldName]="'AmortizationAccount'" [group]="categoryFormGroup"
+                [selectedValue]=dataItem.AmortizationAccount [listAccount]='amortizationAccountList'>
+              </app-accounts-dropdown-component>
+
+              <i #anchor></i>
+              <app-control-message-grid-cell [group]="categoryFormGroup" [anchor]="anchor"
+                controlName="AmortizationAccount">
+
+              </app-control-message-grid-cell>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+              {{dataItem.AmortizationAccount?.label}}
+            </ng-template>
+          </kendo-grid-column>
+          <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+            pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+          </kendo-grid-messages>
+        </kendo-grid>
+      </div>
+      <!--End card body-->
+    </div>
+  </div>
+</div>

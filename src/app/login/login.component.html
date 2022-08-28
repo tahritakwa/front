@@ -1,0 +1,42 @@
+<div class="limiter">
+  <div class="container-login100" style="background-image: url('../../assets/image/back2.jpg');">
+    <div class="wrap-login100 animate__animated animate__bounceIn">
+      <form class="login100-form validate-form" [formGroup]="form">
+        <span class=" row login100-form-logo">
+          <img src="../../assets/image/log_s.svg" style="width: 60%;">
+        </span>
+        <div class="selected-Company-style">
+          <label>
+            Stark
+          </label>
+        </div>
+        <br><br>
+        <div class="form-group">
+          <div class="wrap-input100 validate-input" data-validate="Enter Email">
+            <input class="input100" type="text" name="Email" placeholder="Email" formControlName="Email"
+              [ngClass]="{'animate__animated animate__headShake': loginFieldAnimation}" />
+            <span class="focus-input100" data-placeholder="&#xf207;"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="wrap-input100 validate-input" data-validate="Enter password">
+            <input class="input100" type="password" placeholder="Password" name="Password" formControlName="Password"
+              [ngClass]="{'animate__animated animate__headShake': passwordFieldAnimation}" />
+            <span class="focus-input100" data-placeholder="&#xf191;"></span>
+          </div>
+        </div>
+ <!-- <div *ngIf="!loginRecaptcha" class="Checkbox-style">    
+        <re-captcha  (resolved)="resolved($event)"  errorMode="handled" siteKey= "6Lf_uggaAAAAAEpUNlGw8YXw6IwApASpmrYFHAUE"
+        ></re-captcha></div> -->
+        <br/>
+        <div class="container-login100-form-btn">
+          <button class="login100-form-btn" (click)="onLogin()" type="submit"
+            [ngClass]="{'animate__animated animate__headShake': loginError}">
+            Login
+          </button>
+        </div>        
+      </form>
+      <!-- <script src="https://www.google.com/recaptcha/api.js?render=explicit" async></script> -->
+    </div>
+  </div>
+</div>

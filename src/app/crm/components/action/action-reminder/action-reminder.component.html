@@ -1,0 +1,46 @@
+<div [formGroup]="reminderFG" class="col-lg-12 col-sm-12 col-md-2 col-xs-2">
+  <div class="row form-group">
+    <div class="col-lg-4 col-sm-12 col-md-2 col-xs-2 input-group white">
+      <kendo-dropdownlist [data]="reminderTypes"
+                          class="form-control HistoryCommandMargin"
+                          formControlName="reminderType"
+                          textField="enumText"
+                          [disabled]="disabled"
+                          valueField="enumValue"
+                          [valuePrimitive]="true">
+      </kendo-dropdownlist>
+    </div>
+    <div class="col-lg-4 col-sm-12 col-md-2 col-xs-2 input-group white">
+      <input
+        class="form-control HistoryCommandMargin" formControlName="delayCount" [disabled]="disabled" type="text"
+        (keypress)="numberOnly($event)" [ngClass]="{ 'has-error': (reminderFG.controls.delayCount.touched ||
+                               reminderFG.controls.delayCount.dirty) && !reminderFG.controls.delayCount.valid }"
+        placeholder="{{'BEFORE_PLACERHOLDER_ACTION_REMINDER'|translate}}">
+    </div>
+    <div class="col-lg-4 col-sm-2 col-md-2 col-xs-2 input-group white">
+      <kendo-dropdownlist [data]="reminderFrequencyUnities"
+                          class="form-control HistoryCommandMargin"
+                          formControlName="delayUnity"
+                          [disabled]="disabled"
+                          textField="enumText"
+                          valueField="enumValue"
+                          [valuePrimitive]="true">
+      </kendo-dropdownlist>
+    </div>
+    <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+      <app-control-messages [control]="reminderFG.controls.reminderType"
+                            class="error-msg messages text-danger">
+      </app-control-messages>
+    </div>
+    <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+      <app-control-messages [control]="reminderFG.controls.delayCount"
+                            class="error-msg messages text-danger">
+      </app-control-messages>
+    </div>
+    <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+      <app-control-messages [control]="reminderFG.controls.delayUnity"
+                            class="error-msg messages text-danger">
+      </app-control-messages>
+    </div>
+  </div>
+</div>

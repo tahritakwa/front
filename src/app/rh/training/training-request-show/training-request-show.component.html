@@ -1,0 +1,66 @@
+<form class="form-horizontal" style="margin-top: 20px;">
+  <kendo-grid (dataStateChange)="dataStateChange($event)" (remove)="removeHandler($event)" [columnMenu]="true"
+              [data]="gridSettings.gridData" [filter]="gridSettings.state.filter" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings" [reorderable]="true"
+              [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+              [sortable]="true"
+              filterable="menu">
+    <!-- Head Start-->
+    <ng-template kendoGridToolbarTemplate>
+      <div class="row toolbar_template">
+        <app-btn-grid [addLink]='"add"' [add]='false' [advencedAdd]='false' [export]='true'
+                      style="display: inline-flex;"></app-btn-grid>
+      </div>
+    </ng-template>
+    <!-- Head end-->
+    <!-- Columns data -->
+    <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+                       [filter]="col.filter" [filterable]="col.filterable" [format]="col.format"
+                       [hidden]="col.hidden"
+                       [title]="col.title | translate" [width]="col._width">
+
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <span *ngIf="col.field === 'IdEmployeeCollaboratorNavigation.FullName'">
+          {{dataItem.IdEmployeeCollaboratorNavigation.FullName}}
+        </span>
+        <span *ngIf="col.field === 'IdTrainingNavigation.Name'">
+          {{dataItem.IdTrainingNavigation.Name}}
+        </span>
+        <span *ngIf="col.field === 'ExpectedDate'">
+          {{dataItem.ExpectedDate| date: formatDate}}
+        </span>
+        <span *ngIf="col.field === 'Status'">
+          <div *ngIf="dataItem.Status == trainingRequestState.Waiting"><span
+            class="badge badge-warning">{{'WAITING'|translate}}</span></div>
+          <div *ngIf="dataItem.Status == trainingRequestState.Accepted"><span
+            class="badge badge-success">{{'ACCEPTED'|translate}}</span></div>
+          <div *ngIf="dataItem.Status == trainingRequestState.Refused"><span
+            class="badge badge-danger">{{'REFUSED'|translate}}</span></div>
+          <div *ngIf="dataItem.Status == trainingRequestState.Closed"><span
+            class="badge badge-danger">{{'CLOSED'|translate}}</span></div>
+        </span>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- End Columns data -->
+    <!-- Command-->
+    <kendo-grid-command-column [width]="130">
+      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <!--Open advanced edit form -->
+        <button (click)="updateTrainingRequest(dataItem)" class="k-button btnKendoGrid" *ngIf="hasShowTrainingRequestPermission">
+          <i class="fa fa-chevron-circle-right"></i>
+        </button>
+        <!-- remove command directive, will be visible when the state is not accepted-->
+        <button *ngIf="dataItem.Status == trainingRequestState.Waiting && hasDeleteTrainingRequestPermission" class="btnKendoGrid"
+                kendoGridRemoveCommand>
+          <i class="fa fa-trash-o"></i>
+        </button>
+      </ng-template>
+    </kendo-grid-command-column>
+    <!--grid pdf & excel-->
+    <app-grid-export [gridSettings]="gridSettings" [predicate]="predicate" [service]="trainingRequestService"
+                     excel="true"
+                     fileName="{{'TRAINING_REQUEST_LIST'|translate}}" pdf="true">
+    </app-grid-export>
+    <!--end grid pdf & excel-->
+    <!-- End Command-->
+  </kendo-grid>
+</form>

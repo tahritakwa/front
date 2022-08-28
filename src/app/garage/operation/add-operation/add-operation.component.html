@@ -1,0 +1,163 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!-- card header -->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{(isUpdateMode ? 'EDIT_OPERATION': 'ADD_OPERATION') | translate}}</h3>
+    </div>
+  </div>
+
+  <!-- card-body -->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="operationFormGroup">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'OPERATION' | translate}}
+                <span class="required">*</span></label>
+                <div class="col-lg-8">
+                  <input class="form-control" formControlName="Name" type="text"
+                    [ngClass]="{ 'has-error': (operationFormGroup.controls.Name.touched || operationFormGroup.controls.Name.dirty) && !operationFormGroup.controls.Name.valid }">
+                  <app-control-messages [control]="operationFormGroup.controls.Name"
+                    class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'OPERATION_TYPE' | translate}}
+                <span class="required">*</span>
+              </label>
+              <div class="col-lg-8">
+                <app-operation-type-dropdown [form]="operationFormGroup"
+                  (selectedValue)="selectedOpeartionTypeValueChange($event)">
+                </app-operation-type-dropdown>
+                <app-control-messages [control]="operationFormGroup.controls.IdOperationType"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'UNIT_DETAILS' | translate}}</label>
+              <div class="col-lg-8">
+                <input class="form-control" formControlName="UnitDetails" type="text" (input)="updateUnitDetails()">
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'UNIT_NUMBER' | translate}}
+                <span class="required">*</span>
+              </label>
+              <div class="col-lg-8">
+                <input class="form-control" formControlName="UnitNumber" type="number" (change)="onValueChanged($event)"
+                  [ngClass]="{ 'has-error': (operationFormGroup.controls.UnitNumber.touched || operationFormGroup.controls.UnitNumber.dirty) && !operationFormGroup.controls.UnitNumber.valid }">
+                <app-control-messages [control]="operationFormGroup.controls.UnitNumber"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <div class="form-group row">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'TAXE' | translate}}
+                <span class="required">*</span>
+              </label>
+              <div class="col-lg-8">
+                <app-taxe-dropdown [form]="operationFormGroup" [hideAddBtn]="false" (selectedItem)="taxSelectedChange($event)">
+                </app-taxe-dropdown>
+                <app-control-messages [control]="operationFormGroup.controls.IdTaxe"
+                  class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <span style="margin-right:30px">
+              <label class="col-lg-4 col-md-12 col-sm-12" style="font-size:16px; font-weight:bold;">
+                {{'AMOUNTHT'| translate}} :
+              </label>
+              <span *ngIf="operationToUpdate && (operationToUpdate.Htprice >=0 )">
+                {{operationToUpdate.Htprice.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+                style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <span style="margin-right:30px">
+              <label class="col-lg-4 col-md-12 col-sm-12" style="font-size:16px; font-weight:bold;">
+                {{'TTC_AMOUNT'| translate}} :
+              </label>
+              <span *ngIf="operationToUpdate && (operationToUpdate.Ttcprice >=0 )">
+                {{operationToUpdate.Ttcprice.toLocaleString(language,{minimumFractionDigits: companyCurrency.Precision,
+                style: 'currency', currency: companyCurrency.Code, currencyDisplay:'code'})}}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="form-group row">
+          <div class="col-lg-6">
+            <span>
+              <label class="col-lg-4 col-md-12 col-sm-12" style="font-size:16px;font-weight: bold;">
+                {{'EXPECTED_DURATION'| translate}} :
+              </label>
+              <span *ngIf="operationToUpdate && (operationToUpdate.DurationInDays > 0)">
+                {{operationToUpdate.DurationInDays}}&nbsp;{{'DAYS' | translate}}
+              </span>
+              <span *ngIf="operationToUpdate && (operationToUpdate.DurationInHours > 0)">
+                {{operationToUpdate.DurationInHours}}&nbsp;{{'HOURS' | translate}}
+              </span>
+              <span *ngIf="operationToUpdate && (operationToUpdate.DurationInMinutes > 0)">
+                {{operationToUpdate.DurationInMinutes}}&nbsp;{{'MINUTES' | translate}}
+              </span>
+              <span *ngIf="operationToUpdate && (operationToUpdate.DurationInSecondes > 0)">
+                {{operationToUpdate.DurationInSecondes}}&nbsp;{{'SECONDS' | translate}}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="OPERATION_LIST_URL">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+    <div class="card full-screen-card">
+        <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'SHARED_DOCUMENT'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+      <app-advanced-search [filtreFieldsColumns]="initialColumnsForFilter" [filtreFieldsInputs]="columnsToBeAddForFilter"
+      (filtrePredicateToSend)="getFilterPredicate($event)" (searchClickEvent)="initGridDataSource()" (predicateOperator)="getOperatorPredicate($event)"
+      (resetClickEvent)="resetClickEvent()">
+    </app-advanced-search>
+    <br>
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+                [sortable]="true" filterable="menu" [reorderable]="true" [columnMenu]="true" [sort]="gridSettings.state.sort"
+                [selectable]="true" [filter]="gridSettings.state.filter" (dataStateChange)="dataStateChange($event)"
+                [pageable]="pagerSettings" (add)="addNewDocument()">
+      <!-- Head Start-->
+      <ng-template kendoGridToolbarTemplate>
+          <app-btn-grid [add]="hasAddPermission"></app-btn-grid>
+      </ng-template>
+      <!-- Head end-->
+      <!-- Employee-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [columnMenu]="false"
+                         [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[0].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- type-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [columnMenu]="false"
+                         [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[1].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- submission date -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [columnMenu]="false"
+                         [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+                         [format]="gridSettings.columnsConfig[2].format">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[2].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.SubmissionDate| date: gridSettings.columnsConfig[2].format}}
+        </ng-template>
+      </kendo-grid-column>
+      <!-- expeditor name -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [columnMenu]="false"
+                         [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[3].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <span *ngIf="dataItem.TransactionUser && dataItem.TransactionUser.FirstName">{{dataItem.TransactionUser.FirstName}}</span>
+          <span *ngIf="dataItem.TransactionUser && dataItem.TransactionUser.LastName">{{dataItem.TransactionUser.LastName}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- FilesInfos -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[4].field" [columnMenu]="false"
+                         [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width">
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[4].title|translate}}"
+                theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem>
+          <app-upload-file [fileToUpload]="dataItem.FilesInfos" [canUpdateFile]="true"
+                           [service]="sharedDocumentService">
+          </app-upload-file>
+        </ng-template>
+      </kendo-grid-column>
+    </kendo-grid>
+  </div>
+</div>
+</div>

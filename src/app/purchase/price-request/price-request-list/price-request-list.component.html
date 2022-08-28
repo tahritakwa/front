@@ -1,0 +1,115 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card full-screen-card">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'PRICE_REQUEST_LIST'|translate}}</h3>
+          </div>
+        </div>
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body">
+          <div class="row d-flex justify-content-between mt-3">
+            <div class="col-lg-4 col-md-4 col-sm-4">
+              <!-- search div-->
+              <div class="d-flex justify-content-center">
+                <div class="col-12">
+                  <div class="form-group row">
+                    <div class="col-10">
+                      <input type="text" class="form-control" placeholder="{{'SEARCH_PRICE_REQUEST'|translate}}"
+                        name='priceRequest' aria-describedby="addon-wrapping" [(ngModel)]='priceReq'
+                        (afterValueChanged)='filter()'>
+                    </div>
+                    <div class="col-2 p-1">
+                      <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End search div-->
+            <app-btn-grid class="col" [advencedAdd]='haveAddPermission' [addLink]='"add"' [model]='true' [relativeStyle]='true'
+              [fileName]="'PRICE_REQUEST_LIST'|translate" [gridSettings]="gridSettings" [service]="priceRequestService"
+              [predicate]="predicate" [isExportExcel]="true">
+            </app-btn-grid>
+          </div>
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+            [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+            (edit)="editHandler($event)" (remove)="removeHandler($event)" (add)="addHandler($event)"
+            (dataStateChange)="dataStateChange($event)" [sortable]="true" [pageable]="pagerSettings"
+            [reorderable]="true">
+            <!--Columns-->
+            <kendo-grid-column *ngFor="let col of gridSettings.columnsConfig; let i = index" [field]="col.field"
+              title="{{col.title | translate}}" [width]="col._width" [filter]="col.filter" [filterable]="col.filterable"
+              [format]="col.format" [columnMenu]="false">
+              <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+                <span tooltip="{{column.title | translate}}" theme="light">
+                  {{column.title}}
+                </span>
+              </ng-template>
+              <ng-template *ngIf="col.field === 'Suppliers'" kendoGridCellTemplate let-dataItem>
+                <span *ngFor="let tiersPriceRequest of dataItem.SupplierName|slice:0:3;" class="SupplierClass"
+                  style="border: 2px solid hsl(184, 32%, 53%) !important; padding: 3px; margin-right: 2px;">
+                  {{tiersPriceRequest}}
+                </span>
+                <span *ngIf="dataItem.SupplierName.length > 3" data-toggle="tooltip" data-placement="top"
+                  title="{{getMessageToDisplay(dataItem.SupplierName)}}" style="margin-bottom: 0px;"
+                  class="SupplierClass" style="border: 2px solid #61a8ad !important; padding: 3px; font-weight: bold;">
+                  . . .
+                </span>
+              </ng-template>
+              <ng-template *ngIf="col.field === 'DocumentDate'" kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.DocumentDate|date: col.format}}
+              </ng-template>
+              <ng-template *ngIf="col.field === 'Code'" kendoGridCellTemplate let-dataItem="dataItem">
+                {{dataItem.Code}}
+                <i class="fa fa-angle-double-right" data-toggle="modal" data-target="#documentModal"
+                  (click)="openDocAssociated(dataItem.Id)">
+                </i>
+              </ng-template>
+            </kendo-grid-column>
+            <!--End Columns-->
+            <!--Actions-->
+            <kendo-grid-command-column [width]="130" [title]="'ACTIONS'| translate " [columnMenu]="false"
+              [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <!--Open advanced edit form -->
+                <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true" *ngIf="haveShowPermission || haveUpdatePermission"
+                  (click)="goToAdvancedEdit(dataItem)"></i>
+                <i class="text-danger cursor-pointer fa fa-trash-o la-lg" aria-hidden="true" *ngIf="haveDeletePermission"
+                  (click)="removeHandler(dataItem)"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--End Actions-->
+            <!--grid pdf & excel-->
+            <app-price-request-grid-export [gridSettings]="gridSettings" fileName="{{'PRICE_REQUEST_LIST'|translate}}"
+              pdf="true" excel="true" [service]="priceRequestService" [predicate]="predicate">
+            </app-price-request-grid-export>
+            <!--end grid pdf & excel-->
+          </kendo-grid>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Documents -->
+<div class="modal fade" id="documentModal" tabindex="-1" role="dialog" aria-labelledby="documentModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="documentModalLabel">{{'DETAILS'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeDocAssociated()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-price-request-documents [documentId]='idDoc' *ngIf="openModal"></app-price-request-documents>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<div class="col-lg-12 col-md-12 col-sm-12" style="margin-bottom: 3em;">
+  <label class="col-lg-12 col-md-12 col-sm-12">{{'TRAINING_TYPE'|translate}}</label>
+  <div class="col-lg-12 col-md-12 col-sm-12" style="margin-left: 2em; margin-top: 1em;">
+    <div class="row">
+      <div class="col-lg-3 col-md-12 col-sm-12">
+        <input (click)="checkIsInternal($event)" [checked]="IsInternal" class="k-radio" id="radioInternal" name="IsInternal"
+               type="radio" [disabled]="!(hasAddTrainingSessionPermission && !isUpdateMode || hasUpdateTrainingSessionPermission && isUpdateMode)"/>
+        <label class="k-radio-label" for="radioInternal">{{'INTERNAL'|translate}}</label>
+      </div>
+      <div class="col-lg-3 col-md-12 col-sm-12">
+        <input (click)="checkIsExternal($event)" [checked]="IsExternal" class="k-radio" id="radioExternal" name="IsInternal"
+               type="radio" [disabled]="!(hasAddTrainingSessionPermission && !isUpdateMode || hasUpdateTrainingSessionPermission && isUpdateMode)"/>
+        <label class="k-radio-label" for="radioExternal">{{'EXTERNAL'|translate}}</label>
+      </div>
+    </div>
+
+  </div>
+
+  <br/>
+  <!--Begin internal training-->
+  <div *ngIf="IsInternal" class="col-lg-12 col-md-12 col-sm-12" style="margin-left: 2em;">
+    <div *ngIf="idSkill && !showEmployeeDropdown" class="col-lg-6 col-md-12 col-sm-12">
+      <div class="row">
+        <label class="col-lg-4 col-md-12 col-sm-12">{{'TRAINER'|translate}}<span class="required">*</span></label>
+        <app-employee-multiselect (hasNoEmployeeWithSkill)="onEmloyeeWithSkill($event)" (selected)="onChangeEmployee($event)"
+                                  [disabled]="!(hasAddTrainingSessionPermission && !isUpdateMode || hasUpdateTrainingSessionPermission && isUpdateMode)" [idSkill]="idSkill"
+                                  [selectedValueMultiSelect]="idSelectedEmployee"
+                                  class="col-lg-6 col-md-12 col-sm-12">
+        </app-employee-multiselect>
+        <!---->
+      </div>
+    </div>
+    <div *ngIf="showEmployeeDropdown" class="col-lg-6 col-md-12 col-sm-12">
+      {{'UNAVAILABLE_TRAINOR'|translate}}
+    </div>
+  </div>
+  <!-- End internal training -->
+  <!-- Begin external training -->
+  <div *ngIf="IsExternal" class="col-lg-12 col-md-12 col-sm-12" style="margin-left: 2em;">
+    <!--Begin choose training center -->
+    <div class="row" style="margin-top: 10px;">
+      <label class="col-lg-2 col-md-12 col-sm-12">{{'CHOOSE_TRAINING_CENTER'|translate}}</label>
+      <kendo-dropdownlist (valueChange)="onChange($event)" [(ngModel)]="idSelectedCenter" [data]="centerList"
+                          [disabled]="!(hasAddTrainingSessionPermission && !isUpdateMode || hasUpdateTrainingSessionPermission && isUpdateMode)"
+                          [textField]="'Name'"
+                          [valueField]="'Id'"
+                          [valuePrimitive]="true"
+                          class="col-lg-2 col-md-12 col-sm-12">
+        <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+          {{ dataItem?.Name}}
+        </ng-template>
+      </kendo-dropdownlist>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <button (click)="addCenter()" *ngIf="hasAddCenterPermission" class="noPadding btn-Add k-button" dir="ltr"
+                style="border: none!important;" type="button">
+          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+          <span>&nbsp;{{'ADD_CENTER'|translate}}</span>
+        </button>
+      </div>
+    </div>
+    <!--Begin choose training center -->
+    <!-- Begin choose training room center -->
+    <div class="row" style="margin-top: 30px;">
+      <label class="col-lg-2 col-md-12 col-sm-12">{{'CHOOSE_ROOM'|translate}}</label>
+      <kendo-dropdownlist [(ngModel)]="idSelectedRoom" [data]="roomList" [disabled]="!(hasAddTrainingSessionPermission && !isUpdateMode || hasUpdateTrainingSessionPermission && isUpdateMode)"
+                          [textField]="'Name'"
+                          [valueField]="'Id'"
+                          [valuePrimitive]="true"
+                          class="col-lg-2 col-md-12 col-sm-12">
+        <ng-template kendoDropDownListItemTemplate kendoDropDownListValueTemplate let-dataItem>
+          {{ dataItem?.Name}}
+        </ng-template>
+      </kendo-dropdownlist>
+    </div>
+    <!-- End choose training room center -->
+    <!-- Begin choose trainer -->
+    <div class="row" style="margin-top: 30px;">
+      <label class="col-lg-2 col-md-12 col-sm-12">{{'CHOOSE_TRAINER'|translate}}</label>
+      <kendo-combobox (valueChange)="onChangeExternalTrainer($event)"
+                      [(ngModel)]='idSelectedExternalTrainer'
+                      [data]="externalTrainorList"
+                      [disabled]="!(hasAddTrainingSessionPermission && !isUpdateMode || hasUpdateTrainingSessionPermission && isUpdateMode)"
+                      [textField]="'FullName'"
+                      [valueField]="'Id'"
+                      [valuePrimitive]="true" class="col-lg-2 col-md-12 col-sm-12">
+        <ng-template kendoComboBoxItemTemplate let-dataItem>
+          {{ dataItem?.FullName}}
+        </ng-template>
+      </kendo-combobox>
+      <div class="col-lg-2 col-md-12 col-sm-12">
+        <button (click)="addTrainer()" *ngIf="hasAddTrainerPermission" class="noPadding btn-Add k-button" dir="ltr"
+                style="border: none!important;" type="button">
+          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+          <span>&nbsp;{{'ADD_TRAINER'|translate}}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- End choose trainer -->
+  <!--End external training-->
+  <button (click)="saveTrainingSessionWithTrainingType()" *ngIf="hasAddTrainingSessionPermission && !isUpdateMode || hasUpdateTrainingSessionPermission && isUpdateMode" class="btn btn-sm btn-danger"
+          type="submit">
+    <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+  </button>
+</div>

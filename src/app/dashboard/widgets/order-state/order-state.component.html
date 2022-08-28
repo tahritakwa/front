@@ -1,0 +1,34 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-6">
+      <h4 class="card-title mb-0">{{'ORDER_STATE_PURSHASE'|translate}} </h4>
+      <div *ngIf="hasOrderStateData" class="small text-muted">
+        {{'DU'|translate}} {{orderStateStartDate|date: dateformat}}
+        {{'AU'|translate}} {{orderStateEndDate|date: dateformat}}
+      </div>
+      <div *ngIf="!hasOrderStateData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="ChangeOrderStateChart($event)"></app-period-filter>
+      <button *ngIf="hasOrderStateData" mat-icon-button [matMenuTriggerFor]="mainMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu xPosition="before" [overlapTrigger]="false" #mainMenu="matMenu">
+        <app-number-picker-filter [numberOfRows]="numberOfRows" [isUpButtonVisible]="isUpButtonVisible"
+          [isDownButtonVisible]="isDownButtonVisible" (newItemEvent)="ChangeNumberOfRows($event)">
+        </app-number-picker-filter>
+      </mat-menu>
+    </div>
+  </div>
+</div>
+<div class="card-body">
+  <div class="chartContainer" id="orderState" #orderStateChart [hidden]="!hasOrderStateData"></div>
+  <div *ngIf="!hasOrderStateData && !orderStateDataLoading" #canvasDivSaleState>
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_ORDER' | translate}} </h5>
+  </div>
+  <div *ngIf="orderStateDataLoading && !hasOrderStateData" #canvasDivSaleState>
+    <app-spinner></app-spinner>
+  </div>
+</div>

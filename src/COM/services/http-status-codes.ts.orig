@@ -1,0 +1,1008 @@
+export enum HttpStatusCodes {
+  //
+  // Summary:
+  //     Equivalent to HTTP status 100. System.Net.HttpStatusCode.Continue indicates that
+  //     the client can continue with its request.
+  Continue = 100,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 101. System.Net.HttpStatusCode.SwitchingProtocols indicates
+  //     that the protocol version or protocol is being changed.
+  SwitchingProtocols = 101,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 200. System.Net.HttpStatusCode.OK indicates that the
+  //     request succeeded and that the requested information is in the response. This
+  //     is the most common status code to receive.
+  OK = 200,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 201. System.Net.HttpStatusCode.Created indicates that
+  //     the request resulted in a new resource created before the response was sent.
+  Created = 201,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 202. System.Net.HttpStatusCode.Accepted indicates that
+  //     the request has been accepted for further processing.
+  Accepted = 202,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 203. System.Net.HttpStatusCode.NonAuthoritativeInformation
+  //     indicates that the returned metainformation is from a cached copy instead of
+  //     the origin server and therefore may be incorrect.
+  NonAuthoritativeInformation = 203,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 204. System.Net.HttpStatusCode.NoContent indicates
+  //     that the request has been successfully processed and that the response is intentionally
+  //     blank.
+  NoContent = 204,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 205. System.Net.HttpStatusCode.ResetContent indicates
+  //     that the client should reset (not reload) the current resource.
+  ResetContent = 205,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 206. System.Net.HttpStatusCode.PartialContent indicates
+  //     that the response is a partial response as requested by a GET request that includes
+  //     a byte range.
+  PartialContent = 206,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 300. System.Net.HttpStatusCode.Ambiguous indicates
+  //     that the requested information has multiple representations. The default action
+  //     is to treat this status as a redirect and follow the contents of the Location
+  //     header associated with this response.
+  Ambiguous = 300,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 300. System.Net.HttpStatusCode.MultipleChoices indicates
+  //     that the requested information has multiple representations. The default action
+  //     is to treat this status as a redirect and follow the contents of the Location
+  //     header associated with this response.
+  MultipleChoices = 300,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 301. System.Net.HttpStatusCode.Moved indicates that
+  //     the requested information has been moved to the URI specified in the Location
+  //     header. The default action when this status is received is to follow the Location
+  //     header associated with the response. When the original request method was POST,
+  //     the redirected request will use the GET method.
+  Moved = 301,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 301. System.Net.HttpStatusCode.MovedPermanently indicates
+  //     that the requested information has been moved to the URI specified in the Location
+  //     header. The default action when this status is received is to follow the Location
+  //     header associated with the response.
+  MovedPermanently = 301,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 302. System.Net.HttpStatusCode.Found indicates that
+  //     the requested information is located at the URI specified in the Location header.
+  //     The default action when this status is received is to follow the Location header
+  //     associated with the response. When the original request method was POST, the
+  //     redirected request will use the GET method.
+  Found = 302,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 302. System.Net.HttpStatusCode.Redirect indicates that
+  //     the requested information is located at the URI specified in the Location header.
+  //     The default action when this status is received is to follow the Location header
+  //     associated with the response. When the original request method was POST, the
+  //     redirected request will use the GET method.
+  Redirect = 302,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 303. System.Net.HttpStatusCode.RedirectMethod automatically
+  //     redirects the client to the URI specified in the Location header as the result
+  //     of a POST. The request to the resource specified by the Location header will
+  //     be made with a GET.
+  RedirectMethod = 303,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 303. System.Net.HttpStatusCode.SeeOther automatically
+  //     redirects the client to the URI specified in the Location header as the result
+  //     of a POST. The request to the resource specified by the Location header will
+  //     be made with a GET.
+  SeeOther = 303,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 304. System.Net.HttpStatusCode.NotModified indicates
+  //     that the client's cached copy is up to date. The contents of the resource are
+  //     not transferred.
+  NotModified = 304,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 305. System.Net.HttpStatusCode.UseProxy indicates that
+  //     the request should use the proxy server at the URI specified in the Location
+  //     header.
+  UseProxy = 305,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 306. System.Net.HttpStatusCode.Unused is a proposed
+  //     extension to the HTTP/1.1 specification that is not fully specified.
+  Unused = 306,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 307. System.Net.HttpStatusCode.RedirectKeepVerb indicates
+  //     that the request information is located at the URI specified in the Location
+  //     header. The default action when this status is received is to follow the Location
+  //     header associated with the response. When the original request method was POST,
+  //     the redirected request will also use the POST method.
+  RedirectKeepVerb = 307,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 307. System.Net.HttpStatusCode.TemporaryRedirect indicates
+  //     that the request information is located at the URI specified in the Location
+  //     header. The default action when this status is received is to follow the Location
+  //     header associated with the response. When the original request method was POST,
+  //     the redirected request will also use the POST method.
+  TemporaryRedirect = 307,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 400. System.Net.HttpStatusCode.BadRequest indicates
+  //     that the request could not be understood by the server. System.Net.HttpStatusCode.BadRequest
+  //     is sent when no other error is applicable, or if the exact error is unknown or
+  //     does not have its own error code.
+  BadRequest = 400,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 401. System.Net.HttpStatusCode.Unauthorized indicates
+  //     that the requested resource requires authentication. The WWW-Authenticate header
+  //     contains the details of how to perform the authentication.
+  Unauthorized = 401,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 402. System.Net.HttpStatusCode.PaymentRequired is reserved
+  //     for future use.
+  PaymentRequired = 402,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 403. System.Net.HttpStatusCode.Forbidden indicates
+  //     that the server refuses to fulfill the request.
+  Forbidden = 403,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 404. System.Net.HttpStatusCode.NotFound indicates that
+  //     the requested resource does not exist on the server.
+  NotFound = 404,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 405. System.Net.HttpStatusCode.MethodNotAllowed indicates
+  //     that the request method (POST or GET) is not allowed on the requested resource.
+  MethodNotAllowed = 405,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 406. System.Net.HttpStatusCode.NotAcceptable indicates
+  //     that the client has indicated with Accept headers that it will not accept any
+  //     of the available representations of the resource.
+  NotAcceptable = 406,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 407. System.Net.HttpStatusCode.ProxyAuthenticationRequired
+  //     indicates that the requested proxy requires authentication. The Proxy-authenticate
+  //     header contains the details of how to perform the authentication.
+  ProxyAuthenticationRequired = 407,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 408. System.Net.HttpStatusCode.RequestTimeout indicates
+  //     that the client did not send a request within the time the server was expecting
+  //     the request.
+  RequestTimeout = 408,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 409. System.Net.HttpStatusCode.Conflict indicates that
+  //     the request could not be carried out because of a conflict on the server.
+  Conflict = 409,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 410. System.Net.HttpStatusCode.Gone indicates that
+  //     the requested resource is no longer available.
+  Gone = 410,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 411. System.Net.HttpStatusCode.LengthRequired indicates
+  //     that the required Content-length header is missing.
+  LengthRequired = 411,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 412. System.Net.HttpStatusCode.PreconditionFailed indicates
+  //     that a condition set for this request failed, and the request cannot be carried
+  //     out. Conditions are set with conditional request headers like If-Match, If-None-Match,
+  //     or If-Unmodified-Since.
+  PreconditionFailed = 412,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 413. System.Net.HttpStatusCode.RequestEntityTooLarge
+  //     indicates that the request is too large for the server to process.
+  RequestEntityTooLarge = 413,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 414. System.Net.HttpStatusCode.RequestUriTooLong indicates
+  //     that the URI is too long.
+  RequestUriTooLong = 414,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 415. System.Net.HttpStatusCode.UnsupportedMediaType
+  //     indicates that the request is an unsupported type.
+  UnsupportedMediaType = 415,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 416. System.Net.HttpStatusCode.RequestedRangeNotSatisfiable
+  //     indicates that the range of data requested from the resource cannot be returned,
+  //     either because the beginning of the range is before the beginning of the resource,
+  //     or the end of the range is after the end of the resource.
+  RequestedRangeNotSatisfiable = 416,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 417. System.Net.HttpStatusCode.ExpectationFailed indicates
+  //     that an expectation given in an Expect header could not be met by the server.
+  ExpectationFailed = 417,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 426. System.Net.HttpStatusCode.UpgradeRequired indicates
+  //     that the client should switch to a different protocol such as TLS/1.0.
+  UpgradeRequired = 426,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 500. System.Net.HttpStatusCode.InternalServerError
+  //     indicates that a generic error has occurred on the server.
+  InternalServerError = 500,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 501. System.Net.HttpStatusCode.NotImplemented indicates
+  //     that the server does not support the requested function.
+  NotImplemented = 501,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 502. System.Net.HttpStatusCode.BadGateway indicates
+  //     that an intermediate proxy server received a bad response from another proxy
+  //     or the origin server.
+  BadGateway = 502,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 503. System.Net.HttpStatusCode.ServiceUnavailable indicates
+  //     that the server is temporarily unavailable, usually due to high load or maintenance.
+  ServiceUnavailable = 503,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 504. System.Net.HttpStatusCode.GatewayTimeout indicates
+  //     that an intermediate proxy server timed out while waiting for a response from
+  //     another proxy or the origin server.
+  GatewayTimeout = 504,
+  //
+  // Summary:
+  //     Equivalent to HTTP status 505. System.Net.HttpStatusCode.HttpVersionNotSupported
+  //     indicates that the requested HTTP version is not supported by the server.
+  HttpVersionNotSupported = 505,
+  /// <summary>
+  /// Code n'existe pas
+  /// </summary>
+  CodeNExistePas = 250,
+  // Success messages
+  /// <summary>
+  /// Add success code
+  /// </summary>
+  AddSuccessfull = 210,
+  /// <summary>
+  /// Update success code
+  /// </summary>
+  UpdateSuccessfull = 211,
+  /// <summary>
+  /// Delete success code
+  /// </summary>
+  DeleteSuccessfull = 212,
+  /// <summary>
+  /// Validation sucess code
+  /// </summary>
+  Success_VALIDATION = 216,
+  /// <summary>
+  /// Transafer entities success code
+  /// </summary>
+  TransferentitiesSuccessfull = 217,
+  /// <summary>
+  /// Save configuration success code
+  /// </summary>
+  SaveConfigurationSuccessfull = 218,
+  /// <summary>
+  /// Tarif Error code
+  /// </summary>
+  OverlapTarif = 516,
+  /// <summary>
+  /// Document line setteled error code
+  /// </summary>
+  SettledDocumentLine = 518,
+  /// <summary>
+  /// Warehouse required error code
+  /// </summary>
+  DepotObligatoire = 519,
+  /// <summary>
+  /// Delete error code
+  /// </summary>
+  DeleteError = 520,
+  /// <summary>
+  /// Warehouse required error code
+  /// </summary>
+  DepoRequiredError = 526,
+  /// <summary>
+  /// Item quantity error code
+  /// </summary>
+  InsufficientQuantity = 807,
+
+  /// <summary>
+  /// Item quantity error code
+  /// </summary>
+  InsufficientQuantityForItem = 808,
+  /// <summary>
+  /// Document line solde error code
+  /// </summary>
+  LIGNE_DEJA_SOLDE = 817,
+  /// <summary>
+  /// No lines added to document error code
+  /// </summary>
+  NO_LINES_ARE_ADDED = 819,
+  /// <summary>
+  /// Authorized Amount Exceeded error code
+  /// </summary>
+  AuthorizedAmountExceeded = 827,
+  /// <summary>
+  /// User must have at least one role error code
+  /// </summary>
+  UserMastHaveAtLeastOneRoleError = 890,
+  /// <summary>
+  /// Success reject  !?
+  /// </summary>
+  SUCCESS_REJECT = 219,
+  /// <summary>
+  /// Duplicate entry error code
+  /// </summary>
+  duplicateEntry = 550,
+  /// <summary>
+  /// Duplicate entry couple error code
+  /// </summary>
+  duplicateEntryCouple = 551,
+  /// <summary>
+  /// Duplicate entry group error code
+  /// </summary>
+  duplicateEntryGroup = 552,
+  /// <summary>
+  /// Check old password error code
+  /// </summary>
+  CHECK_OLD_PASSWORD = 553,
+  /// <summary>
+  /// IBAN bank account error code
+  /// </summary>
+  InvalidIBANBankAccount = 850,
+  /// <summary>
+  /// RIB bank account error code
+  /// </summary>
+  RIBBankAccount = 824,
+  /// <summary>
+  /// Positive minimum quantity error code
+  /// </summary>
+  PositiveMinimumQuantity = 825,
+  /// <summary>
+  /// Positive maximum quantity error code
+  /// </summary>
+  PositiveMaximumQuantity = 826,
+  /// <summary>
+  /// Price used error code
+  /// </summary>
+  Price_Used = 828,
+  /// <summary>
+  /// Validation success code
+  /// </summary>
+  VALIDATION_TERMINEE_AVEC_SUCCES = 809,
+  /// <summary>
+  /// Settelement not settle error code
+  /// </summary>
+  SETTLEMENT_IS_NOT_SETTLED = 833,
+  /// <summary>
+  /// Contract value not setted error code
+  /// </summary>
+  CONTRACT_VALUE_NOT_SETTED = 9000,
+  /// <summary>
+  /// Set supplier to items error code
+  /// </summary>
+  SET_SUPPLIER_TO_ITEMS = 870,
+  /// <summary>
+  /// Bonus value not setted error code
+  /// </summary>
+  BONUS_VALUE_NOT_SETTED = 9001,
+  /// <summary>
+  /// Commercials percentage exceed 100 error code
+  /// </summary>
+  COMMERCIALS_PERCENTAGE_EXCEED_100 = 9002,
+  /// <summary>
+  /// Consultants percentage exceed 100 error code
+  /// </summary>
+  CONSULTANTS_PERCENTAGE_EXCEED_100 = 9003,
+  /// <summary>
+  /// Commercials bonus Exceed total bonus error code
+  /// </summary>
+  COMMERCIALS_BONUS_EXCEED_TOTAL_BONUS = 9004,
+  /// <summary>
+  /// Payrool Error
+  /// </summary>
+  LEXICAL_ERROR = 6000,
+  SYNTACTIC_ERROR = 6001,
+  EXECUTION_ERROR = 6002,
+  /// <summary>
+  /// When attempt to generate cnss declaration for one month of select trimester does not have a session
+  /// </summary>
+  CNSS_DECLARATION_ERROR = 6008,
+  /// <summary>
+  /// When file error occur while teledeclaration generation
+  /// </summary>
+  CNSS_TELE_DECLARATION_ERROR = 6009,
+  /// <summary>
+  /// When the company Cnss Affiliation number length is different to ten
+  /// </summary>
+  COMPANY_CNSS_AFFILIATION_INCORRECT = 6010,
+  /// <summary>
+  /// When the CNSS Exploitation code length is different to four
+  /// </summary>
+  CNSS_EXPLOITATION_CODE_INCORRECT = 6011,
+  /// <summary>
+  /// When the employee cnss number length is different to ten
+  /// </summary>
+  EMPLOYEE_CNSS_NUMBER_INCORRECT = 6012,
+  /// <summary>
+  /// When the employee identity piece length is different to eigth
+  /// </summary>
+  EMPLOYEE_IDENTITY_PIECE_INCORRECT = 6013,
+  /// <summary>
+  /// When any teledeclaration parameter exceed the required length
+  /// </summary>
+  PARAMETER_LENGTH_EXCEED = 6014,
+  /// <summary>
+  /// Database connection error code
+  /// </summary>
+  DbConnectionError = 4060,
+  /// <summary>
+  /// circular relationship user-manager
+  /// </summary>
+  USER_MANAGER_RELATION = 891,
+  /// <summary>
+  /// Must Validate invoices in order
+  /// </summary>
+  VALIDATE_PREVIOUS_INVOICES = 892,
+  VALIDATE_PREVIOUS_BL = 909,
+  VALIDATE_SUBSEQUENT_INVOICES = 893,
+  /// <summary>
+  /// Must Validate invoices in order
+  /// </summary>
+  ClientRquiredError = 896,
+  SupplierRquiredError = 897,
+  ItemsInvalidError = 898,
+  TaxItemValueError = 899,
+  ClientCurrencyError = 900,
+  SupplierCurrencyError = 901,
+  InvalidExcelFormat = 7000,
+  InvalidExcelData = 7001,
+  SetSupplierToItem = 870,
+  ProductType = 7002,
+  /// <summary>
+  /// Exception when trying to update candidacy that have one or more interviews
+  /// </summary>
+  UpdateCandidacyWithInterviews = 7003,
+  /// <summary>
+  /// Exception when trying to update evaluation that have one or more offers sende, accepted or rejected
+  /// </summary>
+  UpdateEvaluationWithSendedOffers = 7004,
+  /// <summary>
+  /// Exception when trying to update candidacy that have one or more offers sende, accepted or rejected
+  /// </summary>
+  UpdateCandidacyWithSendedOffers = 7005,
+  /// <summary>
+  /// Exception when trying to update interview that have one or more offers sende, accepted or rejected
+  /// </summary>
+  UpdateInterviewWithSendedOffers = 7006,
+  /// <summary>
+  /// Exception when having a negative quantity
+  /// </summary>
+  PositiveQuantityViolation = 7010,
+  SettlementAmountIsZero = 902,
+  SettlementAmountIsGreaterThanSelectedCommitment = 903,
+  FinancialCommitmentAllocatedAmountGreaterThanRemaining = 904,
+  /// <summary>
+  /// when add same warehouse in item section
+  /// </summary>
+  WarehouseUnicity = 905,
+  /// <summary>
+  /// This exception will be handled when RequiredColumn is set to null or empty
+  /// </summary>
+  ExcelRequiredColumn = 1313,
+  /// <summary>
+  /// This exception will be handled when Excel Unique column is duplicated in DB
+  /// </summary>
+  ExcelUniqueColumnInDB = 1314,
+  /// <summary>
+  /// This exception will be handled when Excel Unique column is duplicated in DB
+  /// </summary>
+  ExcelUniqueColumnInFile = 1315,
+  /// <summary>
+  /// This exception will be handled when Excel Unique column is duplicated in DB
+  /// </summary>
+  ExcelInvalidEmailColumn = 1316,
+  /// <summary>
+  /// This exception will be handled when deleting interview if it is requested to candidate
+  /// </summary>
+  DeleteInterviewViolation = 1414,
+  /// <summary>
+  /// This exception will be handled when dependency dates violated
+  /// </summary>
+  DatesDependency = 1000,
+  /// <summary>
+  /// Session number is not unique per month
+  /// </summary>
+  SESSION_NUMBER_NOT_UNIQUE = 6100,
+  /// <summary>
+  /// The attendances of one employee exceed company number days of work
+  /// </summary>
+  ATTENDANCE_VALUE_EXCEED = 6101,
+  /// <summary>
+  /// This exception will be handled when Employee Recursivity Violated
+  /// </summary>
+  EmployeeRecursivityViolation = 2000,
+  /// <summary>
+  /// This exception will be handled when PriceRequest contains two tiersPriceRequest with the same Supplier Id
+  /// </summary>
+  TiersPriceRequestUnicity = 805,
+  /// <summary>
+  /// when quantity Min great them qunatity max in item section
+  /// </summary>
+  WarehouseQuantityMinMax = 906,
+  /// <summary>
+  /// This exception will be automaticly handled : SessionExpired
+  /// </summary>
+  SessionExpired = 800,
+  /// <summary>
+  /// When attempt to include one contract in two different transfer order
+  /// </summary>
+  CONTRACT_BY_TRANSFER_ORDER_UNICITY = 6102,
+  IncompatibleEquivalenceGroup = 907,
+  ContactRequired = 801,
+  /// <summary>
+  /// Error send Mail
+  /// </summary>
+  SendMailError = 528,
+  /// <summary>
+  /// Error Generate price request
+  /// </summary>
+  GeneratePriceRequestError = 529,
+  /// <summary>
+  /// Error send Mail
+  /// </summary>
+  SendMailErrorTiersWithoutContactEmail = 530,
+  /// <summary>
+  /// This exception will be handled when trying to validate document with stock reservation lines
+  /// </summary>
+  ValidationOfDocumentWithStockReservation = 1317,
+  /// <summary>
+  /// When an exception occurs when payslip preview is generating
+  /// </summary>
+  PAYSLIP_PREVIEW = 6103,
+  /// <summary>
+  /// When attempt to include an employee who havenot payslip for specific month
+  /// in transfer order
+  /// </summary>
+  EMPLOYEE_HAVENOT_PAYSLIP = 6104,
+  /// <summary>
+  /// This exception will be handled when the leave dates overlap
+  /// </summary>
+  LeaveRequestViolation = 6110,
+  /// <summary>
+  /// This exception will be handled when the leave daysNumber and hoursNumber equals to zero
+  /// </summary>
+  LeaveDateViolation = 6111,
+  /// <summary>
+  /// This exception will be handled when the leave daysNumber and hoursNumber equals to zero
+  /// </summary>
+  LeaveUpdateViolation = 6112,
+  /// <summary>
+  /// This exception will be handleed when the leave status is not waiting
+  /// </summary>
+  LeaveDeleteViolation = 6113,
+  /// <summary>
+  /// This exception will be handleed when the startDate is later than endDate
+  /// </summary>
+  LeaveDateIntervalViolation = 6114,
+  /// <summary>
+  /// Handled when attempt to update validated or refused timesheet
+  /// </summary>
+  TIMESHEET_UPDATE_VIOLATION = 6120,
+  /// <summary>
+  /// Handled when user have not permission for validate or refused timesheet
+  /// </summary>
+  HAVENOT_PERMISSION_FORVLIDATE_OR_REFUSE = 6121,
+  /// <summary>
+  /// When working hours of the same day are overlapping
+  /// </summary>
+  TIMESHEET_LINE_OVERLAP = 6122,
+  /// <summary>
+  /// When an employee try to add a CRA for a month that has not arrived yet.
+  /// </summary>
+  CANT_ADD_NEXT_MONTH_TIMESHEET = 6123,
+  /// <summary>
+  /// Prevents the validation of a CRA if a waiting leave currently exists
+  /// </summary>
+  CANT_VALIDATE_TIMESHEET_BECAUSE_WAITING_LEAVE_EXIST = 6124,
+  /// <summary>
+  /// If a holiday date is not included in the period of the corresponding period
+  /// </summary>
+  HOLIDAY_DATE_NOT_INCLUDE_IN_PERIOD_DATE = 6200,
+  /// <summary>
+  /// If period overlap
+  /// </summary>
+  OVERLAPPING_PERIOD = 6201,
+  /// <summary>
+  /// no defined period
+  /// </summary>
+  ANY_PERIOD_DEFINED = 6202,
+  /// <summary>
+  /// When attemp to add one period with end date is greater than start date
+  /// </summary>
+  STARTTIME_EXCEED_ENDTIME = 6203,
+  /// <summary>
+  /// When attemp to add one period with end date is greater than start date
+  /// </summary>
+  STARTDATE_EXCEED_ENDDATE = 6204,
+  /// <summary>
+  /// Date must have a unique period
+  /// </summary>
+  DATE_MUST_HAVE_ONE_UNIQUE_PERIOD = 6205,
+  /// <summary>
+  /// This exception will be handleed when the reference of nomenclature is not unique
+  /// </summary>
+  NomenclatureReferenceUnique = 50304,
+  /// <summary>
+  /// This exception will be handleed when the reference of nomenclature is not unique
+  /// </summary>
+  NomenclatureProductUnique = 50305,
+  /// <summary>
+  /// This exception will be handleed when the reference of nomenclature is not unique
+  /// </summary>
+  NomenclatureProductNotExist = 50306,
+  /// <summary>
+  /// This exception will be handleed when the reference of nomenclature is not unique
+  /// </summary>
+  NomenclatureCheckProductExistInSubProduct = 50307,
+  /// <summary>
+  /// This exception will be handled when the candidacy preselected has an interview planified
+  /// </summary>
+  CandidacyUnPreselectedViolation = 5001,
+  /// <summary>
+  /// This exception will be handled when no candidacy preselected and we want to go to the next step
+  /// </summary>
+  PreselectionToNextStepViolation = 5002,
+  /// <summary>
+  /// This exception will be handled when the candidate added already exist in candidacy list
+  /// </summary>
+  CandidacyAddExistingCandidate = 5003,
+  /// <summary>
+  /// This exception will be generated when the old password is wrong
+  /// </summary>
+  OldPasswordErrors = 553,
+  /// <summary>
+  /// This exception will be generated when the old password is wrong
+  /// </summary>
+  CandidacyEmptyList = 5004,
+  /// <summary>
+  /// This exception will be handled when the candidacy selected has an offer planified
+  /// </summary>
+  CandidacyUnselectedViolation = 5005,
+  /// <summary>
+  /// This exception will be handled when no candidacy selected and we want to go to the next step
+  /// </summary>
+  SelectionToNextStepViolation = 5006,
+  /// <summary>
+  /// This exception will be handled when the candidacy already has an offer not which state is draf, sended or accepted
+  /// and we want to add a new offer
+  /// </summary>
+  AddOfferViolation = 5007,
+  /// <summary>
+  /// This exception will be handled when the candidacy already has an offer not which state is draf, sended or accepted
+  /// and we want to add a new offer
+  /// </summary>
+  UpdateOfferViolation = 5008,
+  /// <summary>
+  /// This exception will be handled when no candidacy state is less than hirring and we want to go to the next step
+  /// </summary>
+  OfferToNextStepViolation = 5009,
+  /// <summary>
+  /// This exception will be handled when no interview to evaluate and we want to go to the next step
+  /// </summary>
+  InterviewToNextStepViolation = 5010,
+  /// <summary>
+  /// This exception will be handled when trying to update any step of closed recruitment
+  /// </summary>
+  UpdateClosedRecruitmentViolation = 5040,
+  /// <summary>
+  /// This exception will be handled when the candidate added already exist in candidates list
+  /// </summary>
+  AddExistingCandidate = 5011,
+  /// <summary>
+  /// This exception will be handled when trying to done recruitment without closing all previous steps
+  /// </summary>
+  DoneRecruitmentViolation = 5050,
+  /// <summary>
+  /// This exception will be handled when the offer state is not draft
+  /// </summary>
+  OfferDelteViolation = 5012,
+  /// <summary>
+  /// This exception will be handled when the offer is allready Rejected
+  /// </summary>
+  OfferAcceptViolation = 5013,
+  /// <summary>
+  /// This exception will be handled when the offer is allready accepted
+  /// </summary>
+  OfferRejectViolation = 5014,
+  /// <summary>
+  /// This exception will be handled when trying to done recruitment without closing all previous steps
+  /// </summary>
+  EmptyEvaluationListViolation = 5015,
+  /// <summary>
+  /// This exception will be handleed when the description of machine is not unique
+  /// </summary>
+  MachineDescriptionUnique = 50311,
+  /// <summary>
+  /// This exception will be handleed when the gamme is not unique
+  /// </summary>
+  GammeUnique = 50321,
+  UserEmailUnicity = 521,
+  ItemUnicity = 1318,
+  /// <summary>
+  /// This exception will be handled when there is identical lines in documentLine
+  /// </summary>
+  ITEM_ALREADY_EXIST_IN_DOCUMENTLINE = 5016,
+  /// <summary>
+  /// This exception will be handleed when we try to delete machine already used in operation
+  /// </summary>
+  MachineUsedInOperation = 50312,
+  /// <summary>
+  /// This exception will be handleed when we try to delete area containing machine
+  /// </summary>
+  AreaNotEmpty = 50331,
+  /// <summary>
+  /// This exception will be handleed when we try to delete nomenclature already used in fabrication arrangement
+  /// </summary>
+  NomenclatureUsedInFabricationArrangement = 50308,
+  /// <summary>
+  /// This exception will be handleed when we try to delete gamme already used in fabrication arrangement
+  /// </summary>
+  GammeUsedInFabricationArrangement = 50322,
+  /// <summary>
+  /// This exception will be handled when the candidacy preselected has an interview planified
+  /// </summary>
+  ADD_EXISTING_INVENTORY = 100994,
+  /// <summary>
+  /// This exception will be handled when the candidacy preselected has an interview planified
+  /// </summary>
+  ADD_NOT_EXISTING_INVENTORY = 100995,
+  /// <summary>
+  /// This exception will be handled when the the item is not filed in the inventory stock document
+  /// </summary>
+  ITEM_NOT_FILED = 100996,
+  /// <summary>
+  /// This exception will be handled when the candidacy preselected has an interview planified
+  /// </summary>
+  ADD_EXISTING_INVENTORY_LINE = 100997,
+  /// <summary>
+  /// This exception will be handled when the candidacy preselected has an interview planified
+  /// </summary>
+  ADD_NOT_EXISTING_INVENTORY_LINE = 100998,
+  /// <summary>
+  /// This exception will be handled when is other employee add objective for the collaborator
+  /// </summary>
+  ObjectiveException = 5017,
+  /// <summary>
+  /// This exception will be handled when the candidacy preselected has an interview planified
+  /// </summary>
+  ExistPendingInventoryDocument = 100999,
+
+
+  /// <summary>
+  /// This exception will be handled when Price is not Valid
+  /// </summary>
+  ValueDiscountePrices = 101000,
+  /// <summary>
+  /// Unicity of code
+  /// </summary>
+  CodeUnicity = 522,
+  /// <summary>
+  /// This exception will be handleed when we try to delete nomenclature already used in other nomenclature
+  /// </summary>
+  NomenclatureUsedInOtherNomenclature = 50309,
+  /// <summary>
+  /// This exception will be handled when the unauthorize employee try to edit the review
+  /// </summary>
+  ReviewEditException = 5018,
+  /// <summary>
+  /// This exception will be handled when we are trying to modify or add a document line to a validated bl
+  /// </summary>
+  ExistingSalesInvoiceFromValidatedDocument = 101999,
+  No_Lines_To_Be_ADDED = 5031,
+  /// <summary>
+  /// This exception will be handled when we try to update validated document
+  /// </summary>
+  AlreadyValidatedDocument = 5032,
+  /// <summary>
+  /// This exception will be handled when we are trying to modify or add a document line to a validated bl
+  /// </summary>
+
+  /// <summary>
+  /// This exception will be handled when the user have no employee Id
+  /// </summary>
+  RequiredEmployeeUserViolation = 5020,
+  /// <summary>
+  /// This exception will be handled when there is replacement loop in replacement item relation
+  /// </summary>
+  ItemReplacementLoop = 1319,
+  /// <summary>
+  /// This exception will be handled when the user try to delete a review array wich is not the author or the super hierarchique
+  /// </summary>
+  DeleteReviewArrayException = 5019,
+  /// <summary>
+  /// This exception will be handled when the user add a duplicate skills for a review
+  /// </summary>
+  DuplicateSkillsException = 5021,
+  /// <summary>
+  /// This exception will be handled when the user add a duplicate formation for a review
+  /// </summary>
+  DuplicateFormationException = 5022,
+  /// <summary>
+  /// This exception will be handled when the user add a duplicate formation for a review
+  /// </summary>
+  ReviewQuestionException = 5023,
+  /// <summary>
+  /// This exception will be handled when the user delete the employee old skills
+  /// </summary>
+  ReviewSkillsDeleteException = 5024,
+  /// <summary>
+  /// This exception will be handled when the user add the job wich designation is allready exist
+  /// </summary>
+  JobAddException = 5021,
+  /// <summary>
+  /// This exception will be handled when the user add the job wich designation equals to white space
+  /// </summary>
+  NullJobAddException = 5022,
+  /// <summary>
+  /// This exception will be handled when the job id is equal to the idUpperJob
+  /// </summary>
+  JobUpdateException = 5023,
+  /// <summary>
+  /// This exception will be handled when hours in same intervall are not contiguous
+  /// </summary>
+  ContiguousHoursException = 5027,
+  /// <summary>
+  /// This exception will be handled when the startTime is greater than a endTime of hour
+  /// </summary>
+  HoursTimeException = 5025,
+  /// <summary>
+  /// This exception will be handled when the user add the period with no hours
+  /// </summary>
+  AddPeriodWithNoHoursException = 5026,
+  /// <summary>
+  /// This exception will be handled when the user add the duplicate dayOff
+  /// </summary>
+  DuplicateDayOffException = 5029,
+  /// <summary>
+  /// This exception will be handled when the period to add or to update is not contiguous with the previous one
+  /// </summary>
+  PeriodNotContiguousException = 5030,
+  /// <summary>
+  /// This exception will be handled when tax is required
+  /// </summary>
+  TaxRequiredError = 908,
+  /// <summary>
+  /// This exception will be handled when adding an existing claim document
+  /// </summary>
+  AddExistingClaim = 101090,
+  /// <summary>
+  /// This exception will be handled when trying to update not existing claim document
+  /// </summary>
+  AddNotExistingClaim = 101095,
+  /// <summary>
+  /// This exception will be handled when trying to update not existing claim document
+  /// </summary>
+  UpdateNotExistingClaim = 101100,
+  /// <summary>
+  /// This exception will be handled when Asset Exist
+  /// </summary>
+  AddExistingClaimTiersAsset = 101091,
+  /// <summary>
+  /// This exception will be handled when trying to update not existing claim tiers asset document
+  /// </summary>
+  AddNotExistingClaimTiersAsset = 101096,
+  /// <summary>
+  /// This exception will be handled when the candidacy preselected has an interview planified
+  /// </summary>
+  AddExistingClaimStockMovement = 101092,
+  /// <summary>
+  /// This exception will be handled when trying to update not existing claim stock movement document
+  /// </summary>
+  AddNotExistingClaimStockMovement = 101097,
+  /// <summary>
+  /// This exception will be handled when trying to update not existing claim stock movement document
+  /// </summary>
+  UpdateNotExistingStockMovement = 101098,
+  /// <summary>
+  /// This exception will be handled when the release of the quantity of a product is impossible
+  /// </summary>
+  LiberationQteException = 5040,
+  /// <summary>
+  /// This exception will be handled when there is a problem to communicate with ecommerce
+  /// </summary>
+  EcommerceException = 5487,
+  /// <summary>
+  /// This exception will be handled when there is a ecommerce request in progress
+  /// </summary>
+  AddExistingRoleCode = 104994,
+  /// <summary>
+  /// This exception will be handled when adding an existing inventory document
+  /// </summary>
+  UpdateNotExistingRoleCode = 104995,
+  /// <summary>
+  /// This exception will be handled when we are trying to modify or add a document line to a validated bl
+  /// </summary>
+  NotAvailableClaimStockMovementQuantity = 102000,
+  /// <summary>
+  /// This exception will be handled when we are trying to modify or add a document line to a validated bl
+  /// </summary>
+  NotSameClaimQuantity = 102001,
+
+  SendMailErrorDocumentWithoutContact = 540,
+
+  LineAddedsuccessfully = 207,
+  /// <summary>
+  /// This exception will be handled when the settelement date is invalid
+  /// </summary>
+  INVALID_SETTELMENT_DATE = 541,
+  /// <summary>
+  /// This exception will be handled when the edited document is deleted
+  /// </summary>
+  DOCUMENT_DELETED = 542,
+
+  InvalidQuantity = 5034,
+  DocumentAlReadyInvoiced = 5033,
+  /// <summary>
+  /// throw when item list is empty
+  /// </summary>
+  EMPTY_LIST = 544,
+  NO_PRINTER_INSTALLED = 102002,
+  ADD_EXISTING_CLAIM_DOCUMENT_MOVEMENT = 102003,
+  /// <summary>
+  /// This exception will be handled when BE Exist
+  /// </summary>
+  AddExistingClaimTiersMovementIn = 101101,
+  /// <summary>
+  /// This exception will be handled when BS Exist
+  /// </summary>
+  AddExistingClaimTiersMovementOut = 1010102,
+  /// <summary>
+  /// throw when item has no associated invoice in draft state
+  /// </summary>
+  VALID_ASSOCIATED_INVOICE = 545,
+  INVALID_SATATUS_DOCUMENT = 102005,
+  CantDeleteReservedDocument = 102004,
+  EcommerceInProgressException = 5488,
+  ITEM_NOT_EXIST_IN_WARHOUSE = 102006,
+  DOCUMENT_IS_IMPORTED = 102007,
+  UPDATE_PURCHASE_DELIVERY_QUANTITY = 102008,
+<<<<<<< HEAD
+  DELETED_DOCUMENT_LINE = 102009,
+  UPDATED_QTY_DOCUMENT_LINE = 102010,
+  NEGOTIATION_ALREADY_ADDED = 546
+=======
+  DELETED_DOCUMENT_LINE = 102009,  
+  UPDATED_QTY_DOCUMENT_LINE = 102010,
+  /// <summary>
+  /// This exception will be handled when we try to delete reserved document line without the appropriate rights
+  /// </summary>
+  NO_RIGHTS_TO_DELETE_RESERVED_LINE = 102011
+>>>>>>> Stabilisation_Auto_Commercial
+}
+

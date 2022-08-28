@@ -1,0 +1,11 @@
+<div [formGroup]="group">
+  <kendo-combobox [allowCustom]="allowCustom"
+                  [data]="employeeDocumentTypeDataSource"
+                  [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin"
+                  formControlName="Type"
+                  name="Type"
+                  textField="name"
+                  valueField="value">
+  </kendo-combobox>
+</div>

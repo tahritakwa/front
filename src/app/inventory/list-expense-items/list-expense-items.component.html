@@ -1,0 +1,107 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-body">
+          <div class="row d-flex justify-content-between mt-3">
+             <app-search-expense class="col-lg-3" (sendPredicate)="receiveData($event)" ></app-search-expense> 
+            <app-btn-grid class="col" [fileName]="'LIST_EXPENSE'|translate"
+                          [advencedAdd]='hasAddExpenseItemPermission' [addLink]='"add"' [cardView]="false"
+                          [relativeStyle]='true' [model]="true" [gridSettings]="excelGridSettings" [service]="expenseService"
+                          [predicate]="[predicate]" [isExportExcel]="true"  [api]="'getDataWithSpecificFilter'">
+            </app-btn-grid>
+          </div>
+          <form class="form-horizontal">
+            <div class="card-body">
+              <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                          [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort"
+                          [filter]="gridSettings.state.filter"
+                          [pageable]="pagerSettings"
+                          filterable="menu" [sortable]="true" [pageable]="true" [groupable]='false'
+                          [reorderable]="true"
+                          [columnMenu]="false"
+                          (dataStateChange)="dataStateChange($event)">
+                <!-- Code start -->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                                   [title]="gridSettings.columnsConfig[0].title | translate"
+                                   [width]="gridSettings.columnsConfig[0]._width"
+                                   [filter]="gridSettings.columnsConfig[0].filter"
+                                   [filterable]="gridSettings.columnsConfig[0].filterable"
+                                   [format]="gridSettings.columnsConfig[0].format">
+                </kendo-grid-column>
+                <!-- Code end -->
+                <!-- Description start -->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                                   [title]="gridSettings.columnsConfig[1].title | translate"
+                                   [width]="gridSettings.columnsConfig[1]._width"
+                                   [filter]="gridSettings.columnsConfig[1].filter"
+                                   [filterable]="gridSettings.columnsConfig[1].filterable"
+                                   [format]="gridSettings.columnsConfig[1].format">
+                </kendo-grid-column>
+                <!-- Description end -->
+                <!--TVA Start-->
+                <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                                   [title]="gridSettings.columnsConfig[2].title | translate"
+                                   [width]="gridSettings.columnsConfig[2]._width"
+                                   [filter]="gridSettings.columnsConfig[2].filter"
+                                   [filterable]="gridSettings.columnsConfig[2].filterable"
+                                   [format]="gridSettings.columnsConfig[2].format">
+                </kendo-grid-column>
+                <!--TVA End-->
+
+                <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                [filterable]="gridSettings.columnsConfig[3].filterable"
+                [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+                [format]="gridSettings.columnsConfig[3].format" [hidden]="gridSettings.columnsConfig[3].hidden"
+                [headerStyle]="{'line-height': '1em'}" [class]="{'overflow-class': true}">>
+                <ng-template kendoGridHeaderTemplate>
+                  <span tooltip=" {{gridSettings.columnsConfig[3].title|translate}}"
+                    theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div class="row ml-1" *ngIf="dataItem.NamesTiers" style="overflow: initial;">
+                    <span *ngIf="dataItem.NamesTiers[0]" tooltip="{{dataItem.NamesTiers[0]}}"
+                      class="rounded-element-cell">
+                      {{dataItem.NamesTiers[0]}}
+                    </span>
+                    <span *ngIf="dataItem.NamesTiers[1]" tooltip="{{dataItem.NamesTiers[1]}}"
+                      class="rounded-element-cell">
+                      {{dataItem.NamesTiers[1]}}
+                    </span>
+                    <span *ngIf="dataItem.NamesTiers && dataItem.NamesTiers.length > 2" class="dropdown">
+                      <div class="show-more" type="button" id="testOfSupplier" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        +{{dataItem.NamesTiers.length - 2}}
+                      </div>
+                      <div class="dropdown-menu border" aria-labelledby="testOfSupplier">
+                        <button class="dropdown-item disabled" *ngFor="let tier of dataItem.NamesTiers.slice(2)"
+                          type="button">{{tier}}</button>
+                      </div>
+                    </span>
+                  </div>
+  
+                  <div class="container grid-cell" *ngIf="!dataItem.NamesTiers">
+                    -
+                  </div>
+                </ng-template>
+              </kendo-grid-column>
+                <kendo-grid-command-column [width]="actionColumnWidth"
+                                           [title]="'ACTIONS' | translate">
+                  <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                    <!-- edit command directive-->
+                    <i class="las la-pen cursor-pointer edit-pencil la-lg" (click)="goToAdvancedEdit(dataItem)" *ngIf="hasShowExpenseItemPermission || hasUpdateExpenseItemPermission"></i>
+                    <!-- remove command directive -->
+                    <i class="fa fa-trash-o la-lg mx-3 text-danger" aria-hidden="true" *ngIf="hasDeleteExpenseItemPermission"
+                       (click)="removeHandler(dataItem)"></i>
+                  </ng-template>
+                </kendo-grid-command-column>
+              </kendo-grid>
+            </div>
+          </form>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

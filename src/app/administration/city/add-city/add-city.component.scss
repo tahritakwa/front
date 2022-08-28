@@ -1,0 +1,9 @@
+.fixed-card-footer {
+  bottom: 60px;
+}
+
+@media only screen and  (min-width: 548px) {
+  .fixed-card-footer {
+    bottom: 30px;
+  }
+}

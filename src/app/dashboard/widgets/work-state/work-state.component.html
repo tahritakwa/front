@@ -1,0 +1,31 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-9">
+      <h4 class="card-title mb-0">{{'TOTAL_DAYS_WORK'|translate}} / {{'TOTAL_DAYS_NOT_WORK'|translate}} </h4>
+      <div *ngIf="hasWorkStateData" class="small text-muted">
+        {{'DU'|translate}} {{startDate|date: dateFormat}}
+        {{'AU'|translate}} {{endDate|date: dateFormat}}
+      </div>
+      <div *ngIf="!hasWorkStateData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="changeChart($event)"></app-period-filter>
+      <button *ngIf="hasWorkStateData" mat-icon-button [matMenuTriggerFor]="filterMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="card-body">
+  <div class="chartContainer" id="workStateChart" [hidden]="!hasWorkStateData" #workStateChart></div>
+  <div *ngIf="!hasWorkStateData && !dataLoading">
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_DATA_FOUND' | translate}} </h5>
+  </div>
+</div>
+
+<mat-menu xPosition="before" [overlapTrigger]="false" #filterMenu="matMenu">
+  <app-combobox-filter [dataList]="employeeList" [clearFilter]="clearEmployeeNameFilter" (SelectedItemEvent)="onSelectEmployee($event)" ></app-combobox-filter>
+</mat-menu>

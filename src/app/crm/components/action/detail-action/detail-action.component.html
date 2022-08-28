@@ -1,0 +1,456 @@
+<div class="card full-screen-card h-100" [style.height]="isUpdateFromCalendarModal ? '' : '100%'">
+  <!--Begin Card header-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ 'ACTION_UPDATE' |translate }}</h3>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="navItems my-3">
+      <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist" *ngIf="!isUpdateFromCalendarModal">
+        <li class="nav-item">
+          <a class="nav-item nav-link nav-link-new active" id="nav-home-tab" data-toggle="tab" href="#nav-home-action"
+             role="tab"
+             aria-controls="nav-home" aria-selected="true">{{DETAILS| translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link nav-link-new" id="nav-related-items-tab"
+             data-toggle="tab" href="#nav-related-items-action"
+             role="tab"
+             aria-controls="nav-contact" aria-selected="false">{{'RELATED_ITEM' | translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item nav-link nav-link-new" id="nav-history-tab" data-toggle="tab" href="#nav-history-action" *ngIf="authService.hasAuthorities([CRMPermissions.VIEW_HISTORY_ACTION])"
+             role="tab"
+             aria-controls="nav-contact" aria-selected="false">{{'HISTORY' | translate}}</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content tab-content-new" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="nav-home-action" role="tabpanel" aria-labelledby="nav-home-tab">
+
+        <form [formGroup]="updateActionForm">
+          <div class="row form-group">
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'ACTION_NAME'|translate}}<span
+                class="required">*</span></label>
+              <input class="form-control" type="text" formControlName="name"
+                     [value]="actionData.name"
+                     [ngClass]="{ 'has-error': (updateActionForm.controls.name.touched ||
+                            updateActionForm.controls.name.dirty) && !updateActionForm.controls.name.valid }"
+                      >
+              <app-control-messages [control]="updateActionForm.controls.name"
+                                    class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'COLLABORATER'|translate}}</label>
+              <kendo-combobox [data]="listUsers" formControlName="commercialAssignedToId"
+                              textField="FullName" valueField="Id"
+                                [valuePrimitive]="true"
+                              style="width: 100%;">
+                                <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+                <ng-template kendoComboBoxItemTemplate let-dataItem>
+                  <span class="template">{{ dataItem.FullName }} </span>
+                </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              </kendo-combobox>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'TYPE'|translate}}</label>
+              <kendo-combobox style="width: 100%;" [data]="actionsTypes"
+                              formControlName="type"
+                               [valuePrimitive]="true"
+                              [filterable]="true"
+                              (filterChange)="handleFiltreActionsTypes($event)"
+                              >
+                              <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              </kendo-combobox>
+            </div>
+          </div>
+
+
+
+
+          <div class="row form-group">
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'DEADLINES'|translate}}</label>
+              <kendo-datepicker formatPlaceholder="dateFormat" class="form-control"
+
+                                [ngModelOptions]="{standalone: true}" [min]="minDeadLineDate"
+                                (valueChange)="checkDateValidity()"
+                                [(ngModel)]="deadLine">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                <div *ngIf="!updateActionForm.controls['deadLine'].valid" class="error-message"
+                     style="color:red">{{'FORM_VALIDATION_DATE_VALUE_GT' | translate}}
+                  {{maxDates(endDate, startDate) | date : formatDate}}
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'PROGRESS'|translate}}</label>
+              <div class="input-group">
+                <input class="form-control" type="number" formControlName="progress" (change)="updateState()"
+                       [ngClass]="{ 'has-error': !updateActionForm.controls.progress.valid }"
+                       onkeydown="return event.keyCode !== 69"
+                       valueField="value" textField="name"  >
+                <div class="input-group-append">
+                      <span class="input-group-text" style="background-color: white;">
+                        <i class="fa fa-percent"></i>
+                      </span>
+                </div>
+              </div>
+              <app-control-messages [control]="updateActionForm.controls.progress"
+                                    class="error-msg messages text-danger">
+              </app-control-messages>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'PRIORITY'|translate}}</label>
+              <kendo-combobox style="width: 100%;" [data]="actionsPriorities"
+                              formControlName="priority"
+                             [valuePrimitive]="true"
+                              [filterable]="true" (filterChange)="handleFiltreActionsPriorities($event)"
+                               >
+                               <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+              </kendo-combobox>
+            </div>
+          </div>
+
+          <div class="row form-group">
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'START_DATE'|translate}}<span
+                class="required">*</span></label>
+              <kendo-datepicker [format]="formatDate" class="form-control"
+
+                                [ngModelOptions]="{standalone: true}"
+                                (valueChange)="checkDateValidity()"
+                                [(ngModel)]="startDate">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+            </div>
+
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_DATE'|translate}}<span
+                class="required">*</span></label>
+              <kendo-datepicker (valueChange)="checkDateValidity()" [ngModelOptions]="{standalone: true}"
+                                [format]="formatDate" [(ngModel)]="endDate"
+                                class="form-control">
+                <kendo-datepicker-messages today="{{'TODAY' | translate}}"
+                                           toggle="Cambiar calendario"></kendo-datepicker-messages>
+              </kendo-datepicker>
+
+              <span *ngIf="actionInSameRange === true" class="error-message" style="color:red">
+                         {{getAttributeToName()}} {{'ACTIONS_IN_SAME_RANGE_ALREADY_EXISTS'|translate}}
+                        </span>
+            </div>
+
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'START_TIME'|translate}}<span
+                class="required">*</span></label>
+              <kendo-timepicker style="width: 100%;" [ngModelOptions]="{standalone: true}" [(ngModel)]="startDate"
+
+                                [format]="'HH:mm'"
+                                [max]="endDate"
+                                (valueChange)="checkDateValidity()">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+              </kendo-timepicker>
+              <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                  <span *ngIf="startDate === null" class="error-message" style="color:red">
+                          {{'REQUIRED'|translate}}
+                    </span>
+                <span *ngIf="actionInSameRange === true" class="error-message" style="color:red">
+                         {{getAttributeToName()}} {{'ACTIONS_IN_SAME_RANGE_ALREADY_EXISTS'|translate}}
+                        </span>
+                <div *ngIf="(deadLine || endDate) && !updateActionForm.controls['startDate'].valid"
+                     class="error-message" style="color:red">
+                  {{'FORM_VALIDATION_DATE_VALUE_LT' | translate}} {{minDates(deadLine, endDate) | date : formatDate}}
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'END_TIME'|translate}}<span
+                class="required">*</span></label>
+              <kendo-timepicker
+                [ngModelOptions]="{standalone: true}" [(ngModel)]="endDate"
+                [format]="'HH:mm'"
+                (valueChange)="checkDateValidity()"
+                class="form-control">
+              </kendo-timepicker>
+              <div class="col-12">
+                    <span *ngIf="endDate === null" class="error-message" style="color:red">
+                          {{'REQUIRED'|translate}}
+                    </span>
+                <span *ngIf="invalidStartEndTime"
+                      class="error-msg messages text-danger">{{"ACTION_START_TIME_INVALID"|translate}}</span>
+              </div>
+              <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                <div *ngIf="(deadLine || startDate) && !updateActionForm.controls['endDate'].valid"
+                     class="error-message"
+                     style="color:red">{{deadLine ? ('FORM_VALIDATION_BETWEEN' | translate) : ('FORM_VALIDATION_DATE_VALUE_GT' | translate)}}
+                  {{startDate| date : formatDate}} {{deadLine ? ('AND' | translate) : ''}} {{deadLine ? (deadLine| date : formatDate) : ''}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row form-group">
+
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'STATE'|translate}}</label>
+              <kendo-dropdownlist style="width: 100%;" [data]="actionsStates" [(ngModel)]="selectedState"
+                                  formControlName="state" (valueChange)="updateProgressValidation()"
+                                   >
+              </kendo-dropdownlist>
+            </div>
+
+            <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'DURATION'|translate}}</label>
+              <label>{{getDuration(duration)}}</label>
+            </div>
+
+          </div>
+
+          <p-accordion [multiple]="true">
+            <!-- Collapse Localtion -->
+            <!-- Collapse Location  -->
+            <p-accordionTab *ngIf="needLocation"
+                            header="{{'LOCATION'| translate}}"style="color: #4c9aae;"
+                            style="color: #4c9aae;">
+              <br/>
+              <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-12">
+
+                  <p-gmap #gmap [style]="{'width':'100%','height':'320px'}" [options]="options" [overlays]="overlays"
+                          (onMapClick)="handleMapClick($event)" (onOverlayClick)="handleOverlayClick($event)" (onOverlayDragEnd)="handleDragEnd($event)"></p-gmap>
+                </div>
+                <div class="col">
+                  <div class="row form-group">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'ADDRESS_LINE'|translate}}</label>
+                      <input class="form-control" type="text" formControlName="address_line">
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'CITY'|translate}}</label>
+
+                      <input class="form-control" type="text" formControlName="city">
+                    </div>
+
+                  </div>
+                  <div class="row form-group">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'COUNTRY'|translate}}</label>
+                      <input class="form-control" type="text" formControlName="country">
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'LONGITUDE'|translate}}</label>
+
+
+                      <input class="form-control" type="number" formControlName="lat" [readOnly]="true"
+                      >
+                    </div>
+                  </div>
+                  <div class="row form-group">
+
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'POSTAL_CODE'|translate}}</label>
+                      <input class="form-control" type="number" formControlName="postal_code">
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <label class="col-lg-12 col-md-12 col-sm-12"> {{'LATITUDE'|translate}}</label>
+                      <input class="form-control" type="number" formControlName="lng" [readOnly]="true"
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </p-accordionTab>
+            <!-- Collapse frequency & reminder  -->
+            <p-accordionTab
+              header="{{'REMINDER_FREQUENCY'| translate}}" style="color: #4c9aae;">
+
+              <div class="row form-group">
+                <div class="col-12" formArrayName="reminders" *ngFor="let reminder of reminders.controls; let i=index">
+                  <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="row py-1 d-flex justify-content-between">
+                      <div class="col px-0">
+                        <h6 class="card-title mb-0"
+                            style="color: #4c9aae;">{{'CALENDAR.POPUP.TYPE_EVENT.REMINDER'|translate}} {{i + 1}}</h6>
+                      </div>
+                      <i type="button" (click)="deleteReminder(i, reminder)"
+                         class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"></i>
+                    </div>
+                  </div>
+
+                  <app-action-reminder [reminderFG]="reminder"></app-action-reminder>
+                </div>
+              </div>
+              <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+                <button class="btn-Add k-button btn btn-add" type="button" (click)='addReminder()'>
+                  <i class="fa fa-plus fa AddIcon"></i>
+                  <span>&nbsp; {{'ADD'|translate}}</span>
+                </button>
+              </div>
+
+
+            </p-accordionTab>
+
+
+            <!-- Collapse associated to  -->
+            <p-accordionTab [selected]="openSecondCollapse"
+                            (selectedChange)="openSecondCollapse =!openSecondCollapse"
+                            header="{{'ASSOCIATED_TO'| translate}}" style="color: #4c9aae;">
+              <div class="row form-group">
+                <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+                  <div class="k-form-field">
+                    <input type="radio" id="associatedProspects"  class="k-radio"
+                           (click)="filterAssociatedProspects()"  [checked]="!isClientMode">
+                    <label class="k-radio-label" for="associatedProspects">{{'PROSPECT' | translate}}</label>
+
+                    <input type="radio" id="associatedClient"  class="k-radio"
+                           (click)="filterAssociatedClient()" [checked]="isClientMode">
+                    <label class="k-radio-label" for="associatedClient">{{'CONTACT_CLIENT' | translate}}</label>
+                  </div>
+                </div>
+
+                <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'OPPORTUNITY'|translate}}</label>
+                  <kendo-combobox formControlName="associatedOpportunityId" [data]="opportunitiesList"
+                                  (valueChange)="changeSelectedOpportunity($event)"
+                                  [filterable]="true" (filterChange)="handleOpportunityFilter($event)"
+                                  textField="title" [valuePrimitive]="true" valueField="id"
+                                  class="form-control">
+                                  <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                  </kendo-combobox>
+                  <app-control-messages [control]="updateActionForm.controls.associatedOpportunityId"
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+                </div>
+
+
+                <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANIZATION'|translate}}</label>
+                  <kendo-combobox formControlName="organizationId" [data]="searchedOrganizationList"
+                                  [valuePrimitive]="true" valueField="id" textField="name"
+                                  [filterable]="true" (filterChange)="handleOrganizationFilter($event)"
+                                  (valueChange)="changeSelectedOrganization($event)"
+                                  class="form-control">
+                                  <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                  </kendo-combobox>
+                  <app-control-messages [control]="updateActionForm.controls.organizationId"
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+                </div>
+
+
+                <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12"> {{'CONTACT'|translate}}</label>
+                  <kendo-combobox formControlName="contactConcernedId" [data]="searchedContactsList"
+                                  [valuePrimitive]="true" valueField="id" textField="name"
+                                  [filterable]="true" (filterChange)="handleContactFilter($event)"
+
+                                  (valueChange)="changeSelectedContact($event)"
+                                  class="form-control">
+                                  <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                  </kendo-combobox>
+                  <app-control-messages [control]="updateActionForm.controls.contactConcernedId"
+                                        class="error-msg messages text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+
+
+            </p-accordionTab>
+
+            <p-accordionTab header="{{'DESCRIPTION'| translate}}" style="color: #4c9aae;">
+
+              <div class="row form-group">
+                <div class="col-12">
+                  <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+                  <textarea class="form-control" type="text" formControlName="description">
+                    </textarea>
+                </div>
+              </div>
+
+            </p-accordionTab>
+
+            <!-- Collapse permission -->
+            <p-accordionTab *ngIf="canUpdatePermission" header="{{'PERMISSION'| translate}}" style="color: #4c9aae;">
+
+              <app-permission [relatedEntityName]="actionEntityName" [relatedEntityId]="idAction"
+                               [parent]="parentPermission"
+                              (canUpdatePermissionEvent)="loadPermission($event)"></app-permission>
+            </p-accordionTab>
+
+          </p-accordion>
+
+        </form>
+      </div>
+      <div class="tab-pane fade" id="nav-related-items-action" role="tabpanel" aria-labelledby="nav-contacts-tab">
+        <app-action-related-items [source]="relatedItemSource" [isArchivingMode]="isArchivingMode"
+                                  [sourceId]="idAction"></app-action-related-items>
+      </div>
+
+      <div class="tab-pane fade" id="nav-history-action" role="tabpanel" *ngIf="authService.hasAuthorities([CRMPermissions.VIEW_ACTION])">
+        <app-history-list [source]="actionEntityName" [sourceId]="idAction"></app-history-list>
+      </div>
+    </div>
+  </div>
+
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="returnToList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{getValueButton()|translate}}
+              </span>
+            </a>
+            <button (click)="update()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+</div>

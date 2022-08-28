@@ -1,0 +1,149 @@
+<div class="card">
+  <div class="card-body">
+      <app-advanced-search [filtreFieldsColumns]="filterFieldsColumns" [filtreFieldsInputs]="filterFieldsInputs"
+        (filtrePredicateToSend)="getFilterPredicate($event)"
+        (predicateOperator)="getOperatorPredicate($event)"
+        (searchClickEvent)="searchClick()" (resetClickEvent)="resetClickEvent()">
+      </app-advanced-search>
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+                [skip]="gridSettings.state.skip" (dataStateChange)="dataStateChange($event)"
+                [sort]="gridSettings.state.sort"
+                [filter]="gridSettings.state.filter" [selectable]="true" [sortable]="true" [filterable]="false"
+                [reorderable]="true" (remove)="removeHandler($event)" (sortChange)="sortChange()"
+                (filterChange)="filterChange()"
+                (pageChange)="onPageChange()">
+      <!-- Head end-->
+      <!--Grid Toolbar-->
+      <ng-template kendoGridToolbarTemplate>
+        <div class="row" style="float :right;margin-right: 2px;">
+          <app-btn-grid *ngIf="this.authService.hasAuthority(AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS)"
+          [advencedAdd]='true' [add]='false' [export]='false' [addLink]='"add"'>
+          </app-btn-grid>
+
+          <div class="d-flex float-right">
+            <app-account-import-grid-btn [title]=titleBtnGrid [addLink]='"add"' style="margin-top: -5%; display: inline-flex;"
+            [advancedAdd]="this.authService.hasAuthority(AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS)"
+            [canImport]="this.authService.hasAuthority(AccountingPermissions.IMPORT_ACCOUNTING_ACCOUNTS)"
+            [export]='this.authService.hasAuthority(AccountingPermissions.EXPORT_ACCOUNTING_ACCOUNTS)'
+            [canExportModel]='this.authService.hasAuthority(AccountingPermissions.EXPORT_MODEL_ACCOUNTING_ACCOUNTS)'></app-account-import-grid-btn>
+          </div>
+        </div>
+      </ng-template>
+
+      <!--Code -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                         [title]="gridSettings.columnsConfig[0].title | translate"
+                         [width]="gridSettings.columnsConfig[0]._width"
+                         [format]="gridSettings.columnsConfig[0].format"
+                         [filter]="gridSettings.columnsConfig[0].filter">
+
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <!-- Label -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                         [title]="gridSettings.columnsConfig[1].title | translate"
+                         [width]="gridSettings.columnsConfig[1]._width"
+                         [format]="gridSettings.columnsConfig[1].format"
+                         [filter]="gridSettings.columnsConfig[1].filter">
+
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <!-- Plan -->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                         [title]="gridSettings.columnsConfig[2].title | translate"
+                         [width]="gridSettings.columnsConfig[2]._width"
+                         [format]="gridSettings.columnsConfig[2].format">
+
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+        </ng-template>
+
+        <ng-template kendoGridFilterCellTemplate let-filter>
+          <kendo-combobox style="width: 200px" [data]="chartAccountsFilteredList" [(ngModel)]="selectedPlanInFilter"
+                          (filterChange)="handleFilterChartAccount($event)" [textField]="'label'" [valueField]="'id'"
+                          [filterable]="true" (valueChange)="planValueChange()">
+            <ng-template kendoComboBoxItemTemplate let-dataItem>
+              <div class="container">
+                <div class="row">
+                  <b>{{dataItem.code}}</b>
+                </div>
+                <div class="row">
+                  <span class="small">{{dataItem.label}}</span>
+                </div>
+              </div>
+            </ng-template>
+                  <!--No data template-->
+                  <ng-template kendoDropDownListNoDataTemplate>
+                    <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                  </ng-template>
+                  <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+          </kendo-combobox>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                         [title]="gridSettings.columnsConfig[3].title | translate"
+                         [width]="gridSettings.columnsConfig[3]._width"
+                         [filter]="gridSettings.columnsConfig[3].filter"
+                         [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem" style="padding-left:2rem;">
+          <div class="col-12 mx-5">
+            <app-letterable-check-box [status]="dataItem.literable"></app-letterable-check-box>
+          </div>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <kendo-grid-column [field]="gridSettings.columnsConfig[4].field"
+                         [title]="gridSettings.columnsConfig[4].title | translate"
+                         [width]="gridSettings.columnsConfig[4]._width"
+                         [filter]="gridSettings.columnsConfig[4].filter"
+                         [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+
+        <ng-template kendoGridHeaderTemplate>
+          <span tooltip="{{gridSettings.columnsConfig[4].tooltip|translate}}"
+                theme="light">{{gridSettings.columnsConfig[4].title|translate}}</span>
+        </ng-template>
+
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div class="col-12 mx-5">
+            <app-reconcilable-check-box [status]="dataItem.reconcilable"></app-reconcilable-check-box>
+          </div>
+        </ng-template>
+
+      </kendo-grid-column>
+
+      <!-- Command-->
+      <kendo-grid-command-column [width]="100" [title]="'ACTIONS'| translate" [columnMenu]="false"
+                                 [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+        <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+          <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true" (click)="goToAdvancedEdit(dataItem)"
+             *ngIf="this.authService.hasAuthorities([AccountingPermissions.ADD_ACCOUNTING_ACCOUNTS,AccountingPermissions.VIEW_ACCOUNTING_ACCOUNTS])"></i>
+          <i class="las la-trash-alt text-danger cursor-pointer la-lg" aria-hidden="true" (click)="removeHandler(dataItem)"
+          *ngIf="this.authService.hasAuthority(AccountingPermissions.DELETE_ACCOUNTING_ACCOUNTS)"></i>
+        </ng-template>
+      </kendo-grid-command-column>
+      <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                           pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+      </kendo-grid-messages>
+    </kendo-grid>
+  </div>
+</div>

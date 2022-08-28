@@ -1,0 +1,30 @@
+/* Timeline */
+.timeline,
+.timeline-horizontal {
+  list-style: none;
+  padding: 20px;
+  position: relative;
+}
+
+.timeline .timeline-item {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.timeline .timeline-item:before,
+.timeline .timeline-item:after {
+  content: "";
+  display: table;
+}
+
+.timeline .timeline-item:after {
+  clear: both;
+}
+
+.image {
+  width: 40px;
+  height: 40px;
+}
+.card-width {
+  width: 80%;
+}

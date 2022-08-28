@@ -1,0 +1,151 @@
+<mat-horizontal-stepper #stepper [linear]="isLinear">
+
+  <mat-step *ngIf="hasFullRecuitmentPermission"
+            [completed]="isCandidacyIsReadyToNextStep">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>{{'CANDIDACY'|translate}}</ng-template>
+      <app-list-candidacy #candidacyViewChild (actionSelected)="RefreshAllRecruitmentComponents()"
+                          [recruitmentId]="recruitmentId"></app-list-candidacy>
+      <div>
+        <button (click)="fromCandidacyToNextStep()" mat-button matStepperNext
+                style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step *ngIf="hasFullRecuitmentPermission"
+            [completed]="isPreselectionReadyToNextStep">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>
+        <div (click)="fromCandidacyToNextStep()">
+          {{'PRE_SELECTION'|translate}}
+        </div>
+      </ng-template>
+      <app-pre-selection #preselectionViewChild (actionSelected)="RefreshAllRecruitmentComponents()"
+                         [recruitmentId]="recruitmentId"></app-pre-selection>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button (click)="fromPreselectionToNextStep()" mat-button matStepperNext
+                style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step *ngIf="hasFullRecuitmentPermission"
+            [completed]="isInterviewIsReadyToNextStep">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>
+        <div (click)="fromPreselectionToNextStep()">
+          {{'INTERVIEW'|translate}}
+        </div>
+      </ng-template>
+
+      <app-list-interview-by-recruitment #interviewViewChild
+                                         (actionSelected)="RefreshAllRecruitmentComponents()" [recruitmentId]="recruitmentId">
+
+      </app-list-interview-by-recruitment>
+
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button (click)="fromInterviewToNextStep()" mat-button matStepperNext
+                style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step *ngIf="hasFullRecuitmentPermission"
+            [completed]="isEvaluationIsReadyToNextStep">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>
+        <div (click)="fromInterviewToNextStep()">
+          {{'EVALUATION'|translate}}
+        </div>
+      </ng-template>
+      <app-list-evaluation #evaluationViewChild (actionSelected)="RefreshAllRecruitmentComponents()"
+                           [recruitmentId]="recruitmentId"></app-list-evaluation>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button (click)="fromEvaluationToNextStep()" mat-button matStepperNext
+                style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step [completed]="isSelectionIsReadyToNextStep">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>
+        <div (click)="fromEvaluationToNextStep()">
+          {{'SELECTION'|translate}}
+        </div>
+      </ng-template>
+      <app-selection #selectionViewChild (actionSelected)="RefreshAllRecruitmentComponents()"
+                     [recruitmentId]="recruitmentId"></app-selection>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button (click)="fromSelectionToNextStep()" mat-button matStepperNext
+                style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step *ngIf="hasFullRecuitmentPermission"
+            [completed]="isOfferIsReadyToNextStep">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>
+        <div (click)="fromSelectionToNextStep()">
+          {{'OFFER'|translate}}
+        </div>
+      </ng-template>
+      <app-list-offer-by-candidacy #offerViewChild
+                                   (actionSelected)="RefreshAllRecruitmentComponents()"
+                                   [recruitmentId]="recruitmentId"></app-list-offer-by-candidacy>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button (click)="fromOfferToNextStep()" mat-button matStepperNext
+                style="float: right!important;">{{'NEXT'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step *ngIf="hasFullRecuitmentPermission"
+            [completed]="isHiringIsReadyToNextStep">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>
+        <div (click)="fromOfferToNextStep()">
+          {{'HIRING'|translate}}
+        </div>
+      </ng-template>
+      <app-hiring #hiringViewChild (actionSelected)="RefreshAllRecruitmentComponents()"
+                  [recruitmentId]="recruitmentId"></app-hiring>
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+        <button (click)="doneClick()" *ngIf="currentRecruitment.State === recruitmentState.Hiring" mat-button
+                style="float: right!important;">
+          {{'DONE'|translate}}
+        </button>
+      </div>
+    </form>
+  </mat-step>
+
+  <mat-step *ngIf="hasFullRecuitmentPermission || hasCloseRecuitmentPermission"
+            [completed]="currentRecruitment.State === recruitmentState.Closed">
+    <form [ngStyle]="{'min-height': '350px', 'max-height': '550px', 'overflow-y': 'auto', 'overflow-x': 'auto'}">
+      <ng-template matStepLabel>
+        <div (click)="doneClick()" *ngIf="currentRecruitment.State !== recruitmentState.Closed">
+          {{'DONE'|translate}}
+        </div>
+        <div *ngIf="currentRecruitment.State === recruitmentState.Closed">
+          {{'DONE'|translate}}
+        </div>
+      </ng-template>
+
+      <app-recruitment-resume #recruitmentResumeViewChild
+                              *ngIf="currentRecruitment.State === recruitmentState.Closed" [recruitmentId]="recruitmentId"></app-recruitment-resume>
+
+      <div>
+        <button mat-button matStepperPrevious>{{'BACK'|translate}}</button>
+      </div>
+    </form>
+  </mat-step>
+
+</mat-horizontal-stepper>

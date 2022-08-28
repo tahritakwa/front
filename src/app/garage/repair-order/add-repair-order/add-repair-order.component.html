@@ -1,0 +1,226 @@
+<form class="form-horizontal" [formGroup]="addRepairOrderFormGroup">
+  <div class="card">
+    <!-- header -->
+    <div class="card-header">
+      <div class="row">
+        <div class="col-lg-10 col-md-9 col-sm-9 pl-0 pt-2">
+          <h3 class="card-title mb-0">
+            {{(!isUpdateMode ? 'ADD_REPAIR_ORDER' : 'EDIT_REPAIR_ORDER')|translate}}
+          </h3>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3" align="right" *ngIf="isUpdateMode && repairOrderToUpdate"
+          style="align-self: center;">
+          <span style="color:#20a8d8">{{ repairOrderToUpdate.Code }}</span>
+          <span *ngIf="repairOrderToUpdate.Status === repairOrderStatusEnumerator.Provisional"
+            class="badge badge-warning">{{'PROVISIONAL' |
+            translate}}</span>
+          <span *ngIf="repairOrderToUpdate.Status === repairOrderStatusEnumerator.Valid"
+            class="badge badge-success">{{'VALID' |
+            translate}}</span>
+          <div *ngIf="isUpdateMode && repairOrderToUpdate">
+            <span> {{'CODE_QUOTATION' |translate }}:&nbsp;
+              <span class="cursor-pointer doc-code" style="font-size: 0.9em;" (click)="showDocument()">
+                {{repairOrderToUpdate?.IdQuotationDocumentNavigation?.Code}}
+              </span>
+            </span><br />
+            <span *ngIf="repairOrderToUpdate?.Intervention?.length > 0">
+              {{'CODE_INTERVENTION' |translate }}:&nbsp;
+              <span class="cursor-pointer doc-code" style="font-size: 0.9em;"
+                (click)="showIntervention(repairOrderToUpdate.Intervention[0].Id)">
+                {{repairOrderToUpdate.Intervention[0].Code}}
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- body -->
+    <div class="card-body">
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <!-- customer -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CUSTOMER' | translate}}</label>
+            <app-supplier-dropdown [itemForm]="addRepairOrderFormGroup" [type]='customerTiers'
+              [placeholder]="'CHOOSE_CUSTOMER_PLACEHOLDER' | translate" [hideAddBtn]="true"
+              (Selected)="supplierValueChange($event)"></app-supplier-dropdown>
+            <app-control-messages [control]="addRepairOrderFormGroup.controls.IdTiers"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <!-- vehicle -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'VEHICLE' | translate}}</label>
+            <app-registration-number-of-vehicle-dropdwon [group]="addRepairOrderFormGroup" [category]="vehicleCategory"
+              [showAddButton]="true" #registrationNumberChild>
+            </app-registration-number-of-vehicle-dropdwon>
+            <app-control-messages [control]="addRepairOrderFormGroup.controls.IdVehicle"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- garage -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'GARAGE' | translate}}</label>
+            <app-garage-dropdown [group]="addRepairOrderFormGroup" (Selected)="garageSelectedChanged($event)">
+            </app-garage-dropdown>
+            <app-control-messages [control]="addRepairOrderFormGroup.controls.IdGarage"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <div class="form-group row">
+          <!-- current mileage -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-auto col-md-12 col-sm-12">{{'CURRENT_MILEAGE' | translate}}</label>
+            <input class="form-control" formControlName="CurrentMileage" type="number"
+              (change)="mileageValueChanged($event)" name="CurrentMileage">
+            <app-control-messages [control]="addRepairOrderFormGroup.controls.CurrentMileage"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- repair order type -->
+          <div class="col-lg-4 col-md-12 col-sm-12 margin">
+            <label class="col-lg-auto col-md-12 col-sm-12">{{'REPAIR_ORDER_TYPE' | translate}}</label>
+            <app-intervention-order-type-dropdown [group]="addRepairOrderFormGroup" [controlName]="'RepairOrderType'"
+              (selectedValue)="selectedType($event)">
+            </app-intervention-order-type-dropdown>
+            <app-control-messages [control]="addRepairOrderFormGroup.controls.RepairOrderType"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- mileage programmed -->
+          <div class="col-lg-3 col-md-12 col-sm-12 margin" *ngIf="showMileageProgrammedDropdown">
+            <label class="col-lg-auto col-md-12 col-sm-12">{{'REPAIR_ORDERE_FOR' | translate}} </label>
+            <app-mileage-dropdown [fieldName]="'IdMileageProgrammed'" [group]="addRepairOrderFormGroup"
+              (Selected)="mileageProposedValueChange($event)"> </app-mileage-dropdown>
+            <app-control-messages [control]="addRepairOrderFormGroup.controls.IdMileageProgrammed"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-1 col-md-12 col-sm-12 margin" style="margin-top: 2.5em;"
+            *ngIf="showMileageProgrammedDropdown && addRepairOrderFormGroup.controls.IdMileageProgrammed.value">
+            <span>
+              <i class="pointer fa fa-info-circle fa-lg" aria-hidden="true" style="color: #607d8b;" data-toggle="modal"
+                (click)="showOperationsProposed()"></i>
+            </span>
+          </div>
+          <!-- operation kit -->
+          <div class="col-lg-3 col-md-12 col-sm-12 margin" *ngIf="showOperationKitDropdown">
+            <label class="col-lg-auto col-md-12 col-sm-12">{{'OPERATION_KIT' | translate}} </label>
+            <app-opration-kit-multiselect [itemForm]="addRepairOrderFormGroup" [isCheckboxMode]="true"
+              [disabled]="isOperationKitDisabled"
+              (selectedOneValueFromCheckbox)="selectedOneOpeartionKitFromCheckbox($event)"
+              (deSelectedOneValueFromCheckbox)="deSelectedOneOpeartionKitFromCheckbox($event)"
+              (selectedAllValueFromCheckbox)="operationKitMultiSelectAllValueChange($event)">
+            </app-opration-kit-multiselect>
+          </div>
+          <div class="col-lg-1 col-md-12 col-sm-12 margin" style="margin-top: 2.5em;"
+            *ngIf="showOperationKitDropdown && selectedOperationKit && selectedOperationKit.length > 0 ">
+            <span>
+              <i class="pointer fa fa-info-circle fa-lg" aria-hidden="true" style="color: #607d8b;" data-toggle="modal"
+                (click)="showOperationKitSelected()"></i>
+            </span>
+          </div>
+        </div>
+        <!-- proposed operation -->
+        <div>
+          <div *ngIf="showProposedOperationGrid" style="margin-bottom: 2em;">
+            <span>{{'PLANNED_INTERVENTION_FOR' | translate}}&nbsp; </span>
+            <span>{{selectedMileage}}</span>
+          </div>
+          <fieldset [ngStyle]="{border:setBorderStyleForProposedOperation, 'padding-top': '1px' }"
+            *ngIf="showProposedOperationGrid">
+            <legend>{{"PROPOSED_OPERATIONS"|translate}}
+              <i *ngIf="!showProposedOperationContent" class="las la-angle-double-down la-angle-color"
+                (click)="showProposedOperationContentChange(true)"></i>
+              <i *ngIf="showProposedOperationContent" class="las la-angle-double-up la-angle-color"
+                (click)="showProposedOperationContentChange(false)"></i>
+            </legend>
+            <div *ngIf="showProposedOperationContent">
+              <app-operations-proposed-grid [idRepairOrder]='idRepairOrder' [hasUpdatePermission]="hasUpdatePermission"
+                [idMileageProgrammed]='IdMileageProgrammed.value' [companyCurrency]='companyCurrency'
+                [language]="language" [repairOrderOperations]='repairOrderOperationsList'
+                (idAddedOperation)="operationAddedFromProposition($event)" [isUpdateMode]="isUpdateMode"
+                [isRepairOrderValid]="isRepairOrderValid" [isForRepairOrder]="true">
+              </app-operations-proposed-grid>
+            </div>
+          </fieldset>
+        </div>
+        <!-- operation to be performed -->
+        <div style="margin-top: 2em;">
+          <fieldset [ngStyle]="{border:setBorderStyleForOperationToBePerformed, 'padding-top': '1px' }">
+            <legend>{{"OPERATIONS_TO_BE_PERFORMED"|translate}}
+              <i *ngIf="!showOperationToBePerformedContent" class="las la-angle-double-down la-angle-color"
+                (click)="showOperationToBePerformedContentChange(true)"></i>
+              <i *ngIf="showOperationToBePerformedContent" class="las la-angle-double-up la-angle-color"
+                (click)="showOperationToBePerformedContentChange(false)"></i>
+            </legend>
+            <div *ngIf="showOperationToBePerformedContent">
+              <app-operation-to-be-performed #operationToBePerformedChild
+                [repairOrderOperationsList]="repairOrderOperationsList" [idRepairOrder]="idRepairOrder"
+                [companyCurrency]="companyCurrency" [language]="language"
+                [operationListIdsToIgnore]="operationListIdsToIgnore" [isUpdateMode]="isUpdateMode"
+                [isRepairOrderValid]="isRepairOrderValid" [isForRepairOrder]="true">
+              </app-operation-to-be-performed>
+            </div>
+          </fieldset>
+        </div>
+        <!-- spare parts -->
+        <div style="margin-top: 2em;">
+          <fieldset [ngStyle]="{border:setBorderStyleForSpareParts, 'padding-top': '1px' }">
+            <legend>{{"NECESSARY_PARTS"|translate}}
+              <i *ngIf="!showSparePartsContent" class="las la-angle-double-down la-angle-color"
+                (click)="showSparePartsContentChange(true)"></i>
+              <i *ngIf="showSparePartsContent" class="las la-angle-double-up la-angle-color"
+                (click)="showSparePartsContentChange(false)"></i>
+            </legend>
+            <div *ngIf="showSparePartsContent">
+              <app-spare-part-for-intervention #sparePartViewChild [repairOrderItemList]="repairOrderItemList"
+                [hasUpdatePermission]="hasUpdatePermission" [idRepairOrder]="idRepairOrder" [idWarehouse]="idWarehouse"
+                [idGarage]="IdGarage.value" [isUpdateMode]="isUpdateMode" [isRepairOrderValid]="isRepairOrderValid"
+                [isForRepairOrder]="true" [companyCurrency]="companyCurrency" [language]="language" [idCustomer]="IdTiers.value"
+                (sparePartsChanged)="onSparePartsChanged($event)" >
+              </app-spare-part-for-intervention>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer" style="margin-left: 0;">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a (click)="goBackToList()">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a>
+              <button style="height: fit-content;" *ngIf="!isUpdateMode" (click)="saveAndGenerateQuotation()"
+                class="btn btn-sm btn-save mx-1" type="button">
+                <i class="fa fa-floppy-o"></i> {{'GENERATE_QUOTATION'|translate}}
+              </button>
+              <button style="height: fit-content;"
+                *ngIf="isUpdateMode && (repairOrderToUpdate?.Status === repairOrderStatusEnumerator.Provisional)"
+                (click)="saveAndRegenerateQuotation()" class="btn btn-sm btn-save mx-1" type="button">
+                <i class="fa fa-floppy-o"></i> {{'RE_GENERATE_QUOTATION'|translate}}
+              </button>
+              <button style="height: fit-content;"
+                *ngIf="isUpdateMode && (repairOrderToUpdate?.Status === repairOrderStatusEnumerator.Provisional) && repairOrderToUpdate?.IdQuotationDocumentNavigation"
+                (click)="generateInterventionFromRepairOrder()" class="btn btn-sm btn-primary mx-1" type="button">
+                <i class="fa fa-play-circle"></i> {{'GENERATE_INTERVENTION'|translate}}
+              </button>
+              <kendo-dropdownbutton *ngIf="isUpdateMode && repairOrderToUpdate?.IdQuotationDocumentNavigation" [data]="buttonDropdownData" (itemClick)="onButtonItemClick($event)">
+                <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}} &nbsp;<i class="k-icon k-i-arrow-s"></i>
+                <ng-template kendoDropDownButtonItemTemplate let-dataItem>
+                  <span>{{ dataItem.value }}</span>
+                </ng-template>
+              </kendo-dropdownbutton> 
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</form>

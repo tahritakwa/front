@@ -1,0 +1,777 @@
+<div class="card full-screen-card border-0" [ngStyle]="{'border':isModal ? 'none' : 'border: 1px solid #c8ced3'}">
+  <div class="card-content">
+    <!--Begin card header-->
+    <div class="card-header" *ngIf="!isModal">
+      <div class="col-sm-5 mt-1">
+        <h3 class="card-title mb-0"
+          *ngIf='documentType === documentEnumerator.SalesInvoices || documentType === documentEnumerator.PurchaseInvoices'>
+          {{'INVOICE_LIST'|translate}}
+        </h3>
+        <h3 class="card-title mb-0" *ngIf='documentType === documentEnumerator.SalesQuotations'>
+          {{'QUOTATION_LIST'|translate}}
+        </h3>
+        <h3 class="card-title mb-0" *ngIf='documentType === documentEnumerator.SalesDelivery'>
+          {{'DELIVERY_LIST'|translate}}
+        </h3>
+        <h3 class="card-title mb-0"
+          *ngIf='documentType === documentEnumerator.SalesAsset || documentType === documentEnumerator.PurchaseAsset'>
+          {{'ASSET_LIST'|translate}}
+        </h3>
+        <h3 class="card-title mb-0"
+          *ngIf='documentType === documentEnumerator.SalesOrder || documentType === documentEnumerator.PurchaseOrder'>
+          {{'SALES_ORDER_LIST'|translate}}
+        </h3>
+        <h3 class="card-title mb-0" *ngIf='documentType === documentEnumerator.PurchaseDelivery'>
+          {{'PURCHASE_DELIVERY_LIST'|translate}}
+        </h3>
+        <h3 class="card-title mb-0" *ngIf='documentType === documentEnumerator.PurchaseFinalOrder'>
+          {{'PURCHASE_FINAL_ORDER_LIST'|translate}}
+        </h3>
+        <h3 class="card-title mb-0" *ngIf='documentType === documentEnumerator.BS'>{{'BS_LIST'|translate}}</h3>
+        <h3 class="card-title mb-0" *ngIf='documentType === documentEnumerator.BE'>{{'BE_LIST'|translate}}</h3>
+      </div>
+    </div>
+    <!--End card header-->
+
+    <!--Begin card body-->
+    <div class="card-body">
+      <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+        (filtrePredicateToSend)="getFiltrePredicate($event)" (searchClickEvent)="searchClick()"
+        (resetClickEvent)="resetClickEvent()">
+      </app-advanced-search>
+      <div class="row d-flex justify-content-between mt-3">
+        <app-search-document class="col-lg-3" (sendData)="receiveData($event)"></app-search-document>
+        <div class="row" style="margin-left: 150px; margin-right: 10px;" *ngIf="!isFromDeliveryModal">
+          <app-btn-grid class="col" [advencedAdd]='checkAddDocPermission' [addLink]='advencedAddLink' [model]='true' [isVisibleGenerateInvoiceButton] = 'isVisibleGenerateInvoiceButton'
+            [relativeStyle]='true' [service]="documentService" (downLoadData)="downloadSelectedFiles()" [documentType] = 'documentType'
+            [isOenModalToBillingTerm]="isOpenTermBilling()" [gridSettings]="excelGridSettings" [showSynchronzeBToB]='synchronizaOrdersBToB'
+            (synchronizeWithBToBEvent)="synchronizeAllBtoBOrders()"
+            [isDownloadData]="showDownloadDataButton()" [isPrintReport]="isSalesDelivery && checkPrintDeliverySales" [isExportExcel]="true"
+            (printReportEvent)="printJasperDocument($event)"  [fileName]="fileName" [isFromDocument]="true" [predicate]="predicateDocument"
+            (generateInvoiceEvent) = "generateInvoice()">
+          </app-btn-grid>
+        </div>
+      </div>
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [columnMenu]="false"
+        [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" (remove)="removeHandler($event)"
+        (dataStateChange)="dataStateChange($event)" [pageable]="pagerSettings" [filterable]="false" [selectable]="true"
+        #grid [filter]="gridSettings.state.filter" (selectedKeysChange)="onSelectedKeysChange($event)"
+        [kendoGridSelectBy]="'Id'" [selectedKeys]="documentsIdsSelected" [height]="tableHeight" [sortable]="true">
+        <kendo-grid-checkbox-column [width]="50" *ngIf='documentType === documentEnumerator.PurchaseAsset
+            || documentType === documentEnumerator.PurchaseInvoices
+                 || documentType === documentEnumerator.PurchaseDelivery || documentType === documentEnumerator.SalesDelivery'>
+          <ng-template kendoGridHeaderTemplate *ngIf = "isVisibleSelectAll">
+            <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+              (selectAllChange)="onSelectAllChange($event)">
+            <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+          </ng-template>
+        </kendo-grid-checkbox-column>
+
+
+        <!--Client-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [filterable]="true" *ngIf="!isModal"
+          [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+          [format]="gridSettings.columnsConfig[0].format" [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate let-dataItem>
+            <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div class="row">
+              <div class="col-auto">
+                <div class="customer-photo d-flex justify-content-center">
+                  <img id="blah" class="rounded-circle card-avatar" alt="Illustration des problèmes de suddation"
+                    border="0" [src]="dataItem.imageTiers" />
+                </div>
+              </div>
+              <div class="col">
+                <div class="row p-2">
+                  <span>{{dataItem.NameTiers}}</span>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Region-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[8].field" [filterable]="true"
+          *ngIf="!isModal && documentType === documentEnumerator.SalesDelivery"
+          [title]="gridSettings.columnsConfig[8].title | translate" [width]="gridSettings.columnsConfig[8]._width"
+          [format]="gridSettings.columnsConfig[8].format" [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[8].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[8].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <span *ngIf="dataItem.Region">{{dataItem.Region}}</span>
+            <span *ngIf="!dataItem.Region">-</span>
+         </ng-template>
+        </kendo-grid-column>
+
+        <!--Date-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [filterable]="false" *ngIf="!isModal"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [format]="formatDateFilter" filter="date">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div>
+              {{dataItem.DocumentDate|date: gridSettings.columnsConfig[1].format}}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Code-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [filterable]="true"
+          [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+          [format]="gridSettings.columnsConfig[2].format">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            <div *ngIf="dataItem.IdDocumentStatus !== statusCode.Provisional">
+              <span class="doc-code" [ngClass]="{'pointer': checkUpdateDocPermission || checkShowDocPermission || (checkUpdateValidDoc && dataItem.IdDocumentStatus === statusCode.Valid)}" [ngStyle]="{'color': '#' + dataItem.ColorDocumentStatus}"
+                (click)="checkUpdateDocPermission || checkShowDocPermission || (checkUpdateValidDoc && dataItem.IdDocumentStatus === statusCode.Valid) ? showDocument(dataItem) : ''" tooltip="{{dataItem.ProvisionalCode}}"
+                theme="light">{{dataItem.Code}}</span>
+              <span *ngIf='checkListDocPermission && (documentType === documentEnumerator.PurchaseOrder
+                || documentType === documentEnumerator.PurchaseFinalOrder
+                || documentType === documentEnumerator.PurchaseDelivery
+                || documentType === documentEnumerator.PurchaseInvoices
+                || documentType === documentEnumerator.PurchasesQuotations
+                || documentType === documentEnumerator.PurchaseAsset || documentType === documentEnumerator.SalesOrder
+                || documentType === documentEnumerator.SalesDelivery
+                || documentType === documentEnumerator.SalesInvoices
+                || documentType === documentEnumerator.SalesQuotations
+                || documentType === documentEnumerator.SalesAsset
+                || documentType === documentEnumerator.BS
+                || documentType === documentEnumerator.SalesInvoiceAsset)' [ngClass]="{'pointer': checkListDocPermission}"
+                (click)="getDetailsModal(dataItem)"
+                tooltip="{{'DETAILS' | translate}}" style="padding-left: 15px;"><i *ngIf="!isFromDeliveryModal"
+                [ngStyle]="{'color': '#' + dataItem.ColorDocumentStatus}"
+                class="fa fa-angle-double-right"></i></span>
+            </div>
+
+            <div *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional">
+              <span class="doc-code" [ngClass]="{'pointer': checkUpdateDocPermission || checkShowDocPermission}" [ngStyle]="{'color': '#' + dataItem.ColorDocumentStatus}"
+                (click)="checkUpdateDocPermission || checkShowDocPermission ? showDocument(dataItem) : ''" theme="light">{{dataItem.Code}}</span>
+              <span *ngIf='checkListDocPermission && (documentType === documentEnumerator.PurchaseOrder
+                || documentType === documentEnumerator.PurchaseFinalOrder
+                || documentType === documentEnumerator.PurchaseDelivery
+                || documentType === documentEnumerator.PurchaseInvoices
+                || documentType === documentEnumerator.PurchasesQuotations
+                || documentType === documentEnumerator.PurchaseAsset || documentType === documentEnumerator.SalesOrder
+                || documentType === documentEnumerator.SalesDelivery
+                || documentType === documentEnumerator.SalesInvoices
+                || documentType === documentEnumerator.SalesQuotations
+                || documentType === documentEnumerator.SalesAsset
+                || documentType === documentEnumerator.BS
+                || documentType === documentEnumerator.SalesInvoiceAsset)' [ngClass]="{'pointer': checkListDocPermission}"
+                (click)="getDetailsModal(dataItem)"
+                tooltip="{{'DETAILS' | translate}}" style="padding-left: 15px;"><i *ngIf="!isFromDeliveryModal"
+                [ngStyle]="{'color': '#' + dataItem.ColorDocumentStatus}"
+                class="fa fa-angle-double-right"></i></span>
+            </div>
+
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Date-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [filterable]="false" *ngIf="isModal"
+          [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+          [format]="gridSettings.columnsConfig[1].format" filter="date">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{dataItem.DocumentDate|date: gridSettings.columnsConfig[1].format}}
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Etat-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field" [filterable]="false" *ngIf="isModal"
+          [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+          [format]="gridSettings.columnsConfig[5].format" [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[5].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <div class="row pl-3">
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional">
+                <span class="badge badge-warning">{{'PROVISOIRE'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Printed">
+                <span class="badge"
+                  [ngStyle]="{'color': '#ffffff', 'background-color': '#4608a0'}">{{'PRINTED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Valid ">
+                <span class="badge badge-success">
+                  {{'VALID'|translate}}
+                  <p *ngIf='dataItem.IsDeliverySuccess === true' style="margin: 0px;">
+                    &nbsp; /
+                    {{ 'DELIVERED'|translate}}
+                  </p>
+                </span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus == 4">
+                <span class="badge badge-danger">{{'CANCELED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === 3">
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;" *ngIf='documentType === documentEnumerator.SalesOrder
+                    || documentType == documentEnumerator.PurchaseFinalOrder'>
+                  {{'TOTALLY_DELIVERED'|translate}}
+                </span>
+
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                  *ngIf='documentType == documentEnumerator.PurchaseOrder'>
+                  {{'TOTALLY_ORDRED'|translate}}
+                </span>
+
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;" *ngIf='documentType === documentEnumerator.PurchaseDelivery
+                    ||documentType == documentEnumerator.SalesDelivery'>
+                  {{'CHARGED'|translate}}
+                </span>
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                  *ngIf='documentType == documentEnumerator.SalesQuotations '>
+                  {{'ODREDER'|translate}}
+                </span>
+
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.TotallySatisfied">
+                <span class="badge"
+                  style="color: #ffffff; background-color: #816fa5;">{{'TOTALLY_PAID'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Accounted">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'ACCOUNTED'|translate}}</span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.PartiallySatisfied">
+                <span class="badge badge-primary" style="color: #ffffff;">
+                  {{
+                  ((documentType === documentEnumerator.PurchaseFinalOrder || documentType ===
+                  documentEnumerator.SalesOrder) ?
+                  'PARTIALLY_DELIVERED' : ((documentType === documentEnumerator.PurchaseOrder || documentType ===
+                  documentEnumerator.SalesQuotations) ? 'PARTIALLY_ORDRED' : 'PARTIALLY_PAID')) |translate
+                  }}
+                </span>
+              </div>
+              <div
+                *ngIf="dataItem.IdDocumentStatus === statusCode.DRAFT && documentType != documentEnumerator.SalesInvoices
+                && documentType != documentEnumerator.PurchaseDelivery">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'DRAFT_B2B'|translate}}</span>
+              </div>
+              <div
+                *ngIf="dataItem.IdDocumentStatus === statusCode.DRAFT  && documentType == documentEnumerator.SalesInvoices
+                ">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'DRAFT'|translate}}</span>
+              </div>
+              <ng-container
+                *ngIf="dataItem.haveClaim">
+                <ng-container
+                  *ngIf="dataItem.DocumentTypeCode === documentEnumerator.PurchaseAsset || dataItem.DocumentTypeCode === documentEnumerator.SalesAsset">
+                  <button type="button" class="btn" (click)='documentRowDetails(dataItem)' data-toggle="modal"
+                    style="color: #4c9aae;" data-target="#exampleModalCenter">
+                    <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                  </button>
+                </ng-container>
+              </ng-container>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!--Montant HT-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [filterable]="true"
+          [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+          [format]="gridSettings.columnsConfig[3].format" [style]='{"font-family": "Roboto, serif", "color": "#505253",
+          "text-align": "right", "padding-right": "4%"}'
+          filter="numeric">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[3].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{intl.formatNumber(dataItem.DocumentHtpriceWithCurrency,getDocumentCurrency(dataItem.CodeCurrency,dataItem.PrecisionCurrency))}}
+          </ng-template>
+        </kendo-grid-column>
+
+        <!--Montant TTC-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[4].field" [filterable]="true"
+          [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+          [format]="gridSettings.columnsConfig[4].format" [style]='{"font-family": "Roboto, serif", "color": "#505253",
+          "text-align": "right", "padding-right": "4%"}'
+          filter="numeric">
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[4].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[4].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+            {{intl.formatNumber(dataItem.DocumentTtcpriceWithCurrency,getDocumentCurrency(dataItem.CodeCurrency,dataItem.PrecisionCurrency))}}
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <!--Etat-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[5].field" [filterable]="false" *ngIf="!isModal"
+          [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+          [format]="gridSettings.columnsConfig[5].format" [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[5].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[5].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <div class="row m-0 d-flex">
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional">
+                <span
+                  *ngIf='!(dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && dataItem.haveReservedLines)'
+                  class="badge badge-warning" style="display: flex;">
+                  {{'PROVISOIRE'|translate}}
+                  <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">
+                    &nbsp;B2B
+                  </p>
+                </span>
+                <span
+                  *ngIf='dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && dataItem.haveReservedLines'
+                  class="badge badge-warning" style="display: flex; background-color: #cb7119 !important;">
+                  {{'PROVISOIRE'|translate}}
+                  <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">
+                    &nbsp;B2B
+                  </p>
+                  <p style="margin: 0px;">
+                    &nbsp;/ {{'RESERVED'|translate}}
+                  </p>
+                </span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Printed">
+                <span class="badge" [ngStyle]="{'color': '#ffffff', 'background-color': '#4608a0'}">
+                  {{'PRINTED'|translate}}
+                  <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+                </span>
+              </div>
+
+              <div *ngIf="dataItem.IdDocumentStatus == statusCode.Refused">
+                <span class="badge badge-danger" style="display: flex;">
+                  {{'CANCELED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+                </span>
+              </div>
+
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Valid">
+                <span class="badge badge-success" style="display: inline-flex;">
+                  {{'VALID'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+                  <p *ngIf='dataItem.IsDeliverySuccess === true' style="margin: 0px;">
+                    &nbsp; /
+                    {{ 'DELIVERED'|translate}}
+                  </p>
+                </span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Balanced">
+                <span class="badge" style="color: #ffffff; background-color: #816fa5; display: flex;" *ngIf='documentType === documentEnumerator.SalesOrder
+                    || documentType == documentEnumerator.PurchaseFinalOrder'>
+                  {{'TOTALLY_DELIVERED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">
+                    &nbsp;B2B
+                  </p>
+                </span>
+
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                  *ngIf='documentType == documentEnumerator.PurchaseOrder'>
+                  {{'TOTALLY_ORDRED'|translate}}
+                </span>
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                  *ngIf='documentType == documentEnumerator.SalesAsset || documentType == "IA-SA"'>
+                  {{'BALANCED'|translate}}
+                </span>
+                <span class="badge" style="color: #ffffff; background-color: #816fa5; display: flex;" *ngIf='documentType === documentEnumerator.PurchaseDelivery
+                    ||documentType == documentEnumerator.SalesDelivery || documentType == documentEnumerator.BS'>
+                  {{'CHARGED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+                </span>
+                <span class="badge" style="color: #ffffff; background-color: #816fa5;"
+                  *ngIf='documentType == documentEnumerator.SalesQuotations'>
+                  {{'ODREDER'|translate}}
+                </span>
+
+
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.TotallySatisfied">
+                <span class="badge" style="color: #ffffff; background-color: #816fa5; display: flex;">
+                  {{'TOTALLY_PAID'|translate}}
+                  <p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+                </span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.Accounted">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3; display: flex;">
+                  {{'ACCOUNTED'|translate}}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+                </span>
+              </div>
+              <div *ngIf="dataItem.IdDocumentStatus === statusCode.PartiallySatisfied">
+                <span class="badge badge-primary" style="color: #ffffff; display: flex;">
+                  {{
+                  ((documentType === documentEnumerator.PurchaseFinalOrder || documentType ===
+                  documentEnumerator.SalesOrder) ?
+                  'PARTIALLY_DELIVERED' : ((documentType === documentEnumerator.PurchaseOrder || documentType ===
+                  documentEnumerator.SalesQuotations) ? 'PARTIALLY_ORDRED' : 'PARTIALLY_PAID')) |translate
+                  }}<p *ngIf='dataItem.IsBToB==true' style="margin: 0px;">&nbsp;B2B</p>
+                </span>
+              </div>
+              <div
+                *ngIf="dataItem.IdDocumentStatus === statusCode.DRAFT && documentType != documentEnumerator.SalesInvoices
+                && documentType != documentEnumerator.PurchaseDelivery">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'DRAFT_B2B'|translate}}</span>
+              </div>
+              <div
+                *ngIf="dataItem.IdDocumentStatus === statusCode.DRAFT && (documentType == documentEnumerator.SalesInvoices
+                || documentType == documentEnumerator.PurchaseDelivery)">
+                <span class="badge" style="color: #ffffff; background-color: #0d35a3;">{{'DRAFT'|translate}}</span>
+              </div>
+              <ng-container
+                *ngIf="dataItem.haveClaim">
+                <ng-container
+                  *ngIf="dataItem.DocumentTypeCode === documentEnumerator.PurchaseAsset || dataItem.DocumentTypeCode === documentEnumerator.SalesAsset">
+                  <button type="button" class="btn" (click)='documentRowDetails(dataItem)' data-toggle="modal"
+                    style="color: #4c9aae;" data-target="#exampleModalCenter">
+                    <i class="fa fa-info-circle fa-lg" aria-hidden="true"></i>
+                  </button>
+                </ng-container>
+              </ng-container>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+<!--Synchronized BToB-->
+<kendo-grid-column [field]="gridSettings.columnsConfig[9].field" [filterable]="true"
+*ngIf=" listOrdersBToB &&!isModal && documentType === documentEnumerator.SalesOrder"
+[title]="gridSettings.columnsConfig[9].title | translate" [width]="gridSettings.columnsConfig[9]._width"
+[format]="gridSettings.columnsConfig[9].format" [style]='{"text-align": "left"}'>
+<ng-template kendoGridHeaderTemplate>
+<span tooltip="{{'SYNCHRONIZATION_BTOB' | translate}}"
+theme="light">{{gridSettings.columnsConfig[9].title | translate}}</span>
+</ng-template>
+<ng-template kendoGridCellTemplate let-dataItem="dataItem">
+<span class="badge badge-success" *ngIf="dataItem.IsBToB && dataItem.IsSynchronizedBToB">{{'SYNCHRONOUS'|translate}}</span>
+<span class="badge badge-danger" *ngIf="dataItem.IsBToB && !dataItem.IsSynchronizedBToB">{{'NOT_SYNCHRONOUS'|translate}}</span>
+<span *ngIf="!dataItem.IsBToB && !dataItem.IsSynchronizedBToB">-</span>
+</ng-template>
+</kendo-grid-column>
+        <!--Type document-->
+        <kendo-grid-column [field]="gridSettings.columnsConfig[6].field"
+          [filterable]="gridSettings.columnsConfig[6].filterable"
+          [title]="gridSettings.columnsConfig[6].title | translate" [width]="gridSettings.columnsConfig[6]._width"
+          *ngIf="!isModal && documentType === documentEnumerator.SalesInvoices" [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[6].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[6].title | translate}}</span>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <div class="row m-0">
+              <div *ngIf="dataItem.DocumentTypeCode === documentEnumerator.SalesInvoices">
+                <span *ngIf='dataItem.InoicingType === 1' style="display: flex;">
+                  {{'STANDARD'|translate}}
+                </span>
+                <span *ngIf='dataItem.InoicingType === 2' style="display: flex;">
+                  {{'TERM'|translate}}
+                </span>
+                <span *ngIf='dataItem.InoicingType === 3' style="display: flex;">
+                  {{'OTHER'|translate}}
+                </span>
+                <span *ngIf='dataItem.InoicingType === 4' style="display: flex;">
+                  {{'ADVANCE_PAYMENT'|translate}}
+                </span>
+
+              </div>
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+
+
+        <kendo-grid-column [field]="gridSettings.columnsConfig[7].field" [filterable]="true" *ngIf="!isModal"
+          [title]="gridSettings.columnsConfig[7].title | translate" [width]="gridSettings.columnsConfig[7]._width"
+          [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate>
+            <span tooltip="{{gridSettings.columnsConfig[7].title | translate}}"
+              theme="light">{{gridSettings.columnsConfig[7].title | translate}}</span>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+            <span *ngIf="dataItem.CreatorName"> {{dataItem.CreatorName}} </span>
+            <span *ngIf="!dataItem.CreatorName"> - </span>
+          </ng-template>
+        </kendo-grid-column>
+
+        <kendo-grid-command-column [width]="127" [title]="'ACTIONS' | translate" *ngIf="!isModal"
+          [style]='{"text-align": "left"}'>
+          <ng-template kendoGridHeaderTemplate style="text-align: center;">
+            <span tooltip="{{'ACTIONS' | translate}}" theme="light" center>{{"ACTIONS" | translate}}</span>
+          </ng-template>
+
+          <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+
+            <!--Edit/show Button  -->
+            <i *ngIf="checkUpdateDocPermission || checkShowDocPermission || (dataItem.IdDocumentStatus == statusCode.Valid && checkUpdateValidDoc)"
+              (click)="showDocument(dataItem)" class="las la-pen cursor-pointer edit-pencil la-lg">
+            </i>
+
+            <button type="button" class="btnKendoGrid k-button "
+              style="background: transparent; font-size: larger; color: green;" tooltip="{{'DELIVERY' | translate}}"
+              theme="light"
+              *ngIf="!dataItem.IsFromGarage && (dataItem.IsDeliverySuccess === false || dataItem.IsDeliverySuccess === null)
+                         && dataItem.IdDocumentStatus === statusCode.Valid
+                         && (dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery ) &&
+                        dataItem.IdDocumentStatus !== statusCode.Printed && dataItem.IdDocumentStatus !== statusCode.DRAFT && deliveryRole"
+              (click)="setDocumentDelivered(dataItem)">
+              <i class="fa fa-truck"></i>
+            </button>
+
+            <i *ngIf="(dataItem.IdDocumentStatus === statusCode.Valid ||
+                         dataItem.IdDocumentStatus === statusCode.PartiallySatisfied)
+                  && dataItem.DocumentTypeCode === documentEnumerator.SalesOrder && haveCancelOrderRole && dataItem.IsBToB == false"
+              class="fa fa-ban cursor-pointer fa-lg mx-3" (click)='cancelDocument(dataItem)'
+              style="color: #E91E63; cursor: pointer" aria-hidden="true"></i>
+            <!-- cancel btobDocument button -->
+              <i *ngIf="(dataItem.IdDocumentStatus === statusCode.Valid ||
+                         dataItem.IdDocumentStatus === statusCode.PartiallySatisfied)
+                  && dataItem.DocumentTypeCode === documentEnumerator.SalesOrder && haveCancelOrderRole && dataItem.IsBToB == true"
+              class="fa fa-ban cursor-pointer fa-lg mx-3" (click)='cancelOrderBtobDocument(dataItem.Id)'
+              style="color: #E91E63; cursor: pointer" aria-hidden="true"></i>
+            <!-- remove button -->
+            <i class="fa fa-trash-o la-lg mx-3 cursor-pointer text-danger" aria-hidden="true"
+              *ngIf="dataItem.IdDocumentStatus === statusCode.Provisional && (!dataItem.IsForPos || dataItem.IdSessionCounterSalesState !== 1)
+                         && !(dataItem.DocumentTypeCode === documentEnumerator.SalesDelivery && dataItem.haveReservedLines) && checkDeleteDocPermission" (click)="removeHandler(dataItem)"></i>
+
+            <!-- IsFromGarage -->
+            <i *ngIf="dataItem.IsFromGarage" tooltip="{{'IS_FROM_GARAGE' | translate}}"
+              style="background: transparent; font-size: larger; color: #f86c6b; padding-left: 1px; padding-bottom: 5px;"
+              class="fa fa-car"></i>
+          </ng-template>
+        </kendo-grid-command-column>
+      </kendo-grid>
+    </div>
+    <!--End card body-->
+  </div>
+</div>
+<!-- Modals -->
+
+<!-- Modal Claims -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true" *ngIf='selectedRow' style="z-index: 9999999">
+  <div class="modal-dialog modal-xxlg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">{{'DETAILS_CLAIMS_FROM_ASSET'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <!--CLAIM-->
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="row">
+            <div class="card">
+              <div class="card-content">
+                <div class="card-header">
+                  <div class="col-sm-5 mt-1">
+                    <h3 class="card-title mb-0">{{'LIST_CLAIMS'|translate}}</h3>
+                  </div>
+                </div>
+                <div class="card-body">
+
+                  <kendo-grid [data]="selectedRow.ClaimIdAssetDocumentNavigation"
+                    [pageSize]="claimGridSettings.state.take" [skip]="claimGridSettings.state.skip" [sortable]="true"
+                    [pageable]="pagerSettings" filterable="menu" [reorderable]="true" [columnMenu]="true"
+                    [sort]="claimGridSettings.state.sort" [filter]="claimGridSettings.state.filter"
+                    (dataStateChange)="claimDataStateChange($event)">
+
+                    <!-- Head end-->
+                    <!--Code-->
+                    <kendo-grid-column [field]="claimGridSettings.columnsConfig[0].field"
+                      [title]="claimGridSettings.columnsConfig[0].title | translate"
+                      [width]="claimGridSettings.columnsConfig[0]._width"
+                      [filter]="claimGridSettings.columnsConfig[0].filter"
+                      [filterable]="claimGridSettings.columnsConfig[0].filterable"
+                      [format]="claimGridSettings.columnsConfig[0].format">
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[0].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[0].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <!-- Date -->
+                    <kendo-grid-column [field]="claimGridSettings.columnsConfig[1].field"
+                      [title]="claimGridSettings.columnsConfig[1].title | translate"
+                      [width]="claimGridSettings.columnsConfig[1]._width"
+                      [filter]="claimGridSettings.columnsConfig[1].filter"
+                      [filterable]="claimGridSettings.columnsConfig[1].filterable"
+                      [format]="claimGridSettings.columnsConfig[1].format">
+                      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        {{ dataItem.DocumentDate | date: claimGridSettings.columnsConfig[1].format }}
+                      </ng-template>
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[1].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[1].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+                    <!-- Client -->
+                    <kendo-grid-column [field]="claimGridSettings.columnsConfig[2].field"
+                      [title]="claimGridSettings.columnsConfig[2].title | translate"
+                      [width]="claimGridSettings.columnsConfig[2]._width"
+                      [filter]="claimGridSettings.columnsConfig[2].filter"
+                      [filterable]="claimGridSettings.columnsConfig[2].filterable"
+                      [format]="claimGridSettings.columnsConfig[2].format">
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[2].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[2].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Fournisseur -->
+                    <kendo-grid-column [field]="claimGridSettings.columnsConfig[7].field"
+                      [title]="claimGridSettings.columnsConfig[7].title | translate"
+                      [width]="claimGridSettings.columnsConfig[7]._width"
+                      [filter]="claimGridSettings.columnsConfig[7].filter"
+                      [filterable]="claimGridSettings.columnsConfig[7].filterable"
+                      [format]="claimGridSettings.columnsConfig[7].format">
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[7].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[7].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!-- Article -->
+                    <kendo-grid-column [field]="claimGridSettings.columnsConfig[3].field"
+                      [title]="claimGridSettings.columnsConfig[3].title | translate"
+                      [width]="claimGridSettings.columnsConfig[3]._width"
+                      [filter]="claimGridSettings.columnsConfig[3].filter"
+                      [filterable]="claimGridSettings.columnsConfig[3].filterable"
+                      [format]="claimGridSettings.columnsConfig[3].format">
+                      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        {{ dataItem.IdItemNavigation != null && dataItem.IdItemNavigation != undefined ?
+                        dataItem.IdItemNavigation.Description : '' }}
+                      </ng-template>
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[3].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[3].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!--Warehouse -->
+                    <kendo-grid-column [field]=claimGridSettings.columnsConfig[4].field
+                      [title]="'WAREHOUSE' | translate" [width]="claimGridSettings.columnsConfig[4]._width"
+                      [filter]="claimGridSettings.columnsConfig[4].filter"
+                      [filterable]="claimGridSettings.columnsConfig[4].filterable"
+                      [format]="claimGridSettings.columnsConfig[4].format">
+                      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        {{ dataItem.IdWarehouseNavigation != null && dataItem.IdWarehouseNavigation != undefined ?
+                        dataItem.IdWarehouseNavigation.WarehouseName : '' }}
+                      </ng-template>
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[4].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[4].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!--Claim Type -->
+                    <kendo-grid-column [field]=claimGridSettings.columnsConfig[5].field
+                      [title]="'TYPE_CLAIM' | translate" [width]="claimGridSettings.columnsConfig[5]._width"
+                      [filter]="claimGridSettings.columnsConfig[5].filter"
+                      [filterable]="claimGridSettings.columnsConfig[5].filterable"
+                      [format]="claimGridSettings.columnsConfig[5].format">
+
+                      <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                        {{ dataItem.ClaimTypeNavigation != null && dataItem.ClaimTypeNavigation != undefined ?
+                        dataItem.ClaimTypeNavigation.TranslationCode : '' }}
+                      </ng-template>
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[5].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[5].title|translate}}</span>
+                      </ng-template>
+
+                    </kendo-grid-column>
+
+                    <!--Status-->
+                    <kendo-grid-column [field]="claimGridSettings.columnsConfig[6].field"
+                      [title]="claimGridSettings.columnsConfig[6].title| translate"
+                      [width]="claimGridSettings.columnsConfig[6]._width"
+                      [filter]="claimGridSettings.columnsConfig[6].filter"
+                      [filterable]="claimGridSettings.columnsConfig[6].filterable"
+                      [format]="claimGridSettings.columnsConfig[6].format">
+                      <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                        <div *ngIf="dataItem.IdClaimStatus === 1 ">
+                          <span class="badge badge-warning">{{'NEW_CLAIM'|translate}}</span>
+                        </div>
+                        <div *ngIf="dataItem.IdClaimStatus === 2 ">
+                          <span class="badge badge-info">{{'SUBMITTED_CLAIM'|translate}}</span>
+                        </div>
+                        <div *ngIf="dataItem.IdClaimStatus === 3 ">
+                          <span class="badge badge-success">{{'ACCEPTED_CLAIM'|translate}}</span>
+                        </div>
+                        <div *ngIf="dataItem.IdClaimStatus === 4 ">
+                          <span class="badge badge-danger">{{'REFUSED_CLAIM'|translate}}</span>
+                        </div>
+                        <div *ngIf="dataItem.IdClaimStatus === 5 ">
+                          <span class="badge badge-secondary">{{'CLOSED_CLAIM'|translate}}</span>
+                        </div>
+                      </ng-template>
+                      <!--tooltip-->
+                      <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{claimGridSettings.columnsConfig[6].title|translate}}"
+                          theme="light">{{claimGridSettings.columnsConfig[6].title|translate}}</span>
+                      </ng-template>
+                    </kendo-grid-column>
+
+                    <!--end grid pdf & excel-->
+                  </kendo-grid>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade " id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true" data-focus="false"
+  *ngIf='documentType === documentEnumerator.SalesInvoices || documentType === "IA-SA"'>
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clickSearch()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <app-term-billing-list [isBl]='documentType === documentEnumerator.SalesInvoices'
+        [isAsset]='documentType === "IA-SA"'>
+      </app-term-billing-list>
+    </div>
+  </div>
+</div>
+
+<!-- Validation Modal -->
+<div class="modal fade search-item-add" id="ValidationModal" tabindex="-1" role="dialog"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{'MASSIVE_VALIDATION'|translate}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" #closebutton1>
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body search-item-add">
+        <app-mass-validation [DocumentType]="documentType" [isSalesDocument]="isSalesDocument"
+          [formatFoSalesOptions]="formatFoSalesOptions" *ngIf="massiveValidationOpen" #massValidation>
+        </app-mass-validation>
+        <button type="button" class="btn btn-success" data-dismiss="modal"
+          (click)="closeMassValidation()">{{'Validate'|translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

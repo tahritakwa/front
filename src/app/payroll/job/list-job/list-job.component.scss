@@ -1,0 +1,50 @@
+.disabledDiv {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+p {
+  display: inline-block;
+  margin-right: 5%;
+}
+
+.tabTitle {
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1250px) {
+  .sizeStyle {
+    font-size: 13px;
+  }
+}
+
+.multi-select-style {
+  border: 2px double #e4e5e6;
+}
+
+.k-state-selected {
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.k-in k-state-selected {
+  color: #000000;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+
+.k-treeview .k-in.k-state-selected {
+  color: #4c9aae;
+  font-weight: bold;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.k-treeview .k-in.k-state-selected.k-state-focused {
+  -webkit-box-shadow: #ffffff;
+  box-shadow: 0 0 0 2px #ffffff;
+
+}

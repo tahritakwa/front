@@ -1,0 +1,178 @@
+<div class="card">
+  <!--Begin Card header-->
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'BILLING_SESSION'|translate}}</h3>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin Card body-->
+  <div class="card-body">
+    <form class="form-horizontal">
+      <!-- Form Start -->
+      <div class="col-lg-12 col-sm-12 col-md-12 ">
+        <div class="form-group row">
+          <div class="col-sm-12 col-md-4 col-lg-3">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}</label>
+            <input class="form-control" [(value)]="billingSession.Code" disabled>
+          </div>
+          <div class="col-sm-12 col-md-5 col-lg-5">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}</label>
+            <input class="form-control" [(value)]="billingSession.Title" disabled>
+          </div>
+          <div class="col-sm-12 col-md-6 col-lg-4">
+            <label class="col-lg-12 col-md-12 col-sm-12"> {{'MONTH'|translate}} <span class="required">*</span></label>
+            <kendo-datepicker disabled [(value)]="billingSession.Month" formatPlaceholder="narrow" [bottomView]="'year'"
+              [topView]="'decade'" [format]="'MMMM yyyy'" class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                </kendo-datepicker-messages>
+            </kendo-datepicker>
+          </div>
+        </div>
+      </div>
+      <!-- form End -->
+      <!-- Grid strat -->
+      <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:60px">
+        <div *ngIf="unselectedProjectErrorMessage" class="error-message" style="color:red">
+          {{'SELECT_AT_LEAST_ONE_PROJECT'|translate}}
+        </div>
+        <br>
+        <kendo-grid [data]="dataGrid">
+          <!-- Collaborateur -->
+          <kendo-grid-column [field]="columnsConfig[0].field" width="200" [title]="columnsConfig[0].title| translate"
+          class="border-style" [headerClass]="'first-column-header'">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[0].title|translate}}"
+                theme="light">{{columnsConfig[0].title|translate}}</span>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Nom du projet -->
+          <kendo-grid-column [field]="columnsConfig[1].field" width="300" [title]="columnsConfig[1].title| translate"
+            class="border-style">
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[1].title|translate}}"
+                theme="light">{{columnsConfig[1].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <table class="margin-positive-table remove-last-border">
+                <div *ngFor="let billingEmployee of dataItem.BillingEmployee;" class="border-style-light">
+                  <tr>
+                    <td>
+                      <span *ngIf="billingEmployee.IdTimeSheetNavigation.Id !== 0 && billingEmployee.IdTimeSheetNavigation.Status === statusCode.Validated
+                        && billingEmployee.CanEdit">
+                      <input type="checkbox" class="k-checkbox" (click)="selectProject(billingEmployee)"
+                          id="{{billingEmployee.Id}}" [checked]="billingEmployee.IsChecked" [disabled]="!isEnabled || isClosed || (billingEmployee.IdDocumentNavigation
+                            && billingEmployee.IdDocumentNavigation.IdDocumentStatus === statusCodeDocument.Valid)">
+                        <label class="k-checkbox-label" for="{{billingEmployee.Id}}"></label>
+                      </span>
+                        {{billingEmployee.IdProjectNavigation.Name}}
+                      <span *ngIf="billingEmployee.IdDocumentNavigation">
+                        <a [ngStyle]="!hasShorOrUpdateInvoicePermission ? {'pointer-events':'none'} : {'cursor': 'pointer'}" target="_blank"
+                          (click)="hasShorOrUpdateInvoicePermission ? onInvoiceClik(billingEmployee.IdDocumentNavigation.Id,
+                            billingEmployee.IdDocumentNavigation.IdDocumentStatus) : ''">
+                          <span [ngStyle]="{'color': billingEmployee.IdDocumentNavigation.IdDocumentStatus === statusCodeDocument.Provisional ? 'orange': 'green'}">
+                            {{billingEmployee.IdDocumentNavigation.Code}}
+                          </span>
+                        </a>
+                      </span>
+                    </td>
+                  </tr>
+                  <tr *ngFor="let projectDetail of billingEmployee.AdrDetails.slice(0,billingEmployee.AdrDetails.length-1);">
+                    <td><span style="visibility: hidden;">-</span></td>
+                  </tr>
+                </div>
+              </table>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Taux Journalier Moyen -->
+          <kendo-grid-column [field]="columnsConfig[2].field" width="100" [title]="columnsConfig[2].title | translate"
+            class="border-style remove-margin" [style]='{"text-align":"right"}'>
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[2].title|translate}}"
+                theme="light">{{columnsConfig[2].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <table class="remove-last-border">
+                <div align="right" *ngFor="let billingEmployee of dataItem.BillingEmployee;" class="border-style-light">
+                  <div *ngFor="let adrDetail of billingEmployee.AdrDetails;">
+                    <tr>
+                      <td>
+                        {{adrDetail.AverageDailyRate.toLocaleString(language,{minimumFractionDigits: billingEmployee.IdProjectNavigation.IdCurrencyNavigation.Precision,
+                          style: 'currency', currency: billingEmployee.IdProjectNavigation.IdCurrencyNavigation.Code, currencyDisplay:'code'})}}
+                      </td>
+                    </tr>
+                  </div>
+                </div>
+              </table>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Nombre de jour travaillés en projet -->
+          <kendo-grid-column [field]="columnsConfig[3].field" width="150" [title]="columnsConfig[3].title | translate"
+            class="border-style" [style]='{"text-align":"right"}'>
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[3].title|translate}}"
+                theme="light">{{columnsConfig[3].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <table class="margin-negative-table remove-last-border">
+                <div align="right" *ngFor="let billingEmployee of dataItem.BillingEmployee;" class="border-style-light ">
+                  <div *ngFor="let adrDetail of billingEmployee.AdrDetails;">
+                    <tr>
+                      <td>
+                        {{adrDetail.NumberWorkedDays}} {{'DAYS_ABBREVIATED'|translate}}
+                      </td>
+                    </tr>
+                  </div>
+                </div>
+              </table>
+            </ng-template>
+          </kendo-grid-column>
+          <!-- Nombre de congés -->
+          <kendo-grid-column [field]="columnsConfig[4].field" width="120" [title]="columnsConfig[4].title | translate"
+            class="border-style" [style]='{"text-align":"right"}'>
+            <ng-template kendoGridHeaderTemplate>
+              <span tooltip="{{columnsConfig[4].title|translate}}"
+                theme="light">{{columnsConfig[4].title|translate}}</span>
+            </ng-template>
+            <ng-template kendoGridCellTemplate let-dataItem>
+              <tr align="right">
+                <td>
+                  {{dataItem.IdTimeSheetNavigation.NumberOfDaysDayHour.NumberOfLeavesDays.Day}} {{'DAYS_ABBREVIATED'|translate}}
+                  <span *ngIf="dataItem.IdTimeSheetNavigation.NumberOfDaysDayHour.NumberOfLeavesDays.Hour > 0">
+                    {{dataItem.IdTimeSheetNavigation.NumberOfDaysDayHour.NumberOfLeavesDays.Hour}} {{'HOURS_ABBREVIATED'|translate}}
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+          </kendo-grid-column>
+        </kendo-grid>
+      </div>
+      <!-- Grid End -->
+    </form>
+  </div>
+  <!-- End card body-->
+  <!--Begin Card footer Start-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="/main/sales/billingSession">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button class="btn btn-sm btn-primary mx-1" (click)="onPreviousClik()">
+              <i class="fa fa-angle-left"></i> {{'PREVIOUS'|translate}}
+            </button>
+            <button *ngIf="isEnabled || (!isEnabled && (this.billingSession.State === states.Bills
+              || this.billingSession.State === states.Closed))" class="btn btn-sm btn-save mx-1" (click)="goNext()" type="submit">
+              <i class="fa fa-angle-right"></i> {{'NEXT'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Begin Card footer End-->
+</div>

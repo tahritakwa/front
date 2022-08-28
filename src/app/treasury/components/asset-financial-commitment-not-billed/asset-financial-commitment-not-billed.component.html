@@ -1,0 +1,10 @@
+<app-financial-commitment-not-billed
+    [isAsset]='true'
+    [tiersType]=tiersType
+    [documentType]="outstandingDocumentTypesEnumerator.AssetFinancialCommitment"
+    [listFinancialCommitmentSelected]="listFinancialCommitmentSelected" [idForExportFile]="'idExportFileAsset'"
+    [apiForExport]="apiForExport" [selectedTiers]="selectedTiers" [displayAddButton]="displayAddButton"
+    [disableCheckBox]="disableCheckBox"
+    [fileExportname]="'CUSTOMER_OUTSTANDING_ASSETS_LIST'" (itemSelectedChange)="emitItemSelectedEvent($event)"
+    (tiersSelectedChange)="tiersSelectedChangeEvent($event)" (openFormClicked)="openForm($event)">
+</app-financial-commitment-not-billed>

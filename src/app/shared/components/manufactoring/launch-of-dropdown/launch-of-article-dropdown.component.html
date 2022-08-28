@@ -1,0 +1,11 @@
+
+  <app-dropdown-product-items [itemForm]="group"  [source]="'OF-ARTICLE-DROPDOWN'"
+                              (Selected)="onValueChanged($event)"
+                              [hideSearch]="true"
+                              [activeKeyPress]='true'
+                              formControlName="productionOfArticleDropdown"
+                              name="productionOfArticleDropdown"
+  ></app-dropdown-product-items>
+  <i class="row" #anchorIdItem></i>
+  <app-control-message-grid-cell [group]="group" [anchor]="anchorIdItem" controlName="productionOfArticleDropdown">
+  </app-control-message-grid-cell>

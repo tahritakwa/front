@@ -1,0 +1,274 @@
+<!-- Begin principal menu  part-->
+<div class="row">
+  <div class="card col-lg-12 col-md-12 col-sm-12 col-12">
+    <form [formGroup]="recruitmentNeedFormGroup" class="form-horizontal">
+      <div [ngStyle]="{'height':'75px','margin-left': '-15px','margin-right': '-10px'}" class="card-header">
+        <div class="row col-lg-12 col-sm-12 col-md-12">
+          <div class="col-lg-4 col-sm-4 col-md-12">
+            <button (click)="hideCardBody=!hideCardBody;" class="noPadding btn-Add k-button"
+                    style=" background: no-repeat!important;border: none!important;">
+              <i [ngClass]="{'cui-chevron-bottom':hideCardBody,'cui-chevron-top':!hideCardBody}" aria-hidden="true"
+                 style="color: #4c9aae!important;"></i>
+            </button>
+            <span [ngStyle]="{'font-size': 'x-large'}" class="card-title mb-0">
+              {{'RECRUITMENT_SESSION'|translate}}
+            </span>
+          </div>
+          <div class="col-lg-8 col-sm-8 col-md-12" style="text-align:right">
+            <h4 *ngIf="currentRecruitment &&currentRecruitment.State === recruitmentStateEnum.Draft"
+                class="statusAlignment">
+              <span class="badge badge-primary">{{"DRAFT" | translate }}</span>
+            </h4>
+            <h4 *ngIf="currentRecruitment && currentRecruitment.State === recruitmentStateEnum.Candidacy"
+                class="statusAlignment">
+              <span class="badge badge-success">{{"CANDIDACY" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" currentRecruitment && currentRecruitment.State === recruitmentStateEnum.PreSelection"
+                class="statusAlignment">
+              <span class="badge badge-success">{{ "PRE_SELECTION" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" currentRecruitment && currentRecruitment.State === recruitmentStateEnum.Interview"
+                class="statusAlignment">
+              <span class="badge badge-success">{{ "INTERVIEW" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" currentRecruitment && currentRecruitment.State === recruitmentStateEnum.Evaluation"
+                class="statusAlignment">
+              <span class="badge badge-success">{{ "EVALUATION" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" currentRecruitment && currentRecruitment.State === recruitmentStateEnum.Selection"
+                class="statusAlignment">
+              <span class="badge badge-success">{{ "SELECTION" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" currentRecruitment && currentRecruitment.State === recruitmentStateEnum.Offer"
+                class="statusAlignment">
+              <span class="badge badge-success">{{ "OFFER" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" currentRecruitment && currentRecruitment.State === recruitmentStateEnum.Hiring"
+                class="statusAlignment">
+              <span class="badge badge-success">{{ "HIRING" | translate }}</span>
+            </h4>
+            <h4 *ngIf=" currentRecruitment && currentRecruitment.State === recruitmentStateEnum.Closed"
+                class="statusAlignment">
+              <span class="badge badge-danger">{{ "CLOSED" | translate }}</span>
+            </h4>
+          </div>
+        </div>
+      </div>
+      <!--Begin Card body-->
+      <div *ngIf="!hideCardBody"
+           [ngStyle]="{'min-height': '350px', 'margin-top': '0px', 'margin-left': '-10px', 'margin-bottom': '-40px'}"
+           class="card-body">
+        <!--new line-->
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+          <div class="form-group row">
+            <!--Job title-->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">{{'JOB'|translate}}<span class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <app-job-dropdown (jobDropdownValueChanged)="generateRecruitmentSkills($event)" [group]="recruitmentNeedFormGroup">
+                  </app-job-dropdown>
+                  <app-control-messages [control]="recruitmentNeedFormGroup.controls.IdJob" class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!--End Job-->
+            <!-- Experience year -->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">{{'YEAR_OF_EXPERIENCE'|translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <input [max]="10" [min]="0" [ngClass]="{ 'has-error': (YearOfExperience.touched || YearOfExperience.dirty) && !YearOfExperience.valid
+                    && !YearOfExperience.disabled }" class="form-control" formControlName="YearOfExperience" type="number">
+                  <app-control-messages [control]="recruitmentNeedFormGroup.controls.YearOfExperience" class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Experience year -->
+          </div>
+        </div>
+        <!--end new line-->
+        <!--new line-->
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+          <div class="form-group row">
+            <!-- Working hours per day -->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">{{'WORKING_HOURS_PER_DAYS'|translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <input [max]="10" [min]="1" [ngClass]="{ 'has-error': (WorkingHoursPerDays.touched || WorkingHoursPerDays.dirty) && !WorkingHoursPerDays.valid
+                    && !WorkingHoursPerDays.disabled }" class="form-control" formControlName="WorkingHoursPerDays" type="number"/>
+                  <app-control-messages [control]="recruitmentNeedFormGroup.controls.WorkingHoursPerDays"
+                    class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Working hours per day -->
+            <!-- Grade-->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">
+                  {{'QUALIFICATION_TYPE'|translate}}<span class="required">*</span>
+                </label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <app-qualification-type-dropdown [group]="recruitmentNeedFormGroup"></app-qualification-type-dropdown>
+                  <app-control-messages [control]="recruitmentNeedFormGroup.controls.IdQualificationType" class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Grade -->
+          </div>
+        </div>
+        <!--end new line-->
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+          <div class="form-group row">
+            <!-- office -->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">{{ "OFFICE" | translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <app-office-dropdownlist [group]="recruitmentNeedFormGroup">
+                  </app-office-dropdownlist>
+                  <app-control-messages [control]="IdOffice" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- Candidate Number -->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">{{ "EXPECTED_CANDIDATE_NUMBER" | translate }}
+                  <span class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <input [max]="100" [min]="1" [ngClass]="{ 'has-error': (ExpectedCandidateNumber.touched || ExpectedCandidateNumber.dirty) &&
+                    !ExpectedCandidateNumber.valid && !ExpectedCandidateNumber.disabled }" class="form-control" formControlName="ExpectedCandidateNumber" type="number"/>
+                  <app-control-messages [control]="ExpectedCandidateNumber" class="error-msg messages text-left text-danger">
+                  </app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End candidate number  -->
+          </div>
+        </div>
+        <!--new line-->
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5" style="margin-top: 23px;">
+          <div class="form-group row">
+            <!-- Priority -->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">
+                  {{'PRIORITY_TITLE'|translate}}<span class="required">*</span>
+                </label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <app-priority-dropdwon [group]="recruitmentNeedFormGroup"></app-priority-dropdwon>
+                  <app-control-messages [control]="recruitmentNeedFormGroup.controls.Priority" class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Priority -->
+            <!-- Description-->
+            <div class="col-lg-6 col-md-12 col-sm-12">
+              <div class="row">
+                <label class="col-lg-4 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}<span
+                  class="required">*</span></label>
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                  <textarea [ngClass]="{ 'has-error': (Description.touched || Description.dirty) && !Description.valid && !Description.disabled }" class="form-control"
+                    formControlName="Description" type="text"></textarea>
+                  <app-control-messages [control]="recruitmentNeedFormGroup.controls.Description" class="error-msg messages text-left text-danger"></app-control-messages>
+                </div>
+              </div>
+            </div>
+            <!-- End Description -->
+          </div>
+        </div>
+        <!--end new line-->
+        <!--new line-->
+        <div *ngIf="RecruitmentSkills && RecruitmentSkills.controls.length !== 0" class="col-lg-12 col-sm-12 col-md-12 mr-5"
+             style="margin-top: 23px;">
+          <div class="form-group row">
+            <!-- End Min  Skills -->
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REQUIRED_SKIILS'|translate}}</label>
+            <div *ngFor="let skill of RecruitmentSkills.controls; let i=index">
+              <div *ngIf="skill.controls.Label.value !== null && skill.controls.Rate.value !== null"
+                   style="display: flex; margin-left: 1em;">
+                <div style=" border-radius: 0.5em; border: groove  rgba(247, 248, 251, 0.25);  margin-bottom: 1em;">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-12">{{skill.controls.Label.value}}</div>
+                  <bar-rating [max]="6" [readOnly]="true" [theme]="'default'" class="col-lg-12 col-md-12 col-sm-12 col-12" rate={{skill.controls.Rate.value}}>
+                  </bar-rating>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+              </div>
+            </div>
+            <!-- End Min  Skills -->
+          </div>
+        </div>
+        <!--end new line-->
+        <!--new line-->
+        <div *ngIf="jobSkills && jobSkills.length !== 0" class="col-lg-12 col-sm-12 col-md-12 mr-5"
+             style="margin-top: 23px;">
+          <div class="form-group row">
+            <!-- End Min  Skills -->
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'REQUIRED_SKIILS'|translate}}</label>
+            <div *ngFor="let skill of jobSkills; let i=index">
+              <div style="display: flex; margin-left: 1em;">
+                <div style=" border-radius: 0.5em; border: groove  rgba(247, 248, 251, 0.25);  margin-bottom: 1em;">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-12">{{skill.Label}}</div>
+                  <bar-rating [max]="6" [readOnly]="true" [theme]="'default'" class="col-lg-12 col-md-12 col-sm-12 col-12" rate={{skill.Rate}}>
+                  </bar-rating>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+              </div>
+            </div>
+            <!-- End Min  Skills -->
+          </div>
+        </div>
+        <!--end new line-->
+        <div *ngIf="RecruitmentLanguage && RecruitmentLanguage.controls.length !== 0 " class="col-lg-12 col-sm-12 col-md-12 mr-5"
+             style="margin-top: 23px;">
+          <div class="form-group row">
+            <!--  Languages -->
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'LINGUISTIC_KNOWLEDGE'|translate}}</label>
+            <div *ngFor="let language of RecruitmentLanguage.controls; let i=index">
+              <div style="display: flex; margin-left: 1em;">
+                <div style=" border-radius: 0.5em; border: groove  rgba(247, 248, 251, 0.25);  margin-bottom: 1em;">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-12">{{language.controls.Label.value}}</div>
+                  <bar-rating [max]="6" [readOnly]="true" [theme]="'default'" class="col-lg-12 col-md-12 col-sm-12 col-12" rate={{language.controls.Rate.value}}>
+                  </bar-rating>
+                </div>
+                &nbsp;&nbsp;&nbsp;
+              </div>
+            </div>
+            <!-- End Min  Languages -->
+          </div>
+        </div>
+      </div>
+      <!--End Card body-->
+      <!--Begin Card footer-->
+      <div class="fixed-card-footer">
+        <div class="footerStyle">
+            <div class="w-100">
+              <div class="d-flex justify-content-end p-3 footer-content">
+                <button (click)="backToList()" *ngIf="!currentRecruitment || (currentRecruitment && currentRecruitment.State < recruitmentState.Candidacy)"
+                  class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </button>
+                <button (click)="save()" *ngIf="(!isUpdateMode && hasAddPermission) || (isUpdateMode && hasUpdateRecruitment)"
+                  class="btn btn-sm btn-save mx-1" type="submit">
+                  <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+                </button>
+                <button (click)="validateRecruitment()" *ngIf=" currentRecruitment && currentRecruitment.State === this.recruitmentState.Draft && currentRecruitment.Id !== 0
+                  && hasStartRecruitmentPermission" class="btn btn-sm btn-success mx-1">
+                  <i class="fa fa-check-square-o"></i> {{'START'|translate}}
+                </button>
+              </div>
+            </div>
+        </div>
+      </div>
+      <!--End Card footer-->
+    </form>
+  </div>
+</div>
+<!-- End principal menu  part -->

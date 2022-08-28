@@ -1,0 +1,10 @@
+<div mat-menu-item (click)="$event.stopPropagation()" class="number-picker">
+  <ng-number-picker [(value)]="numberOfRows" min="3" max="10" step="1" prefix="TOP" buttonsOrientation="h"
+    size="sm" [showDownButton]="isDownButtonVisible" [showUpButton]="isUpButtonVisible" [inputReadOnly]="false"
+    [mouseWheel]="false" [arrowKeys]="true" placeholder="3..10" 
+    (pickUpStarted)="onPickUpStarted($event)"
+    (pickUpStoped)="onPickUpStoped($event)" 
+    (pickDownStoped)="onPickDownStoped($event)" 
+    (valueChange)="onValueChange($event)">
+  </ng-number-picker>
+</div>

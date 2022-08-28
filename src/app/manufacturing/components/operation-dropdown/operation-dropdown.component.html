@@ -1,0 +1,6 @@
+<div [formGroup]="form">
+  <kendo-combobox class="form-control" [data]="operationFiltredList" [textField]="'description'" [valueField]="'id'"
+                  formControlName="operationId" [valuePrimitive]="true" [filterable]="true" (filterChange)="handleFilterParentCode($event)"
+                  (valueChange)="onSelect($event)">
+  </kendo-combobox>
+</div>

@@ -1,0 +1,921 @@
+<div class="card" style="min-height: 803px;">
+  <div class="card-header">
+    <div class="col-sm-6 mt-1">
+      <h3 class="card-title mb-0">
+        {{ (isUpdateMode ? "EDIT_PRODUCT" : "ADDPRODUCT") | translate }}:
+        <span *ngIf="isUpdateMode && (itemToUpdate?.IsFromGarage)">
+          ({{ "OPERATION" | translate}})
+        </span>
+        <h6 *ngIf="isUpdateMode && (itemToUpdate?.IsFromGarage)" style="margin-left: 1em; margin-top:12px">
+          <span style="color: #f44336;margin-top: 16px;"> <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+            {{"UPDATE_OPERATION_FROM_GARAGE_WARNING" | translate}}</span>
+        </h6>
+      </h3>
+    </div>
+  </div>
+  <div class="card-body pb-5">
+    <form class="form-horizontal" [formGroup]="itemForm">
+      <div class="row d-felx col-12 m-0 p-0">
+        <div class="col-lg-10 col-md-10 col-sm-12">
+          <ul class="nav mb-2" id="breadcrumb" role="tablist">
+            <li class="nav-item" *ngFor="let step of steps let i=index;" (click)="goToChoosenStep(i)"
+              [ngClass]="{'disabled':!step.isValidate}">
+              <a *ngIf="step.isVisible" class="nav-link nav-link-new" [ngClass]="{'active':step.selected}"
+                id="{{step.tag}}-tab" data-toggle="tab" href="#{{step.tag}}" role="tab" [attr.aria-controls]="step.tag"
+                [attr.aria-selected]="step.selected">{{step.value | translate}}</a>
+            </li>
+            <div>
+              <button class="btn-next float-right btn btn-sm btn-primary mt-1" (click)="nextStep()"
+                [disabled]="getCurrentIndex() === finalStep" type="button">
+                <i class="fa fa-arrow-right"></i> {{ "NEXT" | translate }}
+              </button>
+            </div>
+          </ul>
+          <div class="tab-content card-details" style="overflow-y: auto; height:calc(550px);">
+            <div class="tab-pane fade px-0" [ngClass]="{'show active':isActive(0)}" id="general" role="tabpanel"
+              aria-labelledby="general-tab">
+              <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <!-- Ref + Design -->
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <div class="row">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{ "REFERENCE" | translate
+                          }}<span class="required">*</span></label>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <input class="form-control" formControlName="Code" (change)="changeBarCode1D()" [ngClass]="{
+                            'has-error': (itemForm.controls.Code.touched || itemForm.controls.Code.dirty) && !itemForm.controls.Code.valid
+                          }" type="text" />
+                          <app-control-messages [control]="itemForm.controls.Code"
+                            class="error-msg messages text-left text-danger">
+                          </app-control-messages>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <div class="row">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{ "DESIGNATION" | translate
+                          }}<span class="required">*</span></label>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <input class="form-control" type="text" formControlName="Description" [ngClass]="{
+                                'has-error': (itemForm.controls.Description.touched || itemForm.controls.Description.dirty) && !itemForm.controls.Description.valid
+                              }" />
+                              <app-control-messages [control]="itemForm.controls.Description"
+                                class="error-msg messages text-left text-danger">
+                              </app-control-messages>
+                            </div>
+                            <div class="col-lg-2 col-md-10 col-sm-10" *ngIf="isStockManged && isUpdateMode && hasUpdatePermission">
+                              <i ngbTooltip="{{
+                          'APPLY_CHANGES_EQUIV_PRODUCTS' | translate
+                        }}" style="
+                          color: #4c9aae;
+                          text-align: center;
+                          padding: 5px;
+                          line-height: 1.2em !important;
+                          font-size: 20px;
+                        " class="fa fa-lg fa-clone" (click)="updateDesignation()"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+
+                  <!-- Type + supplier -->
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <div class="row">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{ "TYPE" | translate
+                          }}<span class="required">*</span></label>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <app-nature-dropdown (TypeSelected)="typeSelected($event)" [itemForm]="itemForm"
+                            [selectDefaultNature]="!isUpdateMode && !isDuplicated" [isForAddNewItem]="hideExpenseInNature"
+                            [disabled]="(isUpdateMode || isDuplicated) && !hasUpdatePermission">
+                          </app-nature-dropdown>
+                          <app-control-messages [control]="itemForm.controls.IdNature"
+                            class="error-msg messages text-left text-danger">
+                          </app-control-messages>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <div class="row" *ngIf="showSupplierDropdown">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{ "SUPPLIERS" | translate
+                          }}<span class="required" *ngIf="IsSupplierRequired">*</span></label>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+
+                          <app-supplier-dropdown [itemForm]="itemForm" [type]="tiersType" [TecDocSupp]="TecDocSupp"
+                            [isMultiSelect]="true" [isCheckboxMode]="true" [isForAddProduct]="true"
+                            (selectedValuesCheckbox)="selectedValue($event)"
+                            [disabled]="(isUpdateMode || isDuplicated) && !hasUpdatePermission">
+                          </app-supplier-dropdown>
+                          <div *ngIf="errorMessage != null && IsSupplierRequired"
+                            class="error-message error-msg messages text-left text-danger">
+                            {{errorMessage}}
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+                  <!-- Product brand + Taxe -->
+                  <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <div class="row">
+                        <label class="col-lg-3 col-md-12 col-sm-12">{{'TAXE'|translate}}
+                          <span class="required">*</span>
+                        </label>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <app-taxe-multiselect [itemForm]="itemForm" [defaultCodeTaxe]="defaultTaxeCode"
+                            [addMode]="!isUpdateMode && !isDuplicated" [required]="true"
+                            [readonly]="(((this.isUpdateMode || this.isDuplicated) && !hasUpdatePermission) || disableTaxe)" 
+                            #taxMultiSelect></app-taxe-multiselect>
+                          <app-control-messages [control]="itemForm.controls.TaxeItem"
+                            class="error-msg messages text-left text-danger">
+                          </app-control-messages>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="isStockManged" class="col-lg-6 col-md-6 col-sm-12">
+                      <div class="row">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{ "PRODUCT_BAND" | translate }}</label>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                          <app-product-dropdown [itemForm]="itemForm" (Existed)="showListProductItem()"
+                            [disabled]="(this.isUpdateMode || this.isDuplicated) && !hasUpdatePermission"
+                            #BrandDropdown></app-product-dropdown>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Notes -->
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{
+                      "Notes" | translate
+                      }}</label>
+                    <div class="col-lg-6 col-md-6 col-sm-12">
+                      <textarea class="form-control" type="text" formControlName="Note" maxlength="255"></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="isStockManged" class="tab-pane fade px-0" [ngClass]="{'show active':isActive(1)}"
+              id="characteristics" role="tabpanel" aria-labelledby="characteristics-tab">
+              <!-- CHARACTERISTICS -->
+              <br />
+              <div class="row" *ngIf="TecDoc">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                  <div class="row">
+                    <p>
+                      {{caracteristics.marque + " " +
+                      caracteristics.seriesModel +
+                      " " +
+                      caracteristics.passangerCar
+                      }}
+                      <br />{{ caracteristics.category }}
+                    </p>
+                  </div>
+                </div>
+                <br />
+              </div>
+
+              <!-- BARCODE -->
+
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{
+                      "BARCODE1D" | translate
+                      }}</label>
+                    <div class="col-lg-12 col-md-10 col-sm-10">
+                      <input class="form-control" type="text" formControlName="BarCode1D" maxlength="255" />
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{
+                      "BARCODE2D" | translate
+                      }}</label>
+                    <div class="col-lg-12 col-md-10 col-sm-10">
+                      <input class="form-control" type="text" formControlName="BarCode2D" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="row" id="print-barCode">
+                    <ngx-barcode *ngIf="itemForm.value.BarCode1D" [bc-value]="itemForm.value.BarCode1D"
+                      [bc-display-value]="true" style="float: none; margin: 0 auto;" [bc-element-type]="'img'"
+                      id="barCode">
+                    </ngx-barcode>
+                  </div>
+                  <div class="row d-flex justify-content-center" *ngIf="itemForm.value.BarCode1D">
+
+                    <button class="btn btn-primary btn-sm" (click)="downloadCodeBar1D()" type="button">
+                      <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}}
+                    </button>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="row">
+                    <qrcode *ngIf="itemForm.value.BarCode2D" [qrdata]="itemForm.value.BarCode2D" [size]="130"
+                      [level]="'M'" style="float: none; margin: 0 auto;" id="qrCode"></qrcode>
+                  </div>
+                  <br />
+                  <div class="row d-flex justify-content-center" *ngIf="itemForm.value.BarCode2D">
+
+                    <button class="btn btn-primary btn-sm" (click)="downloadCodeBar2D()" type="button">
+                      <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{
+                      "FAMILIES" | translate
+                      }}</label>
+                    <div class="col-lg-12 col-md-10 col-sm-10">
+                      <app-family-combo-box [itemForm]="itemForm" [disabled]="isUpdateMode && !hasUpdatePermission"
+                        (Selected)="receiveFamily($event)">
+                      </app-family-combo-box>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">
+                      {{ "SUBFAMILY" | translate }}</label>
+                    <div class="col-lg-12 col-md-10 col-sm-10">
+                      <app-sub-family-combo-box [itemForm]="itemForm"
+                        [disabled]="!itemForm.value.IdFamily && ((this.isUpdateMode || this.isDuplicated) && !hasUpdatePermission)">
+                      </app-sub-family-combo-box>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="row">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{
+                      "REPLACEMENT_ITEM" | translate
+                      }}</label>
+                    <div class="col-lg-12 col-md-10 col-sm-10">
+                      <app-item-dropdown [itemForm]="itemForm" [idItemToIgnore]="id" [parentViewContainerRef]="viewRef"
+                        [IdItem]="'IdItemReplacement'" [activeKeyPress]="true" [showFilter]="true" [isFroSerach]="true"
+                        [isOnlyStockManaged]="true" [isForItemReplacement]="true"
+                        [disabled]="(this.isUpdateMode || this.isDuplicated) && !hasUpdatePermission">
+                      </app-item-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br />
+              <p-accordion [multiple]='true'>
+                <!-- Brand -->
+                <p-accordionTab *ngIf="isAutoVersion" (selectedChange)="selectedChange()" [selected]="openBrandCollapse"
+                  (click)="openDetailsBrandCollapse()" header="{{ 'VEHICLES_BRANDS' | translate }}"
+                  style="color: #4c9aae;">
+                  <div>
+                    <div formArrayName="ItemVehicleBrandModelSubModel"
+                      *ngFor="let ItemBrand of ItemVehicleBrandModelSubModel.controls; let i = index">
+                      <div class="row" *ngIf="isRowOfItemBrandVisible(i)">
+                        <app-item-brand class="col-lg-11 col-sm-11 col-md-11" [ItemBrandForm]="ItemBrand">
+                        </app-item-brand>
+
+                        <div class="col-sm-1 mt-lg-1">
+                          <button *ngIf="hasAddPermission || hasUpdatePermission" class="noPadding btn-Add k-button"
+                            type="button" (click)="deleteItemBrand(i)" style="border: none;">
+                            <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <br />
+
+                    <button *ngIf="hasAddPermission || hasUpdatePermission"
+                      class="float-right btn-Add k-button btn btn-add" type="button" dir="ltr" (click)="addItemBrand()">
+                      <i class="fa fa-plus fa-lg AddIcon"></i>
+                      <span>&nbsp;{{ "ADD" | translate }}</span>
+                    </button>
+                  </div>
+                  <br />
+                </p-accordionTab>
+                <!-- Oem -->
+                <p-accordionTab *ngIf="isAutoVersion" header="OEM" style="color: #4c9aae;"
+                  (selectedChange)="selectedOemItemChange()" [selected]="openOemCollapse">
+                  <div>
+                    <div class="row mb-3">
+                      <div class="col-5">
+                        <app-brand-combo-box (Selected)="FilterOemlist($event)" #OemBrandComboBox></app-brand-combo-box>
+                      </div>
+                      <div class="col-5">
+                        <input class="form-control" [placeholder]="'OEM'" [(ngModel)]="OemValue"
+                          [ngModelOptions]="{standalone: true}" (keypress)="onEnterPress($event)" />
+                      </div>
+                      <div class="col-2">
+                        <button class="float-right btn-Add k-button btn btn-add" type="button" dir="ltr"
+                          (click)="addOem()">
+                          <i class="fa fa-plus fa-lg AddIcon"></i>
+                          <span>&nbsp;{{ "ADD" | translate }}</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <kendo-grid [data]="FilteredOemList">
+                        <kendo-grid-column [title]="'BRAND'|translate">
+                          <ng-template kendoGridCellTemplate let-dataItem='dataItem' >
+                            <span *ngIf="dataItem && dataItem.IdBrandNavigation">{{dataItem.IdBrandNavigation.Label}}</span>
+                          </ng-template>
+                        </kendo-grid-column>
+                        <kendo-grid-column [title]="'OEM'|translate">
+                          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                            {{dataItem.OemNumber}}
+                          </ng-template>
+                        </kendo-grid-column>
+                        <kendo-grid-column [title]="'ACTION'|translate">
+                          <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+                            <i class="fa fa-trash-o la-lg mx-3 text-danger" aria-hidden="true"
+                              (click)="RemoveOem(dataItem)"></i>
+                          </ng-template>
+                        </kendo-grid-column>
+                      </kendo-grid>
+                    </div>
+                    <br />
+                  </div>
+                  <br />
+                </p-accordionTab>
+              </p-accordion>
+            </div>
+            <div *ngIf="isStockManged" class="tab-pane fade px-0" [ngClass]="{'show active':isActive(2)}"
+              id="stockmanegemnt" role="tabpanel" aria-labelledby="stockmanegemnt-tab">
+              <!-- STOCK MANEGEMNT -->
+              <div formArrayName="ItemWarehouse" *ngFor="let IWStorage of ItemWarehouse.controls; let i = index">
+                <div class="row" *ngIf="isRowVisible(i)">
+                  <app-gerestock class="col-lg-11 col-sm-11 col-md-11" [ItemWarehouseStorage]="IWStorage"
+                    [isUpdateMode]="isUpdateMode" (WarehouseSelected)="warehouseSelected($event)" [index]="i"
+                    [ListLocked]="lockedWarehouseList"
+                    [disabled]="(isUpdateMode || isDuplicated) && !hasUpdatePermission">
+                  </app-gerestock>
+
+                  <div class="col-sm-1 mt-lg-1" style="margin-top: 2% !important;"
+                    *ngIf="hasUpdatePermission || hasAddPermission">
+                    <button class="noPadding btn-Add k-button" type="button" style="border: none;"
+                      (click)="deleteItemWarehouse(i)">
+                      <i class="fa fa-close fa-lg AddIcon text-danger"
+                        *ngIf="!lockedWarehouseList?.includes(IWStorage.value.IdWarehouse)"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <br />
+
+              <button class="float-right btn-Add k-button btn btn-add" type="button" dir="ltr"
+                (click)="addItemWarehouse()" *ngIf="hasUpdatePermission || hasAddPermission">
+                <i class="fa fa-plus fa-lg AddIcon"></i>
+                <span>&nbsp;{{ "ADD" | translate }}</span>
+              </button>
+            </div>
+            <div class="tab-pane fade px-0" [ngClass]="{'show active':isActive(3)}" id="financial_infos" role="tabpanel"
+              aria-labelledby="financial_infos-tab">
+              <p-accordion [multiple]="true">
+                <!-- VALORISATIONCONDITION -->
+                <p-accordionTab *ngIf="itemForm.value['IsForPurchase'] || isStockManged" header="{{ 'PURCHASING_PRICE' | translate }}" style="color: #4c9aae;"
+                  [selected]="selectValorisationConditionTab">
+                  <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                      <div class="row">
+                        <label class="col-lg-12 col-md-12 col-sm-12">
+                          {{"STOCKUNIT" | translate}}
+                          <span class="required" *ngIf="isStockManged">*</span>
+                        </label>
+                        <div class="col-lg-12 col-md-10 col-sm-10">
+                          <app-unit-stock [itemForm]="itemForm" [hideBtn]="!hasAddMesureUnitPermission"
+                            [readonly]="(this.isUpdateMode || this.isDuplicated) && (!hasUpdatePermission || !hasUpdatePurchasePricePermission)">
+                          </app-unit-stock>
+                          <app-control-messages [control]="itemForm.controls.IdUnitStock"
+                            class="error-msg messages text-left text-danger">
+                          </app-control-messages>
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="isStockManged" class="col-lg-4 col-md-6 col-sm-12">
+                      <div class="row">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{
+                          "POLICY" | translate
+                          }}</label>
+                        <div class="col-lg-12 col-md-10 col-sm-10">
+                          <app-policy-combo-box [parentForm]="itemForm"
+                            [readonly]="(this.isUpdateMode || this.isDuplicated) && (!hasUpdatePermission || !hasUpdatePurchasePricePermission)">
+                          </app-policy-combo-box>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12"
+                      *ngIf="isStockManged && itemForm.value['IsForSales']">
+                      <div class="row">
+                        <label class="col-lg-12 col-md-12 col-sm-12">{{
+                          "COEFF" | translate
+                          }}</label>
+                        <div class="col-lg-12 col-md-10 col-sm-10">
+                          <kendo-numerictextbox class="form-control" formControlName="CoeffConversion">
+                          </kendo-numerictextbox>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-12">
+                    <div class="row">
+                      <label class="col-lg-12 col-md-12 col-sm-12">{{
+                        "LAST_COST_PRICE" | translate
+                        }}</label>
+                      <div class="col-lg-12 col-md-10 col-sm-10">
+                        <kendo-numerictextbox class="form-control" formControlName="CostPrice" [format]="formatSaleOptions">
+                        </kendo-numerictextbox>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <br />
+                  <span class="col-lg-12 col-md-12 col-sm-12">
+                    <kendo-grid [data]="suppliersSelected" [pageSize]="gridState.take" [skip]="gridState.skip"
+                      [sort]="gridState.sort" [pageable]="pagerSettings" [sortable]="true" (edit)="editHandler($event)"
+                      (cancel)="cancelHandler($event)" (save)="saveHandler($event)" [style.maxHeight.px]="400"
+                      [scrollable]="'virtual'">
+                      <kendo-grid-column [title]="gridSettings.columnsConfig[0].title | translate"
+                        [width]="gridSettings.columnsConfig[0]._width" [field]="gridSettings.columnsConfig[0].field">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+
+                          <div class="row">
+                            <div class="col-auto">
+                              <img id="supplier-avatar" class="rounded-circle card-avatar"
+                                [src]=" 'assets/image/placeholder-logo.png'" alt="avatar" />
+                            </div>
+                            <div class="col">
+                              <div class="row">
+                                <span class="font-weight-bold">{{dataItem.IdTiersNavigation.Name}}</span>
+                              </div>
+                              <div class="row">
+                                <span class="light-reference">{{dataItem.IdTiersNavigation.CodeTiers}}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                        </ng-template>
+                      </kendo-grid-column>
+                      <kendo-grid-column field="PurchasePrice" [title]="gridSettings.columnsConfig[1].title | translate"
+                        [width]="gridSettings.columnsConfig[1]._width"
+                        [style]='{"font-family": "Arial, Helvetica, serif","text-align":"right","padding-right": "5%"}'>
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                          <span
+                            tooltip="{{dataItem.PurchasePrice?dataItem.PurchasePrice.toLocaleString('fr-FR',{minimumFractionDigits: 3}):'-'}} {{dataItem.PurchasePriceCurrency? dataItem.PurchasePriceCurrency.currency : ''}}"
+                            placement="right" theme="light">
+                            <kendo-numerictextbox *ngIf="dataItem.PurchasePrice"
+                              [format]="dataItem ? dataItem.PurchasePriceCurrency : null"
+                              [value]='dataItem.PurchasePrice' class="form-control inputEnabled as-label text-right"
+                              [disabled]="true" [spinners]="false">
+                            </kendo-numerictextbox>
+                            <kendo-numerictextbox *ngIf="!dataItem.PurchasePrice"
+                              [format]="dataItem ? dataItem.PurchasePriceCurrency : null" value='-'
+                              class="form-control inputEnabled as-label text-right" [disabled]="true"
+                              [spinners]="false">
+                            </kendo-numerictextbox>
+                          </span>
+                        </ng-template>
+                        <ng-template kendoGridEditTemplate>
+                          <app-grid-cell-input-template [group]="PriceformGroup" controlName="PurchasePrice"
+                            inputType="number" [stopInputCounter]='true'>
+                          </app-grid-cell-input-template>
+                        </ng-template>
+                      </kendo-grid-column>
+
+                      <kendo-grid-column field="Cost" [title]="gridSettings.columnsConfig[2].title | translate"
+                        [width]="gridSettings.columnsConfig[2]._width"
+                        [style]='{"font-family": "Arial, Helvetica, serif","text-align":"right","padding-right": "5%"}'>
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                          <kendo-numerictextbox *ngIf="dataItem.Cost" [format]="formatSaleOptions"
+                            [value]='dataItem.Cost' class="form-control inputEnabled as-label text-right"
+                            [disabled]="true" [spinners]="false">
+                          </kendo-numerictextbox>
+                          <kendo-numerictextbox *ngIf="!dataItem.Cost" [format]="formatSaleOptions" value='-'
+                            class="form-control inputEnabled as-label text-right" [disabled]="true" [spinners]="false">
+                          </kendo-numerictextbox>
+                        </ng-template>
+                        <ng-template kendoGridEditTemplate>
+                          <app-grid-cell-input-template [group]="PriceformGroup" controlName="Cost" inputType="number" [disabled]="true"
+                            [stopInputCounter]='true'>
+                          </app-grid-cell-input-template>
+                        </ng-template>
+                      </kendo-grid-column>
+
+                      <kendo-grid-column field="ExchangeRate" [title]="gridSettings.columnsConfig[3].title | translate"
+                        [width]="gridSettings.columnsConfig[3]._width">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                          <kendo-numerictextbox *ngIf="dataItem.ExchangeRate" [format]="'##,#.#####'"
+                            [value]='dataItem.ExchangeRate' class="form-control inputEnabled as-label" [disabled]="true"
+                            [spinners]="false">
+                          </kendo-numerictextbox>
+                          <kendo-numerictextbox *ngIf="!dataItem.ExchangeRate" value='-'
+                            class="form-control inputEnabled as-label" [disabled]="true" [spinners]="false">
+                          </kendo-numerictextbox>
+                        </ng-template>
+                        <ng-template kendoGridEditTemplate>
+                          <app-grid-cell-input-template [group]="PriceformGroup" controlName="ExchangeRate" [disabled]="true"
+                            inputType="number" [stopInputCounter]='true'>
+                          </app-grid-cell-input-template>
+                        </ng-template>
+                      </kendo-grid-column>
+
+                      <kendo-grid-column field="Margin" [title]="gridSettings.columnsConfig[4].title | translate"
+                        [width]="gridSettings.columnsConfig[4]._width">
+                        <ng-template kendoGridCellTemplate let-dataItem>
+                          <kendo-numerictextbox *ngIf="dataItem.Margin" [format]="'##,#.#####'"
+                            [value]='dataItem.Margin' class="form-control inputEnabled as-label" [disabled]="true"
+                            [spinners]="false">
+                          </kendo-numerictextbox>
+                          <kendo-numerictextbox *ngIf="!dataItem.Margin" value='-'
+                            class="form-control inputEnabled as-label" [disabled]="true" [spinners]="false">  
+                          </kendo-numerictextbox>
+                        </ng-template>
+                        <ng-template kendoGridEditTemplate>
+                          <app-grid-cell-input-template [group]="PriceformGroup" controlName="Margin" inputType="number" [disabled]="true"
+                            [stopInputCounter]='true'>
+                          </app-grid-cell-input-template>
+                        </ng-template>
+                      </kendo-grid-column>
+
+                      <kendo-grid-command-column title="Action" width="100">
+                        <ng-template kendoGridCellTemplate let-isNew="isNew">
+                          <button *ngIf="hasUpdatePurchasePricePermission || hasAddPermission" kendoGridEditCommand
+                            class='btn-white-command p-0'>
+                            <i class="las la-pen cursor-pointer edit-pencil la-lg" aria-hidden="true"></i>
+                          </button>
+                          <button kendoGridSaveCommand class='btn-white-command p-0'>
+                            <i class="fa fa-check text-success" aria-hidden="true"></i>
+                          </button>
+                          <button kendoGridCancelCommand class='btn-white-command p-0'>
+                            <i class="fa fa-ban text-danger" aria-hidden="true"></i>
+                          </button>
+                        </ng-template>
+                      </kendo-grid-command-column>
+                    </kendo-grid>
+                  </span>
+                </p-accordionTab>
+                <p-accordionTab *ngIf="itemForm.value['IsForSales']" header="{{ 'SELLING_PRICE' | translate }}"
+                  style="color: #4c9aae;" [selected]="selectValorisationConditionTab">
+                  <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="itemForm.value['IsForSales']">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{
+                              "SELLING_PRICE" | translate
+                              }}</label>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <kendo-numerictextbox class="form-control" formControlName="UnitHtsalePrice"
+                                [format]="formatSaleOptions">
+                              </kendo-numerictextbox>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 col-sm-12" *ngIf="itemForm.value['IsForSales'] && showPriceCategory">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">
+                              {{"SALESUNIT" | translate}}
+                              <span class="required" *ngIf="isStockManged">*</span>
+                            </label>
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                              <app-unit-sales [itemForm]="itemForm" [hideBtn]="!hasAddMesureUnitPermission"
+                                [readonly]="(this.isUpdateMode || this.isDuplicated) && (!hasUpdatePermission || !hasUpdateSalePricePermission)">
+                              </app-unit-sales>
+                              <app-control-messages [control]="itemForm.controls.IdUnitSales"
+                                class="error-msg messages text-left text-danger">
+                              </app-control-messages>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <br />
+                      <br />
+                      <!-- ___________________________________________________________________________________________________________________________________________________ -->
+                      <div class="row" *ngIf="showPriceCategory">
+                        <!-- prix -->
+                        <div class="col-lg-3 col-sm-6 col-md-6">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{"PRICE_CATEGORY" | translate}}</label>
+                            <div class="col-lg-12 col-md-10 col-sm-10">
+                              <app-sales-price-dropdown #ListSalesPrice (selected)="salesPriceSelected($event)">
+                              </app-sales-price-dropdown>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- pourcentage -->
+                        <div class="col-lg-2 col-md-6 col-sm-12">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{"PROPORTION" | translate}} (%)</label>
+                            <div class="col-lg-12 col-md-10 col-sm-10">
+                              <input class="form-control" [(ngModel)]="percentageSalesPrice"
+                                [ngModelOptions]="{standalone: true}" type="text"
+                                (afterValueChanged)="changePercentageSalesPrice()" />
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Value -->
+                        <div class="col-lg-3 col-md-12 col-sm-12">
+                          <div class="row">
+                            <label class="col-lg-12 col-md-12 col-sm-12">{{"NEW_SALES_PRICE_TOOL_TIP" |
+                              translate}}</label>
+                            <div class="col-lg-12 col-md-10 col-sm-10">
+                              <kendo-numerictextbox class="form-control" [(ngModel)]="valueSalesPrice"
+                                [ngModelOptions]="{standalone: true}" [format]="formatSaleOptions"
+                                (afterValueChanged)="changeSalesPrice()">
+                              </kendo-numerictextbox>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Add Price Button -->
+                        <div style="margin-top: 30px;" class="col-lg-2 col-sm-6 col-md-6">
+                          <button class="btn btn-sm btn-primary" (click)="AddItemSalesPrice()" type="button"
+                            [disabled]="cantAddPrice">
+                            {{'ADD'|translate}}
+                          </button>
+                        </div>
+                      </div>
+                      <br />
+                      <br />
+                      <div class="row" *ngIf="showPriceCategory">
+                        <!-- sales item price  -->
+                        <span class="col-lg-12 col-md-12 col-sm-12">
+                          <kendo-grid [data]="itemSalesPrices" [pageSize]="gridState.take" [skip]="gridState.skip"
+                            [sort]="gridState.sort" [pageable]="pagerSettings" [sortable]="true"
+                            (edit)="editItemSalesPriceHandler($event)" (cancel)="cancelItemSalesPriceHandler($event)"
+                            (save)="saveItemSalesPriceHandler($event)" (remove)="removeItemSalesPriceHandler($event)"
+                            [style.maxHeight.px]="400" [scrollable]="'virtual'">
+                            <!-- Label + code of SalesPrice -->
+                            <kendo-grid-column [title]="ItemSalesPriceGridSettings.columnsConfig[0].title | translate"
+                              [width]="ItemSalesPriceGridSettings.columnsConfig[0]._width"
+                              [field]="ItemSalesPriceGridSettings.columnsConfig[0].field">
+                              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                                <div class="row">
+                                  <div class="col">
+                                    <div class="row">
+                                      <span class="font-weight-bold"
+                                        style="margin-left: 20px !important;">{{dataItem.IdSalesPriceNavigation != null ? dataItem.IdSalesPriceNavigation.Label : ''}}
+                                        ({{dataItem.IdSalesPriceNavigation != null ? dataItem.IdSalesPriceNavigation.Value : ''}}%)</span>
+                                    </div>
+                                    <div class="row">
+                                      <span class="light-reference"
+                                        style="margin-left: 20px !important;">{{dataItem.IdSalesPriceNavigation != null ? dataItem.IdSalesPriceNavigation.Code : ''}}</span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                              </ng-template>
+                            </kendo-grid-column>
+                            <!-- SalesPrice Value (%)  -->
+                            <kendo-grid-column field="ItemSalesPriceGridSettings.columnsConfig[1].field"
+                              [title]="ItemSalesPriceGridSettings.columnsConfig[1].title | translate"
+                              [width]="ItemSalesPriceGridSettings.columnsConfig[1]._width"
+                              [style]='{"font-family": "Arial, Helvetica, serif","text-align":"right","padding-right": "5%"}'>
+                              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                                <span>{{dataItem.Percentage}} % </span>
+                              </ng-template>
+                              <ng-template kendoGridEditTemplate>
+                                <app-grid-cell-input-template [group]="salesPriceFormGroup" controlName="Percentage"
+                                  inputType="number" [stopInputCounter]='true' (afterValueChanged)="changPercentageData()">
+                                </app-grid-cell-input-template>
+                              </ng-template>
+                            </kendo-grid-column>
+                            <!-- newSalesPrice -->
+                            <kendo-grid-column field="ItemSalesPriceGridSettings.columnsConfig[2].field"
+                              [title]="ItemSalesPriceGridSettings.columnsConfig[2].title | translate"
+                              [width]="ItemSalesPriceGridSettings.columnsConfig[2]._width"
+                              [style]='{"font-family": "Arial, Helvetica, serif","text-align":"right","padding-right": "5%"}'>
+                              <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+                                <kendo-numerictextbox *ngIf="dataItem.Price && dataItem.Price != 0" [format]="formatSaleOptions"
+                                  [value]='dataItem.Price' class="form-control inputEnabled as-label text-right"
+                                  [disabled]="true" [spinners]="false">
+                                </kendo-numerictextbox>
+                                <kendo-numerictextbox *ngIf="!dataItem.Price" [format]="formatSaleOptions" value='-'
+                                  class="form-control inputEnabled as-label text-right" [disabled]="true"
+                                  [spinners]="false">
+                                </kendo-numerictextbox>
+                                <kendo-numerictextbox *ngIf="dataItem.Price && dataItem.Price == 0" [format]="formatSaleOptions" value='-'
+                                  class="form-control inputEnabled as-label text-right" [disabled]="true"
+                                  [spinners]="false">
+                                </kendo-numerictextbox>
+                              </ng-template>
+                              <ng-template kendoGridEditTemplate>
+                                <app-grid-cell-input-template [group]="salesPriceFormGroup" controlName="Price"
+                                  inputType="number" [stopInputCounter]='true' (afterValueChanged)="changePriceData()">
+                                </app-grid-cell-input-template>
+                              </ng-template>
+                            </kendo-grid-column>
+
+                            <kendo-grid-command-column title="Action" width="100">
+                              <ng-template kendoGridCellTemplate let-isNew="isNew">
+                                <button kendoGridEditCommand class='btn-white-command p-0'>
+                                  <i class="las la-pen cursor-pointer edit-pencil la-lg" aria-hidden="true"></i>
+                                </button>
+                                <button kendoGridRemoveCommand class="btnKendoGrid" type="button">
+                                  <i class="fa fa-trash-o"></i>
+                                </button>
+                                <button kendoGridSaveCommand class='btn-white-command p-0'>
+                                  <i class="fa fa-check text-success" aria-hidden="true"></i>
+                                </button>
+                                <button kendoGridCancelCommand class='btn-white-command p-0'>
+                                  <i class="fa fa-ban text-danger" aria-hidden="true"></i>
+                                </button>
+                              </ng-template>
+                            </kendo-grid-command-column>
+                          </kendo-grid>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </p-accordionTab>
+                <br />
+                <br *ngIf="isAutoVersion" />
+
+                <div *ngIf="isStockManged"><br /></div>
+              </p-accordion>
+            </div>
+            <div *ngIf="isStockManged" class="tab-pane fade px-0" [ngClass]="{'show active':isActive(4)}"
+              id="equivalencegroup" role="tabpanel" aria-labelledby="equivalencegroup-tab">
+              <!-- EQUIVALENCE GROUP -->
+              <app-assign-equivalence-group [item]="itemToUpdate" [isFromUpdateItem]="true"
+                [disabled]="(isUpdateMode || isDuplicated) && !hasUpdatePermission">
+              </app-assign-equivalence-group>
+              <br />
+              <p-accordion *ngIf="IsKit.value && !disabled" [multiple]='true'>
+                <p-accordionTab *ngIf="isAutoVersion" (selectedChange)="selectedChange()" [selected]="openBrandCollapse"
+                  header="{{ 'ITEM_KIT' | translate }}" style="color: #4c9aae;">
+                  <!-- ITEM KIT -->
+                  <div>
+                    <app-kit-item [formGroup]="itemForm" [item]="itemToUpdate"></app-kit-item>
+                  </div>
+                </p-accordionTab>
+              </p-accordion>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-12 justify-content-center w-100" style="min-width: '190px'">
+
+          <div id="pictureSlide" class="k-text-center carousel slide" data-ride="carousel">
+
+            <!-- The slideshow -->
+            <div class="carousel-inner">
+              <img *ngIf='mediaInfos.length === 0' [src]='placeHolderPic' class="stretch">
+              <div *ngFor="let media of mediaInfos; let i=index;let isFirst=first" class="carousel-item"
+                [ngClass]="{'active' :isFirst}">
+                <img [src]='getSrcFile(i)' class="stretch">
+              </div>
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="carousel-control-prev" href="#pictureSlide" data-slide="prev">
+              <span class="carousel-control-prev-icon"></span>
+            </a>
+            <a class="carousel-control-next" href="#pictureSlide" data-slide="next">
+              <span class="carousel-control-next-icon"></span>
+            </a>
+          </div>
+          <div *ngIf="hasAddPermission || (this.isUpdateMode || this.isDuplicated) && hasUpdatePermission"
+            class="k-text-center card-icon mt-2">
+
+            <label for="file-input" #fileInput>
+              <i class="cursor-pointer fa fa-camera la-lg edit-pencil mr-3"></i>
+            </label>
+            <input id="file-input" multiple type='file' (change)="onSelectFiles($event)" accept="image/*">
+
+            <i class="cursor-pointer las la-pen edit-pencil la-lg mr-3" (click)="expandGallery()"></i>
+            <i class="cursor-pointer fa fa-link la-lg edit-pencil mr-3" aria-hidden="true" data-toggle="modal"
+              data-target="#exampleModal"></i>
+
+          </div>
+          <button *ngIf="isUpdateMode" [ngClass]="'btn btn-pill btn-block btn-primary mt-3'"
+            (click)="goToFileProduct()">{{'FILE_PRODUCT'|translate}}</button>
+
+          <!-- checkbox -->
+          <div class="row mt-3">
+            <div class="col-lg-12 col-md-12 col-sm-12 border-top border-right border-left border-bottom">
+              <div class="k-text-center mt-3">
+
+                <div *ngIf="isStockManged">
+                  <input class="input-checkbox100" id="ckb1" formControlName="OnOrder" type="checkbox" />
+                  <label class="label-checkbox100" for="ckb1">{{
+                    "OnOrder" | translate
+                    }}</label>
+
+                  <input class="input-checkbox100" id="ckb2" formControlName="IsKit" type="checkbox" />
+                  <label class="label-checkbox100" for="ckb2">{{
+                    "IS_KIT" | translate
+                    }}</label>
+                </div>
+                <input class="input-checkbox100" id="ckb3" formControlName="IsForSales" type="checkbox"
+                  (change)="setUnitSalesValidators()" />
+                <label class="label-checkbox100" for="ckb3">{{
+                  "IS_FOR_SALE" | translate
+                  }}</label>
+                <input class="input-checkbox100" id="ckb4" formControlName="IsForPurchase" type="checkbox"/>
+                <label class="label-checkbox100" for="ckb4">{{
+                  "IS_FOR_PURCHASE" | translate
+                  }}</label>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3" *ngIf="isAutoVersion">
+            <label *ngIf="itemToUpdate.TecDocId" class="btn btn-pill border border-primary w-100 techDoc">
+              {{"TECDOC_ID" | translate}} : {{this.itemToUpdate.TecDocId}}
+            </label>
+            <div *ngIf="(this.isUpdateMode || this.isDuplicated) && isStockManged && hasSynchronizePermission">
+              <button class="btn btn-warning btn-pill w-100" (click)="openSyncModal()" type="button">
+                <i class="fa fa-refresh"></i>
+                {{ "SYNC_WITH_TECDOC" | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <br />
+
+
+      <br />
+
+    </form>
+  </div>
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 flex-align footer-content">
+            <a [routerLink]="routerListLink">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i>
+                {{ "BACK_TO_LIST" | translate }}
+              </span>
+            </a>
+            <button
+              *ngIf="(!isUpdateMode || (isUpdateMode &&  !(itemToUpdate?.IsFromGarage))) && (hasAddPermission || hasUpdatePermission)"
+              class="btn btn-sm btn-save mx-1" (click)="save()" type="button">
+              <i class="fa fa-floppy-o"></i> {{ "SAVE" | translate }}
+            </button>
+            <button class="btn btn-sm greenBtn" (click)="colneItem()" type="button"
+              *ngIf="hasShowPermission && isUpdateMode && hasAddPermission && !isExpenseNature && !(itemToUpdate?.IsFromGarage)">
+
+              <i class="fa fa-clone"></i> {{ "CLONE" | translate }}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--End Card footer-->
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{'IMPORT_VIDEDO' | translate}}</h5>
+        <button #closebutton type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="basic-url">Url</label>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text">{{placeHolderUrl}}</span>
+          </div>
+          <input [(ngModel)]="urlFileVideo" type="url" class="form-control" id="basic-url"
+            aria-describedby="basic-addon3" (input)="validateUrlVideo($event.target.value)" class="form-control">
+          <div class="input-group-prepend">
+            <button class="cursor-pointer input-group-text fa fas fa-upload save-icon" [disabled]="disableUrVideo"
+              (click)="importUrlVideo()" [ngClass]="{'save-icon' : !disableUrVideo}"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

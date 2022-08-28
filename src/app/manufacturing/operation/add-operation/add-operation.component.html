@@ -1,0 +1,54 @@
+<div class="card h-100">
+  <div class="card-header">
+    <div class="col-sm-12 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_OPERATION' : 'SAVE_OPERATION') |translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="formGroup">
+      <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+        <div class="form-group row">
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'CODE'|translate}}<span
+              class="required">*</span></label>
+            <input class="form-control" name="code" formControlName="code" disabled>
+            <app-control-messages [control]="formGroup.controls['code']"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+
+          <div class="col-lg-4 col-md-12 col-sm-12">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+            <input class="form-control" name="description" formControlName="description">
+            <app-control-messages [control]="formGroup.controls['description']"
+                                  class="error-msg messages text-left text-danger">
+
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!--Begin Card footer-->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer ml-0">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 flex-align footer-content">
+            <a [routerLink]="'/main/settings/manufacturing/operation'" *ngIf="!operationModalOpenedFromGamme">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i>
+                {{ "BACK_TO_LIST" | translate }}
+              </span>
+            </a>
+            <button
+              class="btn btn-sm btn-save mx-1" (click)="save()" type="button">
+              <i class="fa fa-floppy-o"></i> {{ "SAVE" | translate }}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

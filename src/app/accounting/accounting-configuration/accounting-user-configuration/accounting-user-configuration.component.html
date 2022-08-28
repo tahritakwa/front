@@ -1,0 +1,48 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'USER_PARAMETERS'|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="defaultJournalByUserForm">
+      <div class="form-group row">
+        <div class="col-lg-4 col-md-6 col-sm-12">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'DEFAULT_USER_JOURNAL'|translate}}<span
+            class="required">*</span></label>
+          <div class="col-sm-12 col-md-12 col-lg-12" style="padding-right: 0; padding-left: 0">
+            <kendo-combobox formControlName="journalId" [data]="journalUser" [textField]="'label'"
+                            [valueField]="'id'" class="form-control" [valuePrimitive]="true" [filterable]="true"
+                            (filterChange)="handleFilterJournal($event)">
+              <ng-template kendoDropDownListFooterTemplate>
+                <app-drop-down-footer *ngIf="this.authService.hasAuthority(this.SettingsAccountingPermissions.ADD_JOURNALS)"
+                  [addNew]="addNewJournal.bind(this)"></app-drop-down-footer>
+              </ng-template>
+                    <!--No data template-->
+                    <ng-template kendoDropDownListNoDataTemplate>
+                      <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+                    </ng-template>
+                    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+            </kendo-combobox>
+            <app-control-messages [control]="defaultJournalByUserForm.controls.journalId"
+                                  class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+ <div class="card-footer" [ngClass]="getFooterClass()" *ngIf="this.authService.hasAuthority(this.AccountingPermissions.ACCOUNTING_SETTINGS)
+  && this.authService.hasAuthority(this.SettingsAccountingPermissions.UPDATE_USER_ACCOUNTING_SETTINGS)">
+    <div class="row float-right">
+      <div class="col-lg-4 col-md-12">
+        <button class="btn btn-sm btn-save mx-1" (click)="save()" type="submit">
+          <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

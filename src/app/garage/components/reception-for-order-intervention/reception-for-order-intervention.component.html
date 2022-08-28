@@ -1,0 +1,235 @@
+<form class="form-horizontal" [formGroup]="form">
+  <div class="col-lg-12 col-sm-12 col-md-12">
+    <div class="row col-lg-12 col-sm-12 col-md-12">
+      <div class="col-lg-10 col-sm-12 col-md-12">
+        <div class="form-group row">
+
+          <!-- Received by start-->
+          <div class="col-lg-6 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'RECEIVED_BY' | translate}}</label>
+            <app-worker-dropdown [group]="form.controls.IdReceptionNavigation"></app-worker-dropdown>
+            <app-control-messages [control]="ReceptionFormGroup.controls.IdWorker"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- Received by end-->
+
+          <!-- Garage start-->
+          <div class="col-lg-6 col-md-12 col-sm-12 margin">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'GARAGE' | translate}}<span class="required">*</span></label>
+            <app-garage-dropdown [group]="form" (Selected)="garageSelectedChanged($event)"></app-garage-dropdown>
+            <app-control-messages [control]="form.controls.IdGarage" class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- Garage end-->
+
+        </div>
+        <div class="form-group row">
+
+          <!-- receipt date start-->
+          <div class="col-lg-6 col-md-12 col-sm-12 margin" formGroupName="IdReceptionNavigation">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'RECEIPT_DATE' | translate}}<span
+                class="required">*</span></label>
+            <kendo-datepicker [format]="formatDate" formControlName="ReceiptDate" 
+              (valueChange)="receiptDateChange($event)" class="form-control">
+              <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+              </kendo-datepicker-messages>
+            </kendo-datepicker>
+            <app-control-messages [control]="ReceptionFormGroup.controls.ReceiptDate"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <!-- receipt date end -->
+
+          <!-- receipt Hour start-->
+          <div class="col-lg-6 col-md-12 col-sm-12 margin" formGroupName="IdReceptionNavigation">
+            <label class="col-lg-12 col-md-12 col-sm-12">{{'RECEIPT_HOUR' | translate}}<span
+                class="required">*</span></label>
+            <kendo-timepicker formControlName="ReceiptHours" class="form-control" [format]="'HH:mm'">
+            </kendo-timepicker>
+            <app-control-messages [control]="ReceptionFormGroup.controls.ReceiptHours"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+        </div>
+        <!-- receipt Hour end -->
+      </div>
+      <div class="col-lg-2 col-sm-12 col-md-12 d-flex justify-content-center margin">
+        <label class="img-border  d-flex justify-content-center" for="file-input">
+          <img id="CarPicture" class="img-upload" alt="{{'BRAND' | translate}}" border="0"
+            [src]="vehicleBrandPictureSrc() ||  'assets/image/placeholder-logo.png'" />
+        </label>
+      </div>
+    </div>
+    <div class="col-lg-12 col-sm-12 col-md-12">
+      <div class="form-group row">
+        <!-- Current mileage start-->
+        <div class="col-lg-4 col-md-6 col-sm-12 margin" formGroupName="IdReceptionNavigation">
+          <label class="col-lg-auto col-md-12 col-sm-12">{{'CURRENT_MILEAGE' | translate}}</label>
+          <input class="form-control" formControlName="CurrentMileage" type="number"
+            (change)="mileageValueChanged($event)" name="CurrentMileage">
+          <app-control-messages [control]="ReceptionFormGroup.controls.CurrentMileage"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <!-- Current mileage end-->
+
+        <!-- Intervention ordre type start-->
+        <div class="col-lg-4 col-md-6 col-sm-12 margin">
+          <label class="col-lg-auto col-md-12 col-sm-12">{{'INTERVENTION_TYPE' | translate}}</label>
+          <app-intervention-order-type-dropdown [group]="form" (selectedValue)="selectedType($event)">
+          </app-intervention-order-type-dropdown>
+          <app-control-messages [control]="form.controls.InterventionType"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <!-- Intervention ordre type end-->
+        <!-- Interview for start-->
+        <div class="col-lg-3 col-md-6 col-sm-12 margin" *ngIf="showProgrammedInterventionSection">
+          <label class="col-lg-auto col-md-12 col-sm-12">{{'INTERVIEW_FOR' | translate}} </label>
+          <app-mileage-dropdown [fieldName]="'IdMileageProgrammed'" [group]="form"
+            (Selected)="mileageProposedValueChange($event)"> </app-mileage-dropdown>
+          <app-control-messages [control]="form.controls.IdMileageProgrammed"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div class="col-lg-1 col-md-6 col-sm-12 margin" style="margin-top: 2.5em;"
+          *ngIf="showProgrammedInterventionSection && form.controls.IdMileageProgrammed.value">
+          <span>
+            <i class="pointer fa fa-info-circle fa-lg" aria-hidden="true" style="color: #607d8b;" data-toggle="modal"
+              data-target="#detailsModal" (click)="OperationsProposed()"></i>
+          </span>
+        </div>
+        <!-- Operation kit -->
+        <div class="col-lg-3 col-md-6 col-sm-12 margin" *ngIf="showOperationKitDropdown">
+          <label class="col-lg-auto col-md-12 col-sm-12">{{'OPERATION_KIT' | translate}} </label>
+          <app-opration-kit-multiselect [itemForm]="ReceptionFormGroup" [isCheckboxMode]="true" [disabled]="isOperationKitDisabled"
+            (selectedOneValueFromCheckbox)="selectedOneOpeartionKitFromCheckbox($event)"
+            (deSelectedOneValueFromCheckbox)="deSelectedOneOpeartionKitFromCheckbox($event)"
+            (selectedAllValueFromCheckbox)="operationKitMultiSelectAllValueChange($event)">
+          </app-opration-kit-multiselect>
+        </div>
+        <div class="col-lg-1 col-md-6 col-sm-12 margin" style="margin-top: 2.5em;"
+          *ngIf="showOperationKitDropdown && selectedOperationKit && selectedOperationKit.length > 0 ">
+          <span>
+            <i class="pointer fa fa-info-circle fa-lg" aria-hidden="true" style="color: #607d8b;" data-toggle="modal"
+              data-target="#detailsModal" (click)="showOperationKitSelected()"></i>
+          </span>
+        </div>
+      </div>
+      <!--  Operation kit end -->
+      <div class="form-group row">
+        <!-- Fuel Level start-->
+        <div class="col-lg-auto col-md-12 col-sm-12 margin" formGroupName="IdReceptionNavigation">
+          <label class="col-lg-auto col-md-12 col-sm-12">{{'FUEL_LEVEL' | translate}} </label>
+          <div class="col-lg-8 col-md-12 col-sm-12"
+            style="float: left;border: 1px solid #c0c0c0 !important;padding-left: 8%;padding-right: 8%;display: flex;">
+            <i style="color: brown;margin-top: 1.5em;margin-left: -0.6em;margin-right: 1em;"
+              (click)="cleanFuelLevelValue()" class="fa fa-ban" aria-hidden="true">
+            </i>
+            <bar-rating [theme]="'horizontal'" formControlName="FuelLevel" [max]="8">
+            </bar-rating>
+          </div>
+        </div>
+        <!-- Fuel level end-->
+        <!-- Note start-->
+        <div class="col-lg-auto col-md-12 col-sm-12 margin" formGroupName="IdReceptionNavigation">
+          <label class="col-lg-auto col-md-12 col-sm-12">{{'NOTE' | translate}}</label>
+          <textarea class="form-control text-area-style" formControlName="Note" rows="2" cols="50" [ngClass]="{ 'textarea-has-error': (ReceptionFormGroup.controls.Note.touched ||
+                  ReceptionFormGroup.controls.Note.dirty) && !ReceptionFormGroup.controls.Note.valid }"> </textarea>
+          <app-control-messages [control]="ReceptionFormGroup.controls.Note"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <!-- Note end-->
+        <!-- loan vehicle Start -->
+        <div class="col-lg-auto col-md-12 col-sm-12 margin">
+          <div class="row" style="margin-top: 40px;" formGroupName="IdReceptionNavigation">
+            <div class="col-lg-auto col-md-12 col-sm-12 margin">
+              <kendo-switch formControlName="LoanVehicle" [checked]="false"
+                (valueChange)="onLoanVehicleValueChange($event)" style="font-size: 0.4em !important">
+              </kendo-switch>
+            </div>
+            <div class="col-lg-auto col-md-12 col-sm-12 margin">
+              <label class="col-lg-12 col-md-12 col-sm-12" style="padding-left: 0">{{'LOAN_VEHICLE' | translate}}
+                <i *ngIf="ReceptionFormGroup.controls.LoanVehicle.value" class="pointer fa fa-info-circle fa-lg"
+                  aria-hidden="true" style="color: #607d8b;" data-toggle="modal" data-target="#detailsModal"
+                  (click)="onLoanVehicleValueChange()"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- Loan vehicle end -->
+      </div>
+      <div class="form-group row">
+
+        <!-- General State start-->
+        <div class="col-lg-2 col-md-12 col-sm-12 margin">
+          <label class="col-lg-12 col-md-12 col-sm-12">{{'GENERAL_STATE' | translate}} </label>
+        </div>
+        <div class="col-lg-4 col-md-12 col-sm-12" formGroupName="IdReceptionNavigation"
+          style="border: 1px solid #c0c0c0 !important; padding-top: 2%; padding-bottom: 1%;">
+          <div class="col-lg-12" style="margin-bottom: 5px;">
+            <label class="col-lg-9 col-md-12 col-sm-12" style="padding-left: 0">{{'CIGARETTE_LIGHER' |
+              translate}}</label>
+            <kendo-switch formControlName="CigaretteLigher" [checked]="false" style="font-size: 0.4em !important">
+            </kendo-switch>
+            <app-control-messages [control]="ReceptionFormGroup.controls.CigaretteLigher"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-12" style="margin-bottom: 5px;">
+            <label class="col-lg-9 col-md-12 col-sm-12" style="padding-left: 0">{{'CRICK_TOOLS' | translate}}</label>
+            <kendo-switch formControlName="CrickTools" [checked]="false" style="font-size: 0.4em !important">0
+            </kendo-switch>
+            <app-control-messages [control]="ReceptionFormGroup.controls.CrickTools"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-12" style="margin-bottom: 5px;">
+            <label class="col-lg-9 col-md-12 col-sm-12" style="padding-left: 0">{{'SPARE_WHEEL' | translate}}</label>
+            <kendo-switch formControlName="SpareWheel" [checked]="false" style="font-size: 0.4em !important">
+            </kendo-switch>
+            <app-control-messages [control]="ReceptionFormGroup.controls.SpareWheel"
+              class="error-msg messages text-left text-danger"></app-control-messages>
+          </div>
+          <div class="col-lg-12" style="margin-bottom: 5px;">
+            <label class="col-lg-9 col-md-12 col-sm-12" style="padding-left: 0">{{'RADIO' | translate}}</label>
+            <kendo-switch formControlName="Radio" [checked]="false" style="font-size: 0.4em !important">
+            </kendo-switch>
+            <app-control-messages [control]="ReceptionFormGroup.controls.Radio"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-12" style="margin-bottom: 5px;">
+            <label class="col-lg-9 col-md-12 col-sm-12" style="padding-left: 0">{{'HAND_TOOLS' | translate}}</label>
+            <kendo-switch formControlName="HandTools" [checked]="true" style="font-size: 0.4em !important">
+            </kendo-switch>
+            <app-control-messages [control]="ReceptionFormGroup.controls.HandTools"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+          <div class="col-lg-12" style="margin-bottom: 5px;">
+            <label class="col-lg-9 col-md-12 col-sm-12" style="padding-left: 0">{{'HUB_CAP' | translate}}</label>
+            <kendo-switch formControlName="HubCap" [checked]="'false'" style="font-size: 0.4em !important">
+            </kendo-switch>
+            <app-control-messages [control]="ReceptionFormGroup.controls.HubCap"
+              class="error-msg messages text-left text-danger">
+            </app-control-messages>
+          </div>
+        </div>
+        <!-- General State end-->
+
+        <!-- Drawing image start-->
+        <div class="col-lg-6 col-md-12 col-sm-12 margin" align="center">
+          <label class="col-lg-12 col-md-12 col-sm-12">
+            <img class="img-responsive" [src]="vehicleDiagnosticPictureSrc() || 'assets/image/intervention.png'" />
+            <div align="right" *ngIf="!(intervention && intervention.Status === interventionOrderStateEnumerator.Completed)">
+              <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true" *ngIf="hasUpdatePermission"
+                (click)="openImageDrawing()"></i>
+            </div>
+          </label>
+        </div>
+        <!-- Drawing image end-->
+
+      </div>
+    </div>
+  </div>
+</form>

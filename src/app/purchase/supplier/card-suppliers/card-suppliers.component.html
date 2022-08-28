@@ -1,0 +1,75 @@
+<div class="row">
+  <div class="col-lg-4 col-md-6 col-sm-12 d-flex align-items-stretch" style="min-height: 225px;"
+       *ngFor="let dataItem of data; let i=index;">
+    <div class="card">
+      <div class="card-body">
+        <div class="row d-flex align-items-center mb-3 pr-3">
+          <div class="col-11">
+            <div class="row">
+              <div class="col-auto">
+                <img id="blah" class="rounded-circle card-avatar" [class.disabled]="!haveShowPermission && !haveUpdatePermission && !haveDeletePermission"
+                     [routerLink]="[supplierProfileLink,dataItem?.Id]"
+                     [src]="imageGrid[i]" alt="avatar"/>
+              </div>
+              <div class="col pl-0">
+                <span class="tiers-title" 
+                ><a [class.disabled]="!haveShowPermission && !haveUpdatePermission && !haveDeletePermission"
+                [routerLink]="[supplierProfileLink,dataItem?.Id]"> {{dataItem.Name}}</a> </span>
+                <div>{{dataItem.CodeTiers}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-1">
+            <i (click)="goToAdvancedEdit(dataItem)" *ngIf="haveUpdatePermission" class="las la-pen cursor-pointer edit-pencil la-2x"></i>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-money fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'CURRENCY'|translate}}: </span>
+              <span style="font-size: inherit;"> {{dataItem.IdCurrencyNavigation?.Code}} </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="las la-tags fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'TAX'|translate}}: </span>
+              <span style="font-size: inherit;"> {{dataItem.IdTaxeGroupTiersNavigation?.Label}} </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-tag fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'TAX_REGISTRATION_NUMBER'|translate}}: </span>
+              <span style="font-size: inherit;" *ngIf="dataItem.MatriculeFiscale !=''"> {{dataItem.MatriculeFiscale}} </span>
+              <span style="font-size: inherit;" *ngIf="dataItem.MatriculeFiscale ==''"> - </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="las la-map-marker-alt fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'REGION'|translate}}: </span>
+              <span style="font-size: inherit;">
+                {{dataItem.Address && dataItem.Address.length && dataItem.Address[0].Region ? dataItem.Address[0].Region : ''}}
+                {{dataItem.Address && dataItem.Address.length && dataItem.Address[0].Region && dataItem.Address[0].IdCountryNavigation ? ',' : ''}}
+                {{dataItem.Address && dataItem.Address.length && dataItem.Address[0].IdCountryNavigation ? dataItem.Address[0].IdCountryNavigation.NameFr : ''}}
+              </span>
+            </div>
+            <div class="mb-2">
+              <span class="field-title">
+                <i class="fa fa-tags fa-lg icon-from-label" aria-hidden="true"></i>
+                {{'EMAIL'|translate}}: </span>
+              <span style="font-size: inherit;"> {{dataItem.Email}} </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Cards end-->
+<!-- Paginator start-->
+<app-kendo-pager [dataSource]="gridSettings"
+                 (pageChangeEvent)="paginate($event)"
+                 (stateChangeEvent)="dataStateChange($event)">
+</app-kendo-pager>
+<!-- Paginator end-->

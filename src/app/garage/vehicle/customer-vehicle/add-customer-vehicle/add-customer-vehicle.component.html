@@ -1,0 +1,3 @@
+<app-add-vehicle [hasUpdatePermission]="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode"
+    [vehicleCategory]="vehicleCategory" [id]="id" [idTiers]="idTiers" [isModal]="isModal"
+    (saveDoneEvent)="saveDoneEvent()"></app-add-vehicle>

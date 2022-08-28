@@ -1,0 +1,36 @@
+export class RoleConstant {
+  public static readonly URL_ROLE_EDIT = '/main/settings/administration/role/Edit/';
+  public static readonly URL_ROLE_LIST = 'main/settings/administration/role';
+  public static readonly URL_ROLE_ADVANCED_EDIT = '/main/administration/roleAdvanced/Edit/';
+  public static readonly URL_ROLE_ADVANCED_LIST = '/main/administration/roleAdvanced';
+  public static readonly ID = 'Id';
+  public static readonly CODE = 'Code';
+  public static readonly DESIGNATION = 'DESIGNATION';
+  public static readonly ROLE_NAME = 'RoleName';
+  public static readonly SINGLE = 'single';
+  public static readonly MULTIPLE = 'multiple';
+  public static readonly ADMINISTRATION = 'Administration';
+  public static readonly SOCIETE = 'societé';
+  public static readonly ROLES = 'Roles';
+  public static readonly UTILISATEURS = 'Utilisateurs';
+  public static readonly AXES = 'Axes analytiques';
+  public static readonly DEVISES = 'Devises';
+  public static readonly TYPEDETAXE = 'Type de taxe';
+  public static readonly GROUPEREMISETIERS = 'Groupe remise tiers';
+  public static readonly PRIME = 'Prime';
+  public static readonly GET_MODULES_BY_ROLE_CONFIG = 'getModulesByRoleConfig';
+  public static readonly GET_ROLE_CONFIGS = 'getRoleConfigs';
+  public static readonly GET_ROLE_CONFIGS_FROM_ROLE = 'getRoleConfigsFromRole';
+  public static readonly INSERT_ROLE = 'insertRole';
+  public static readonly UPDATE_ROLE = 'updateRole';
+  public static readonly GET_FUNCTIONNALITIES_BY_ROLE_CONFIG = 'getFunctionalitiesByRoleConfig';
+  public static readonly CHECKED = 'checked';
+  public static readonly INDETERMINATE = 'indeterminate';
+  public static readonly NONE = 'none';
+  public static readonly MODULE_BY_ROLE = 'ModuleByRole';
+  public static readonly GET_MODULES_BY_USER = 'getModulesByUser';
+  public static readonly GET_FUNCTIONNALITIES_BY_USER = 'getFunctionnalityByUser';
+  public static readonly MODULE_BY_USER = 'ModuleByUser';
+  public static readonly ROLE_UNSUCCESSFULL_ADD_EMPTY_CONFIG = 'ROLE_UNSUCCESSFULL_ADD_EMPTY_CONFIG';
+  public static readonly ADMIN_CODE = 'ADMIN';
+}

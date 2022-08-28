@@ -1,0 +1,15 @@
+<div [formGroup]="form">
+  <kendo-combobox
+    (filterChange)="handleFilter($event)"
+    (valueChange)="onChangeShowGrid($event)"
+    [allowCustom]="allowCustom"
+    [data]="bonusesFiltredList"
+    [filterable]="true"
+    [textField]="'Name'"
+    [valueField]="'Id'"
+    [valuePrimitive]="true" class="form-control"
+    formControlName="IdBonusType"
+    name="IdBonusType"
+    [disabled]="disabled">
+  </kendo-combobox>
+</div>

@@ -1,0 +1,119 @@
+a:hover {
+    color:blue;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload {
+border: 2px solid #4c9ab8 !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
+    background: transparent;
+    border-radius: 100%;
+    margin-right: 9px;
+}
+
+
+.overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-x: hidden;
+  transition: 0.5s;
+}
+
+.overlay-content {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+  cursor:pointer;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  right: 45px;
+  font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {
+    font-size: 20px
+  }
+
+  .overlay .closebtn {
+    font-size: 40px;
+    right: 35px;
+  }
+}
+.grid-importer-show{
+  width:100%;
+}
+.grid-importer-hide{
+  width:0%;
+}
+
+.file-import{
+     color: #4b9aac;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    /* padding: 7px; */
+    /* padding-left: 1px; */
+    /* padding-right: 1px; */
+    font-weight: bold;
+    font-size: 20px;
+}
+.k-button.k-primary:hover, .k-button.k-primary.k-state-hover{
+ background: transparent !important;
+}
+
+.dropdown-item-active{
+  display: block !important;
+  width: 100% !important;
+  padding: 0.25rem 1.5rem !important;
+  clear: both !important;
+  font-weight: 400 !important;
+  text-align: inherit !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+  position: relative !important;
+  padding: 10px 20px !important;
+  border-bottom: 1px solid #c8ced3 !important;
+   color: #fff !important;
+  text-decoration: none !important;
+  background-color: #4c9aae !important;
+}
+.btnColor{
+  background-color: #4c9aae !important;
+}
+
+
+  .card ,.form-control.k-widget.k-combobox ,.k-numerictextbox
+  ,input {
+    border: 1px solid #c8ced3!important;
+   }
+   .modal-header{
+    border-bottom: 1px solid #c8ced3!important;
+   }
+
+

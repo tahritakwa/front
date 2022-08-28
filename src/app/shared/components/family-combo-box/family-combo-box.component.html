@@ -1,0 +1,50 @@
+<div [formGroup]="itemForm" *ngIf='itemForm&&!isCardView'>
+  <kendo-combobox formControlName="IdFamily" [data]="familyFiltredDataSource" [textField]="'Label'" [valueField]="'Id'"
+    [allowCustom]="allowCustom" [valuePrimitive]="true" class="form-control" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="handleChange($event)" [placeholder]='placeholder|translate' [disabled]='disabled'>
+    <!--footer template-->
+    <ng-template *ngIf="!hideAddbtn && hasAddPermission" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<div *ngIf='!itemForm'>
+  <kendo-combobox [data]="familyFiltredDataSource" [textField]="'Label'" [valueField]="'Id'" [allowCustom]="allowCustom"
+    [valuePrimitive]="true" class="form-control" [filterable]="true" (filterChange)="handleFilter($event)"
+    (valueChange)="handleChange($event)" [(ngModel)]="selectedFamily" [placeholder]='"FAMILY"|translate'
+    [disabled]='disabled'>
+    <!--footer template-->
+    <ng-template *ngIf="!forSearch" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>
+<ng-container *ngIf="isCardView">
+  <div [formGroup]="itemForm" class="border rounded-border p-3" *ngIf='itemForm'>
+    <label>{{'FAMILIES'|translate}}</label>
+    <div>
+      <input (afterValueChanged)="handleFilter(searchedFamilly)" type="text" class="form-control"
+        [(ngModel)]="searchedFamilly" [ngModelOptions]="{standalone: true}" placeholder="{{'SEARCH'|translate}}"
+        aria-describedby="addon-wrapping" />
+    </div>
+    <div class="row wrapper">
+      <img id="{{family.Id}}{{family.Label}}" class="col-lg-4 col-md-6 col-sm-12 p-2" *ngFor="let family of
+      familyFiltredDataSource;let i=index;" tooltip="{{family.Label}}" (click)="onPictureClick(family)"
+        [src]="family.Picture ||'assets/image/placeholder-logo.png'" [alt]="'Family picture'" />
+    </div>
+  </div>
+</ng-container>

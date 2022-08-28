@@ -1,0 +1,19 @@
+<div *ngIf="group" [formGroup]="group">
+  <kendo-combobox [data]="registrationNumberFilterDataSource" class="form-control" formControlName="IdVehicle"
+    textField="RegistrationNumber" valueField="Id" [valuePrimitive]="true" [allowCustom]="false" [filterable]="true"
+    (filterChange)="handleFilter($event)" (valueChange)="onValueChanged($event)" [placeholder]="placeholder|translate">
+    <!--footer template-->
+    <ng-container *ngIf="showAddButton">
+      <ng-template kendoDropDownListFooterTemplate>
+        <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+      </ng-template>
+    </ng-container>
+  </kendo-combobox>
+</div>
+
+<div *ngIf="!group">
+  <kendo-combobox [data]="registrationNumberFilterDataSource" class="form-control" name="RegistrationNumber"
+    (valueChange)="onValueChanged($event)" textField="RegistrationNumber" valueField="Id" [valuePrimitive]="true"
+    [(ngModel)]="selectedValue" (filterChange)="handleFilter($event)" [placeholder]="placeholder|translate">
+  </kendo-combobox>
+</div>

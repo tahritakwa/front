@@ -1,0 +1,18 @@
+<div [formGroup]="group">
+  <kendo-combobox (filterChange)="handleFilter($event)"
+                  (valueChange)="onSelect($event)"
+                  [data]="leaveTypeDataSource"
+                  [filterable]="true"
+                  [valuePrimitive]="true"
+                  class="form-control HistoryCommandMargin"
+                  formControlName="IdLeaveType"
+                  name="IdLeaveType"
+                  textField="Label"
+                  valueField="Id">
+    <!--footer template-->
+    <ng-template *ngIf="hasAddPermission && !InGrid" kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template -->
+  </kendo-combobox>
+</div>

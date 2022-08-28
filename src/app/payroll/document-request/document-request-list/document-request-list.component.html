@@ -1,0 +1,153 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'ALL_DOCUMENT'|translate}}</h3>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+          <div>
+            <form class="form-horizontal">
+              <app-advanced-search [filtreFieldsColumns]="filtreFieldsColumns" [filtreFieldsInputs]="filtreFieldsInputs"
+                (filtrePredicateToSend)="getFiltrePredicate($event)" (predicateOperator)="getOperatorPredicate($event)"
+                (searchClickEvent)="initGridDataSource()" (resetClickEvent)="resetClickEvent()">
+              </app-advanced-search>
+              <div class="row" style="margin-right: 40px; margin-top: 5px;">
+                
+                <div 
+                  class="row" style="margin-left: auto;">
+                  <app-action-dropdown [Actions]="listOfAction" (selectedValue)="selectedAction($event)" style="margin-right: 15px;"></app-action-dropdown>
+                </div>
+                <app-btn-grid class="d-inline-flex float-right" [advencedAdd]='hasAddPermission' [addLink]='"add"'
+                  [relativeStyle]='true' [model]="true" [gridSettings]="gridSettings"
+                  [fileName]="'LISTE_REQUEST'|translate" [service]="documentRequestService" [predicate]="predicate"
+                  api="getDataSourcePredicate" [isExportExcel]="true">
+                </app-btn-grid>
+              </div>
+              <div class="row d-flex justify-content-between mt-3">
+                
+              </div>
+      <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [pageable]="pagerSettings"
+      [skip]="gridSettings.state.skip" [sortable]="true" [filterable]="true" [reorderable]="true"
+      (remove)="removeHandler($event)" (dataStateChange)="dataStateChange($event)" [sort]="gridSettings.state.sort"
+      [selectable]="true" [filter]="gridSettings.state.filter"
+      [selectable]="{enabled: true && hasUpdateDocumentPermission, checkboxOnly: true && hasUpdateDocumentPermission }" (selectedKeysChange)="onSelectedKeysChange($event)"
+      [kendoGridSelectBy]="'Id'" [selectedKeys]="documentIdsSelected">
+     
+      <!--Check box Start -->
+<kendo-grid-checkbox-column [width]="80" *ngIf="hasUpdateDocumentPermission">
+  <ng-template kendoGridHeaderTemplate>
+    <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState">
+    <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+  </ng-template>
+</kendo-grid-checkbox-column>
+<!--Check box End -->
+      <!--Employee-->
+      <kendo-grid-column *ngIf="!myDocument" [field]="gridSettings.columnsConfig[0].field" [columnMenu]="false"
+        [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+        [filter]="gridSettings.columnsConfig[0].filter" [filterable]="gridSettings.columnsConfig[0].filterable"
+        [format]="gridSettings.columnsConfig[0].format">
+      </kendo-grid-column>
+      <!--Type-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [columnMenu]="false"
+        [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+        [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable"
+        [format]="gridSettings.columnsConfig[1].format">
+        <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+          <app-document-request-type-dropdown [group]="statusSearchDropdownFormGroup" [InGrid]=true
+            (selectedValue)="documentTypeFilter($event)">
+          </app-document-request-type-dropdown>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Creation Date-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [columnMenu]="false"
+        [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+        [filter]="gridSettings.columnsConfig[2].filter" [filterable]="gridSettings.columnsConfig[2].filterable">
+        <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+          <kendo-grid-date-filter-cell [format]="dateFormat" [column]="column" [filter]="filter" [operator]="equals"  (click)="translateToday()">
+          </kendo-grid-date-filter-cell>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.SubmissionDate | date: gridSettings.columnsConfig[2].format}}
+        </ng-template>
+      </kendo-grid-column>
+      <!--Deadline-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field" [columnMenu]="false"
+        [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+        [filter]="gridSettings.columnsConfig[3].filter" [filterable]="gridSettings.columnsConfig[3].filterable">
+        <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+          <kendo-grid-date-filter-cell [format]="dateFormat" [column]="column" [filter]="filter" [operator]="equals" (click)="translateToday()">
+          </kendo-grid-date-filter-cell>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{dataItem.DeadLine | date: gridSettings.columnsConfig[3].format}}
+        </ng-template>
+      </kendo-grid-column>
+      <!--Treated By-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[4].field" [columnMenu]="false"
+        [title]="gridSettings.columnsConfig[4].title | translate" [width]="gridSettings.columnsConfig[4]._width"
+        [filter]="gridSettings.columnsConfig[4].filter" [filterable]="gridSettings.columnsConfig[4].filterable"
+        [format]="gridSettings.columnsConfig[4].format">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf="dataItem.TreatedByNavigation">{{dataItem.TreatedByNavigation.FullName}}</div>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Treatment Date-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[5].field" [columnMenu]="false"
+        [title]="gridSettings.columnsConfig[5].title | translate" [width]="gridSettings.columnsConfig[5]._width"
+        [filter]="gridSettings.columnsConfig[5].filter" [filterable]="gridSettings.columnsConfig[5].filterable"
+        [format]="gridSettings.columnsConfig[5].format">
+        <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+          <kendo-grid-date-filter-cell [format]="dateFormat" [column]="column" [filter]="filter" [operator]="equals" (click)="translateToday()">
+          </kendo-grid-date-filter-cell>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div *ngIf="dataItem.TreatmentDate">
+            {{dataItem.TreatmentDate| date: gridSettings.columnsConfig[5].format}}
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Status-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[6].field" [columnMenu]="false" [width]="gridSettings.columnsConfig[6]._width"
+        [title]="gridSettings.columnsConfig[6].title | translate" [filter]="gridSettings.columnsConfig[6].filter"
+        [filterable]="gridSettings.columnsConfig[6].filterable" [format]="gridSettings.columnsConfig[6].format">
+        <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+          <app-status-dropdown [form]="statusSearchDropdownFormGroup" (selectedValue)="statusGridFilter($event)"
+            [withNotCancelStatus]=true></app-status-dropdown>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem='dataItem'>
+          <span *ngIf="dataItem.Status == statusCode.Waiting"
+            class="badge badge-warning status-badge">{{'WAITING'|translate}}</span>
+          <span *ngIf="dataItem.Status == statusCode.Accepted"
+            class="badge badge-success status-badge">{{'ACCEPTED'|translate}}</span>
+          <span *ngIf="dataItem.Status == statusCode.Refused"
+            class="badge badge-danger status-badge">{{'REFUSED'|translate}}</span>
+        </ng-template>
+      </kendo-grid-column>
+      <!-- Command-->
+      <kendo-grid-command-column [width]="130">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <!--Open advanced edit form -->
+          <i *ngIf="hasShowPermission || hasUpdatePermission" class="las la-pen edit-pencil cursor-pointer la-lg" (click)="goToAdvancedEdit(dataItem)"
+                tooltip="{{'UPDATE' | translate}}"></i>
+          <!-- remove command directive, will be visible when not in edit mode -->
+          <i *ngIf="hasDeletePermission && dataItem.Status === statusCode.Waiting"
+                  class="las la-trash-alt text-danger cursor-pointer la-lg" tooltip="{{'DELETE' | translate}}" (click)="removeHandler(dataItem)"></i>
+          <!-- download command directive -->
+          <i *ngIf="dataItem.Status === statusCode.Accepted"
+          class="fa fa-download cursor-pointer" tooltip="{{'DOWNLOAD' | translate}}" (click)="downLoadFile(dataItem.FilesInfos)"></i>
+        </ng-template>
+      </kendo-grid-command-column>
+      <!--grid pdf & excel-->
+      <app-grid-export [gridSettings]="gridSettings" fileName="{{'LIST_DOCUMENT'|translate}}" pdf="true" excel="true"
+        [service]="documentRequestService" [predicate]="predicate">
+      </app-grid-export>
+      <!--end grid pdf & excel-->
+    </kendo-grid>
+  </form>
+</div>
+
+</div>
+</div>
+</div>

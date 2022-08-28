@@ -1,0 +1,203 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card" style="width:100%;">
+      <div class="card-content">
+        <!--Begin card header-->
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'SKILLS_MATRIX'|translate}}</h3>
+          </div>
+        </div>
+        <!--End card header-->
+        <!--Begin card body-->
+        <div class="card-body">
+          <div *ngIf="SkillsConfigured">
+            <!-- Header Start -->
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <form [formGroup]="filterFormGroup" class="form-horizontal">
+                <div class="form-group row">
+                  <div class="col-sm-12 col-md-6 col-xl-3 col-lg-5">
+                    <div class="row">
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        {{'TEAMS'|translate}}
+                        <div style="margin-bottom:10px">
+                          <app-team-dropdown (selected)="teamSelected($event)" [formGroup]="filterFormGroup">
+                          </app-team-dropdown>
+                        </div>
+                      </div>
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        {{'EMPLOYEES'|translate}}
+                        <div style="margin-bottom:10px">
+                          <app-employee-multiselect (selected)="employeeSelected($event)"></app-employee-multiselect>
+                        </div>
+                      </div>
+                      <div class="col-lg-12 col-md-12 col-sm-12">
+                        {{'SKILLS_FAMILY'|translate}}
+                        <div>
+                          <app-skills-family-multiselect (selected)="familySelected($event)">
+                          </app-skills-family-multiselect>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-xl-6 col-lg-7">
+                    <div class="row level-class" style="min-height: 175px;">
+                      <div *ngFor="let skillsLevelFormGroup of SkillsLevels.controls; let i=index" class="col-lg-12 col-md-12 col-sm-12"
+                           formArrayName="SkillsLevels">
+                        <div class="row" style="margin-bottom: 5px">
+                          <app-rating-per-skills (formChanged)="getSkill($event)"
+                                                 (formChanged2)="changeRateLevel()"
+                                                 (skillsConfigChanged)="getColumnName()"
+                                                 [form]="skillsLevelFormGroup" [skillsFamilySelected]="skillsFamilySelected"
+                                                 class="col-lg-11 col-xl-11 col-sm-11 col-md-11"></app-rating-per-skills>
+                          <div class="col-sm-1 " style="margin-left:-10px; margin-top:25px">
+                            <button (click)="deleteSkillsLevel(i)" class="noPadding btn-Add k-button" style="border: none"
+                                    type="button">
+                              <i class="fa fa-close fa-lg AddIcon text-danger"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="col-lg-12 col-md-12 col-sm-12" style="margin-left:0px;">
+                        <button (click)="addSkillsLevel()" class="noPadding btn-Add k-button" dir="ltr"
+                                style="border: none; margin-bottom: 20px" type="button">
+                          <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+                          <span>&nbsp;{{'ADD_SKILLS_FILTER'|translate}}</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-12 col-xl-3 col-lg-12 col-xs-12">
+                    <div class="legend-class" style="min-height: 175px;">
+                      <div class="row">
+                        <span style="margin-top:22px; width: 110px">{{'BEGINNER'|translate}}:</span>
+                        <span>
+                          <bar-rating [(rate)]="numbers[0]" [max]="6" [readOnly]="true" [theme]="'default'">
+                          </bar-rating>
+                        </span>
+                      </div>
+                      <div class="row">
+                        <span style="margin-top:22px; width: 110px">{{'INTERMEDIATE'|translate}}:</span>
+                        <span>
+                          <bar-rating [(rate)]="numbers[2]" [max]="6" [readOnly]="true" [theme]="'default'">
+                          </bar-rating>
+                        </span>
+                      </div>
+                      <div class="row">
+                        <span style="margin-top:22px; width: 110px">{{'EXCELLENT'|translate}}:</span>
+                        <span>
+                          <bar-rating [(rate)]="numbers[4]" [max]="6" [readOnly]="true" [theme]="'default'">
+                          </bar-rating>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="legend-class-xs row ">
+                      <div class="col-4">
+                        <span style="margin-top:22px; width: 110px">{{'BEGINNER'|translate}}:</span>
+                        <span>
+                          <bar-rating [(rate)]="numbers[0]" [max]="6" [readOnly]="true" [theme]="'default'">
+                          </bar-rating>
+                        </span>
+                      </div>
+                      <div class="col-4">
+                        <span style="margin-top:22px; width: 110px">{{'INTERMEDIATE'|translate}}:</span>
+                        <span>
+                          <bar-rating [(rate)]="numbers[2]" [max]="6" [readOnly]="true" [theme]="'default'">
+                          </bar-rating>
+                        </span>
+                      </div>
+                      <div class="col-4">
+                        <span style="margin-top:22px; width: 110px">{{'EXCELLENT'|translate}}:</span>
+                        <span>
+                          <bar-rating [(rate)]="numbers[4]" [max]="6" [readOnly]="true" [theme]="'default'">
+                          </bar-rating>
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </form>
+            </div>
+            <!-- Header End -->
+            <!-- Matrix Start -->
+            <kendo-grid (cellClick)="cellClickHandler($event)" (dataStateChange)="dataStateChange($event)" [data]="gridData"
+                        [group]="gridState.group" [pageSize]="gridState.take" [pageable]="pagerSettings"
+                        [selectable]="true" [skip]="gridState.skip">
+              <!-- Employee Name Start -->
+              <kendo-grid-column [field]="generiqueColumnConfig[1].field" [headerStyle]="{'background-color':'#f0f3f552' }"
+                                 [locked]="true"
+                                 [title]="generiqueColumnConfig[1].title | translate"
+                                 [width]="generiqueColumnConfig[1]._width">
+
+                <ng-template kendoGridGroupHeaderTemplate let-dataItem let-value="value">
+                  {{dataItem.Team}}
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div>
+                    <a [routerLink]="['/main/payroll/employee/edit', dataItem.Employee.Id]" class="employee-link"
+                       target="_blank">
+                      {{dataItem.Employee.FullName}}
+                    </a>
+                  </div>
+                </ng-template>
+              </kendo-grid-column>
+              <!-- Employee Name End -->
+
+              <!--Columns-->
+              <kendo-grid-column *ngFor="let col of columnsConfig; let i = index" [field]="col.field"
+                                 [filter]="col.filter" [filterable]="col.filterable" [format]="col.format"
+                                 [headerStyle]="{'background-color': getColor(i)}"
+                                 [style]="{'background-color': getColor(i), 'text-align':'center'}" [title]="col.title | translate"
+                                 [width]="col._width">
+                <ng-template kendoGridHeaderTemplate>
+                  <div style="text-align:center"> {{col.title|translate}} </div>
+                </ng-template>
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <div *ngIf="dataItem.Skills[col.selector] !== 0" style="margin-left:20px; margin-top: -10px">
+                    <bar-rating [(rate)]="dataItem.Skills[col.selector]" [max]="6" [readOnly]="true"
+                                [theme]="'default'">
+                    </bar-rating>
+                  </div>
+                </ng-template>
+                <ng-template kendoGridEditTemplate let-dataItem>
+                  <form #form="ngForm">
+                    <div class="row col-lg-12 col-md-12 col-sm-12">
+                      <div class="col-lg-1 col-md-1 col-sm-1" style="margin-top: 20px;">
+                        <i (click)="cleanCellValue(dataItem.controls[col.selector])" aria-hidden="true"
+                           class="fa fa-ban" style="color: brown"></i>
+                      </div>
+                      <div class="col-lg-8 col-md-8 col-sm-8">
+                        <bar-rating [(ngModel)]="dataItem.controls[col.selector].value"
+                                    [max]="6" [ngModelOptions]="{standalone: true}" [theme]="'default'">
+                        </bar-rating>
+                      </div>
+                      <div class="col-lg-1 col-md-1 col-sm-1" style="margin-top: 20px">
+                        <i (click)="cellCloseHandler(dataItem)" aria-hidden="true"
+                           class="fa fa-check" style="color: green"></i>
+                      </div>
+                    </div>
+                  </form>
+                </ng-template>
+              </kendo-grid-column>
+              <!--End Columns-->
+              <kendo-grid-column [width]="1" title="">
+              </kendo-grid-column>
+            </kendo-grid>
+            <!-- Matrix End -->
+          </div>
+          <div *ngIf="!SkillsConfigured && showMessage">
+            <h5>{{'NO_SKILL_CONFIGURED'|translate}} </h5>
+            <br>
+            <a [routerLink]="['/main/payroll/skills']" style="color: blue; text-decoration: underline;">
+              {{'CONFIGURE_SKILLS_SUGGESTION'|translate}}
+            </a>
+          </div>
+
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

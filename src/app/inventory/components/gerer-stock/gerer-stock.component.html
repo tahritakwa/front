@@ -1,0 +1,69 @@
+<br />
+<br />
+<div class="form-group" [formGroup]="ItemWarehouseStorage">
+  <div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'WAREHOUSE'|translate}}<span class="required">*</span></label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <app-depot-dropdown #depoDropdown [parent]="ItemWarehouseStorage" [FromComponent]='true'
+            [SelectedValue]="selectedIdWarehouse" [warehouseForInventoryDocument]="true"
+            (Selected)="warehouseSelected($event)" [disabled]="disabled"
+            [isCentralWarehouseSelectedByDefault]="isCentralWarehouseSelectedByDefault"></app-depot-dropdown>
+          <app-control-messages [control]="ItemWarehouseStorage.controls.IdWarehouse"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-12 col-md-12 col-sm-12">{{'SHELF_STORAGE'|translate}}</label>
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <app-shelf-dropdown #shelfDropdown [parent]="ItemWarehouseStorage" [shelfName]="'IdStorage'"
+            [disabled]="isUpdateMode && !hasUpdatePermission" [idWarehouse]="selectedIdWarehouse"
+            [isDefaultValue]="isDefaultValue"></app-shelf-dropdown>
+          <app-control-messages [control]="ItemWarehouseStorage.controls.IdStorage"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-6 col-md-12 col-sm-12">{{'MIN_QUANTITY'|translate}}<span class="required">*</span></label>
+        <div class="col-lg-12 col-md-10 col-sm-10">
+          <input class="form-control" formControlName="MinQuantity" type="number" name="MinQuantity"
+            (change)="updateMaxValidity()" [ngClass]="{ 'has-error': (ItemWarehouseStorage.controls.MinQuantity.touched || ItemWarehouseStorage.controls.MinQuantity.dirty)
+           && !ItemWarehouseStorage.controls.MinQuantity.valid }">
+          <app-control-messages [control]="ItemWarehouseStorage.controls.MinQuantity"
+            class="error-msg messages text-left text-danger">
+          </app-control-messages>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="row">
+        <label class="col-lg-12 col-md-12 col-sm-12"> {{'MAX_QUANTITY'|translate}}<span
+            class="required">*</span></label>
+        <div class="col-lg-12 col-md-10 col-sm-10">
+          <input class="form-control" formControlName="MaxQuantity" type="number" name="MaxQuantity"
+            (change)="updateMinValidity()"
+            [ngClass]="{ 'has-error': (ItemWarehouseStorage.controls.MaxQuantity.touched || ItemWarehouseStorage.controls.MaxQuantity.dirty) && !ItemWarehouseStorage.controls.MaxQuantity.valid }">
+          <app-control-messages [control]="ItemWarehouseStorage.controls.MaxQuantity"
+            class="error-msg messages text-left text-danger"></app-control-messages>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+  <br />
+  <br />
+</div>
+<hr />

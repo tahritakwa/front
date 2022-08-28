@@ -1,0 +1,12 @@
+<div [formGroup]="form" >
+  <kendo-combobox  class="form-control" [data]="dropDownFilterData" [(ngModel)]="status"
+                   [valuePrimitive]="true" [textField]="'text'" [valueField]="'value'"
+                   [filterable]="true" (valueChange)="onChangeStatus($event)"
+                   [ngModelOptions]="{standalone: true}">
+                   <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+  </kendo-combobox>
+</div>

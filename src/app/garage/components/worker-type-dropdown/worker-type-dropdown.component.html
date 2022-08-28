@@ -1,0 +1,17 @@
+<div class="col-lg-12 col-sm-12 col-md-12" [formGroup]="itemForm">
+  <div class="row">
+        <kendo-combobox class="form-control" [valueField]="'value'" [data]= "workersStates"
+                        [valuePrimitive]="true"
+                        [textField]="'name'" [value]="defaultWorkersState"
+                        name="IsResponsible" formControlName="IsResponsible"
+                        (valueChange)="onCheckAllWorkers($event)">
+          <ng-template kendoComboBoxItemTemplate let-dataItem>
+            <div class="container">
+              <div class="row">
+                <span >{{dataItem.name}}</span>
+              </div>
+            </div>
+          </ng-template>
+        </kendo-combobox>
+  </div>
+</div>

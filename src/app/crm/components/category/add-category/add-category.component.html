@@ -1,0 +1,179 @@
+<div class="card full-screen-card h-100">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'UPDATE_CATEGORY' : 'ADD_OBJECTIF') |translate }}</h3>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="categoryCrmFormGroup">
+      <!--Begin Card body-->
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+
+              <!-- TITLE-->
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TITLE'|translate}}<span
+                  class="required">*</span></label>
+                <input class="form-control" formControlName="title" type="text" [readonly]="updatePossibility"
+                       (keyup)="titleKeyUp()"
+                       [ngClass]="{ 'has-error': (categoryCrmFormGroup.controls.title.touched ||
+                            categoryCrmFormGroup.controls.title.dirty) && !categoryCrmFormGroup.controls.title.valid }">
+                <app-control-messages [control]="categoryCrmFormGroup.controls.title"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+                <span *ngIf="categoryTileAlreadyExists===true" class="error-message" style="color:red">
+                          {{'OBJECTIF_ALREADY_EXISTS'|translate}}
+                        </span>
+              </div>
+
+              <!-- RESPONSABLE_USER_TITLE-->
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'RESPONSABLE_USER_TITLE'|translate}}<span
+                  class="required">*</span></label>
+                <kendo-multiselect [data]="listUsers" formControlName="responsablesUsersId" [filterable]="true"
+                                   [readonly]="updatePossibility"
+                                   (filterChange)="handleResponsablesFilter($event)"
+                                   textField="FullName" valueField="Id" [valuePrimitive]="true">
+                </kendo-multiselect>
+                <app-control-messages
+                  [control]="categoryCrmFormGroup.controls.responsablesUsersId"
+                  class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <!-- TYPE-->
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'TYPE'|translate}}<span class="required">*</span></label>
+                <kendo-dropdownlist style="width: 100%;" [data]="categoriesType"
+                                    [(ngModel)]="selectedItem" [readonly]="updatePossibility"
+                                    formControlName="type" [value]="categoryCrmFormGroup.value.type">
+                  <ng-template kendoDropDownListValueTemplate let-dataItem>
+                    <span> {{dataItem| translate}}</span>
+                  </ng-template>
+                  <ng-template kendoDropDownListItemTemplate let-dataItem>
+                    <span> {{dataItem | translate}}</span>
+                  </ng-template>
+                </kendo-dropdownlist>
+                <app-control-messages [control]="categoryCrmFormGroup.controls.type"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">
+                  {{'PIPELINE'|translate}}
+                  <span class="required">*</span></label>
+                <kendo-combobox [data]="allPipelines" textField="name" valueField="id"
+                                [readonly]="updatePossibility" style="width: 100%;"
+                                [valuePrimitive]="true" formControlName="pipelineId">
+                                <!--No data template-->
+              <ng-template kendoDropDownListNoDataTemplate>
+                <h5><br/> {{'NO_DATA_FOUND'|translate}}</h5>
+              </ng-template>
+              <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+                </kendo-combobox>
+                <app-control-messages [control]="categoryCrmFormGroup.controls.pipelineId"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-12"><span>&nbsp;</span></label>
+                <div class="form-check form-check-inline">
+                  <input type="checkbox" class="input-checkbox100" id="availablequantity" [checked]="currencyChecked"
+                         formControlName="withTotal" (change)="updateCurrency($event)">
+                  <label class="label-checkbox100" style="white-space: pre-line;"
+                         for="availablequantity">{{'CATEGORY_TOTAL_CURRENCY'|translate}}</label>
+                </div>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CURRENCY'|translate}}</label>
+                <app-currency-dropdown [readonly]="!currencyChecked" [isFromCrm]="true"
+                                       class="error-msg messages text-left text-danger"
+                                       [group]="categoryCrmFormGroup">
+                </app-currency-dropdown>
+                <app-control-messages [control]="categoryCrmFormGroup.controls.IdCurrency"
+                                      class="error-msg messages text-left text-danger">
+                </app-control-messages>
+              </div>
+            </div>
+
+            <div class="row form-group">
+              <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12" *ngIf="selectedItem === categoriesType[0]">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'CONCERNED_USER_TITLE'|translate}}<span class="required">*</span></label>
+                <kendo-multiselect [data]="listUsersConcerned" formControlName="employeesId"
+                                   [filterable]="true"
+                                   [readonly]="updatePossibility" (filterChange)="handleConcernedsFilter($event)"
+                                   [valuePrimitive]="true" textField="FullName" valueField="Id">
+                </kendo-multiselect>
+                <app-control-messages [control]="categoryCrmFormGroup.controls.employeesId"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12" *ngIf="selectedItem === categoriesType[1]">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'PRODUCT'|translate}}<span
+                  class="required">*</span></label>
+                <app-item-dropdown [itemForm]="formGroupProduct" [showFilter]='true'
+                                   [activeKeyPress]='true'
+                                   [isForPurchase]='true'
+                                   [ignoreCharges]='true'
+                                   [hideSearch]="true"
+                                   [isForSales]='false'
+                                   [removeFilter]='true' #item
+                                   (Selected)="itemSelectProductLineForm($event)"
+                                   [isMultiselectWithPaginiation]="true" [SelectedValue]="products"
+                                   [readonly]="updatePossibility"
+                                   [parentViewContainerRef]="viewRef"
+                                  >
+                </app-item-dropdown>
+                <div *ngIf="!articleIsValid" class="error-msg messages text-left text-danger">
+                  {{'REQUIRED' | translate}}
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+          <div class="col-12" *ngIf=" itemsPipeSort.length > 0">
+            <label>{{'STATUS_PIPE'|translate}}<span class="required">*</span></label>
+            <kendo-sortable [navigatable]="true" [kendoSortableBinding]="itemsPipeSort"
+                            [animation]="true" class="row"
+                            [emptyItemStyle]="{'height': '30px', 'border': '2px dashed black'}"
+                            itemClass="item col-xs-6 col-sm-3"
+                            activeItemClass="item col-xs-6 col-sm-3 active">
+            </kendo-sortable>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a [routerLink]="'/main/settings/crm/category'">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button *ngIf="!updatePossibility" (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Card footer End-->
+</div>

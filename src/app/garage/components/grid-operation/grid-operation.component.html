@@ -1,0 +1,76 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <kendo-grid (cellClick)="lineClickHandler($event)" (save)="saveCurrent($event)" (remove)="removeLine($event)"
+    (add)="addLine()" (cancel)="cancelHandler($event)" [data]="listOperation" [style.maxHeight.px]="400"
+    [scrollable]="'virtual'" [columnMenu]="false" [filterable]="false">
+    <!-- Add Operation button start -->
+    <ng-template kendoGridToolbarTemplate>
+      <app-btn-grid class="col" [add]='hasUpdatePermission' [relativeStyle]="false">
+      </app-btn-grid>
+    </ng-template>
+    <!-- Add Operation button End -->
+    <!--Name Column Start-->
+    <kendo-grid-column [field]="columnsConfig[0].field" [title]="columnsConfig[0].title | translate" [width]="350">
+      <ng-template kendoGridEditTemplate let-dataItem="dataItem" let-formGroup="formGroup" *ngIf='isEditingMode'>
+        <div class="row col-lg-12 col-md-12 col-sm-12">
+          <div class="col-lg-10 col-md-10 col-sm-10" [formGroup]="formGroup">
+            <app-operation-dropdown [operationListIdsToIgnore]="listOperationIdsToIgnore" [group]="formGroup"
+              fieldName="Id" (Selected)="onSelectOperation($event)">
+            </app-operation-dropdown>
+            <i #anchor></i>
+            <app-control-message-grid-cell [group]="formGroup" [anchor]="anchor" controlName="Id">
+            </app-control-message-grid-cell>
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-2" *ngIf="isShortcutAddbuttonVisible">
+            <i #searchButton class="fa fa-search fa-lg m-2" (click)="onSearchClicked()"></i>
+          </div>
+        </div>
+      </ng-template>
+    </kendo-grid-column>
+    <!--Name Column End-->
+
+    <!-- Operation type Start -->
+    <kendo-grid-column [field]="columnsConfig[1].field" [title]="columnsConfig[1].title | translate" [width]='200'>
+      <ng-template kendoGridEditTemplate let-formGroup="formGroup" *ngIf='isEditingMode'>
+        <app-grid-cell-input-template [group]="formGroup" controlName="OperationTypeName">
+        </app-grid-cell-input-template>
+      </ng-template>
+    </kendo-grid-column>
+    <!-- Operation type End -->
+
+    <!--ExpectedDuration Start-->
+    <kendo-grid-column [field]="columnsConfig[2].field" [title]="columnsConfig[2].title | translate" [width]='150'>
+      <ng-template kendoGridEditTemplate let-formGroup="formGroup" *ngIf='isEditingMode'>
+        <app-grid-cell-input-template [group]="formGroup" controlName="ExpectedDurationFormat">
+        </app-grid-cell-input-template>
+      </ng-template>
+    </kendo-grid-column>
+    <!--ExpectedDuration End-->
+
+    <kendo-grid-command-column title="" [width]='100'>
+      <ng-template kendoGridCellTemplate let-isNew="isNew">
+        <div style="display: flex; margin-top: 5%;">
+          <button kendoGridRemoveCommand class="noPadding btn-Add k-button" dir="ltr"
+            style="border: none; color: #E91E63 !important;" type="button" *ngIf="hasUpdatePermission">
+            <i class="fa fa-times fa-lg"></i>
+          </button>
+          <button class='noPadding btn-Add' *ngIf="isEditingMode && hasUpdatePermission" kendoGridSaveCommand type="button">
+            <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+          </button>
+          <button kendoGridCancelCommand *ngIf="isEditingMode && hasUpdatePermission" class="noPadding btn-Add k-button" type="button">
+            <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+          </button>
+        </div>
+      </ng-template>
+    </kendo-grid-command-column>
+
+    <!-- Add Operation button start -->
+    <ng-template kendoGridToolbarTemplate [position]="'bottom'">
+      <button kendoGridAddCommand class="noPadding btn-Add k-button" dir="ltr" style="border: none" type="button" *ngIf="hasUpdatePermission">
+        <i class="fa fa-plus-circle fa-lg AddIcon"></i>
+        <span>&nbsp; {{'ADD_OPERATION'|translate}}</span>
+      </button><br style="line-height: 2.5em;">
+    </ng-template>
+    <kendo-grid-messages noRecords=""> </kendo-grid-messages>
+    <!-- Add Operation button End -->
+  </kendo-grid>
+</div>

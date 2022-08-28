@@ -1,0 +1,84 @@
+<div *ngFor="let warehouse of listWarehouse ; let i = index;">
+  <div class="col-sm-12 col-md-12 col-lg-12">
+    <div class="row">
+      <!---  Begin warehouse item Card --->
+      <div class="col" style="width:420px!important;max-width: 420px!important;">
+        <div class="card card-content w-100 ml-2" [ngClass]="warehouse.IsWarehouse?'warehouse':'zone'"
+           theme="light" placement="bottom">
+          <div class="row">
+            <div class="col-auto ml-3 mt-2">
+              <div>
+                <i [ngClass]="warehouse.IsWarehouse?warehouseDepotIcon:warehouseZoneIcon"></i>
+                <span class="font-weight-bold">{{warehouse.WarehouseName}}</span>
+              </div>
+              <div class="d-flex justify-content-center">
+                <span class="light-reference ml-2">{{warehouse.WarehouseCode}}</span>
+              </div>
+            </div>
+            <div class="col mt-3 ml-3">
+              <div>
+                <span class="font-weight-bold">{{'RESPONSABLE_OF'|translate}}
+                  {{warehouse.IdUserResponsableNavigation?.FullName}}</span>
+              </div>
+              <div>
+                <span class="light-reference">{{'ADRESS'|translate}} {{warehouse.WarehouseAdresse}}</span>
+              </div>
+            </div>
+            <div>
+              <i *ngIf="!warehouse.IsWarehouse" class="py-3 pr-4"
+                [ngClass]="isVisibleWarehouse[warehouse.Id]?angelDoubleRightIcon:angelDoubleLeftIcon"
+                (click)="onWarehouseTypeZoneClick(warehouse,$event)"></i>
+              <i *ngIf="warehouse.IsWarehouse && (hasShowPermission || hasUpdatePermission)" class="py-3 pr-4"
+                [ngClass]="isHiddenShelfAndStorage(warehouse.Id)?angelDoubleLeftIcon:angelDoubleRightIcon"
+                (click)="onWarehouseTypeDepotClick(warehouse.Id,$event)"></i>
+              <div class="d-flex justify-content-start">
+                <i *ngIf = "(warehouse.IsWarehouse && (hasShowPermission || hasUpdatePermission)) || (!warehouse.IsWarehouse && hasUpdateZonePermission)" class="d-flex fa fa-pencil py-3 pr-4" (click)="editWarhouse(warehouse,$event)"></i>
+                <i *ngIf = "(warehouse.IsWarehouse && hasDeletePermission) || (!warehouse.IsWarehouse && hasDeleteZonePermission)" class="d-flex fa fa-trash-o py-3 pr-4" (click)="deleteWarhouse(warehouse,$event)"></i>
+                <i *ngIf="hasShowDetailsPermission" class="d-flex fa fa-info-circle py-3 pr-4" (click)="redirectToWarehouseItems(warehouse)"  tooltip="{{'SHOW_ITEMS_TOOLTIP'|translate}}" [ngClass]="{'disabled-search':!hasShowListItemPermission}"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div [hidden]="isHiddenShelfAndStorage(warehouse.Id)" class="col"
+        style="width:420px!important;max-width: 420px!important;">
+        <div class="card card-content w-100 shelf-storage-warehouse ml-2">
+          <span class="font-weight-bold m-2">{{'SHELF_AND_STORAGE'|translate}}</span>
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="row mb-2">
+              <div class="col-sm-3 col-md-3 col-lg-3 mt-1 " *ngFor="let shelfAndStroage of getListShelfAndStorage(warehouse.Id);
+               let i=index;">
+                <div [hidden]="isVisibleAllShelf" class="shelf-storage">
+                  <span [hidden]="i>2" class="badge badge-shelf" style="font-size: small;"
+                    (click)="editShelf(shelfAndStroage,$event)">
+                    <span tooltip="{{'EDIT_CLICK_TOOLTIP'|translate}}" theme="light"
+                      placement="bottom">{{shelfAndStroage.Label}}</span>
+                    <span *ngIf = "hasDeleteShelfPermission">
+                      <i class="fa fa-trash-o ml-2" tooltip="{{'DELETE_SHELF_TOOLTIP'|translate}}" theme="light"
+                        placement="bottom" (click)="deleteShefAndStorage(shelfAndStroage,$event)"></i>
+                    </span>
+                  </span>
+                  <span (click)="showAllShelfAndStorage()" [hidden]="i!==3"
+                    tooltip="{{'SHOW_ALL_SHELF_TOOLTIP'|translate}}" theme="light" placement="bottom">
+                    <i class="fa fa-plus mr-1"></i>
+                    <span style="font-size:large;">{{getListShelfAndStorage(warehouse.Id).length - i}}</span></span>
+                </div>
+                <span [hidden]="!isVisibleAllShelf" class="badge badge-shelf" style="font-size: small;">
+                  <span (click)="editShelf(shelfAndStroage,$event)" tooltip="{{'EDIT_CLICK_TOOLTIP'|translate}}"
+                    theme="light" placement="bottom">{{shelfAndStroage.Label}}</span>
+                  <span *ngIf = "hasDeleteShelfPermission">
+                    <i class="fa fa-trash-o ml-2" (click)="deleteShefAndStorage(shelfAndStroage,$event)"
+                      tooltip="{{'DELETE_SHELF_TOOLTIP'|translate}}" theme="light" placement="bottom"></i>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-warehouse-item [hidden]="!isVisibleWarehouse[warehouse.Id]"
+        *ngIf="warehouse.Items && warehouse.Items.length>0" [listWarehouse]="warehouse.Items"></app-warehouse-item>
+      <!---  End warehouse item Card --->
+    </div>
+  </div>
+</div>

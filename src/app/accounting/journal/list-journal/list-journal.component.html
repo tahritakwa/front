@@ -1,0 +1,128 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card body-->
+        <div class="card-body">
+          <app-advanced-search [filtreFieldsColumns]="filterFieldsColumns" [filtreFieldsInputs]="filterFieldsInputs"
+                               (filtrePredicateToSend)="getFilterPredicate($event)"
+                               (predicateOperator)="getOperatorPredicate($event)"
+                               (searchClickEvent)="searchClick()" (resetClickEvent)="resetClickEvent()">
+          </app-advanced-search>
+          <kendo-grid #grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                      [pageable]="pagerSettings" [skip]="gridSettings.state.skip"
+                      (dataStateChange)="dataStateChange($event)"
+                      [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+                      [reorderable]="true" (sortChange)="sortChange()" [sortable]="true"
+                      (filterChange)="filterChange()"
+                      [filterable]="false"
+                      (pageChange)="onPageChange()"
+                      [columnMenu]="true">
+            <!--Grid Toolbar-->
+            <ng-template kendoGridToolbarTemplate>
+              <div class="row" style="float :right; margin-right: 2px;">
+                <app-btn-grid [advencedAdd]='this.authService.hasAuthority(AccountingPermissions.ADD_JOURNALS)' [add]='false'
+                              [export]='false' [addLink]='"add"'
+                              [tooltip]="addNew" content-type="template">
+                </app-btn-grid>
+                <ng-template #addNew>
+                  <span>{{'ADD_NEW_JOURNAL'|translate}}</span>
+                </ng-template>
+                <div clas="float-right">
+                  <app-journal-import-grid-btn [title]='titleBtnGrid' [add]="false"
+                    [canImport]='this.authService.hasAuthority(AccountingPermissions.IMPORT_JOURNALS)'
+                    [export]='this.authService.hasAuthority(AccountingPermissions.EXPORT_JOURNALS)'
+                  [exportModelForImport] = 'this.authService.hasAuthority(AccountingPermissions.EXPORT_MODEL_JOURNALS)'>
+                  </app-journal-import-grid-btn>
+                </div>
+              </div>
+            </ng-template>
+            <!--End Grid toolbar-->
+
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field"
+                               [title]="gridSettings.columnsConfig[0].title | translate"
+                               [filter]="gridSettings.columnsConfig[0].filter"
+                               [width]="gridSettings.columnsConfig[0]._width"
+                               [columnMenu]="false">
+
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[0].tooltip|translate}}"
+                      theme="light">{{gridSettings.columnsConfig[0].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                               [title]="gridSettings.columnsConfig[1].title | translate"
+                               [filter]="gridSettings.columnsConfig[1].filter"
+                               [width]="gridSettings.columnsConfig[1]._width"
+                               [columnMenu]="false">
+
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[1].tooltip|translate}}"
+                      theme="light">{{gridSettings.columnsConfig[1].title|translate}}</span>
+              </ng-template>
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+                               [title]="gridSettings.columnsConfig[2].title | translate"
+                               [filter]="gridSettings.columnsConfig[2].filter"
+                               [width]="gridSettings.columnsConfig[2]._width"
+                               [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}"
+                               [columnMenu]="false">
+
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[2].tooltip|translate}}"
+                      theme="light">{{gridSettings.columnsConfig[2].title|translate}}</span>
+              </ng-template>
+
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="col-12 mx-5">
+                  <app-reconcilable-check-box [status]="dataItem.reconcilable"></app-reconcilable-check-box>
+                </div>
+
+              </ng-template>
+
+            </kendo-grid-column>
+
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+                               [title]="gridSettings.columnsConfig[3].title | translate"
+                               [filter]="gridSettings.columnsConfig[3].filter"
+                               [width]="gridSettings.columnsConfig[3]._width"
+                               [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}"
+                               [columnMenu]="false">
+
+              <ng-template kendoGridHeaderTemplate>
+                <span tooltip="{{gridSettings.columnsConfig[3].tooltip|translate}}"
+                      theme="light">{{gridSettings.columnsConfig[3].title|translate}}</span>
+              </ng-template>
+
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="col-12 mx-5">
+                  <app-cash-flow-check-box [status]="dataItem.cashFlow"></app-cash-flow-check-box>
+                </div>
+              </ng-template>
+
+            </kendo-grid-column>
+            <!--Actions-->
+            <kendo-grid-command-column [width]="170" [title]="'ACTIONS'| translate" [columnMenu]="true"
+                                       [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" [show-delay]="showDelay"
+                   [tooltip]="'UPDATE'|translate" aria-hidden="true" (click)="goToAdvancedEdit(dataItem)"
+                   *ngIf="this.authService.hasAuthority(AccountingPermissions.UPDATE_JOURNALS)"></i>
+                <i class="las la-trash-alt text-danger cursor-pointer la-lg" [tooltip]="'DELETE'|translate"
+                   (click)="removeHandler(dataItem)" [show-delay]="showDelay"
+                   *ngIf="this.authService.hasAuthority(AccountingPermissions.DELETE_JOURNALS)"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+            <!--End Actions-->
+            <kendo-grid-messages pagerItems="{{'ELEMENTS_PAGER'|translate}}"
+                                 pagerItemsPerPage="{{'ELEMENTS_PER_PAGE_PAGER'|translate}}">
+            </kendo-grid-messages>
+          </kendo-grid>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

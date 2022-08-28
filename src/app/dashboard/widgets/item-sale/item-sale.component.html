@@ -1,0 +1,31 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-8">
+      <h4 class="card-title mb-0">{{'ITEM_SALE'|translate}} </h4>
+      <div *ngIf="hasItemSaleData" class="small text-muted">
+        {{'DU'|translate}} {{itemSaleStartDate|date: dateformat}}
+        {{'AU'|translate}} {{itemSaleEndDate|date: dateformat}}
+      </div>
+      <div *ngIf="!hasItemSaleData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="ChangeItemSaleChart($event)"></app-period-filter>
+      <button *ngIf="hasItemSaleData" mat-icon-button [matMenuTriggerFor]="mainMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu xPosition="before" [overlapTrigger]="false" #mainMenu="matMenu">
+        <app-toogle-btn-filter [leftCriteria]="'QUANTITY'" [rightCriteria]="'AMOUNTHT'" [buttonStatus]="rankCriteria"(newItemEvent)="changeRankCriteria($event)"></app-toogle-btn-filter>
+        <app-number-picker-filter [numberOfRows]="numberOfRows" [isUpButtonVisible]="isUpButtonVisible"
+        [isDownButtonVisible]="isDownButtonVisible" (newItemEvent)="ChangeNumberOfRows($event)"></app-number-picker-filter>
+      </mat-menu>
+    </div>
+  </div>
+</div>
+<div class="card-body">
+  <div class="chartContainer" id="itemSale" #itemSaleChart [hidden]="!hasItemSaleData"></div>
+  <div *ngIf="!hasItemSaleData && !itemSaleDataLoading" #canvasDivSaleState>
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_INVOICE' | translate}} </h5>
+  </div>
+</div>

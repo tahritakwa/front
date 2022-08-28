@@ -1,0 +1,21 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-12">
+      <h4 class="card-title mb-0">{{'CUMMULATIVE_TURNOVER'|translate}} </h4>
+      <div *ngIf="hasturnoverSalesData" class="small text-muted">
+        {{'DU'|translate}} {{turnoverSalesStartDate|date: dateformat}}
+        {{'AU'|translate}} {{turnoverSalesEndDate|date: dateformat}}
+      </div>
+      <div *ngIf="!hasturnoverSalesData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+   
+  </div>
+</div>
+<div class="card-body">
+  <div class="chartContainer" id="saleChart" #saleChart [hidden]="!hasturnoverSalesData"></div>
+  <div *ngIf="!hasturnoverSalesData && !turnoverSalesDataLoading" #canvasDivSalePurchase>
+    <img src="../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_INVOICE' | translate}} </h5>
+  </div>
+</div>

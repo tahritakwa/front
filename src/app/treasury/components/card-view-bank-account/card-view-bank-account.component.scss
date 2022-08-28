@@ -1,0 +1,33 @@
+.btn-style {
+    background-color: #fafcff;
+    border-color: #b7c6da;
+    height: 30px !important;
+}
+
+.card-item {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid #c8ced3;
+  border-radius: 0.25rem;
+}
+icon-from-label {
+  width: 23px;
+  text-align: center;
+  color: #4c9aae;
+}
+.field-title {
+  color: #73818f !important;
+  font-weight: bold;
+}
+.card-item .tiers-title {
+  color: #4c9aae;
+  font-size: 16px;
+  font-weight: bold;
+}

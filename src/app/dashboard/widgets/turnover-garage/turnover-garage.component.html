@@ -1,0 +1,35 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-6">
+      <h4 class="card-title mb-0">{{'TURNOVER_PER_GARAGE'|translate}}</h4>
+      <div *ngIf="hasTurnoverPerGarageData" class="small text-muted">
+        {{'DU'|translate}} {{turnoverPerGarageStartDate|date: dateformat}}
+        {{'AU'|translate}} {{turnoverPerGarageEndDate|date: dateformat}}
+      </div>
+      <div *ngIf="!hasTurnoverPerGarageData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="ChangeTurnoverGarageChart($event)"></app-period-filter>
+      <button *ngIf="hasTurnoverPerGarageData" mat-icon-button [matMenuTriggerFor]="mainMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu xPosition="before" [overlapTrigger]="false" #mainMenu="matMenu">
+        <app-toogle-btn-filter [leftCriteria]="'PERCENT'" [rightCriteria]="'VALUE'" [buttonStatus]="valueApperance" (newItemEvent)="changeValueApperance($event)"></app-toogle-btn-filter>
+        <app-number-picker-filter [numberOfRows]="numberOfRows" [isUpButtonVisible]="isUpButtonVisible"
+          [isDownButtonVisible]="isDownButtonVisible" (newItemEvent)="ChangeNumberOfRows($event)"></app-number-picker-filter>
+      </mat-menu>
+    </div>
+  </div>
+</div>
+
+<div class="card-body">
+  <div class="chartContainer" id="turnoverGarage" [hidden]="!hasTurnoverPerGarageData" #turnoverGarage></div>
+  <div *ngIf="!turnoverPerGarageLoading && !hasTurnoverPerGarageData">
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NODATAFOUND' | translate}} </h5>
+  </div>
+  <div *ngIf="turnoverPerGarageLoading && !hasTurnoverPerGarageData">
+    <app-spinner></app-spinner>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+.purchaseRequestCode{
+  color: #4c9aae;
+  font-size: large;
+  font-weight: 500;
+  margin-top: 10px;
+}
+.ul-nav {
+  border-bottom-color: #336699;
+  border-bottom-width: medium;
+}
+
+.a-nav {
+  background: #336699 !important;
+  color: white;
+  height: 50px;
+  width: 150px;
+  text-align: center;
+  font-size: large;
+}
+.li-nav {
+  margin-bottom : -4px;
+}
+.send-button {
+  color: #336699;
+}
+.on-bottom {
+  position: absolute;
+  bottom: 0;
+}
+@media all and(max-width: 990px) {
+  .on-bottom {
+    position: inherit;
+    bottom: 0;
+  }
+}

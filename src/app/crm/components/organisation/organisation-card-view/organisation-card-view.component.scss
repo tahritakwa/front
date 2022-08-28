@@ -1,0 +1,76 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 100% !important;
+}
+
+.k-card {
+  width: 30%;
+  margin: 1%;
+  display: flex;
+  border-color: #20a8d8;
+  border-style: solid;
+  border-width: 2px;
+}
+
+.imgSize {
+  border-radius: 50%;
+  width: 100%;
+}
+
+::ng-deep .card {
+  min-height: 200px;
+}
+
+.color-blue {
+  color: #13688c;
+  font-size: initial;
+}
+
+.status-icon-style {
+  color: white;
+  margin-top: 18px;
+  margin-left: 19px;
+  font-size: 2.5em !important;
+}
+
+.square {
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+}
+
+.user-icon {
+  color: #8ddcf7;
+}
+
+.addIcon {
+  color: #028fb9 !important;
+}
+
+.active_email {
+  text-decoration-line: underline;
+  cursor: pointer;
+}
+.card {
+  width: 100% !important;
+}
+.imgSize {
+  border: 3px groove #b4d78a4d;
+  padding: 3px;
+  height: 200px;
+}
+.editBtn {
+  background: #516670 !important;
+  color: white !important;
+}
+.delete-btn {
+  background: #df0000fa !important;
+  color: white !important;
+}
+.card .tiers-title {
+  color: #4c9aae;
+  font-size: 16px;
+  font-weight: bold;
+}

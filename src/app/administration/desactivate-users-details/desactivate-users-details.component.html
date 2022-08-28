@@ -1,0 +1,103 @@
+<div class="card h-100">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3
+        class="card-title mb-0">{{(status ? (isList ? 'LIST_DESACTIVATE_USER' : 'DESACTIVATE_USER') : (isList ? 'LIST_REACTIVATE_USER' : 'REACTIVATE_USER'))|translate}}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+    <!-- details users -->
+    <div>
+      <div class="row justify-content-center">
+        <div class="position-relative card-element col-lg-5 col-md-5 col-sm-12"
+             *ngFor="let user of listOfUsers; let i=index;">
+          <div class="card-body">
+            <i type="button" (click)="deleteUserFromListUsersId(user.Id)"
+               class="fa fa-close fa AddIcon pull-right "></i>
+            <div class="d-flex justify-content-center">
+              <img id="blah" class="rounded-circle card-avatar" 
+              [src]="imageGrid[i]" alt="avatar"/>
+            </div>
+            <div class="text-center">
+              <span class="text font-weight-bold"> {{user.FullName}} </span>
+              <div class="mb-2">
+                  <span *ngFor="let userRole of user.UserRole">
+                      <span *ngIf="userRole.IdRoleNavigation">{{userRole.IdRoleNavigation.RoleName}}</span>
+                  </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <span class="text">{{'BIRTH_DATE'|translate}} :</span> {{user.Birthday}} <br/>
+                <span class="text">{{'EMAIL'|translate}} :</span> {{user.Email}} <br/>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-12">
+                <span class="text">{{'EMPLOYEE'|translate}} :</span>
+                <span *ngIf="user.IdEmployeeNavigation"> {{user.IdEmployeeNavigation.FullName}} </span><br/>
+                <span class="text">{{'PHONE'|translate}} :</span> {{user.userWorkPhone}} <br/>
+              </div>
+              <div class="pl-3">
+                <input type="checkbox" class="k-checkbox" id="{{user.IsTecDoc}}"
+                       [(ngModel)]="user.IsTecDoc"
+                       [disabled]="true">
+                <label class="k-checkbox-label" for="{{user.IsTecDoc}}"> {{'IS_TECDOC_USER' | translate}}</label>
+              </div>
+            </div>
+            <div *ngIf="user.UserPrivilege && user.UserPrivilege.length > 0" class="row">
+                <span (click)="openedPrivilege(i)" class="cursor-pointer text col-lg-6 col-md-6 col-sm-12"
+                      [attr.data-target]="'#privilege' + user.Id" data-toggle="collapse">
+                  {{'PRIVILEGES'|translate}}
+                  <i *ngIf="!this.privilegeopened[i]" class="fas fa-angle-up fa" (click)="openedPrivilege(i)"></i>
+                  <i *ngIf="this.privilegeopened[i]" class="fal fa-angle-down fa" (click)="openedPrivilege(i)"></i>
+                </span><br/>
+              <app-privilege id="privilege{{user.Id}}" class="collapse col-lg-12 col-md-6 col-sm-12" [form]="formGroup"
+                             [consultMode]="true"
+                             [isUpdateMode]="true" [privilegesLoaded]="user.UserPrivilege">
+              </app-privilege>
+            </div>
+            <br>
+            <div class="social-media">
+              <div class="float-right">
+                <div class="row pl-3 d-flex justify-content">
+                  <div class="col-auto px-1">
+                    <button (click)="gotoLink('fb')" target="_blank"
+                            class="btn btn-lg btn-pill btn-brand btn-facebook" [disabled]="true" type="button">
+                      <i class="fa btn-pill rounded-circle fa-facebook"></i>
+                    </button>
+                  </div>
+                  <div class="col-auto px-1">
+                    <button (click)="gotoLink('tw')" class="btn btn-pill btn-lg btn-brand btn-twitter"
+                            [disabled]="true" type="button">
+                      <i class="fa btn-pill rounded-circle fa-twitter"></i>
+                    </button>
+                  </div>
+                  <div class="col-auto px-1">
+                    <button (click)="gotoLink('li')" class="btn btn-pill btn-brand btn-lg btn-linkedin"
+                            [disabled]="true" type="button">
+                      <i class="fa btn-pill rounded-circle fa-linkedin"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End details users-->
+  </div>
+  <!--Begin Card footer Start-->
+  <div class="card-footer">
+    <button class="btn btn-sm pull-right mx-1" [ngClass]="{ 'btn-save':!status, 'btn-danger':status}"
+            type="submit" [disabled]="listOfUsers && listOfUsers.length == 0 ? true : false"
+            (click)="status ? desactivateMassiveUsers(listOfUsers):reactivateMassiveUsers(listOfUsers)">
+      {{(status ? 'DESACTIVATE' : 'REACTIVATE') |translate}}
+    </button>
+
+    <button class="btn btn-sm btn-back-to-list btn-primary pull-right" [routerLink]="listUserUrl">
+      <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+    </button>
+  </div>
+  <!--End Card footer-->
+</div>

@@ -1,0 +1,24 @@
+<div class="heroes" *ngIf="gridView">
+  <div class="row li" *ngFor="let dataItem of gridView.data" [class.selected]="IsSelected(dataItem)"
+    (click)="onSelect(dataItem)">
+    <div class="badge badge1">
+      <i class="fa fa-check-circle" aria-hidden="true" *ngIf="IsSelected(dataItem)"></i>
+      <i class="fa fa-circle-thin" aria-hidden="true" *ngIf="!IsSelected(dataItem)"></i>
+      {{dataItem.Code}}
+    </div>
+    <div class="col badg-info">
+      <div class="row">
+        <div class="col">
+          <span class="badge badge-info badge-pill">
+            {{dataItem.IdTiersNavigation.Name}}
+          </span>
+        </div>
+        <div class="col">
+          {{dataItem.DocumentDate | date:'dd/MM/yyyy HH:mm'}}
+        </div>
+        <div class="col">
+          {{dataItem.strcurrency}}
+        </div>
+      </div>
+    </div>
+  </div>

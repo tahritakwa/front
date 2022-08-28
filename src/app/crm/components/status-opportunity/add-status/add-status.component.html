@@ -1,0 +1,68 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3 class="card-title mb-0">{{ (isUpdateMode ? 'UPDATE_STATUS' : 'ADD_STATUS') |translate }}</h3>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <div class="card-body">
+    <form class="form-horizontal" [formGroup]="statusFormGroup">
+      <!--Begin Card body-->
+      <div class="col-lg-12 col-sm-12 col-md-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+
+              <!-- NAME-->
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                <label class="col-12"> {{'NAME'|translate}}<span
+                  class="required">*</span></label>
+                <input #name class="form-control" formControlName="title" type="text"
+                       (blur)="onMouseOut()"
+                       [ngClass]="{ 'has-error': (statusFormGroup.controls.title.touched ||
+                            statusFormGroup.controls.title.dirty) && !statusFormGroup.controls.title.valid }">
+                <app-control-messages [control]="statusFormGroup.controls.title"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <!-- COLOR PICKER-->
+              <div class="col-lg-6  col-md-6 col-sm-12 col-xs-12" style="z-index: 5">
+                <input [(colorPicker)]="color" hidden="hidden" [style.background]="color" [value]="color"
+                       (colorPickerChange)="colorChange()"
+                       [cpPresetColors]="['#13e40b', '#000', '#2889e9', '#e920e9', '#fff500', 'rgb(236,64,64)']"
+                       [cpDialogDisplay]="'inline'" [cpOKButtonText]="'CONFIRM' | translate" [cpToggle]="true"
+                       [cpOKButton]="false"
+                       [cpOKButtonClass]="'btn btn-success btn-xs'"/>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="closeOrBackToList(null)" *ngIf="!isModal">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click)="save()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+  <!--Card footer End-->
+</div>

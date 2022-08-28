@@ -1,0 +1,44 @@
+import { Resource } from '../shared/ressource.model';
+import { SalaryStructure } from './salary-structure.model';
+import { ContractBonus } from './contract-bonus.model';
+import { BaseSalary } from './base-salary.model';
+import { Cnss } from './cnss.model';
+import { FileInfo } from '../shared/objectToSend';
+import { Employee } from './employee.model';
+import { ContractType } from './contract-type.model';
+import { ContractBenefitInKind } from './contract-benefit-in-kind.model';
+import { ContractAdvantage } from './contract-advantage.model';
+import { TimeSheet } from '../rh/timesheet.model';
+
+export class Contract extends Resource {
+  ContractReference: string;
+  StartDate: Date;
+  EndDate: Date;
+  WorkingTime?: number;
+  IdEmployee: number;
+  IdCnss: number;
+  IdSalaryStructure: number;
+  IdEmployeeNavigation: Employee;
+  IdSalaryStructureNavigation: SalaryStructure;
+  IdCnssNavigation: Cnss;
+  ContractBonus: Array<ContractBonus>;
+  BaseSalary: Array<BaseSalary>;
+  ContractFileInfo: Array<FileInfo>;
+  ContractAttached: string;
+  IdContractType: number;
+  IdContractTypeNavigation: ContractType;
+  State: number;
+  ContractBenefitInKind: Array<ContractBenefitInKind>;
+  CheckContractToAdd: boolean;
+  TimesheetStatus: number;
+  IdTimeSheet: number;
+  ThirteenthMonthBonus?: boolean;
+  MealVoucher?: number;
+  AvailableCar?: boolean;
+  AvailableHouse?: boolean;
+  CommissionType?: number;
+  CommissionValue?: number;
+  ContractAdvantage: Array<ContractAdvantage>;
+  UpdatePayslipAndTimeSheets: boolean;
+  IdTimeSheetNavigation : TimeSheet;
+}

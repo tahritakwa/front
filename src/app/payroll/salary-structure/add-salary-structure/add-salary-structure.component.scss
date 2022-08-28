@@ -1,0 +1,79 @@
+.modal-body-scrolable {
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.imgSize {
+  border: 3px groove #b4d78a4d;
+  padding: 3px;
+  height: 200px;
+}
+
+@media only screen and (min-width: 1450px) {
+  .imgSize {
+    margin-top: 11%;
+    width: 200px;
+  }
+}
+
+@media screen and (max-width: 1450px) and (min-width: 1200px) {
+  .imgSize {
+    margin-top: 20%;
+    width: 150px;
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+  .imgSize {
+    margin-top: 30%;
+    width: 120px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .imgSize {
+    width: 200px;
+  }
+}
+
+.local-card-header {
+  height: 75px;
+}
+
+.local-column {
+  display: inline-flex
+}
+
+.bottom-space {
+  margin-bottom: 10px
+}
+
+.input-space {
+  margin-right: 5%;
+  margin-left: 5%;
+}
+
+.top-space {
+  margin-top: 20px;
+}
+
+.checkbox-space {
+  margin-top: 2% !important;
+}
+
+.textarea-space {
+  height: 150px
+}
+
+.ruleListHead {
+  margin-right: 5%;
+  margin-left: 5%;
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}

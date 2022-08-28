@@ -1,0 +1,14 @@
+<p class="alert alert-danger" *ngIf='countValue==undefined' style=" font-size: 15px;
+    font-weight: bolder;
+    font-variant: all-petite-caps;
+    margin: 0;
+    padding: 4px;
+    margin-top: -5px;">
+  {{'ERROR_IN_B2B_COUNT'|translate}}
+</p>
+<span  tooltip="{{countValue}} {{'B2B_IN_PROGRESS'|translate}}" theme="light">
+  <a style="color:gray" (click)='redirectToList()' class="notification">
+   <i  style="font-size: 30px;" class="las la-shopping-cart "></i>
+    <span class="badge badge-pill" *ngIf='countValue && countValue>0'>{{countValue}}</span>
+  </a>
+</span>

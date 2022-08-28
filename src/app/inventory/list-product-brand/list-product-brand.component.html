@@ -1,0 +1,85 @@
+<div class="col-lg-12 col-md-12 col-sm-12">
+  <div class="row">
+    <div class="card">
+      <div class="card-content">
+        <!--Begin card body-->
+        <div class="card-body">
+          <div class="row d-flex justify-content-between mt-3">
+            <!-- search div-->
+            <div class="d-flex justify-content-center col-lg-4 col-md-6 col-sm-12">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-10">
+                    <input type="text" class="form-control" placeholder="{{'SEARCH_PRODUCT_BRAND'|translate}}" name='reference'
+                           aria-label="Username" aria-describedby="addon-wrapping" [(ngModel)]='productFilter'(keyup)='filter()'>
+                  </div>
+                  <div class="col-2 p-1">
+                    <i class="fa fa-search fa-lg" aria-hidden="true" (click)='filter()'></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End search div-->
+            <app-btn-grid class="col" [advencedAdd]='hasAddProductBrandPermission' [addLink]='"AdvancedAdd"'
+                          [model]='true' [relativeStyle]='true'
+                          [fileName]="'PRODUCT_LIST'|translate"
+                          [gridSettings]="gridSettings"
+                          [service]="productItemService"
+                          [predicate]="predicate"
+                          [isExportExcel]="true">
+            </app-btn-grid>
+          </div>
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                      [skip]="gridSettings.state.skip" [sort]="gridSettings.state.sort" [filter]="gridSettings.state.filter"
+                      (dataStateChange)="dataStateChange($event)" [sortable]="true" [pageable]="pagerSettings" [filterable]="false"
+                      [groupable]='false' [reorderable]="true" [columnMenu]="false">
+
+            <!--Code-->
+            <kendo-grid-column [title]="gridSettings.columnsConfig[0].title | translate"
+                               [width]="gridSettings.columnsConfig[0]._width"
+                               [filter]="gridSettings.columnsConfig[0].filter"
+                               [filterable]="gridSettings.columnsConfig[0].filterable"
+                               [tooltip]="gridSettings.columnsConfig[0].title | translate"
+                               [field]="gridSettings.columnsConfig[0].field" [columnMenu]="false">
+
+              <ng-template kendoGridHeaderTemplate>
+                        <span tooltip="{{gridSettings.columnsConfig[0].title | translate}}"
+                              theme="light">{{gridSettings.columnsConfig[0].title | translate}}</span>
+              </ng-template>
+              <ng-template kendoGridCellTemplate let-dataItem>
+                <div class="row d-flex align-items-center">
+                  <div class="col-auto">
+                    <img id="blah" class="rounded-circle card-avatar"
+                    [src]="dataItem.image" alt="avatar"  />
+                  </div>
+                  <div class="col pl-0">
+                    <span class="tiers-title"> {{dataItem.CodeProduct}} </span>
+                  </div>
+                </div>
+              </ng-template>
+            </kendo-grid-column>
+
+            <!--Designation-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+                               [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+                               [filter]="gridSettings.columnsConfig[1].filter" [filterable]="gridSettings.columnsConfig[1].filterable">
+            </kendo-grid-column>
+            <!--Description-->
+            <kendo-grid-command-column [width]="170" [title]="'ACTIONS'| translate " [columnMenu]="false"
+                                       [headerStyle]="{'text-align': 'center'}" [style]="{'text-align': 'center'}">
+              <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+                <!-- edit command directive, will be visible when not in edit mode -->
+                <i class="las la-pen cursor-pointer edit-pencil la-lg mx-3" aria-hidden="true" *ngIf="hasShowProductBrandPermission || hasUpdateProductBrandPermission"
+                   (click)="goToAdvancedEdit(dataItem)"></i>
+                <!-- remove command directive, will be visible when not in edit mode -->
+                <i  class="text-danger cursor-pointer fa fa-trash-o la-lg" aria-hidden="true" *ngIf="hasDeleteProductBrandPermission"
+                    (click)="removeHandler(dataItem)"></i>
+              </ng-template>
+            </kendo-grid-command-column>
+          </kendo-grid>
+        </div>
+        <!--End card body-->
+      </div>
+    </div>
+  </div>
+</div>

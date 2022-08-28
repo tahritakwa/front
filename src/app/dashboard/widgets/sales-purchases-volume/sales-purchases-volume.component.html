@@ -1,0 +1,31 @@
+<div class="period-filter card-header" style="background-color: white;  border: none">
+  <div class="period-filter row justify-content-between pt-2">
+    <div class="col-sm-6">
+      <h4 class="card-title mb-0">{{'SALESANDPURCHASE'|translate}} </h4>
+      <div *ngIf="hasPurchasesSalesVolumeData" class="small text-muted">
+        {{'DU'|translate}} {{purchasesSalesVolumeStartDate|date: dateformat}}
+        {{'AU'|translate}} {{purchasesSalesVolumeEndDate|date: dateformat}}
+      </div>
+      <div *ngIf="!hasPurchasesSalesVolumeData" class="small text-muted" style="height: 16px;">
+      </div>
+    </div>
+    <div class="period-filter mx-3">
+      <app-period-filter (newItemEvent)="ChangePurchasesSalesVolumeChart($event)"></app-period-filter>
+      <button *ngIf="hasPurchasesSalesVolumeData" mat-icon-button [matMenuTriggerFor]="mainMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu xPosition="before" [overlapTrigger]="false" #mainMenu="matMenu">
+        <app-toogle-btn-filter [leftCriteria]="'AMOUNTHT'" [rightCriteria]="'AMOUNTTTC'" [buttonStatus]="checkTaxType"
+          (newItemEvent)="changeTaxType($event)"></app-toogle-btn-filter>
+      </mat-menu>
+
+    </div>
+  </div>
+</div>
+<div class="card-body">
+  <div class="chartContainer" id="SalePurchase" #canvasSalePurchase [hidden]="!hasPurchasesSalesVolumeData" #salePurchaseChart></div>
+  <div *ngIf="!hasPurchasesSalesVolumeData && !PurchasesSalesVolumeDataLoading" #canvasDivSalePurchase>
+    <img src="../../../../assets/image/no_datafound.png" class="no-data-found">
+    <h5 style="font-size: 35px; text-align: center; padding: 10%;"> {{'NO_INVOICE' | translate}} </h5>
+  </div>
+</div>

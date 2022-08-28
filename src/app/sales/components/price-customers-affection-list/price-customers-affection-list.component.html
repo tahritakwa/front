@@ -1,0 +1,96 @@
+<div class="row">
+<div class="col-lg-3">
+  <label > {{'CUSTOMER_SEARCH'|translate}}</label>
+  <app-search-tiers  [disabled]="true" [type]="tiersType" [isReduicedTiers]="true" (sendData)="receiveData($event)">
+  </app-search-tiers>
+</div>
+<div class="col-lg-3">
+    <label > {{'ACTIVITY_SECTOR'|translate}}</label>
+    <kendo-combobox #activitySectorReference [data]="activitySectors"
+                                (filterChange)="handleFiltreActivitySectors($event)" [valueField]="'enumValue'"
+                                [textField]="'enumText'" [valuePrimitive]="true" style="width: 100%;"
+                                (focus)="openActivtySectorCombobox()" (valueChange)="handleFiltreActivitySectors($event)">
+                </kendo-combobox>
+</div>
+<div class="col-lg-3">
+                <label >{{'TAX_GROUP'|translate}}</label>
+                <app-taxe-group-tiers  (Selected)="selectedTaxeGroup($event)">
+                </app-taxe-group-tiers>
+</div>
+<div class="col-lg-3">
+        <button class="btn btn-secondary" style="width:50px; margin-top:25px;" type="button" (click)="initGridDataSource()">
+          <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+        </button>
+      </div>
+</div>
+
+<kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+  [sort]="gridSettings.state.sort" (dataStateChange)="dataStateChange($event)" [sortable]="true"
+  [pageable]="pagerSettings" [filterable]="false" [reorderable]="true" [columnMenu]="true"
+  [selectable]="{enabled: true, checkboxOnly: true }" (selectedKeysChange)="onSelectedKeysChange($event)"
+  [selectedKeys]="selectedIds" [kendoGridSelectBy]="'Id'">
+
+  <kendo-grid-checkbox-column [width]="80" [columnMenu]="false">
+    <ng-template kendoGridHeaderTemplate>
+      <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+        (selectAllChange)="onSelectAllChange($event)">
+      <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+    </ng-template>
+  </kendo-grid-checkbox-column>
+
+
+  <!-- customer -->
+  <kendo-grid-column [title]="gridSettings.columnsConfig[1].title | translate"
+    [width]="gridSettings.columnsConfig[1]._width" [filter]="gridSettings.state.filter"
+    filterable="menu"  [format]="gridSettings.columnsConfig[1].format"
+    [tooltip]="gridSettings.columnsConfig[1].title" [field]="gridSettings.columnsConfig[1].field" [columnMenu]="true">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[1].title | translate}}"
+        theme="light">{{gridSettings.columnsConfig[1].title | translate}}</span>
+    </ng-template>
+    <ng-template kendoGridCellTemplate let-dataItem>
+
+      <div class="row cursor-pointer">
+        <div class="col-auto">
+          <div class="customer-photo d-flex justify-content-center">
+            <img id="ThumbnailCostumer" class="imgSize" alt="Illustration des problèmes de suddation" border="0"
+              [src]="pictureTierSrc(dataItem) || 'assets/image/placeholder-logo.png'" />
+          </div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <span class="font-weight-bold">{{dataItem.Name}}</span>
+          </div>
+          <div class="row">
+            <span class="light-reference">{{dataItem.CodeTiers}}</span>
+          </div>
+        </div>
+      </div>
+
+    </ng-template>
+  </kendo-grid-column>
+  <!-- end customer -->
+
+  <!-- Secteur d'activité -->
+  <kendo-grid-column [title]="gridSettings.columnsConfig[2].title | translate"
+    [width]="gridSettings.columnsConfig[2]._width" [filter]="gridSettings.state.filter"
+    filterable="menu"  [format]="gridSettings.columnsConfig[2].format"
+    [field]="gridSettings.columnsConfig[2].field" [columnMenu]="true">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[2].title | translate}}"
+        theme="light">{{gridSettings.columnsConfig[2].title | translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+
+  <!-- Taxe Group -->
+  <kendo-grid-column [title]="gridSettings.columnsConfig[3].title | translate"
+    [width]="gridSettings.columnsConfig[3]._width" [filter]="gridSettings.state.filter"
+    filterable="menu"  [format]="gridSettings.columnsConfig[3].format"
+    [field]="gridSettings.columnsConfig[3].field" [columnMenu]="true">
+    <ng-template kendoGridHeaderTemplate>
+      <span tooltip="{{gridSettings.columnsConfig[3].title | translate}}"
+        theme="light">{{gridSettings.columnsConfig[3].title | translate}}</span>
+    </ng-template>
+  </kendo-grid-column>
+
+</kendo-grid>

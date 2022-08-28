@@ -1,0 +1,63 @@
+.search-title {
+  font-size: 1.09375rem;
+}
+
+.color-blue {
+  color: #13688c;
+  font-size: initial;
+}
+
+.K-button {
+  background-color: #fafcff;
+  border-color: #b7c6da;
+}
+
+
+body .ui-widget {
+  font-family: "Open Sans", "Helvetica Neue", sans-serif !important;
+  font-size: 14px !important;
+  text-decoration: none !important;
+}
+
+.ui-unselectable-text {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -o-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.ui-helper-clearfix {
+  zoom: 1 !important;
+}
+
+.ui-widget, .ui-widget * {
+  box-sizing: border-box !important;
+}
+
+.ui-dropdown .ui-dropdown-trigger .fa {
+  margin-top: .3em;
+  margin-left: -.125em;
+  line-height: 1.9em;
+}
+
+.favourite {
+  border-radius: 100px;
+  width: 20px;
+  overflow: hidden;
+  height: 20px;
+  cursor: pointer;
+  padding: 18px;
+  -webkit-box-shadow: 0px 0px 0px 2px #4b9aad;
+  box-shadow: 0px 0px 0px 2px #4b9aad;
+  color: #4b9aad;
+}
+
+
+.favourite_heart {
+  margin-top: -10px;
+  margin-left: -5px;
+}
+
+
+

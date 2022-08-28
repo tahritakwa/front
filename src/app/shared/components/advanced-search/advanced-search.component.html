@@ -1,0 +1,47 @@
+<div>
+  <fieldset [ngStyle]="{border:fieldsetBorderStyle }">
+    <legend>{{"ADVANCED_SEARCH"|translate}}
+      <i *ngIf="!isContentVisible" class="las la-angle-double-down la-angle-color" (click)="showContent()"></i>
+      <i *ngIf="isContentVisible" class="las la-angle-double-up la-angle-color" (click)="hideContent()"></i>
+    </legend>
+    <div *ngIf="isContentVisible">
+      <div class="row d-flex justify-content-end mr-1 mb-2">
+        <app-filtre-input [filtreFieldsInputs]="filtreFieldsInputs"
+          (filtreFieldsInputsToSend)="getFiltreFieldsConfig($event)"></app-filtre-input>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3" *ngFor="let filtre of filtreFieldsColumns ; let index= i;">
+              <app-filtre-predicate [label]="filtre.label" [type]="filtre.type" [columnName]="filtre.columnName"
+                [isSpecificFiltre]="filtre.isSpecificFiltre" [module]="filtre.module" [model]="filtre.model"
+                [propertyOfParentEntity]="filtre.propertyOfParentEntity" [filtreProp]="filtre.filtreProp"
+                [documentType]="filtre.documentType" [resetFieldValue]="resetFieldValue" [parentID]='filtre.parentID'
+                (handleOtherFilterEvent)="handleOtherFilter($event)" [filtreValuePlaceHolder]="filtre.placeHolder"
+                (filtreOperatorEvent)="handleFiltreOperator($event)">
+              </app-filtre-predicate>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row d-flex justify-content-end">
+        <div class="col-lg-4">
+          <div class="row d-flex justify-content-end m-2 mt-5">
+            <button class="btn btn-sm mr-2" type="button" style="background-color: #c8ced3 !important;"
+              (click)="resetFieldValues(true,true)">
+              <i style="color: white" class="fa fa-times fa"></i>
+              <span style="color:white">&nbsp; {{'RESET'|translate}}</span>
+            </button>
+            <button class="btn btn-sm btn-search" type="button" (click)="onSearchClick()"
+              [disabled]="isBtnSearchDisabled">
+              <i class="fa fa-search fa"></i>
+              <span *ngIf="isBtnSearchDisabled" tooltip="{{'NO_SELECTED_SUPPLIER' | translate}}" theme="light">&nbsp;
+                {{'SEARCH'|translate}}</span>
+              <span *ngIf="!isBtnSearchDisabled">&nbsp; {{'SEARCH'|translate}}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>

@@ -1,0 +1,102 @@
+<div class="card  h-100" style="border: 1px solid #c0c0c0 !important;">
+  <div *ngIf="!isModal" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{ (isUpdateMode ? 'EDIT_CONTRACT_TYPE' : 'ADD_CONTRACT_TYPE') | translate }}</h3>
+    </div>
+  </div>
+  <div class="card-body">
+
+    <form [formGroup]="ContractTypeFormGroup" class="form-horizontal">
+      <!-- Begin principal menu  part-->
+      <div class="card-body">
+        <div class="col-lg-12 col-sm-12 col-md-12 mr-5">
+          <div class="form-group row">
+
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'CODE'|translate}}<span class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (Code.touched || Code.dirty) && !Code.valid && !Code.pending }" class="form-control" formControlName="Code"
+                     type="text">
+              <app-control-messages [control]="Code" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'LABEL'|translate}}<span class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (Label.touched || Label.dirty) && !Label.valid && !Label.pending }" class="form-control" formControlName="Label"
+                     type="text">
+              <app-control-messages [control]="Label" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'MIN_NOTICE_PERIOD'|translate}}<span
+                class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (MinNoticePeriod.touched || MinNoticePeriod.dirty) && !MinNoticePeriod.valid }" class="form-control" formControlName="MinNoticePeriod"
+                     type="number">
+              <app-control-messages [control]="MinNoticePeriod" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12"> {{'MAX_NOTICE_PERIOD'|translate}}<span
+                class="required">*</span></label>
+              <input [ngClass]="{ 'has-error': (MaxNoticePeriod.touched || MaxNoticePeriod.dirty) && !MaxNoticePeriod.valid }" class="form-control" formControlName="MaxNoticePeriod"
+                     type="number">
+              <app-control-messages [control]="MaxNoticePeriod" class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}</label>
+              <textarea class=" form-control" formControlName="Description" name="Description"></textarea>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-6 col-md-5 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" class="input-checkbox100" formControlName="CalendarNoticeDays"
+                     id="CalendarNoticeDays" name="CalendarNoticeDays" type="checkbox">
+              <label class="label-checkbox100" for="CalendarNoticeDays" style="margin-top: 2%;">
+                {{'CALENDAR_CONTRACT_TYPE'|translate}}&nbsp;
+              </label>
+            </div>
+            <div class="col-lg-6 col-md-5 col-sm-12 contact100-form-checkbox">
+              <input (change)="toggleEditable()" class="input-checkbox100" formControlName="HasEndDate" id="HasEndDate"
+                     name="HasEndDate" type="checkbox">
+              <label class="label-checkbox100" for="HasEndDate" style="margin-top: 2%;">
+                {{'HAS_END_DATE'|translate}}&nbsp;
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button *ngIf="isModal && (hasUpdateContractTypePermission && isUpdateMode || hasAddContractTypePermission && !isUpdateMode)"
+                (click)="save()" class="btn btn-sm btn-success" type="submit">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+    </form>
+
+  </div>
+  <div class="fixed-card-footer" *ngIf="!isModal">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="backToList()" >
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button *ngIf="!isModal && (hasUpdateContractTypePermission && isUpdateMode || hasAddContractTypePermission && !isUpdateMode)"
+                (click)="save()" class="btn btn-sm btn-success" type="submit">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="save()" type="submit" 
+              *ngIf="isModal && (hasUpdateContractTypePermission && isUpdateMode || hasAddContractTypePermission && !isUpdateMode)">
+                <i class="fa fa-floppy-o"></i> {{ 'ADD' |translate}}
+              </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<div [formGroup]="group">
+  <kendo-combobox (valueChange)="onSelect(this)"
+                  [allowCustom]="allowCustom"
+                  [data]="formationFiltredDataSource"
+                  [filterable]="true"
+                  [ngClass]="{ 'has-error': (IdFormation.touched || IdFormation.dirty) && !IdFormation.valid }"
+                  [textField]="'Label'"
+                  [valueField]="'Id'"
+                  [valuePrimitive]="true"
+                  class="form-control"
+                  formControlName="IdFormation"
+                  [disabled] = "disabled">
+  </kendo-combobox>
+</div>

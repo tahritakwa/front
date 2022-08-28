@@ -1,0 +1,74 @@
+<div class="card">
+  <!--Begin Card eader-->
+  <div *ngIf="!hide" class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'SALARY_SUMMARY'|translate}}</h3>
+    </div>
+  </div>
+  <div class="col-lg-12 col-sm-12 col-md-12" style="margin-top:35px;margin-bottom: 10px;">
+    <div [formGroup]="addValidationFormGroup">
+      <kendo-grid (dataStateChange)="dataStateChange($event)" [data]="gridData"
+                  [pageSize]="gridSettings.state.take" [pageable]="pagerSettings" [selectable]="true"
+                  [skip]="gridSettings.state.skip">
+        <!--Columns-->
+        <kendo-grid-column [field]="monthColumn?.field" [locked]="true"
+                           [title]="monthColumn.title| translate"
+                           [width]="monthColumn?._width">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div>
+              {{dataItem.Month | date:'MMMM' | uppercase | translate }} {{dataItem.Month | date: 'yyyy'}}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column *ngFor="let col of columnsConfig" [field]="col.field" [title]="col.title | translate"
+                           [width]="col._width">
+          <ng-template kendoGridHeaderTemplate>
+            <div style="text-align:center"> {{col.title|translate}} </div>
+          </ng-template>
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <div style="text-align:center">
+              {{dataItem.RuleListAndValues[col.field]}}
+            </div>
+          </ng-template>
+        </kendo-grid-column>
+        <!-- <kendo-grid-column
+        [width]="detailsColumn?._width"
+        [title]="detailsColumn.title| translate">
+        <ng-template kendoGridCellTemplate let-dataItem>
+         <textarea class="form-control" style="width: 100%" formControlName="Details"
+         placeholder="{{'DETAILS'|translate}}" rows="1" maxlength="150"></textarea>
+       </ng-template>
+       </kendo-grid-column> -->
+
+        <!--End Columns-->
+        <!--begin command columns-->
+        <!-- <kendo-grid-command-column [width]="190">
+         <ng-template kendoGridCellTemplate let-isNew="isNew" let-dataItem="dataItem">
+           <ng-container *ngIf="dataItem.State == 2" >
+           <button  class="noPadding btn-Add k-button refuse_button" (click)="ValidateLineOfPay(dataItem)">
+             <i class="fa fa-check text-success" aria-hidden="true">
+               {{'VALIDATE' | translate}}
+             </i>
+           </button>
+         </ng-container>
+         </ng-template>
+       </kendo-grid-command-column> -->
+        <!--end command column-->
+      </kendo-grid>
+      <div *ngIf="exitEmployee && exitEmployee.StatePay !== exitEmployeePayEnumerator.Valid" style="float: right;">
+        <button (click)="validateAllExitEmployeePayline()" class="k-button btn-secondary ml-1" type="submit">
+          <i class="fa fa-check fa-lg AddIcon"></i>
+          {{'VALIDATE_ALL' |translate}}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="!hide" class="card-footer">
+    <button [routerLink]="['/main/payroll/exit-employee/edit/',id]" class="btn btn-sm btn-primary">
+      <i class="fa fa-chevron-circle-left"></i> {{'BACK'|translate}}
+    </button>
+    <button (click)="onPrintSalarySummary()" class="btn btn-sm btn-primary">
+      <i class="fa fa-print"></i> {{'PRINT'|translate}}
+    </button>
+  </div>
+</div>

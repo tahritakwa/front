@@ -1,0 +1,338 @@
+<div class="card full-screen-card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3
+          class="card-title mb-0">{{ (isProspectType ? 'PROSPECT_ORGANISATION_UPDATE' : 'CLIENT_ORGANISATION_UPDATE') |translate }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body" *ngIf="addOrganisationForm">
+    <div class="navItems my-3">
+      <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link nav-link-new active" id="nav-home-tab" data-toggle="tab"
+             href="{{'#nav-home-organisation-' + uuid }}" role="tab"
+             aria-controls="nav-home" aria-selected="true">{{'DETAILS'|translate}}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-new" id="nav-related-items-tab" data-toggle="tab"
+             href="{{'#nav-related-items-organisation-' + uuid }}" role="tab"
+             aria-controls="nav-contact" aria-selected="false">{{'RELATED_ITEM' | translate}}</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-link-new" id="nav-actions-tab" data-toggle="tab" *ngIf="authService.hasAuthorities([CRMPermissions.VIEW_ACTION]) "
+             href="{{'#nav-actions-organisation-' + uuid }}" role="tab"
+             aria-controls="nav-action" aria-selected="false">{{'ACTIONS' | translate}}</a>
+        </li>
+        <li class="nav-item">
+          <a  *ngIf="isProspectType && (authService.hasAuthorities([CRMPermissions.VIEW_ORGANISATION_LEAD])||authService.hasAuthorities([CRMPermissions.VIEW_ORGANISATION_CLIENT]))"
+             class="nav-link nav-link-new" id="nav-history-tab" data-toggle="tab"
+             href="{{'#nav-history-organisation-' + uuid}}"
+             role="tab"
+             aria-controls="nav-contact" aria-selected="false">{{'HISTORY' | translate}}</a>
+        </li>
+      </ul>
+
+      <div class="tab-content tab-content-new mt-3" id="tabContent">
+        <div class="tab-pane fade" [ngClass]="{show: detailsTabIsSelected, active : detailsTabIsSelected}"
+             id="{{'nav-home-organisation-' + uuid }}" role="tabpanel" aria-labelledby="nav-home-tab">
+
+          <form [formGroup]="addOrganisationForm" >
+            <div class="form-group row">
+              <div class="col-12">
+                <div class="row form-group">
+                  <div class="col-sm-12 col-md-6 col-xs-12" [ngClass]="isProspectType ? 'col-lg-3' : 'col-lg-4'">
+                    <label class="col-lg-12 col-md-12 col-sm-12">  {{'ORGANISATION.NAME_LABEL'|translate}}<span
+                      class="required">*</span></label>
+                    <input #name class="form-control" type="text" formControlName="name"
+                           placeholder="{{'ORGANISATION.NAME_LABEL'|translate}}"
+                           [value]="organisationData.name"
+                           (mouseout)="onNameMouseOut()"
+                           [ngClass]="{ 'has-error': (addOrganisationForm.controls.name.touched
+                               || addOrganisationForm.controls.name.dirty) && !addOrganisationForm.controls.name.valid }">
+                    <app-control-messages [control]="addOrganisationForm.controls.name"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+
+                  <div class="col-sm-12 col-md-6 col-xs-12" [ngClass]="isProspectType ? 'col-lg-3' : 'col-lg-4'">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ACTIVITY_SECTOR'|translate}}<span
+                      class="required">*</span></label>
+                    <kendo-combobox
+                      formControlName="activitySector"
+                      [data]="activitySectors"
+                      [filterable]="true"
+                      (filterChange)="handleFiltreActivitySectors($event)"
+                      [valuePrimitive]="true"
+                      style="width: 100%;">
+
+                    </kendo-combobox>
+                    <app-control-messages [control]="addOrganisationForm.controls.activitySector"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+                  <div class="col-sm-12 col-md-6 col-xs-12" [ngClass]="isProspectType ? 'col-lg-3' : 'col-lg-4'">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'CURRENCY'|translate}}<span
+                      class="required">*</span></label>
+                    <app-currency-dropdown [group]="addOrganisationForm" (Selected)="getSelectedCurrency($event)">
+                    </app-currency-dropdown>
+                    <app-control-messages [control]="addOrganisationForm.controls.IdCurrency"
+                                          class="error-msg messages text-left text-danger">
+                    </app-control-messages>
+                  </div>
+
+                  <div class="col-lg-3 col-sm-12 col-md-6 col-xs-12" *ngIf="this.isProspectType">
+                    <label class="col-lg-12 col-md-12 col-sm-12">{{'LEAD_SOURCE'|translate}}</label>
+                    <kendo-dropdownlist style="width: 100%;" [data]="leadSources" [valuePrimitive]="true"
+                                        formControlName="leadSource"
+                                        class="form-control">
+                      <ng-template kendoComboBoxFooterTemplate let-dataItem>
+
+                      </ng-template>
+                    </kendo-dropdownlist>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p-accordion [multiple]="true">
+              <!-- Cordonnées cordination -->
+              <p-accordionTab header="{{'ORGANISATION.COLLAPSE_CORDINATION_TITLE'| translate}}"
+                              (selectedChange)="checkSecondCollapse()" [selected]="secondeCollapseIsOpened"
+                              style="color: #4c9aae;">
+                <br/>
+                <div class="row form-group">
+                  <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANISATION.EMAIL'|translate}}<span
+                      class="required" *ngIf="isProspectType">*</span></label>
+                    <div class="input-group">
+                      <input #email class="form-control " type="email" formControlName="email"
+                             (mouseout)="onEmailMouseOut()"
+                             [value]="organisationData.email"
+                             [ngClass]="{ 'has-error': (addOrganisationForm.controls.email.touched
+                       || addOrganisationForm.controls.email.dirty)
+                       && !addOrganisationForm.controls.email.valid }">
+                      <div class="input-group-append">
+                        <span class="input-group-text" style="background-color: white;">
+                          <i class="fa fa-envelope"></i>
+                        </span>
+                      </div>
+                    </div>
+                    <app-control-messages [control]="addOrganisationForm.controls.email"
+                                          class="error-msg messages text-danger">
+                    </app-control-messages>
+                  </div>
+
+                  <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'PHONE_PERSO'|translate}}</label>
+                    <kendo-maskedtextbox [value]="organisationData.telephone" formControlName="telephone"
+                                         [maskValidation]="false" [includeLiterals]="true" [mask]="'(+990)000000000000'"
+                                         class="form-control" name="telephone">
+                    </kendo-maskedtextbox>
+                  </div>
+                  <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANISATION.FAX'|translate}}</label>
+                    <div class="input-group">
+                      <kendo-maskedtextbox [maskValidation]="false" [includeLiterals]="true"
+                                           [mask]="'(+990)000000000000'"
+                                           class="form-control" formControlName="fax"
+                                           name="fax"
+                      ></kendo-maskedtextbox>
+                      <div class="input-group-append">
+                  <span class="input-group-text" style="background-color: white;">
+                    <i class="fa fa-fax"></i>
+                  </span>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-lg-4 col-sm-12 col-md-6 col-xs-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANISATION.LINKEDIN'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="text"
+                             formControlName="linkedIn"
+                             [value]="organisationData.linkedIn">
+                      <div class="input-group-append">
+                    <span class="input-group-text" style="background-color: white;">
+                      <i class="fa fa-linkedin"></i>
+                    </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANISATION.FACEBOOK'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="text"
+                             formControlName="facebook"
+                             [value]="organisationData.facebook">
+                      <div class="input-group-append">
+                    <span class="input-group-text" style="background-color: white;">
+                      <i class="fa fa-facebook"></i>
+                    </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-4 col-sm-12 col-md-12 col-xs-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANISATION.TWITTER'|translate}}</label>
+                    <div class="input-group">
+                      <input class="form-control" type="text" name="twitter"
+                             formControlName="twitter"
+                             [value]="organisationData.twitter">
+                      <div class="input-group-append">
+                    <span class="input-group-text" style="background-color: white;">
+                      <i class="fa fa-twitter"></i>
+                    </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br/>
+              </p-accordionTab>
+
+              <p-accordionTab header="{{'COLLAPSE_ADRESS_TITLE'| translate}}"
+                              (selectedChange)="openAddressDetailsCollapse = !openAddressDetailsCollapse"
+                              [selected]="openAddressDetailsCollapse" (click)="checkCollapseAddressStateOnUpdate()">
+                <app-tiers-address [tiersFormGroup]="addOrganisationForm" [tiersAddressToUpdate]="tiersAddress" [hasUpdateCrmPermission]="true"
+                                   [collapseOnOpenAction]="collapseAddressOpened" [typeTier]="typeTier"></app-tiers-address>
+              </p-accordionTab>
+
+
+              <p-accordionTab header="{{'MARKING_EVENTS'| translate}}" style="color: #4c9aae;"
+                              (selectedChange)="datesToRememberCollapseIsOpened = !datesToRememberCollapseIsOpened"
+                              [selected]="datesToRememberCollapseIsOpened">
+
+                <div class="row form-group">
+                  <div formArrayName="datesToRemember" class="col-lg-12 col-md-6 col-sm-12" style="padding-top: 2%;"
+                       *ngFor="let dates of datesToRemember.controls; let i=index">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                      <div class="row py-1 d-flex justify-content-between">
+                        <div class="col px-0">
+                          <h6 class="card-title mb-0"
+                              style="color: #4c9aae;">{{'MARKING_EVENTS'|translate}} {{i + 1}}</h6>
+                          <br>
+                        </div>
+                        <i type="button" (click)="deleteDateToRemember(i)"
+                           class="fa fa-close fa-2x AddIcon text-danger d-flex align-items-center"></i>
+                      </div>
+                    </div>
+                    <form [formGroup]="dates">
+                      <div class="row form-group">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <label class="col-12">
+                            {{'NAME'|translate}} <span
+                            class="required">*</span></label>
+                          <app-marking-events-drop-down [group]="dates">
+                          </app-marking-events-drop-down>
+                          <app-control-messages [control]="dates.get('eventName')"
+                                                class="error-msg messages text-left text-danger">
+                          </app-control-messages>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                          <label class="col-12">
+                            {{'DATE'|translate}}<span
+                            class="required">*</span></label>
+                          <kendo-datepicker [value]="datesToRemTab[i]"
+
+                                            (valueChange)="changeDate($event, i)"
+                                            class="form-control">
+                            <kendo-datepicker-messages today="{{ 'TODAY' | translate}}" toggle="Cambiar calendario">
+                            </kendo-datepicker-messages>
+                          </kendo-datepicker>
+                          <app-control-messages [control]="dates.get('date')"
+                                                class="error-msg messages text-left text-danger">
+                          </app-control-messages>
+                        </div>
+                      </div>
+                    </form>
+                    <br>
+                  </div>
+
+                  <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" *ngIf="isProspectType">
+                    <button class="btn-Add k-button btn btn-add" type="button" (click)='addDatesToRemember()'>
+                      <i class="fa fa-plus fa AddIcon"></i>
+                      <span>&nbsp; {{'ADD'|translate}}</span>
+                    </button>
+                  </div>
+                </div>
+                <div *ngIf="clientDateToRemember == null && isProspectType == false">
+                  <label>{{'NO_DATE_TO_REMEMBER'|translate}}</label>
+                </div>
+              </p-accordionTab>
+              <!--Description accordion-->
+              <p-accordionTab header="{{'ORGANISATION.COLLAPSE_DESCRIPTION_TITLE'| translate}}" style="color: #4c9aae;">
+                <div class="row form-group">
+                  <div class="col-12">
+                    <label class="col-lg-12 col-md-12 col-sm-12"> {{'ORGANISATION.DESCRIPTION'|translate}}</label>
+                    <textarea class="form-control desc"
+                              formControlName="description"
+                              [value]="organisationData.description"
+                              placeholder="{{'ORGANISATION.DESCRIPTION'|translate}}"></textarea>
+                  </div>
+                </div>
+              </p-accordionTab>
+              <!-- Collapse permission -->
+              <p-accordionTab *ngIf="canUpdatePermission && isProspectType" header="{{'PERMISSION'| translate}}" style="color: #4c9aae;">
+                <app-permission [relatedEntityName]="organisationEntityName" [relatedEntityId]="organisationData.id"
+                                [parent]="parentPermission" (canUpdatePermissionEvent)="loadPermission($event)"></app-permission>
+              </p-accordionTab>
+            </p-accordion>
+
+          </form>
+        </div>
+        <div class="tab-pane fade"
+             id="{{'nav-related-items-organisation-' + uuid }}" role="tabpanel" aria-labelledby="nav-contacts-tab">
+
+          <app-organisation-related-items [source]="'organisation'" [data]="idOrganisation"
+                                          [isProspect]="isProspectType"
+                                          [sourceId]="idOrganisation"
+                                          [organisationIsFromOpportunity]="isFromOpportunitySidNav()"
+                                          (contact)="showDetails($event)"
+                                          [isArchivingMode]="isArchivingMode || fromRelatedArchiving"></app-organisation-related-items>
+
+        </div>
+        <div class="tab-pane fade" id="{{'nav-actions-organisation-' + uuid}}" role="tabpanel"*ngIf="authService.hasAuthorities([CRMPermissions.VIEW_ACTION]) "
+             aria-labelledby="nav-actions-tab">
+          <app-actions-list [source]="'organisation'" [related]="true" [isProspect]="isProspectType"
+                            [sourceType]="this.isProspectType ? prospectSourceType : clientSourceType"
+                            [sourceId]="idOrganisation"
+                            [fromRelatedArchiving]="isArchivingMode || fromRelatedArchiving"></app-actions-list>
+        </div>
+        <div *ngIf="isProspectType && (authService.hasAuthorities([CRMPermissions.VIEW_ORGANISATION_LEAD])||authService.hasAuthorities([CRMPermissions.VIEW_ORGANISATION_CLIENT]))" class="tab-pane fade" id="{{'nav-history-organisation-' + uuid}}" role="tabpanel" >
+          <app-history-list [source]="'Organisation'" [sourceId]="idOrganisation"></app-history-list>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Begin Card footer -->
+  <div class="fixed-card-footer">
+    <div class="footerStyle">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a (click)="returnToList()">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{checkBackInterface() |translate}}
+              </span>
+            </a>
+            <button (click)="isProspectType? updateProspectOrganisation() :
+         updateClientOrganisation()" class="btn btn-sm btn-save mx-1" type="button">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+

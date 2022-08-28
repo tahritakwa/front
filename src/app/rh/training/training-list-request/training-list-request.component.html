@@ -1,0 +1,20 @@
+<div class="card">
+  <div class="card-header">
+    <div class="col-sm-5 mt-1">
+      <h3 class="card-title mb-0">{{'TRAINING_REQUEST_LIST'|translate}}</h3>
+    </div>
+  </div>
+  <!--Begin Card body-->
+  <div class="card-body">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <div>
+        <app-search-section (filterChanged)="initializeData($event)"
+                            [statusList]="trainingRequestState"></app-search-section>
+      </div>
+      <div>
+        <app-training-request-show></app-training-request-show>
+      </div>
+    </div>
+  </div>
+  <!--End Card body-->
+</div>

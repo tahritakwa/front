@@ -1,0 +1,37 @@
+<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+  <div class="form-group row">
+
+      <div class=" col-lg-6 col-md-12 col-sm-12 border-style">
+          <div class="row">
+            <div class="col-lg-10 col-md-12 col-sm-12" [ngStyle]="{'height': '500px', 'overflow-y': 'auto'}">
+              <kendo-treeview [nodes]="this.searching ? this.filtredMenu : this.modules" [children]="fetchChildren.bind(this)"
+                              childrenField="items" kendoTreeViewExpandable kendoTreeViewSelectable
+                              kendoTreeViewHierarchyBinding textField="label"
+                              (selectionChange)="handleSelectionRoleConfig($event)"
+                              [(selectedKeys)]="selectedKeyForRoleConfig">
+
+                <ng-template kendoTreeViewNodeTemplate let-dataItem>
+                  <ng-container>
+                    <span class="button-checkbox">
+                      <button type="button" class="action-btn bill-default-btn" data-color="primary">
+                        <i class="fa fa-check-square bill-icon-style"
+                          *ngIf="dataItem.isChecked && !dataItem.IsIndeterminate"></i>
+                        <i class="fa fa-minus-square bill-icon-style"
+                          *ngIf="dataItem.IsIndeterminate"></i>
+                        <i class="fa fa-square-o bill-icon-style"
+                          *ngIf="!dataItem.isChecked && !dataItem.IsIndeterminate"></i>
+                      </button>
+                    </span>
+                    &nbsp; {{dataItem.label}}
+                  </ng-container>
+                </ng-template>
+              </kendo-treeview>
+            </div>
+
+          </div>
+        </div>
+
+    <div class=" col-lg-1"></div>
+
+  </div>
+</div>

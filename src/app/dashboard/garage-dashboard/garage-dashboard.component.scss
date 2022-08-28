@@ -1,0 +1,169 @@
+.draggable-card {
+    padding-bottom: 30px;
+  }
+  
+.period-filter {
+    overflow: visible;
+  }
+  
+.card {
+    border-radius: 5px;
+    border: none;
+    
+  }
+  .with-shadow {
+    box-shadow: 5px 6px 9px 0px grey;
+  }
+  
+  .header {
+    padding: 20px 20px;
+}
+
+.title {
+    margin: 0;
+    color: #252422;
+    font-weight: 300;
+}
+
+.card .content {
+    padding: 15px 15px 10px 15px;
+}
+
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+.card ul.team-members li:not(:last-child) {
+    border-bottom: 1px solid #c3cad0;
+}
+
+.card ul.team-members li {
+    padding: 10px 0px;
+}
+
+.card .avatar {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.card .btn.btn-icon {
+    padding: 7px;
+}
+
+.card .btn-sm {
+    font-size: 12px;
+    border-radius: 26px;
+    padding: 4px 4px;
+}
+
+.card .btn {
+    box-sizing: border-box;
+    border-width: 2px;
+    background-color: transparent;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 7px 18px;
+    border-color: #66615B;
+    color: #66615B;
+    -webkit-transition: all 150ms linear;
+    -moz-transition: all 150ms linear;
+    -o-transition: all 150ms linear;
+    -ms-transition: all 150ms linear;
+    transition: all 150ms linear;
+}
+
+
+.img-circle {
+  max-width: 50%;
+}
+
+
+/*card user*/
+.card-user .image {
+    border-radius: 8px 8px 0 0;
+    height: 150px;
+    position: relative;
+    overflow: hidden;
+}
+.card .image {
+    width: 100%;
+    overflow: hidden;
+    height: 260px;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+.card-user .image img {
+    width: 100%;
+}
+.card-user .author {
+    text-align: center;
+    text-transform: none;
+    margin-top: -65px;
+}
+.card .author {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.card-user .avatar.border-white {
+    border: 5px solid #FFFFFF;
+}
+.card-user .avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 15px;
+}
+.card-user .author .title {
+    color: #403D39;
+}
+.card-user .title {
+    font-weight: 600;
+    line-height: 24px;
+}
+.card-user .author .title small {
+    color: #ccc5b9;
+}
+
+.card .description {
+    font-size: 16px;
+    color: #66615b;
+}
+
+.my-flex-card  {
+  height: calc(100% - 15px);
+  margin-bottom: 15px;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+    }
+    .table-wrapper-scroll-y {
+    display: block;
+    }
+    
+.badge-color {
+    color: #23282c;
+    background-color: #bdcce2;
+}
+
+ .head-column{
+    background-color: #dee2e6;
+}
+.card .card-header {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-color: white;
+    border: none;
+}

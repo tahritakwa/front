@@ -1,0 +1,24 @@
+:host ::ng-deep table {
+  transform: none !important;
+}
+
+:host ::ng-deep kendo-popup.k-animation-container.k-animation-container-shown {
+  z-index: 0!important;
+}
+
+.spinner {
+  padding-top: 20%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #00000052;
+  z-index: 9999;
+}
+
+:host ::ng-deep .ng-touched.ng-pristine.ng-valid,
+:host ::ng-deep .ng-touched.ng-pristine.ng-invalid {
+  width: -webkit-fill-available !important;
+  border: none !important;
+}

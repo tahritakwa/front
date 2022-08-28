@@ -1,0 +1,104 @@
+<!-- Collapse Advanced list products -->
+
+<p-accordion [multiple]="true" class="w-100" *ngIf="isCollapsed || (itemService.TecDoc && isFromUpdateItem) && (hasShowPermission || hasUpdatePermission)">
+
+  <p-accordionTab header="{{'EQUIVALENT_PRODUCT'| translate}}" [selected]="isCollapseSelected()">
+    <div class="my-3">
+      <div class="row" *ngIf="addItem">
+        <div style="margin-top: 10px;" class="col-lg-4 col-sm-6 col-md-6">
+          <app-item-dropdown #ListProduct (Selected)="itemSelected($event)" [itemForm]="formGroup"
+            [parentViewContainerRef]="viewRef" [activeKeyPress]='true' [idItemToIgnore]='item ? item.Id : 0'
+            [ignoreCharges]='true' [showFilter]='true' [isFroSerach]='true' [isOnlyStockManaged]="true"
+            [disabled]="disabled" [isForAdvanceProduct] ="true" (CloseAddEquivvlenceProduct)='RefreshEquivalenceList()'></app-item-dropdown>
+          <br />
+          <app-control-messages [control]="formGroup.controls.IdItem" class="error-msg messages text-left text-danger">
+          </app-control-messages>
+        </div>
+        <div style="margin-top: 10px;" class="col-lg-4 col-sm-6 col-md-6"
+          *ngIf="hasUpdatePermission || hasAddPermission">
+          <button class="btn btn-sm btn-primary" (click)="onAffectItem()" type="button">
+            {{'AFFECT'|translate}}
+          </button>
+        </div>
+      </div>
+      <ul class="nav nav-tabs nav-tabs-new" id="tab-equ" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link nav-link-new active" id="{{itemsTabId}}" data-toggle="tab" href="#{{itemsTabHref}}"
+            role="tab" aria-controls="items-equv" aria-selected="true">{{"ITEMS"|translate}}</a>
+        </li>
+        <li class="nav-item" *ngIf="!isFromUpdateItem && !TecDocEquivalence">
+          <a class="nav-link nav-link-new" id="{{depotTabId}}" data-toggle="tab" href="#{{depotTabHref}}" role="tab"
+            aria-controls="associated-depot-equ" aria-selected="false">{{'ASSOCIATED_DEPOT'|translate}}</a>
+        </li>
+      </ul>
+      <div class="tab-content card-details" id="equTabContent">
+        <div class="tab-pane fade show active px-0 pt-0" id="{{itemsTabHref}}" role="tabpanel"
+          aria-labelledby="items-tab-equv">
+          <div class="card border-0">
+            <div class="card-content">
+              <div class="card-body p-3" style="min-height: fit-content;">
+                <div class="row">
+                  <div class="card mb-1 border-0">
+                    <div class="card-content">
+                      <div class="card-header py-2">
+                        <div class="row" *ngIf="showSearch">
+                          <div class="col-auto">
+                            <app-quick-search-item (sendData)="receiveData($event)" [disabled]="disabled">
+                            </app-quick-search-item>
+                          </div>
+                        </div>
+                        <div class="col-auto ml-auto mt-1" *ngIf="(item && item.TecDocRef && !isFromUpdateItem)">
+                          <input class="input-checkbox100" id="TecDoc" name="remember-me" type="checkbox"
+                            [checked]='TecDocEquivalence' (click)="toggleTecDoc()">
+                          <label class="label-checkbox100 " for="TecDoc">
+                            {{'TECDOC_EQUIVALENT'|translate}}
+                          </label>
+                        </div>
+                      </div>
+                      <div class="card-body py-0" *ngIf="!TecDocEquivalence">
+                        <app-list-item [gridSettings]="gridEquivalenceSettings" [grpList]="equivalenceGrpList"
+                          [addItem]="addItem" [isForGarage]="isForGarage"
+                          (itemSelectedForGarage)="itemSelectedForGarageEvent($event)"
+                          [isEquivalenceGroupInterface]="isEquivalenceGroupInterface" [item]='item'
+                          (refreshItems)='Assign()' (onRowClickEvent)="onRowClick($event)"
+                          (removeEquivalentItem)='removeEquivalentItem($event)' #listItem [isModal]='isModal'
+                          [modalOptions]='modalOptions' [sendToDocument]="sendToDocument"
+                          [openedFromGarageAddCar]="openedFromGarageAddCar" [isTecDocEquivalence]="TecDocEquivalence"
+                          [isToOnlyShowBrand]="isToOnlyShowBrand">
+                        </app-list-item>
+                      </div>
+                      <div class="card-body py-0" *ngIf="TecDocEquivalence">
+                        <app-list-item [gridSettings]="gridTecDocEquivalenceSettings"
+                          [grpList]="equivalenceTecDocGrpList"
+                          [isEquivalenceGroupInterface]="isEquivalenceGroupInterface" [item]='item'
+                          (refreshItems)='Assign()' (onRowClickEvent)="onRowClick($event)"
+                          (removeEquivalentItem)='removeEquivalentItem($event)' #listItemTecDoc [isModal]='isModal'
+                          [modalOptions]='modalOptions' [sendToDocument]="sendToDocument"
+                          [openedFromGarageAddCar]="openedFromGarageAddCar" [isToLoad]="true"
+                          [isTecDocEquivalence]="TecDocEquivalence" [isToOnlyShowBrand]="isToOnlyShowBrand">
+                        </app-list-item>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade  px-0" id="{{depotTabHref}}" role="tabpanel"
+          aria-labelledby="tab-associated-depot-equv">
+          <div class="card border-0">
+            <div class="card-content">
+              <div class="card-body p-3">
+                <app-associated-warehouse-grid [gridData]="associatedWarehouseGridData">
+
+                </app-associated-warehouse-grid>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-accordionTab>
+</p-accordion>

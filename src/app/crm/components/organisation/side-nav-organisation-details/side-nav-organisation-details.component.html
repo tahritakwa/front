@@ -1,0 +1,19 @@
+<div [class]="classDisplay" id="sideNav" >
+  <ul class="{{largeSidNav ? 'navbar-side bigger' : 'navbar-side'}}" [ngStyle]="sidenavWidthStyle()">
+    <div><i class="fa fa-times-circle-o"
+            style="padding-top: 2%; padding-right: 1%;padding-left: 2%;font-size: 22px;color: #20a8d8;" (click)="hideDisplay()"></i>
+      <i *ngIf="!largeSidNav" class="fa fa-expand"
+         style="   padding-top: 2%;padding-right: 2%;font-size: 22px;color: #20a8d8;" (click)="resizeSidNav(true)"></i>
+
+      <i *ngIf="largeSidNav" class="fa fa-compress"
+         style="padding-top: 2%;padding-right: 2%;font-size: 22px;color: #20a8d8;" (click)="resizeSidNav(false)"></i>
+    </div>
+    <div *ngIf="!showContactDetails ">
+      <app-organisation-details [detailsData]="organisationDetailsData" (changeUpdateMode)="passeToUpdateMode($event)"
+                                (backToListEvent)="hideDisplay()" [largeSidNav]="largeSidNav"
+                                [isArchivingMode] = "isArchivingMode"
+                                [fromRelatedArchiving] = "fromRelatedArchiving"
+                                [isProspectType]="prospectType" (showDetailContactEvent)="showContact($event)"></app-organisation-details>
+    </div>
+  </ul>
+</div>

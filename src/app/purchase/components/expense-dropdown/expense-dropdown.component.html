@@ -1,0 +1,28 @@
+<div [formGroup]="form">
+  <kendo-combobox [data]="ExpensesFiltredDataSource" class="form-control" name="IdExpense" formControlName="IdExpense"
+    textField="Description" valueField="Id" [allowCustom]="allowCustom" [(ngModel)]="selectedValue"
+    [valuePrimitive]="true" [filterable]="true" (valueChange)="onSelect(this)" (filterChange)="handleFilter($event)">
+    <!--content template-->
+    <ng-template kendoComboBoxItemTemplate let-dataItem>
+      <div class="container">
+        <div class="row">
+          <b>{{dataItem.Description}}</b>
+        </div>
+        <div class="row">
+          <span class="small">{{dataItem.Code}}</span>
+        </div>
+      </div>
+    </ng-template>
+    <!--footer template-->
+    <ng-template kendoDropDownListFooterTemplate>
+      <app-drop-down-footer [addNew]="addNew.bind(this)" [hideBtn]="hideBtn"></app-drop-down-footer>
+    </ng-template>
+    <!--end footer template-->
+    <!--No data template-->
+    <ng-template kendoDropDownListNoDataTemplate>
+      <h5><br /> {{'NO_DATA_FOUND'|translate}}</h5>
+    </ng-template>
+    <kendo-combobox-messages clearTitle="{{'CLEAR'|translate}}"> </kendo-combobox-messages>
+    <!--end No data template-->
+  </kendo-combobox>
+</div>

@@ -1,0 +1,63 @@
+
+.k-widget, .k-grid {
+    font-size: 14px;
+  }
+  
+  .noPadding {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .margrin-badget {
+    margin-top: 8px;
+    margin-left: 2px;
+  }
+  p {
+    display:inline-block;
+    margin-right: 5%;
+  }
+  .itemWarehouse {
+    border: 1px solid #4c9aae!important;
+    background-color: #e4e5e666;
+    border-left: 4px solid #3e787e!important;
+    margin: 1% -0.9% -0.9% -1%;
+  }
+  .itemWarehouseCentral {
+    margin-left: 1%;
+    margin-top: 1%;
+  }
+  .tabTitle {
+    font-size: 16px;
+    margin-left: 5px;
+  }
+  .hideTab {
+    display: none;
+  }
+  @media only screen and (min-width: 992px) and (max-width: 1250px) {
+    .sizeStyle{
+      font-size: 12px;
+    }
+  }
+  @media screen and (min-width: 1416px) {
+    .warehouseDetails {
+      margin-left: 50%;
+    }
+  }
+  .tec-doc-bar{
+    background-color: #3e787e;
+    margin: -0.85% -0.9% -0.9% -1%;
+    padding: 1% 0% 1% 0%;
+    color: azure;
+  }
+  .no-info{
+    margin-top: 2%;
+  }
+  .btn-add-tecdoc {
+    color: #fff;
+    background-color: #4c9aae;
+    width: 76px;
+}
+
+  
+  
+  

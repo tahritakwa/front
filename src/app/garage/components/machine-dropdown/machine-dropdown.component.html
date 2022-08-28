@@ -1,0 +1,13 @@
+<div *ngIf="form" [formGroup]="form">
+  <kendo-combobox [data]="machineDataSource" class="form-control" name="MachineId"
+    (valueChange)="onSelectMachine($event)" [textField]="'Name'" [valueField]="'Id'" [valuePrimitive]="true"
+    formControlName="MachineId">
+  </kendo-combobox>
+</div>
+
+<div *ngIf="!form">
+  <kendo-combobox [data]="machineDataSource" class="form-control" name="MachineId"
+    (valueChange)="onSelectMachine($event)" [textField]="'Name'" [valueField]="'Id'" [valuePrimitive]="true"
+    [(ngModel)]="selectedValue">
+  </kendo-combobox>
+</div>

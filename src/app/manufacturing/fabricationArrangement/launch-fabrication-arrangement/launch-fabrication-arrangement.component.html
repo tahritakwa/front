@@ -1,0 +1,207 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'OF_LIST'|translate}}</h3>
+          </div>
+          <br />
+          <div class="k-form-field row" style="margin-left:2%">
+            <input type="radio" id="myActionsButton" name="action" class="k-radio" (click)="filterOF('allOF')"
+              [defaultChecked]="true">
+            <label class="k-radio-label" for="myActionsButton">{{'ALL_OF' | translate}}</label>
+            <span style="margin-left: inherit"></span>
+            <input type="radio" id="allActionsButton" name="action" class="k-radio" (click)="filterOF('orderbyRef')">
+            <label class="k-radio-label" for="allActionsButton">{{'FABRICATION_ARRANGMENT_ORDERBY_REF' |
+              translate}}</label>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end" id="addButton1">
+            <a id="addButton2" class="btn-Add k-button btn btn-add" (click)="openModal()" data-toggle="modal"
+              data-target="#exampleModalCenter" style=" border: 2px double #4c9aae!important; margin-bottom: 2%">
+              <span>&nbsp; {{'LAUNCH'|translate}}</span>
+            </a>
+          </div>
+          <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take"
+                      [skip]="gridSettings.state.skip" (pageChange)="onPageAllDOFChange($event)"
+                      (dataStateChange)="dataStateChange($event)" [sort]="gridSettings.state.sort"
+                      [filter]="gridSettings.state.filter"
+                      [sortable]="true" [pageable]="pagerSettings" filterable="menu" [reorderable]="true"
+                      [columnMenu]="true" *ngIf="filterType === 'allOF'">
+
+            <!--End Grid toolbar-->
+            <!--Columns-->
+            <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [width]="200"
+              [title]="gridSettings.columnsConfig[0].title | translate">
+            </kendo-grid-column>
+            <kendo-grid-column [field]="gridSettings.columnsConfig[1].field"
+              [title]="gridSettings.columnsConfig[1].title | translate" [width]="200">
+            </kendo-grid-column>
+            <kendo-grid-column [field]="gridSettings.columnsConfig[2].field"
+              [title]="gridSettings.columnsConfig[2].title | translate" [width]="200">
+            </kendo-grid-column>
+            <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+              [title]="gridSettings.columnsConfig[3].title | translate" [width]="200">
+              <ng-template kendoGridCellTemplate let-dataItem>
+                {{dataItem.creationDate_of | date: 'MM/dd/yyyy'}}
+              </ng-template>
+            </kendo-grid-column>
+            <kendo-grid-checkbox-column [width]="100">
+              <ng-template kendoGridCellTemplate let-dataItem>
+
+                <input type="checkbox" [(ngModel)]="dataItem.isChecked" (change)="eventCheckItemByOF($event, dataItem)">
+              </ng-template>
+            </kendo-grid-checkbox-column>
+            <!--end grid pdf & excel-->
+          </kendo-grid>
+          <div class="row">
+            <kendo-grid  [data]="gridSettings2.gridData" [pageSize]="gridSettings2.state.take"
+                         [skip]="gridSettings2.state.skip" (pageChange)="onPageByItemChange($event)"
+                         (dataStateChange)="dataStateChange($event)" [sort]="gridSettings2.state.sort"
+                         [filter]="gridSettings2.state.filter"
+                         [sortable]="true" [pageable]="pagerSettings" filterable="menu" [reorderable]="true"
+                         [columnMenu]="true" *ngIf="filterType === 'orderbyRef'" class="col"
+                         [selectable]="true"
+                         (selectionChange)="onSelectionChange($event)">
+              <!--End Grid toolbar-->
+              <!--Columns-->
+              <kendo-grid-column [field]="gridSettings2.columnsConfig[0].field" [width]="100"
+                [title]="gridSettings2.columnsConfig[0].title | translate">
+              </kendo-grid-column>
+              <kendo-grid-column [field]="gridSettings2.columnsConfig[1].field"
+                [title]="gridSettings2.columnsConfig[1].title | translate" [width]="100">
+              </kendo-grid-column>
+              <kendo-grid-column [field]="gridSettings2.columnsConfig[2].field"
+                [title]="gridSettings2.columnsConfig[2].title | translate" [width]="100">
+              </kendo-grid-column>
+              <kendo-grid-column [field]="gridSettings2.columnsConfig[3].field"
+                [title]="gridSettings2.columnsConfig[3].title | translate" [width]="100">
+              </kendo-grid-column>
+            </kendo-grid>
+            <kendo-grid [data]="gridSettings3.gridData" [pageSize]="gridSettings3.state.take"
+                        [skip]="gridSettings3.state.skip" (pageChange)="onPageChange($event)"
+                        (dataStateChange)="dataStateChange($event)" [sort]="gridSettings.state.sort"
+                        [filter]="gridSettings3.state.filter" [selectable]="true"
+                        [sortable]="true" [pageable]="pagerSettings" filterable="menu" [reorderable]="true"
+                        [columnMenu]="true" *ngIf="filterType === 'orderbyRef'" class="col">
+              <!--Grid Toolbar-->
+              <!--End Grid toolbar-->
+              <!--Columns-->
+              <kendo-grid-column [field]="gridSettings3.columnsConfig[0].field" [width]="100"
+                [title]="gridSettings3.columnsConfig[0].title | translate">
+              </kendo-grid-column>
+              <kendo-grid-column [field]="gridSettings3.columnsConfig[1].field"
+                [title]="gridSettings3.columnsConfig[1].title | translate" [width]="100">
+              </kendo-grid-column>
+              <kendo-grid-column [field]="gridSettings3.columnsConfig[2].field"
+                [title]="gridSettings3.columnsConfig[2].title | translate" [width]="100">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  {{dataItem.creationDate_of | date: 'MM/dd/yyyy'}}
+                </ng-template>
+              </kendo-grid-column>
+
+              <kendo-grid-checkbox-column [width]="100">
+                <ng-template kendoGridCellTemplate let-dataItem>
+                  <input type="checkbox" [(ngModel)]="dataItem.isChecked"
+                    (change)="eventCheckOfByItem($event, dataItem)">
+                </ng-template>
+              </kendo-grid-checkbox-column>
+            </kendo-grid>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter"  role="dialog" aria-labelledby="exampleModalCenterTitle"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>{{'LAUNCH'|translate}}</h5>
+        <button id="closeModal" type="button" class="close" #closeModalBtn (click)="closeModal()" data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" [formGroup]="formGroup">
+          <div class="form-group row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                {{'REGISTRATION_NUMBER'|translate}}<span class="required">*</span> </label>
+              <input class="form-control" name="reference" formControlName="matricule">
+              <app-control-messages [control]="formGroup.controls['matricule']"
+                class="error-msg messages text-left text-danger">
+              </app-control-messages>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                {{'DATE'|translate}}<span class="required">*</span></label>
+              <kendo-datepicker  [format]="formatDate" class="form-control"
+                                formControlName="launchingDate">
+                <kendo-datepicker-messages today="{{ 'TODAY' | translate}}"
+                                           toggle="{{ 'CALENDAR.MENU_TITLE' | translate}}">
+                </kendo-datepicker-messages>
+              </kendo-datepicker>
+              <app-control-messages [control]="formGroup.controls['launchingDate']"
+                class="error-msg messages text-left text-danger">
+
+              </app-control-messages>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                {{'RESPONSIBLE'|translate}}<span class="required">*</span></label>
+              <kendo-dropdownlist [data]="listUsers" [textField]="'FullName'" [valueField]="'Id'" [valuePrimitive]="true"
+                 [(value)]="selectedUsers" formControlName="responsibleId"
+                style="width: 220px;margin: auto;">
+                <ng-template kendoDropDownListItemTemplate let-dataItem>
+                  <div class="container">
+                    <div class="row">
+                      <span class="small">{{dataItem.FullName}}</span>
+                    </div>
+                  </div>
+                </ng-template>
+              </kendo-dropdownlist>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12">
+              <label class="col-lg-12 col-md-12 col-sm-12">
+                {{'HOUR'|translate}}<span class="required">*</span></label>
+              <kendo-timepicker [format]="'HH:mm'" class="form-control" formControlName="launchingHour">
+              </kendo-timepicker>
+              <app-control-messages [control]="formGroup.controls['launchingHour']"
+                class="error-msg messages text-left text-danger">
+
+              </app-control-messages>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="footerStyle">
+          <footer>
+            <div class="w-100">
+              <div class="row col-sm-12 col-md-12 col-lg-12 mt-2 k-justify-content-end">
+                <a id="addButton4" class="btn-Add k-button btn btn-add" (click)="launchOF()"
+                  style="border: 2px double #4c9aae!important;">
+                  <span>&nbsp; {{'VALIDATE'|translate}}</span>
+                </a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

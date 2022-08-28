@@ -1,0 +1,42 @@
+@media (max-width: 1140px) {
+  .long-label {
+    font-size: 0;
+  }
+}
+@media (min-width: 1140px) {
+  .short-label {
+    font-size: 0;
+  }
+}
+.fa-stack[data-count]:after {
+  position: absolute;
+  right: 0%;
+  top: 1%;
+  content: attr(data-count);
+  font-size: 30%;
+  padding: 0.6em;
+  border-radius: 999px;
+  line-height: 0.75em;
+  color: white;
+  background: #f86c6b;
+  text-align: center;
+  min-width: 2em;
+  font-weight: bold;
+}
+.notification {
+  color: white;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  width: 20px;
+  cursor: pointer;
+}
+
+.notification .badge {
+  position: absolute;
+  top: -4px;
+  right: -10px;
+  background: #f86c6b;
+  color: white;
+  font-size: x-small;
+}

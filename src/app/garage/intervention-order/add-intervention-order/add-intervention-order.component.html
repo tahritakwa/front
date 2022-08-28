@@ -1,0 +1,164 @@
+<form class="form-horizontal">
+  <div class="card">
+    <div class="card-header">
+      <div class="row">
+        <div class="col-lg-10 col-md-9 col-sm-9 pl-0 pt-2">
+          <h3 class="card-title mb-0">
+            {{(!isUpdateMode ? 'ADD_INTERVENTION_ORDER' : 'EDIT_INTERVENTION_ORDER')|translate}}
+          </h3>
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-3" align="right" *ngIf="isUpdateMode && interventionOrderToUpdate"
+          style="align-self: center;">
+          <span style="color:#20a8d8">{{ interventionOrderToUpdate.Code }}</span>
+          <span *ngIf=" interventionOrderToUpdate.Status === interventionStateEnumerator.Open"
+            class="badge badge-primary">{{'OPEN' |
+            translate}}</span>
+          <span *ngIf="interventionOrderToUpdate.Status === interventionStateEnumerator.InProgress"
+            class="badge badge-success">{{'INPROGRESS' |
+            translate}}</span>
+          <span *ngIf="interventionOrderToUpdate.Status === interventionStateEnumerator.Completed"
+            class="badge badge-completed">{{'COMPLETED' |
+            translate}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+
+      <kendo-splitter orientation="horizontal" style="height: 100%;">
+        <kendo-splitter-pane [collapsible]="true" size="25%">
+          <div class="card-body" style="overflow-x: auto;">
+            <app-vehicle-information #vehicleInfoViewChild [form]="addInterventionFormGroup"
+              (selectedVehicle)="selectedVehicleChange($event)">
+            </app-vehicle-information>
+          </div>
+        </kendo-splitter-pane>
+
+        <kendo-splitter-pane >
+          <div class="row col-lg-12 col-md-12 col-sm-12">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+              <ul class="nav nav-tabs nav-tabs-new" id="tab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link nav-link-new active" id="reception-tab" data-toggle="tab" href="#reception"
+                    role="tab" aria-controls="reception" aria-selected="true">{{"RECEPTION"|translate}}</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link nav-link-new" id="operations-tab" data-toggle="tab" href="#operations" role="tab"
+                    aria-controls="operations" aria-selected="false">{{'OPERATIONS'|translate}}</a>
+                </li>
+              </ul>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4" align="right" style="align-self: center;"
+              *ngIf="isUpdateMode && interventionOrderToUpdate && 
+                (interventionOrderToUpdate.IdDeliveryDocumentNavigation || interventionOrderToUpdate.IdInvoiceDocumentNavigation)">
+              <span>
+                {{ ((interventionOrderToUpdate && (interventionOrderToUpdate.Status === interventionStateEnumerator.InProgress))
+                  ? 'CODE_DELIVERY_TITLE' : 'CODE_INVOICE' ) |translate }}:&nbsp;
+                <span class="cursor-pointer doc-code" style="font-size: 0.9em;"
+                  (click)="showDocument()">
+                  {{interventionOrderToUpdate && interventionOrderToUpdate.Status === interventionStateEnumerator.InProgress ?
+                     interventionOrderToUpdate.IdDeliveryDocumentNavigation.Code : interventionOrderToUpdate.IdInvoiceDocumentNavigation.Code}}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <div class="tab-content tab-content-new" id="tabContent">
+            <div class="tab-pane fade show active px-2" id="reception" role="tabpanel" aria-labelledby="reception-tab"
+              [ngStyle]="{'overflow-x': 'hidden'}">
+              <div class="card">
+                <div class="card-content">
+                  <div class="card-body" style="min-height: fit-content;" [ngStyle]="{'overflow-x': 'auto'}">
+                    <app-reception-for-order-intervention 
+                      [interventionId]="id"
+                      #receptionForOrderInterventionViewChild
+                      [intervention]="interventionOrderToUpdate"
+                      [form]="addInterventionFormGroup"
+                      [selectedVehicle]="selectedVehicle"
+                      [hasUpdatePermission]="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode"
+                      (vehicleDiagnosticImgSrcEmit)="vehicleDiagnosticImgSrcEmit($event)"
+                      [selectedOperationKit]="selectedOperationKit"
+                      [isOperationKitDisabled]="isOperationKitDisabled"
+                      (proposedOperationGridVisibility)="proposedOperationGridVisible($event)"
+                      (mileageProposedValue)="mileageProposedValueChange($event)"
+                      (garageSelectedChange)="garageSelectedChange($event)"
+                      (operationKitSelectedChange)="operationKitSelectedChange($event)">
+                    </app-reception-for-order-intervention>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade px-2" id="operations" role="tabpanel" aria-labelledby="operations-tab">
+              <div class="card-body p-3" style="min-height: fit-content;">
+                <app-operation-for-intervention-order 
+                  #operationViewChild
+                  [interventionOperationsList]="interventionOperationsList"
+                  [operationListIdsToIgnore]="operationListIdsToIgnore" [selectedMileage]="selectedMileage"
+                  [idMileageProgrammed]="IdMileageProgrammed.value" [idIntervention]="id"
+                  [form]="addInterventionFormGroup" [isProposedOperationGridVisible]="isProposedOperationGridVisible"
+                  [interventionItemList]="interventionItemList" [idWarehouse]="idWarehouse" [idGarage]="IdGarage.value"
+                  [receptionForm]="addReceptionFormGroup" [interventionOrder] = "interventionOrderToUpdate"
+                  [isUpdateMode]="isUpdateMode" [isInterventionCompleted]="isInterventionCompleted"
+                  [hasUpdatePermission]="hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode"
+                  [customerPartsList]="customerPartsList"  (updateInterventionItem)="updateInterventionItem()"
+                  (operationsChanged)="operationsChangedValue($event)">
+                </app-operation-for-intervention-order>
+              </div>
+            </div>
+            <div class="tab-pane fade  px-2" id="history" role="tabpanel" aria-labelledby="history-tab">
+              <div class="card-body p-3" style="min-height: fit-content;">
+                <app-history-for-order-intervention>
+                </app-history-for-order-intervention>
+              </div>
+            </div>
+          </div>
+        </kendo-splitter-pane>
+      </kendo-splitter>
+    </div>
+    <!--Begin Card footer-->
+    <div class="fixed-card-footer">
+      <div class="footerStyle">
+        <footer class="app-footer" style="margin-left: 0;">
+          <div class="w-100">
+            <div class="d-flex justify-content-end p-3 footer-content">
+              <a (click)="goBackToList()">
+                <span class="btn btn-sm btn-back-to-list btn-primary">
+                  <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+                </span>
+              </a> 
+              <kendo-dropdownbutton *ngIf="isUpdateMode && (hasPrintWorkShopChiefReportPermission || hasPrintCustomerReportPermission)" [data]="reportsAllTypes" (itemClick)="onPrintReportClick($event)">
+                <i class="fa fa-print"></i> &nbsp;{{'PRINT'|translate}} &nbsp;<i class="k-icon k-i-arrow-s"></i>
+                <ng-template kendoDropDownButtonItemTemplate let-dataItem>
+                  <span>{{ dataItem.TemplateCode }}</span>
+                </ng-template>
+              </kendo-dropdownbutton> 
+              <button style="height: fit-content;"
+              *ngIf="isUpdateMode && interventionOrderToUpdate && interventionOrderToUpdate.Status === interventionStateEnumerator.Open &&
+              (hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode)"
+              (click)="sendSmsIntervention()" class="btn btn-sm btn-danger mx-1" type="button">
+              <i class="fa fa-envelope-o" aria-hidden="true"></i> {{'SEND_SMS_MENU'|translate}}
+             </button>
+              <button style="height: fit-content;"
+                *ngIf="isUpdateMode && interventionOrderToUpdate && interventionOrderToUpdate.Status === interventionStateEnumerator.Open &&
+                (hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode)"
+                (click)="startIntervention()" class="btn btn-sm btn-primary mx-1" type="button">
+                <i class="fa fa-play-circle" aria-hidden="true"></i> {{'LAUNCH'|translate}}
+              </button>
+              <button style="height: fit-content;"
+                *ngIf="isUpdateMode && interventionOrderToUpdate && interventionOrderToUpdate.Status === interventionStateEnumerator.InProgress &&
+                (hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode)"
+                (click)="finishIntervention()" class="btn btn-sm btn-danger mx-1" type="button">
+                <i class="fa fa-play-circle" aria-hidden="true"></i> {{'FINISH'|translate}}
+              </button>
+              <button style="height: fit-content;"
+                *ngIf="!(isUpdateMode && isInterventionCompleted) && (hasUpdatePermission && isUpdateMode || hasAddPermission && !isUpdateMode)" (click)="save()"
+                class="btn btn-sm btn-save mx-1" type="button">
+                <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+              </button>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <!--End Card footer-->
+  </div>
+</form>

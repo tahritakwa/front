@@ -1,0 +1,50 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="col-sm-5 mt-1">
+            <h3 class="card-title mb-0">{{'ORGANIZATION_CHART'|translate}}</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row" style="margin-bottom: 30px;">
+            <div class="col-sm-12 col-md-6 col-lg-4">
+              <label>{{'EMPLOYEE'|translate}}</label>
+              <app-employee-dropdown (Selected)="onChangeValueEmployee($event)"></app-employee-dropdown>
+            </div>
+          </div>
+          <p-tabView>
+            <p-tabPanel *ngFor="let org of organizations;" header="{{'ORGANIZATION_CHART'|translate}} {{organizations.indexOf(org) + 1}}">
+              <div [ngStyle]="{'overflow-x': 'auto', 'overflow-y': 'auto'}" class="col-lg-12 col-md-12 col-sm-12"
+                style="text-align:center;min-height:250px;">
+                <p-organizationChart (onNodeSelect)="onNodeSelect($event)"
+                  (onNodeUnselect)="onNodeSelect($event)"
+                  [value]="org" selectionMode="single"
+                  styleClass="company">
+                  <ng-template let-node pTemplate="person">
+                    <div class="{{node.data.classNodeContent}} node-content">
+                      <div class="row">
+                        <div style="margin-left:10px">
+                          <img src="{{node.data.img}}" style="width:65px; height:65px;"/>
+                        </div>
+                        <div style="margin-left:5px; text-align:center">
+                          <b class="text-function"> {{node.data.function}}</b> <br/>
+                          <b class="text-name"> {{node.data.name}}</b><br/>
+                          <small class="text-muted">{{node.data.team}}</small>
+                        </div>
+                      </div>
+                    </div>
+                    <a class="ui-node-toggler ng-tns-c5-522 ng-star-inserted">
+                      <i class="{{node.data.classNode}}" id="iconExpanded"></i>
+                    </a>
+                  </ng-template>
+                </p-organizationChart>
+              </div>
+            </p-tabPanel>
+          </p-tabView>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

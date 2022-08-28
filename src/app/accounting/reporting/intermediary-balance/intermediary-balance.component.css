@@ -1,0 +1,10 @@
+.title {
+  color: #4c9aae;
+  font-weight: bold;
+  text-decoration: underline; }
+
+.grayed, .grayed:hover, .grayed:focus {
+  background-color: #D9EAEE !important;
+  font-weight: bold; }
+
+/*# sourceMappingURL=intermediary-balance.component.css.map */

@@ -1,0 +1,77 @@
+<div class="card h-100" style="border: 1px solid #c0c0c0 !important;">
+  <!--Begin Card eader-->
+  <div class="card-header ng-star-inserted" style="background-color: #f0f3f5">
+    <div class="row pl-3">
+      <div class="col-auto d-flex align-items-end">
+        <h3
+          class="card-title mb-0">{{ (isUpdateMode ? 'EXPENSE_EDIT' : 'EXPENSE_ADD') |translate }}</h3>
+      </div>
+      <div class="col-auto d-flex align-items-end">
+        <span class="code" *ngIf="isThereCodeToShowInHeader">{{expenseFormGroup.controls.Code.value}}</span>
+      </div>
+    </div>
+  </div>
+  <!--End Card header-->
+  <!--Begin add form-->
+  <div class="card-body">
+    <form class="form-horizontal" *ngIf="expenseFormGroup" [formGroup]="expenseFormGroup">
+      <!--Begin Card body-->
+      <div class="col-12">
+        <div class="form-group row">
+          <div class="col-lg-12 col-sm-12 col-md-12 ">
+            <div class="form-group row">
+
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12">{{'DESCRIPTION'|translate}}<span
+                  class="required">*</span></label>
+                <input class="form-control" formControlName="Description"
+                       [ngClass]="{ 'has-error': (expenseFormGroup.controls.Description.touched ||
+                        expenseFormGroup.controls.Description.dirty) && !expenseFormGroup.controls.Description.valid }">
+                <app-control-messages [control]="expenseFormGroup.controls.Description"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'TAX'|translate}}<span
+                  class="required">*</span></label>
+                <app-taxe-dropdown [selectedValue]="selectedTax" (selected)="receiveTaxe($event)"
+                                   [form]="expenseFormGroup"></app-taxe-dropdown>
+                <app-control-messages [control]="expenseFormGroup.controls.IdTaxe"
+                                      class="error-msg messages text-left text-danger"></app-control-messages>
+              </div>
+
+              <div class="col-sm-12 col-md-6 col-lg-4">
+                <label class="col-lg-12 col-md-12 col-sm-12"> {{'RECIPIENT'|translate}}</label>
+                <app-supplier-dropdown [itemForm]="expenseFormGroup" [type]="2" [TecDocSupp]="TecDocSupp"
+                [isMultiSelect]="true" [isCheckboxMode]="true" [isForAddProduct]="true" (selectedValuesCheckbox)="selectedValue($event)"
+                [disabled]="(isUpdateMode  && !hasUpdateExpensePermission) || !hasAddExpensePermission" >
+              </app-supplier-dropdown>
+                <!-- <app-control-messages [control]="expenseFormGroup.controls.IdTiers"
+                                      class="error-msg messages text-left text-danger"></app-control-messages> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="fixed-card-footer">
+    <div [ngClass]="getFooterClass()">
+      <footer class="app-footer" style="margin-left: 0;">
+        <div class="w-100">
+          <div class="d-flex justify-content-end p-3 footer-content">
+            <a routerLink="{{listUrl}}">
+              <span class="btn btn-sm btn-back-to-list btn-primary">
+                <i class="fa fa-chevron-circle-left"></i> {{'BACK_TO_LIST'|translate}}
+              </span>
+            </a>
+            <button (click) ="save()" class="btn btn-sm btn-save mx-1" type="button" *ngIf="hasUpdateExpensePermission && isUpdateMode || hasAddExpensePermission && !isUpdateMode">
+              <i class="fa fa-floppy-o"></i> {{'SAVE'|translate}}
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+</div>

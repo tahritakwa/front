@@ -1,0 +1,126 @@
+<div class="row mr-1 ml-1">
+  <div class="row col-6 float-left">
+    <div class="d-flex justify-content-center">
+      <div class="col-12">
+        <div class="form-group row">
+          <div class="col-10">
+            <input type="text" class="form-control" placeholder="{{'SEARCH_CUSTOMER'|translate}}" name='customer'
+              aria-describedby="addon-wrapping" [(ngModel)]='clientToSearch' (afterValueChanged)='search()'>
+          </div>
+          <div class="col-2 p-1">
+            <i class="fa fa-search fa-lg" aria-hidden="true" (click)='search()'></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-12 col-md-12 col-sm-12">
+
+
+    <kendo-grid [data]="gridSettings.gridData" [pageSize]="gridSettings.state.take" [skip]="gridSettings.state.skip"
+      [pageable]="pagerSettings" (pageChange)="pageChange($event)" [selectable]="selectableSettings"
+      [kendoGridSelectBy]="mySelectionKey" [selectedKeys]="mySelection"
+      (selectedKeysChange)="onSelectedKeysChange($event)" [sort]="sort"
+      [filter]="gridSettings.state.filter" (dataStateChange)="pageChange($event)"
+      (cellClick)="hasGeneratePermission ? lineClickHandler($event) : ''"
+      (save)="hasGeneratePermission ? saveCurrent() : ''" [sortable]="true" [filterable]="false" [reorderable]="true"
+      [columnMenu]="true" (sortChange)="sortChange($event)">
+
+      <kendo-grid-checkbox-column *ngIf="hasGeneratePermission" [width]="50">
+        <ng-template kendoGridHeaderTemplate>
+          <input class="k-checkbox" id="selectAllCheckboxId" kendoGridSelectAllCheckbox [state]="selectAllState"
+            (selectAllChange)="onSelectAllChange($event)" type="checkbox">
+          <label class="k-checkbox-label" for="selectAllCheckboxId"></label>
+        </ng-template>
+      </kendo-grid-checkbox-column>
+
+      <!--Tiers-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[0].field" [filterable]="true"
+        [title]="gridSettings.columnsConfig[0].title | translate" [width]="gridSettings.columnsConfig[0]._width"
+        [format]="gridSettings.columnsConfig[0].format">
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{ dataItem.CodeTier }} - {{dataItem.TierName}}
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div>
+            <input class="form-control" type="text" value="{{ dataItem.CodeTier }} - {{dataItem.TierName}}"
+              disabled="disabled">
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Amount-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[1].field" [filterable]="true"
+        [title]="gridSettings.columnsConfig[1].title | translate" [width]="gridSettings.columnsConfig[1]._width"
+        [format]="gridSettings.columnsConfig[1].format" [style]='{"font-family": "Roboto, serif", "color": "#505253", "text-align":"right",
+                      "padding-right": "4%"}' filter="numeric">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <div style="text-align: center;"><span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span></div>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          {{intl.formatNumber(dataItem.HtAmount, dataItem.formatOptions)}}
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div>
+            <input class="form-control" type="text"
+              value="{{intl.formatNumber(dataItem.HtAmount, dataItem.formatOptions)}}" disabled="disabled">
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!--BL numbers-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[2].field" [filterable]="true"
+        [title]="gridSettings.columnsConfig[2].title | translate" [width]="gridSettings.columnsConfig[2]._width"
+        [format]="gridSettings.columnsConfig[2].format"
+        [style]='{"font-family": "Roboto, serif", "color": "#505253", "text-align":"center"}'>
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <div style="text-align: center;"><span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span></div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <div>
+            <input class="form-control" type="text" value="{{dataItem.BlNumber}}" disabled="disabled">
+          </div>
+        </ng-template>
+      </kendo-grid-column>
+      <!--Settlement mode-->
+      <kendo-grid-column [field]="gridSettings.columnsConfig[3].field"
+        [title]="gridSettings.columnsConfig[3].title | translate" [width]="gridSettings.columnsConfig[3]._width"
+        [style]='{"font-family": "Arial, Helvetica, serif", "color": "#505253", "text-align":"center"}'
+        [sortable]="false">
+        <ng-template kendoGridHeaderTemplate let-column let-columnIndex="columnIndex">
+          <div style="text-align: center;"><span tooltip="{{column.title | translate}}" theme="light">
+              {{column.title}}
+            </span></div>
+        </ng-template>
+        <ng-template kendoGridEditTemplate let-dataItem="dataItem">
+          <app-settlement-mode-drop-down class="error-msg messages text-left text-danger" [group]="gridFormGroup"
+            (Selected)='idSettlementModeValueChange($event)' [addNewLine]="false"
+            (SelectedCode)='settlementModeCodeValueChange($event)' [showAddButton]="false">
+          </app-settlement-mode-drop-down>
+        </ng-template>
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <span *ngIf="dataItem.SettlementModeCode">{{dataItem.SettlementModeCode}}</span>
+          <span *ngIf="!dataItem.SettlementModeCode">-</span>
+        </ng-template>
+      </kendo-grid-column>
+
+
+      <kendo-grid-command-column title="" [width]='100'>
+        <ng-template kendoGridCellTemplate let-isNew="isNew">
+          <div style="display: flex; margin-top: 5%;">
+
+            <button type="button" class='noPadding btn-Add' kendoGridSaveCommand>
+              <i class="fa fa-check fa-lg AddIcon" aria-hidden="true"></i>
+            </button>
+            <button type="button" kendoGridCancelCommand class="noPadding btn-Add k-button" (click)="cancelHandler()"
+              type="button">
+              <i class="fa fa-ban fa-lg" style="color: #E91E63;" aria-hidden="true"></i>
+            </button>
+          </div>
+        </ng-template>
+      </kendo-grid-command-column>
+    </kendo-grid>
+  </div>
+</div>
